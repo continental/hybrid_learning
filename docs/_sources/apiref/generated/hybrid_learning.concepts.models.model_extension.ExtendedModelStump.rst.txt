@@ -1,0 +1,9 @@
+ExtendedModelStump
+==================
+
+.. currentmodule:: hybrid_learning.concepts.models.model_extension
+
+.. autoclass:: ExtendedModelStump
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,581 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.datasets.transforms.image_transforms &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.datasets.transforms.image_transforms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.datasets.transforms.image_transforms</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Transformations to images.</span>
+<span class="sd">The images are assumed to be a :py:class:`torch.Tensor` of a</span>
+<span class="sd">:py:class:`PIL.Image.Image`.</span>
+<span class="sd">Use :py:class:`torchvision.transforms.ToTensor` to transform</span>
+<span class="sd">:py:class:`PIL.Image.Image` instances appropriately.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">settings_to_repr</span>
+
+
+<div class="viewcode-block" id="pad_to_square"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html#hybrid_learning.datasets.transforms.image_transforms.pad_to_square">[docs]</a><span class="k">def</span> <span class="nf">pad_to_square</span><span class="p">(</span><span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">pad_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Symmetrically pad image with constant ``pad_value`` to obtain square</span>
+<span class="sd">    image.</span>
+
+<span class="sd">    :param img_t: 2D pytorch tensor</span>
+<span class="sd">    :param pad_value: constant value to use for padding area</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">img_t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">img_t</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">img_t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">img_t</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong image shape (</span><span class="si">{}</span><span class="s2">); expected 2 or 3 dimensions&quot;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img_t</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">dim_diff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">height</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span>
+    <span class="c1"># (upper / left) padding and (lower / right) padding</span>
+    <span class="n">pad1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">dim_diff</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">pad2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">dim_diff</span> <span class="o">-</span> <span class="n">dim_diff</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="c1"># padding put together:</span>
+    <span class="n">pad</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pad1</span><span class="p">,</span> <span class="n">pad2</span><span class="p">)</span> \
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&lt;=</span> <span class="n">width</span> <span class="k">else</span> <span class="p">(</span><span class="n">pad1</span><span class="p">,</span> <span class="n">pad2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Add padding to image</span>
+    <span class="n">img_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">img_t</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">pad</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">pad_value</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">img_t</span><span class="p">,</span> <span class="n">pad</span></div>
+
+
+<div class="viewcode-block" id="ImageTransform"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform">[docs]</a><span class="k">class</span> <span class="nc">ImageTransform</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transformations that can be applied to images.</span>
+<span class="sd">    Images should be given as :py:class:`torch.Tensor` version of a</span>
+<span class="sd">    :py:class:`PIL.Image.Image` instance.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce the instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="ImageTransform.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">settings_to_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageTransform.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform.__call__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Application of transformation.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="PadAndResize"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.PadAndResize.html#hybrid_learning.datasets.transforms.image_transforms.PadAndResize">[docs]</a><span class="k">class</span> <span class="nc">PadAndResize</span><span class="p">(</span><span class="n">ImageTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transformation that pads an image to square dimensions and then</span>
+<span class="sd">    resizes it to fixed size.</span>
+
+<span class="sd">    The padding value is black.</span>
+<span class="sd">    Internally torchvision transformations are used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">img_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Image target size as :py:class:`PIL.Image.Image` size</span>
+<span class="sd">        ``(width, height)``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_img_size</span>
+
+    <span class="nd">@img_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">img_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_trafo</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Interpolation to use for the resizing.</span>
+<span class="sd">        Must be one of the :py:mod:`PIL.Image` interpolation constants.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation</span>
+
+    <span class="nd">@interpolation</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpolation</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation</span> <span class="o">=</span> <span class="n">interpolation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_trafo</span><span class="p">()</span>
+
+    <span class="c1"># noinspection PyTypeChecker</span>
+    <span class="k">def</span> <span class="nf">_create_trafo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Create the transformation to use in :py:attr:`__call__` from</span>
+<span class="sd">        instance attributes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">pad_to_square</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>  <span class="c1"># add padding</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToPILImage</span><span class="p">(),</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="p">,</span>
+                                 <span class="n">interpolation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span><span class="p">),</span>
+            <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
+        <span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce the instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">img_size</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PadAndResize.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.PadAndResize.html#hybrid_learning.datasets.transforms.image_transforms.PadAndResize.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                 <span class="n">interpolation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">BILINEAR</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param img_size: see :py:attr:`img_size`</span>
+<span class="sd">        :param interpolation: see :py:attr:`interpolation`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_size</span>
+        <span class="sd">&quot;&quot;&quot;Internal storage of :py:attr:`img_size`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">interpolation</span>
+        <span class="sd">&quot;&quot;&quot;Internal storage of :py:attr:`interpolation`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_trafo</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;The transformation to apply derived from the instance attributes.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="PadAndResize.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.PadAndResize.html#hybrid_learning.datasets.transforms.image_transforms.PadAndResize.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Pad ``img`` to square, then resize it to the</span>
+<span class="sd">        configured image size.</span>
+<span class="sd">        See also :py:attr:`img_size`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trafo</span><span class="p">(</span><span class="n">img</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Binarize"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize">[docs]</a><span class="k">class</span> <span class="nc">Binarize</span><span class="p">(</span><span class="n">ImageTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple class for binarizing tensors into high and low class values.</span>
+<span class="sd">    The operation is:</span>
+
+<span class="sd">    .. code-block: python</span>
+
+<span class="sd">        x = val_low_class if x &lt;= post_target_thresh else val_high_class</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        :py:attr:`val_low_class` needs *not* to be lower than</span>
+<span class="sd">        :py:attr:`val_high_class`, so one can also invert binary masks with</span>
+<span class="sd">        this.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Binarize.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                 <span class="n">val_low_class</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">val_high_class</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param threshold: the threshold that defines the border between low</span>
+<span class="sd">            and high class</span>
+<span class="sd">        :param val_high_class: the value to which to set entries from high class</span>
+<span class="sd">        :param val_low_class: the value to which to set entries from low class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Binarize</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="sd">&quot;&quot;&quot;Threshold by which to decide the class;</span>
+<span class="sd">        low class if ``x&lt;=post_target_thresh``, else high&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_low_class</span> <span class="o">=</span> <span class="n">val_low_class</span>
+        <span class="sd">&quot;&quot;&quot;Value to set the low class to.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_high_class</span> <span class="o">=</span> <span class="n">val_high_class</span>
+        <span class="sd">&quot;&quot;&quot;Value to set the high class to.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce instance.&quot;&quot;&quot;</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_low_class</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;val_low_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_low_class</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_high_class</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;val_high_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_high_class</span>
+        <span class="k">return</span> <span class="n">settings</span>
+
+<div class="viewcode-block" id="Binarize.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_tensor</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Binarize ``input_tensor`` according to the settings.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;input_tensor must be of type torch.Tensor, but &quot;</span>
+                              <span class="s2">&quot;was </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">)))</span>
+        <span class="n">low_class</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_tensor</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">high_class</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_tensor</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">low_class</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_low_class</span> <span class="o">+</span>
+                <span class="n">high_class</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_high_class</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BinarizeByQuantile"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.html#hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile">[docs]</a><span class="k">class</span> <span class="nc">BinarizeByQuantile</span><span class="p">(</span><span class="n">ImageTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set all but the given highest number of pixels / q-th quantile</span>
+<span class="sd">    in an image to zero, rest to 1.</span>
+<span class="sd">    Mind for RGB images: A pixel here means a pixel in one channel.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BinarizeByQuantile.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.html#hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">quantile</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num_pixels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param quantile: quantile of pixels to set to 1, rest is set to 0;</span>
+<span class="sd">            overridden by ``num_pixels``</span>
+<span class="sd">        :param num_pixels: number of pixels with highest value to set to one,</span>
+<span class="sd">            rest is set to 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">num_pixels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">quantile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;either num_pixels or quantile must be given&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">num_pixels</span>
+        <span class="sd">&quot;&quot;&quot;Number of pixels with highest values to set to one.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quantile</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">quantile</span>
+        <span class="sd">&quot;&quot;&quot;Quantile of pixels to set to one, rest is set to 0;</span>
+<span class="sd">        overridden by :py:attr:`num_pixels`&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce the instance.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_pixels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">num_pixels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pixels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">quantile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">quantile</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BinarizeByQuantile.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.html#hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Binarize ``img`` by setting a quantile or number of pixels to one,</span>
+<span class="sd">        the rest to 0.</span>
+<span class="sd">        See :py:attr:`quantile` respectively :py:attr:`num_pixels`.</span>
+
+<span class="sd">        :param img: target tensor to binarize</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_np</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">quantile</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pixels</span> <span class="o">/</span> <span class="n">img_np</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_pixels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantile</span>
+        <span class="n">thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">img_np</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">quantile</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="p">(</span><span class="n">img</span> <span class="o">&gt;</span> <span class="n">thresh</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">img</span></div></div>
+
+
+<div class="viewcode-block" id="WithThresh"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.WithThresh.html#hybrid_learning.datasets.transforms.image_transforms.WithThresh">[docs]</a><span class="k">class</span> <span class="nc">WithThresh</span><span class="p">(</span><span class="n">ImageTransform</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Wrap a batch transformation with binarizing (and unsqueezing) before</span>
+<span class="sd">    and after.</span>
+
+<span class="sd">    The transformation should accept a tensor holding a masks (respectively a</span>
+<span class="sd">    batch of masks if</span>
+<span class="sd">    :py:attr:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise`</span>
+<span class="sd">    is ``True``) and return a transformed batch.</span>
+<span class="sd">    If given, ``pre_thresh`` is applied before, and</span>
+<span class="sd">    ``post_thresh`` after the transformation.</span>
+<span class="sd">    The transformation is assumed to require a batch of masks, so if</span>
+<span class="sd">    :py:attr:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise`</span>
+<span class="sd">    is ``False``, the missing batch dimension is handled.</span>
+<span class="sd">    Thus, this wrapper can also be used to turn a batch operation</span>
+<span class="sd">    into one on single masks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: enable=line-too-long</span>
+
+<div class="viewcode-block" id="WithThresh.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.WithThresh.html#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                 <span class="n">pre_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">post_thresh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_wise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">pre_low_class</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">pre_high_class</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                 <span class="n">post_low_class</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">post_high_class</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param trafo: the transformation instance to wrap</span>
+<span class="sd">        :param pre_thresh: if not ``None``, the tensors to be modified are</span>
+<span class="sd">            binarized to 0 and 1 values with threshold ``pre_thresh`` before</span>
+<span class="sd">            modification</span>
+<span class="sd">        :param post_thresh: if not ``None``, the tensors to be modified are</span>
+<span class="sd">            binarized to 0 and 1 values with threshold ``post_thresh`` after</span>
+<span class="sd">            modification</span>
+<span class="sd">        :param batch_wise: see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise`</span>
+<span class="sd">        :param pre_high_class: value to set items to that exceed ``pre_thresh``</span>
+<span class="sd">        :param pre_low_class: value to set items to that are below</span>
+<span class="sd">            ``pre_thresh``</span>
+<span class="sd">        :param post_high_class: value to set items to that exceed</span>
+<span class="sd">            ``post_thresh``</span>
+<span class="sd">        :param post_low_class: value to set items to that are below</span>
+<span class="sd">            ``post_thresh``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="c1"># Value checks:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">trafo</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;trafo is not callable, but of type </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">trafo</span><span class="p">)))</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">WithThresh</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_wise</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">batch_wise</span>
+        <span class="sd">&quot;&quot;&quot;Whether to assume a batch of masks is given (``True``) or a</span>
+<span class="sd">        single mask (``False``).&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">trafo</span>
+        <span class="sd">&quot;&quot;&quot;Modifier (en- or decoder) module that is used for modifications.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Binarize</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> \
+            <span class="k">if</span> <span class="n">pre_thresh</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+            <span class="n">Binarize</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">pre_thresh</span><span class="p">,</span>
+                     <span class="n">val_low_class</span><span class="o">=</span><span class="n">pre_low_class</span><span class="p">,</span>
+                     <span class="n">val_high_class</span><span class="o">=</span><span class="n">pre_high_class</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Binarizing transformation applied to targets before IoU encoding</span>
+<span class="sd">        if not ``None``.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Binarize</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> \
+            <span class="k">if</span> <span class="n">post_thresh</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+            <span class="n">Binarize</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">post_thresh</span><span class="p">,</span>
+                     <span class="n">val_low_class</span><span class="o">=</span><span class="n">post_low_class</span><span class="p">,</span>
+                     <span class="n">val_high_class</span><span class="o">=</span><span class="n">post_high_class</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Binarizing transformation applied to targets after IoU encoding if</span>
+<span class="sd">        not ``None``.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce instance.&quot;&quot;&quot;</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;pre_thresh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="o">.</span><span class="n">threshold</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="o">.</span><span class="n">val_low_class</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
+                <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;pre_val_low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="o">.</span><span class="n">val_low_class</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="o">.</span><span class="n">val_high_class</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
+                <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;pre_val_high&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="o">.</span><span class="n">val_high_class</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;post_thresh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="o">.</span><span class="n">threshold</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="o">.</span><span class="n">val_low_class</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
+                <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;post_val_low&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="o">.</span><span class="n">val_low_class</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="o">.</span><span class="n">val_high_class</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
+                <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;post_val_high&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="o">.</span><span class="n">val_high_class</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_wise</span><span class="p">:</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s1">&#39;batch_wise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_wise</span>
+
+        <span class="k">return</span> <span class="n">settings</span>
+
+<div class="viewcode-block" id="WithThresh.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.WithThresh.html#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Forward method in which to apply the trafo and thresholding.</span>
+
+<span class="sd">        Pre-threshold, modify, and post-threshold given mask(s).</span>
+<span class="sd">        The thresholding is applied, if the corresponding</span>
+<span class="sd">        :py:attr:`pre_thresholder` / :py:attr:`post_thresholder`</span>
+<span class="sd">        is not ``None``.</span>
+<span class="sd">        If :py:attr:`batch_wise` is ``False``, it is assumed a single mask</span>
+<span class="sd">        was given (no batch dimension).</span>
+
+<span class="sd">        :param masks: :py:class:`torch.Tensor` of shape</span>
+<span class="sd">            ``([batch_size,] 1, width, height)`` holding masks for one batch.</span>
+<span class="sd">        :return: the modified and thresholded masks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_thresholder</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_wise</span><span class="p">:</span>
+            <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">masks</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">modified_masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_wise</span><span class="p">:</span>
+            <span class="n">modified_masks</span> <span class="o">=</span> <span class="n">masks</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">modified_masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_thresholder</span><span class="p">(</span><span class="n">modified_masks</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">modified_masks</span></div></div>
+
+
+<div class="viewcode-block" id="ToDevice"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ToDevice.html#hybrid_learning.datasets.transforms.image_transforms.ToDevice">[docs]</a><span class="k">class</span> <span class="nc">ToDevice</span><span class="p">(</span><span class="n">ImageTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Move tensors to given device.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ToDevice.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ToDevice.html#hybrid_learning.datasets.transforms.image_transforms.ToDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="sd">&quot;&quot;&quot;The device to move tensors to.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ToDevice.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ToDevice.html#hybrid_learning.datasets.transforms.image_transforms.ToDevice.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tens</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move ``tens`` tensor to the configured device.</span>
+<span class="sd">        See :py:attr:`device`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">tens</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

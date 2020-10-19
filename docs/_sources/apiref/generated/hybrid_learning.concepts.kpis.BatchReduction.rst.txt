@@ -1,0 +1,9 @@
+BatchReduction
+==============
+
+.. currentmodule:: hybrid_learning.concepts.kpis
+
+.. autoclass:: BatchReduction
+    :members:
+
+    .. autoclasstoc::

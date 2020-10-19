@@ -1,0 +1,9 @@
+DropAnn
+=======
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: DropAnn
+    :members:
+
+    .. autoclasstoc::

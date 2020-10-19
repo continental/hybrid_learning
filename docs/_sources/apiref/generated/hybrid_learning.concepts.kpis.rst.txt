@@ -1,0 +1,62 @@
+kpis
+====
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.kpis
+
+    .. currentmodule:: hybrid_learning.concepts.kpis
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AbstractIoULike
+        
+        ~AbstractIoULoss
+        
+        ~AbstractIoUMetric
+        
+        ~BalancedBCELoss
+        
+        ~BatchReduction
+        
+        ~IoU
+        
+        ~MaskRCNNLoss
+        
+        ~Net2VecLoss
+        
+        ~SetIoU
+        
+        ~TverskyLoss
+        
+        ~WeightedLossSum
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

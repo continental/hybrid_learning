@@ -1,0 +1,9 @@
+IoU
+===
+
+.. currentmodule:: hybrid_learning.concepts.kpis
+
+.. autoclass:: IoU
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,9 @@
+BrodenLabel
+===========
+
+.. currentmodule:: hybrid_learning.datasets.custom.broden
+
+.. autoclass:: BrodenLabel
+    :members:
+
+    .. autoclasstoc::

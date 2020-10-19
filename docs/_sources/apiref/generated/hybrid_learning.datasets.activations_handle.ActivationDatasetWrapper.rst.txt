@@ -1,0 +1,9 @@
+ActivationDatasetWrapper
+========================
+
+.. currentmodule:: hybrid_learning.datasets.activations_handle
+
+.. autoclass:: ActivationDatasetWrapper
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,1053 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.datasets.custom.broden &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.datasets.custom.broden</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.datasets.custom.broden</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handles for Broden-like datasets.</span>
+<span class="sd">The original Broad and Densely Labeled Dataset (Broden_) was introduced in</span>
+<span class="sd">[Bau2017]_ as a combination of several existing semantic segmentation and</span>
+<span class="sd">classification datasets on overlapping image sets.</span>
+<span class="sd">For more details on Broden and its encoding see :py:class:`BrodenHandle`.</span>
+
+<span class="sd">.. note::</span>
+<span class="sd">    The original Broden dataset is not required for usage of this code.</span>
+<span class="sd">    Used datasets just must use a format as is used by the Broden dataset.</span>
+
+<span class="sd">.. _Broden:</span>
+<span class="sd">    https://github.com/CSAILVision/NetDissect-Lite/blob/master/script/dlbroden.sh</span>
+<span class="sd">.. [Bau2017] Bau, David, Bolei Zhou, Aditya Khosla, Aude Oliva, and Antonio</span>
+<span class="sd">    Torralba. 2017.</span>
+<span class="sd">    “Network Dissection: Quantifying Interpretability of Deep Visual</span>
+<span class="sd">    Representations.”</span>
+<span class="sd">    In Proc. 2017 IEEE Conf. Comput. Vision and Pattern Recognition, 3319–3327.</span>
+<span class="sd">    Honolulu, HI, USA: IEEE Computer Society.</span>
+<span class="sd">    https://doi.org/10.1109/CVPR.2017.354.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> \
+    <span class="n">Set</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">trafo</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
+
+
+<div class="viewcode-block" id="BrodenLabel"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenLabel.html#hybrid_learning.datasets.custom.broden.BrodenLabel">[docs]</a><span class="k">class</span> <span class="nc">BrodenLabel</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Information needed to load the annotation of a Broden label.&quot;&quot;&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;The (unique) name of the label in the annotations.&quot;&quot;&quot;</span>
+    <span class="n">number</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The label ID.&quot;&quot;&quot;</span>
+    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="sd">&quot;&quot;&quot;The category from which to select samples for the label&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="BrodenHandle"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle">[docs]</a><span class="k">class</span> <span class="nc">BrodenHandle</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle to collect a sub-dataset of a dataset following Broden format.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The original Broden dataset is not required for usage of this handle.</span>
+<span class="sd">        Used datasets just must use a format as is used by the Broden dataset.</span>
+<span class="sd">        In the following, the format specifics relevant for the datasets that</span>
+<span class="sd">        can be handled are explained, using the original Broden Dataset as</span>
+<span class="sd">        role model. *(No code from the original datasets was used.)*</span>
+
+<span class="sd">    **About the Original Broden Dataset**</span>
+
+<span class="sd">    The Broden dataset is the broad and densely labeled dataset initially</span>
+<span class="sd">    prepared for the paper</span>
+<span class="sd">    `Network Dissection &lt;http://arxiv.org/abs/1704.05796&gt;`_.</span>
+<span class="sd">    It is a combination of the following datasets:</span>
+
+<span class="sd">    - `ADE (scene, object, part)</span>
+<span class="sd">      &lt;https://groups.csail.mit.edu/vision/datasets/ADE20K/&gt;`_</span>
+<span class="sd">    - `Pascal-Context (object)</span>
+<span class="sd">      &lt;https://cs.stanford.edu/~roozbeh/pascal-context/&gt;`_</span>
+<span class="sd">    - `Pascal-Part (part)</span>
+<span class="sd">      &lt;http://roozbehm.info/pascal-parts/pascal-parts.html&gt;`_</span>
+<span class="sd">    - `OpenSurfaces (material)</span>
+<span class="sd">      &lt;http://opensurfaces.cs.cornell.edu/&gt;`_</span>
+<span class="sd">    - `DTD (texture)</span>
+<span class="sd">      &lt;https://www.robots.ox.ac.uk/~vgg/data/dtd/&gt;`_</span>
+<span class="sd">    - and a generated color dataset, with 11 human selected colors</span>
+
+<span class="sd">    The original Broden data features both</span>
+<span class="sd">    pixel-level semantic segmentation annotations</span>
+<span class="sd">    (for categories see :py:attr:`SEG_CATS`), and</span>
+<span class="sd">    image-level classification annotations</span>
+<span class="sd">    (for categories see :py:attr:`CLS_CATS`).</span>
+
+<span class="sd">    The :py:attr:`annotations` attribute stores the raw annotation information</span>
+<span class="sd">    as :py:class:`pandas.DataFrame` as it is loaded from the index file</span>
+<span class="sd">    (see :py:attr:`INDEX_CSV_FILE`) within the</span>
+<span class="sd">    :py:attr:`~hybrid_learning.datasets.base.BaseDataset.dataset_root`.</span>
+<span class="sd">    For the format of the annotations see :py:attr:`annotations` directly.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        To create sub-sets, one can also provide the annotations information</span>
+<span class="sd">        on init.</span>
+
+<span class="sd">    **Default Output Format**</span>
+
+<span class="sd">    The :py:meth:`~hybrid_learning.datasets.base.BaseDataset.getitem` method</span>
+<span class="sd">    yields tuples of input image and a dictionary ``{label_name: annotation}``</span>
+<span class="sd">    containing the annotations for all specified labels.</span>
+<span class="sd">    For the exact output format of the annotations have a look at the</span>
+<span class="sd">    :py:meth:`getitem` doc.</span>
+<span class="sd">    By default, for classification, the annotation is ``bool``, and for</span>
+<span class="sd">    segmentation, it is a :py:class:`numpy.ndarray` binary mask for the</span>
+<span class="sd">    label. If the label information is missing for the selected item,</span>
+<span class="sd">    ``None`` is returned instead.</span>
+<span class="sd">    This output is transformed by</span>
+<span class="sd">    :py:attr:`~hybrid_learning.datasets.base.BaseDataset.transforms` before</span>
+<span class="sd">    yielding it as output of</span>
+<span class="sd">    :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        - To collect a single custom label/merged annotations from the Broden</span>
+<span class="sd">          dataset, refer to the :py:meth:`custom_label` builder.</span>
+<span class="sd">        - To modify the internal annotations table after init, use</span>
+<span class="sd">          :py:meth:`prune` or directly modify :py:attr:`annotations`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CAT_SEP</span> <span class="o">=</span> <span class="s2">&quot;&gt;&gt;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Separator string if the category is specified for a label.</span>
+<span class="sd">    Then the format is ``&quot;{label}{sep}{category}&quot;``.&quot;&quot;&quot;</span>
+
+    <span class="n">LABEL_CSV_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;label.csv&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Path to the file containing meta-information about the labels, relative</span>
+<span class="sd">    to a dataset root.</span>
+<span class="sd">    For details on the encoding see :py:meth:`label_info_for`.&quot;&quot;&quot;</span>
+
+    <span class="n">INDEX_CSV_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;index.csv&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Path to the file containing the annotation information, relative to a</span>
+<span class="sd">    dataset root.</span>
+<span class="sd">    For the encoding see the documentation of this class.&quot;&quot;&quot;</span>
+
+    <span class="n">IMAGES_ROOT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;images&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Root directory for annotated image files.</span>
+<span class="sd">    Relative to the</span>
+<span class="sd">    :py:attr:`~hybrid_learning.datasets.base.BaseDataset.dataset_root`.</span>
+<span class="sd">    Annotations can be found in :py:attr:`INDEX_CSV_FILE`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SEG_CATS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;part&#39;</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;material&#39;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Categories that provide segmentation data.&quot;&quot;&quot;</span>
+
+    <span class="n">CLS_CATS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;scene&#39;</span><span class="p">,</span> <span class="s1">&#39;texture&#39;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Categories that provide classification data.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BrodenHandle.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BrodenLabel</span><span class="p">],</span>
+                 <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">annotations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prune_na</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prune_na_rule</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                 <span class="n">broden_split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_num_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">dataset_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        For further arguments see the details in :py:meth:`standard_prune`.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Currently, no labels with duplicate names are allowed.</span>
+<span class="sd">            Therefore, a label may only occur for one category.</span>
+
+<span class="sd">        :param labels: list of labels to collect for each sample.</span>
+<span class="sd">        :param dataset_root: the path to the root directory holding the</span>
+<span class="sd">            annotation files and the images/ directory with the images and</span>
+<span class="sd">            segmentations</span>
+<span class="sd">        :param annotations: optional initializer for :py:attr:`annotations`,</span>
+<span class="sd">            which is by default loaded from :py:const:`INDEX_CSV_FILE`;</span>
+<span class="sd">            use to create sub-sets</span>
+<span class="sd">        :param dataset_args: arguments to</span>
+<span class="sd">            :py:class:`~hybrid_learning.datasets.base.BaseDataset`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">annotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty annotations!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty labels!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datum_to_tens</span>
+        <span class="sd">&quot;&quot;&quot;The default transformation will return tensors.&quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BrodenHandle</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span>
+                                           <span class="o">**</span><span class="n">dataset_args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">annotations</span> \
+            <span class="k">if</span> <span class="n">annotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_annotations_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The actual annotation (meta-)information.</span>
+<span class="sd">        The columns used here are described below.</span>
+
+<span class="sd">        .. rubric:: Preliminary Remarks</span>
+
+<span class="sd">        - All file-paths are relative to</span>
+<span class="sd">          :py:attr:`~hybrid_learning.datasets.base.BaseDataset.dataset_root`</span>
+<span class="sd">          ``/images``.</span>
+<span class="sd">        - Several files or class labels may be given, separated by semi-colon.</span>
+<span class="sd">        - A mask for a category is an RGB-image encoding segmentation masks for</span>
+<span class="sd">          all different labels of that category.</span>
+<span class="sd">          For the encoding see :py:meth:`process_seg_mask`.</span>
+<span class="sd">        - An annotation may have labels in different categories</span>
+<span class="sd">          (i.e. entries in these category columns). If annotation information</span>
+<span class="sd">          for a category is missing, this column is ``None``.</span>
+
+<span class="sd">        .. rubric:: The Columns</span>
+
+<span class="sd">        The following columns are used here:</span>
+
+<span class="sd">        - *image*: The file-path to the original image file of this annotation</span>
+<span class="sd">        - *split*: The dataset split for which this annotation was used</span>
+<span class="sd">          (``train`` or ``val``)</span>
+<span class="sd">        - category columns:</span>
+
+<span class="sd">          - *color*: color mask file-path</span>
+<span class="sd">          - *object*: object mask file-path (semantic object segmentation)</span>
+<span class="sd">          - *part*: part mask file-path (same as object masks, only parts</span>
+<span class="sd">            belong to a super-object)</span>
+<span class="sd">          - *material*: material mask file-path</span>
+<span class="sd">          - *scene*: label number of the depicted scene</span>
+<span class="sd">          - *texture*: texture label numbers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Loaded annotations information is empty!&quot;</span><span class="p">)</span>
+
+        <span class="n">label_infos</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LABEL_CSV_FILE</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BrodenLabel</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_label</span><span class="p">(</span><span class="n">label_spec</span><span class="p">,</span> <span class="n">label_infos</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">label_spec</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot;The labels to load the values for in each line of the Broden</span>
+<span class="sd">        annotations.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Check for duplicate labels:</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+            <span class="n">duplicates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BrodenLabel</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">lab</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span>
+                                             <span class="n">lab</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">label</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Duplicate label names for labels </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">duplicates</span><span class="p">))</span>
+
+        <span class="c1"># Prune annotations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standard_prune</span><span class="p">(</span><span class="n">max_num_samples</span><span class="o">=</span><span class="n">max_num_samples</span><span class="p">,</span> <span class="n">prune_na</span><span class="o">=</span><span class="n">prune_na</span><span class="p">,</span>
+                            <span class="n">prune_na_rule</span><span class="o">=</span><span class="n">prune_na_rule</span><span class="p">,</span>
+                            <span class="n">broden_split</span><span class="o">=</span><span class="n">broden_split</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.standard_prune"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.standard_prune">[docs]</a>    <span class="k">def</span> <span class="nf">standard_prune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_num_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">prune_na</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prune_na_rule</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                       <span class="n">broden_split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                       <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BrodenHandle&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply the specified standard pruning operations.</span>
+<span class="sd">        Pruning is applied to the :py:attr:`annotations` table.</span>
+
+<span class="sd">        :param prune_na: whether to prune all entries (rows) from the</span>
+<span class="sd">            :py:attr:`annotations` table in which ``&#39;all&#39;`` or ``&#39;any&#39;`` of</span>
+<span class="sd">            the covered label categories are ``NaN`` (see also ``prune_rule``)</span>
+<span class="sd">        :param prune_na_rule: if ``prune_na`` is ``True``, rule by which to</span>
+<span class="sd">            select candidates for pruning:</span>
+
+<span class="sd">            - ``&#39;all&#39;``: all categories occurring in the specified labels must</span>
+<span class="sd">              be ``NaN``</span>
+<span class="sd">            - ``&#39;any&#39;``: any must be ``NaN``</span>
+<span class="sd">        :param broden_split: the original dataset had a fix split into</span>
+<span class="sd">            training and validation data; choose the corresponding original</span>
+<span class="sd">            split (see also :py:attr:`annotations`, where the split</span>
+<span class="sd">            meta-information is stored in)</span>
+<span class="sd">        :param max_num_samples: the maximum number of samples to select;</span>
+<span class="sd">            if set to ``None``, no restriction is applied</span>
+<span class="sd">        :param shuffle: whether to shuffle the dataset (before restricting to</span>
+<span class="sd">            ``max_num_samples``)</span>
+<span class="sd">        :return: self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># region Value checks</span>
+        <span class="k">if</span> <span class="n">broden_split</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">broden_split</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;val&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;broden_split must be one of (&#39;train&#39;, &#39;val&#39;), &quot;</span>
+                              <span class="s2">&quot;but was: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">broden_split</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">prune_na</span> <span class="ow">and</span> <span class="n">prune_na_rule</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;any&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;prune_na_rule must be one of (&#39;all&#39;, &#39;any&#39;), &quot;</span>
+                              <span class="s2">&quot;but was </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prune_na_rule</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Prune NaN values</span>
+        <span class="k">if</span> <span class="n">prune_na</span><span class="p">:</span>
+            <span class="n">na_selector</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[{</span><span class="n">la</span><span class="o">.</span><span class="n">category</span> <span class="k">for</span> <span class="n">la</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">}]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">prune_na_rule</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+                <span class="n">na_selector</span> <span class="o">=</span> <span class="n">na_selector</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">na_selector</span> <span class="o">=</span> <span class="n">na_selector</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">na_selector</span><span class="p">]</span>
+
+        <span class="c1"># Restrict to the selected split</span>
+        <span class="k">if</span> <span class="n">broden_split</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">broden_split</span><span class="p">]</span>
+
+        <span class="c1"># Restrict to the selected number of samples (and shuffle)</span>
+        <span class="k">if</span> <span class="n">max_num_samples</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_num_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> \
+                <span class="n">max_num_samples</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">):</span>
+            <span class="n">max_num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">max_num_samples</span>
+                                                       <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">max_num_samples</span><span class="p">]</span>
+
+        <span class="c1"># Final sanity check</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Annotations information is now empty after &quot;</span>
+                               <span class="s2">&quot;standard pruning!&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.load_annotations_table"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.load_annotations_table">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_annotations_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                               <span class="n">index_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load the annotation information from the ``index_file``</span>
+<span class="sd">        under ``dataset_root``.</span>
+<span class="sd">        For simplicity of parsing, all category and the ``&quot;image&quot;`` column</span>
+<span class="sd">        are parsed to string.</span>
+
+<span class="sd">        :param dataset_root: the root directory under which to find the</span>
+<span class="sd">            index file</span>
+<span class="sd">        :param index_file: the file name / relative path under ``dataset_root``</span>
+<span class="sd">            of the index CSV file to load the annotations from;</span>
+<span class="sd">            defaults to :py:attr:`INDEX_CSV_FILE`</span>
+<span class="sd">        :return: annotations table with correct types of the category columns</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_file</span> <span class="o">=</span> <span class="n">index_file</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INDEX_CSV_FILE</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">index_file</span><span class="p">),</span>
+                           <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span>
+                                  <span class="p">[</span><span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">CLS_CATS</span><span class="p">,</span> <span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">SEG_CATS</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">]})</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.parse_label"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.parse_label">[docs]</a>    <span class="k">def</span> <span class="nf">parse_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_spec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BrodenLabel</span><span class="p">],</span>
+                    <span class="n">label_infos</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BrodenLabel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Given a label specifier, parse it to a :py:class:`BrodenLabel` given</span>
+<span class="sd">        ``label_infos``.</span>
+
+<span class="sd">        :param label_spec: the label specifier to turn into a</span>
+<span class="sd">            :py:class:`BrodenLabel`</span>
+<span class="sd">        :param label_infos: the meta-information about all Broden labels;</span>
+<span class="sd">            contains the information about available labels</span>
+<span class="sd">        :return: the :py:class:`BrodenLabel` instance with information of</span>
+<span class="sd">            the ``label_spec``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Already in correct format:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label_spec</span><span class="p">,</span> <span class="n">BrodenLabel</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">label_spec</span>
+
+        <span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># region collect category information from label_spec if available</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">CAT_SEP</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">label_spec</span><span class="p">:</span>
+            <span class="n">label_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">label_spec</span>
+        <span class="k">elif</span> <span class="n">label_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAT_SEP</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">label_name</span><span class="p">,</span> <span class="n">category</span> <span class="o">=</span> <span class="n">label_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAT_SEP</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Wrong label format of label specifier </span><span class="si">{}</span><span class="s2">: expected exactly 1 &quot;</span>
+                 <span class="s2">&quot;occurrence of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">CAT_SEP</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># select category</span>
+        <span class="n">label_info</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_info_for</span><span class="p">(</span><span class="n">label_name</span><span class="p">,</span> <span class="n">label_infos</span><span class="p">)</span>
+        <span class="n">categories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_cat_info</span><span class="p">(</span><span class="n">label_info</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">])</span>
+        <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">category</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="n">categories</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># region validate category</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Category </span><span class="si">{}</span><span class="s2"> not available for labels </span><span class="si">{}</span><span class="s2">; &quot;</span>
+                              <span class="s2">&quot;choose one of </span><span class="si">{}</span><span class="s2">&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">categories</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">SEG_CATS</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">CLS_CATS</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Label </span><span class="si">{}</span><span class="s2"> has invalid category </span><span class="si">{}</span><span class="s2">; allowed: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_spec</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span>
+                                     <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">SEG_CATS</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">CLS_CATS</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Category </span><span class="si">{}</span><span class="s2"> of label </span><span class="si">{}</span><span class="s2"> not available in &quot;</span>
+                              <span class="s2">&quot;annotations; found cols: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">category</span><span class="p">,</span> <span class="n">label_spec</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="k">return</span> <span class="n">BrodenLabel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">label_name</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">label_info</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
+                           <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.label_info_for"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.label_info_for">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">label_info_for</span><span class="p">(</span><span class="n">label_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label_infos</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Obtain information for label given by name from label information.</span>
+<span class="sd">        A label may have samples in different categories.</span>
+
+<span class="sd">        The output features the following information (compare Broden README):</span>
+
+<span class="sd">        :number: the label ID (used for annotation in the segmentation masks)</span>
+<span class="sd">        :name: the trivial unique name</span>
+<span class="sd">        :category:</span>
+<span class="sd">            the categories the labels have samples in, specified as</span>
+<span class="sd">            semi-colon separated list of entries in</span>
+<span class="sd">            ``{&#39;color&#39;, &#39;object&#39;, &#39;material&#39;, &#39;part&#39;, &#39;scene&#39;, &#39;texture&#39;}``,</span>
+<span class="sd">            each entry followed by the total amount of samples for the label</span>
+<span class="sd">            for that category;</span>
+<span class="sd">            use :py:meth:`_to_cat_info` to process those</span>
+<span class="sd">        :frequency: total number of images having that label over all categories</span>
+<span class="sd">        :coverage: the mean(?) pixels per image</span>
+<span class="sd">        :syns: synonyms</span>
+
+<span class="sd">        :param label_name: the name of the label</span>
+<span class="sd">        :param label_infos: the meta-information on all Broden labels as can</span>
+<span class="sd">            by default be loaded from :py:const:`LABEL_CSV_FILE`.</span>
+<span class="sd">        :returns: :py:class:`pandas.Series` with above fields filled</span>
+<span class="sd">        :raises: :py:exc:`ValueError` if the label is not unique or cannot</span>
+<span class="sd">            be found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label_info</span> <span class="o">=</span> <span class="n">label_infos</span><span class="p">[</span><span class="n">label_infos</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">label_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_info</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Label </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Label </span><span class="si">{}</span><span class="s2"> ambiguous: </span><span class="si">{}</span><span class="s2"> occurrences&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_info</span><span class="p">)))</span>
+        <span class="n">label_info</span> <span class="o">=</span> <span class="n">label_info</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">label_info</span></div>
+
+<div class="viewcode-block" id="BrodenHandle._to_cat_info"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle._to_cat_info">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_to_cat_info</span><span class="p">(</span><span class="n">cat_info_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform category info str of cat1(freq1);cat2(freq2);... to a dict.</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cats_freq</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span>
+                                            <span class="n">cat_info_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">cat_freq</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cf</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">cats_freq</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Unknown format for category: </span><span class="si">{}</span><span class="s2"> (full category&quot;</span>
+                              <span class="s2">&quot;info: </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cat_freq</span><span class="p">),</span>
+                                                  <span class="n">cat_info_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">cats_freq</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.__len__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.getitem"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.getitem">[docs]</a>    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
+                                       <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;Provide tuple of input image and dictionary with annotations for</span>
+<span class="sd">        all labels. (See :py:attr:`labels`).</span>
+<span class="sd">        Used for</span>
+<span class="sd">        :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`.</span>
+
+<span class="sd">        The output format is a tuple of</span>
+<span class="sd">        ``(input_image, {label_name: annotation})``.</span>
+<span class="sd">        The return type is as follows:</span>
+<span class="sd">        The input image is an RGB image as :py:class:`~PIL.Image.Image`;</span>
+<span class="sd">        For the annotations dictionary holds:</span>
+
+<span class="sd">        - Each label from :py:attr:`labels` is considered, and the annotation</span>
+<span class="sd">          for a label is</span>
+
+<span class="sd">          - for classification: a ``bool`` value</span>
+<span class="sd">          - for segmentation: a binary mask as :py:class:`numpy.ndarray`</span>
+
+<span class="sd">        - In case the label is not available, its value in the annotations dict</span>
+<span class="sd">          is ``None``.</span>
+
+<span class="sd">        is a tuple of the input :py:class:`~PIL.Image.Image` and the</span>
+<span class="sd">        annotations dict.</span>
+
+<span class="sd">        :return: tuple of input image and annotations dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">anns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_anns</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">anns</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.load_anns"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.load_anns">[docs]</a>    <span class="k">def</span> <span class="nf">load_anns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Load all annotation information for row ``i``.</span>
+<span class="sd">        Information is retrieved from :py:attr:`annotations`.</span>
+<span class="sd">        For details on the output format see :py:meth:`load_ann`.&quot;&quot;&quot;</span>
+        <span class="n">loaded_rgb_masks</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">raw_ann_row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">anns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">label</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_ann</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">raw_ann_row</span><span class="o">=</span><span class="n">raw_ann_row</span><span class="p">,</span>
+                                      <span class="n">loaded_rgb_masks</span><span class="o">=</span><span class="n">loaded_rgb_masks</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">anns</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.datum_to_tens"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.datum_to_tens">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">datum_to_tens</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">anns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;This transformation will convert an output tuple of image, label dict</span>
+<span class="sd">        to a tensor. For the input format see :py:meth:`getitem`.</span>
+<span class="sd">        Any ``None`` entries in the annotations dictionary will remain ``None``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img_t</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()(</span><span class="n">img</span><span class="p">)</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="n">anns_t</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+                      <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anns</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="c1"># pylint: enable=no-member</span>
+        <span class="k">return</span> <span class="n">img_t</span><span class="p">,</span> <span class="n">anns_t</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.image_filepath"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.image_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">image_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the path to the image file for row ``i``.</span>
+<span class="sd">        Information is retrieved from :py:attr:`annotations`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">IMAGES_ROOT</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.load_ann"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.load_ann">[docs]</a>    <span class="k">def</span> <span class="nf">load_ann</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">BrodenLabel</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">raw_ann_row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">loaded_rgb_masks</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Load the annotation information for ``label`` at row ``i``.</span>
+<span class="sd">        Information is retrieved from :py:attr:`annotations`.</span>
+<span class="sd">        If the annotation information is missing for the given label category,</span>
+<span class="sd">        return ``None``.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            If ``loaded_rgb_masks`` is given, this function has the side effect</span>
+<span class="sd">            of updating this dict with newly loaded masks!</span>
+<span class="sd">            This is used to speed up loading of several labels from the same</span>
+<span class="sd">            mask.</span>
+
+<span class="sd">        :param label: the label to restrict the annotation to</span>
+<span class="sd">        :param i: the index of the row in the annotations information</span>
+<span class="sd">            :py:attr:`annotations` which holds the information for this</span>
+<span class="sd">            single annotation of interest</span>
+<span class="sd">        :param raw_ann_row: optionally directly hand over the row of interest</span>
+<span class="sd">            instead of providing its index (see ``i``)</span>
+<span class="sd">        :param loaded_rgb_masks: RGB segmentation masks loaded so far</span>
+<span class="sd">            (for speed-up); gets updated with any newly loaded masks</span>
+<span class="sd">        :return: One of</span>
+
+<span class="sd">            - ``None`` if category information is missing,</span>
+<span class="sd">            - the binary segmentation mask for the label in case of a</span>
+<span class="sd">              segmentation category,</span>
+<span class="sd">            - the boolean truth value whether the label holds for the image in</span>
+<span class="sd">              case of a classification category</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">raw_ann_row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either index i or the annotation row raw_ann_row&quot;</span>
+                             <span class="s2">&quot; must be given but both were None&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">loaded_rgb_masks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">loaded_rgb_masks</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">raw_ann_row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">raw_ann_row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">raw_ann</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_ann_row</span><span class="p">[</span><span class="n">label</span><span class="o">.</span><span class="n">category</span><span class="p">]</span>
+
+        <span class="c1"># Missing annotation: return None</span>
+        <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">raw_ann</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">raw_anns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_ann</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># raw_anns is list of file paths:</span>
+        <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">category</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SEG_CATS</span><span class="p">:</span>
+            <span class="c1"># RGB masks with label information encoded in red and green channel</span>
+            <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loaded_rgb_masks</span><span class="p">:</span>
+                <span class="c1"># Update loaded mask list with newly loaded mask</span>
+                <span class="n">loaded_rgb_masks</span><span class="p">[</span><span class="n">label</span><span class="o">.</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">IMAGES_ROOT</span><span class="p">,</span> <span class="n">fp</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">fp</span> <span class="ow">in</span> <span class="n">raw_anns</span><span class="p">]</span>
+            <span class="n">ann</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_seg_mask</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">loaded_rgb_masks</span><span class="p">[</span><span class="n">label</span><span class="o">.</span><span class="n">category</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">ann</span>
+        <span class="k">if</span> <span class="n">label</span><span class="o">.</span><span class="n">category</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">CLS_CATS</span><span class="p">:</span>
+            <span class="c1"># raw_anns is list of classification label numbers</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">in</span> <span class="n">raw_anns</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown category for label </span><span class="si">{}</span><span class="s2">; known ones: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">SEG_CATS</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">CLS_CATS</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.process_seg_mask"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.process_seg_mask">[docs]</a>    <span class="k">def</span> <span class="nf">process_seg_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">BrodenLabel</span><span class="p">,</span>
+                         <span class="n">rgb_masks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Collect the binary segmentation mask for ``label`` from given</span>
+<span class="sd">        relative file paths.</span>
+<span class="sd">        Pixels belonging to the given ``label`` are 1, others 0.</span>
+
+<span class="sd">        :param label: the label to look for</span>
+<span class="sd">            (:py:attr:`~BrodenLabel.number` needed)</span>
+<span class="sd">        :param rgb_masks: a list of RGB masks with label information encoded in</span>
+<span class="sd">            red and green channel; for details on encoding see</span>
+<span class="sd">            :py:meth:`to_seg_mask`</span>
+<span class="sd">        :return: binary segmentation mask for ``label`` merged from the</span>
+<span class="sd">            segmentation masks at given file paths</span>
+<span class="sd">        :raises: :py:exc:`ValueError` for invalid label category</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rgb_masks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty relative file path list rel_fp!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Convert to binary masks only for self.label:</span>
+        <span class="n">masks_np</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">to_seg_mask</span><span class="p">(</span><span class="n">ext_mask</span><span class="p">,</span> <span class="n">label_num</span><span class="o">=</span><span class="n">label</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">ext_mask</span> <span class="ow">in</span> <span class="n">rgb_masks</span><span class="p">]</span>
+        <span class="c1"># Add up masks</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">masks_np</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_np</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">masks_np</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.to_seg_mask"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.to_seg_mask">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_seg_mask</span><span class="p">(</span><span class="n">seg</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">label_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Given a Broden RGB segmentation, reduce it to a binary mask for</span>
+<span class="sd">        ``label_num``.</span>
+
+<span class="sd">        Broden segmentations are saved as RGB images, where the the label</span>
+<span class="sd">        number of a pixel is</span>
+<span class="sd">        ``(256 * green + red)`` with ``red`` the red channel value of the pixel,</span>
+<span class="sd">        and ``green`` its green  channel value.</span>
+<span class="sd">        A label number of ``0`` means background.</span>
+
+<span class="sd">        The label number is the ``&#39;number&#39;`` field from</span>
+<span class="sd">        :py:attr:`label_info_for` respectively the</span>
+<span class="sd">        :py:attr:`BrodenLabel.number` attribute.</span>
+<span class="sd">        One can either specify a single label number as ``int``, or an iterable</span>
+<span class="sd">        of label numbers.</span>
+
+<span class="sd">        :param seg: the original RGB segmentation mask encoded as described</span>
+<span class="sd">            above</span>
+<span class="sd">        :param label_num: the label number to restrict the mask to</span>
+<span class="sd">        :return: union of binary segmentation masks for given label numbers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="n">seg_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span>
+        <span class="n">red</span><span class="p">,</span> <span class="n">green</span> <span class="o">=</span> <span class="n">seg_np</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">seg_np</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">binary_seg_np</span> <span class="o">=</span> <span class="p">(</span><span class="mi">256</span> <span class="o">*</span> <span class="n">green</span> <span class="o">+</span> <span class="n">red</span><span class="p">)</span> <span class="o">==</span> <span class="n">label_num</span>
+        <span class="k">return</span> <span class="n">binary_seg_np</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.prune"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.prune">[docs]</a>    <span class="k">def</span> <span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">],</span>
+              <span class="n">by_target</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+              <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BrodenHandle&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Prune all items that fulfill ``condition`` from this dataset.</span>
+<span class="sd">        For this, :py:attr:`annotations` is modified accordingly.</span>
+
+<span class="sd">        :param condition: callable that accepts the output of</span>
+<span class="sd">            :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`</span>
+<span class="sd">            and returns a ``bool`` stating whether this item is to be pruned</span>
+<span class="sd">        :param show_progress_bar: whether to show a progress bar while</span>
+<span class="sd">            collecting the selector for ``condition``</span>
+<span class="sd">        :param by_target: only load the target annotations of each item</span>
+<span class="sd">            (the</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.base.BaseDataset.transforms`</span>
+<span class="sd">            are applied with dummy input) and apply ``condition`` to the target;</span>
+<span class="sd">            asserts that transforms yields a tuple of ``(input, target)``;</span>
+<span class="sd">            this is useful to avoid the costly loading of input images if they</span>
+<span class="sd">            do not contribute to the transformations or the ``condition``.</span>
+<span class="sd">        :return: this instance (with modified :py:attr:`annotations`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selector_for</span><span class="p">(</span>
+            <span class="n">condition</span><span class="p">,</span>
+            <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">show_progress_bar</span><span class="p">,</span>
+            <span class="n">by_target</span><span class="o">=</span><span class="n">by_target</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="o">~</span><span class="n">selector</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.balance"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.balance">[docs]</a>    <span class="k">def</span> <span class="nf">balance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">],</span>
+                <span class="n">proportion</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">by_target</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BrodenHandle&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Restrict this dataset to a subset with an exact ``proportion``</span>
+<span class="sd">        fulfilling ``condition``.</span>
+<span class="sd">        For this, :py:attr:`annotations` is modified accordingly.</span>
+<span class="sd">        After splitting the dataset by ``condition``, the half which is too</span>
+<span class="sd">        large to fulfill ``proportion`` is reduced by random sub-sampling,</span>
+<span class="sd">        determining the final size of the dataset.</span>
+
+<span class="sd">        If there is only one class in the dataset, only shuffling is applied.</span>
+
+<span class="sd">        :param condition: callable that accepts the output of</span>
+<span class="sd">            :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`</span>
+<span class="sd">            and returns a ``bool`` stating whether this item belongs to the</span>
+<span class="sd">            first split</span>
+<span class="sd">        :param proportion: the aimed-for proportion of the first split on</span>
+<span class="sd">            the final dataset</span>
+<span class="sd">        :param show_progress_bar: whether to show a progress bar while</span>
+<span class="sd">            collecting the selector for ``condition``</span>
+<span class="sd">        :param by_target: only load the target annotations of each item</span>
+<span class="sd">            (the</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.base.BaseDataset.transforms`</span>
+<span class="sd">            are applied with dummy input) and apply ``condition`` to the target;</span>
+<span class="sd">            asserts that transforms yields a tuple of ``(input, target)``;</span>
+<span class="sd">            this is useful to avoid the costly loading of input images if they</span>
+<span class="sd">            do not contribute to the transformations or the ``condition``.</span>
+<span class="sd">        :return: self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">selector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_selector_for</span><span class="p">(</span>
+            <span class="n">condition</span><span class="p">,</span>
+            <span class="n">by_target</span><span class="o">=</span><span class="n">by_target</span><span class="p">,</span>
+            <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">show_progress_bar</span><span class="p">)</span>
+        <span class="c1"># Reduce positives</span>
+        <span class="n">pos</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">selector</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">proportion</span><span class="p">:</span>
+            <span class="n">to_reduce</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pos</span>
+            <span class="n">to_keep</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">selector</span><span class="p">]</span>
+            <span class="n">prop_to_keep</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">proportion</span>
+        <span class="c1"># Reduce negatives</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">to_reduce</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">selector</span><span class="p">]</span>
+            <span class="n">to_keep</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pos</span>
+            <span class="n">prop_to_keep</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">proportion</span>
+
+        <span class="c1"># Is there only one class in the dataset?</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">prop_to_keep</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
+
+        <span class="c1"># Calc the final amounts of samples for each slice</span>
+        <span class="n">num_to_keep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_keep</span><span class="p">)</span>
+        <span class="n">num_all</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_to_keep</span> <span class="o">/</span> <span class="n">prop_to_keep</span><span class="p">)</span>
+        <span class="n">num_to_reduce</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_all</span> <span class="o">-</span> <span class="n">num_to_keep</span><span class="p">)</span>
+
+        <span class="c1"># Subsample, shuffle:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">to_reduce</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">num_to_reduce</span><span class="p">),</span>
+             <span class="n">to_keep</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">num_to_keep</span><span class="p">)],</span>
+            <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">_selector_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">],</span>
+                      <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">by_target</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide ``bool`` list matching indices of this dataset for which</span>
+<span class="sd">        ``condition`` holds.</span>
+<span class="sd">        Optionally show a progress bar while processing the data.</span>
+
+<span class="sd">        :param by_target: only load target</span>
+<span class="sd">            (transforms is applied with dummy input) and apply</span>
+<span class="sd">            condition to target; asserts that transforms yields a tuple of</span>
+<span class="sd">            ``(input, target)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">by_target</span><span class="p">:</span>
+            <span class="n">dummy_img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">load_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">dummy_img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_anns</span><span class="p">(</span><span class="n">i</span><span class="p">))[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">load_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">selector</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">iterator</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+            <span class="n">iterator</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span>
+                            <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iterating &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+            <span class="n">selector</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">condition</span><span class="p">(</span><span class="n">load_fn</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BrodenHandle.shuffle"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BrodenHandle&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Shuffle the held annotations and return self.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span>
+                                                   <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.custom_label"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.custom_label">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">custom_label</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                     <span class="n">prune_empty</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">balance_pos_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">init_args</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Return a :py:class:`BrodenHandle` instance with output restricted to</span>
+<span class="sd">        single ``label``.</span>
+
+<span class="sd">        The transformations in</span>
+<span class="sd">        :py:attr:`~hybrid_learning.datasets.base.BaseDataset.transforms` will be chosen</span>
+<span class="sd">        such that :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`</span>
+<span class="sd">        outputs a tuple of ``(input_image, annotation)`` where</span>
+
+<span class="sd">        - ``input_image`` is encoded as :py:class:`torch.Tensor`</span>
+<span class="sd">        - ``annotation`` is a :py:class:`torch.Tensor` holding either the</span>
+<span class="sd">          binary mask for the specified label or the bool classification value.</span>
+
+<span class="sd">        The label may either be a label as would be specified in</span>
+<span class="sd">        :py:class:`__init__ &lt;BrodenHandle&gt;` or a string representation of a</span>
+<span class="sd">        :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` operation.</span>
+
+<span class="sd">        :param dataset_root: the ``dataset_root`` parameter for init of the</span>
+<span class="sd">            :py:class:`BrodenHandle`</span>
+<span class="sd">        :param label: the label to restrict to; may either be a valid string</span>
+<span class="sd">            label name, a valid</span>
+<span class="sd">            :py:class:`BrodenLabel`, or a valid string representation of a</span>
+<span class="sd">            :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` operation</span>
+<span class="sd">            the</span>
+<span class="sd">            :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge.all_in_keys`</span>
+<span class="sd">            of which are all valid string label names;</span>
+<span class="sd">        :param init_args: further init arguments to the :py:class:`BrodenHandle`</span>
+<span class="sd">        :param balance_pos_to: if a value given, balance the resulting</span>
+<span class="sd">            :py:class:`BrodenHandle` instance such that the proportion of the</span>
+<span class="sd">            ``True`` entries is this value;</span>
+<span class="sd">            only use for classification examples</span>
+<span class="sd">        :param prune_empty: whether to prune empty entries</span>
+<span class="sd">            (``None`` values and empty masks) using :py:meth:`prune`</span>
+<span class="sd">        :param verbose: show progress bars</span>
+<span class="sd">        :return: :py:class:`BrodenHandle` instance for ``dataset_root`` with</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.base.BaseDataset.transforms` and</span>
+<span class="sd">            :py:class:`~BrodenHandle.labels`</span>
+<span class="sd">            selected such that the output of :py:meth:`getitem` is</span>
+<span class="sd">            transformed to the format specified above</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="c1"># region Value checks</span>
+        <span class="k">if</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">init_args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;init_args must not contain labels key, &quot;</span>
+                              <span class="s2">&quot;but were </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">init_args</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="n">merge_op</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Merge op before flatten</span>
+
+        <span class="c1"># region Parse the label (and collect Merge operation if necessary):</span>
+        <span class="c1"># collect: labels, merge_op, final_key (=the final key to which to</span>
+        <span class="c1"># restrict the dict)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">BrodenLabel</span><span class="p">):</span>
+            <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BrodenLabel</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">]</span>
+            <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="p">):</span>
+            <span class="n">merge_op</span><span class="p">:</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span> <span class="o">=</span> <span class="n">label</span>
+            <span class="n">labels</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">all_in_keys</span>
+            <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">out_key</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Can be parsed to merge operation?</span>
+            <span class="n">parsed_label</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parsed_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">]</span>
+                <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">label</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">merge_op</span><span class="p">:</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span> <span class="o">=</span> <span class="n">parsed_label</span>
+                <span class="n">labels</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">all_in_keys</span>
+                <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">out_key</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;label </span><span class="si">{}</span><span class="s2"> has unknown format </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">label</span><span class="p">)))</span>
+
+        <span class="k">assert</span> <span class="n">final_key</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># region Collect the transformation</span>
+        <span class="n">trafos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">trafo</span><span class="o">.</span><span class="n">TupleTransforms</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">trafos</span> <span class="o">+=</span> <span class="p">[</span><span class="n">trafo</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">merge_op</span><span class="p">),</span>
+                   <span class="n">trafo</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">RestrictDict</span><span class="p">([</span><span class="n">final_key</span><span class="p">]))]</span> \
+            <span class="k">if</span> <span class="n">merge_op</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">trafos</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">datum_to_tens</span><span class="p">,</span>
+                   <span class="n">trafo</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">FlattenDict</span><span class="p">(</span><span class="n">final_key</span><span class="p">))]</span>
+        <span class="n">user_defined_trafo</span> <span class="o">=</span> <span class="n">init_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;transforms&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># endregion</span>
+
+        <span class="n">broden_inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span>
+        <span class="c1"># specify separately for IDE type inference:</span>
+        <span class="n">broden_inst</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span><span class="n">trafos</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prune_empty</span><span class="p">:</span>
+            <span class="n">broden_inst</span><span class="o">.</span><span class="n">prune</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">by_target</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">balance_pos_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">broden_inst</span><span class="o">.</span><span class="n">balance</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="n">proportion</span><span class="o">=</span><span class="n">balance_pos_to</span><span class="p">,</span>
+                                <span class="n">by_target</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="c1"># Append the user-defined transforms</span>
+        <span class="c1"># (after pruning, since this requires control over the output format!)</span>
+        <span class="k">if</span> <span class="n">user_defined_trafo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">broden_inst</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_defined_trafo</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">broden_inst</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

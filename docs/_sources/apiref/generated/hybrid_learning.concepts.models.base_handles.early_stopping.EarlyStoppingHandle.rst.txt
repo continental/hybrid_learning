@@ -1,0 +1,9 @@
+EarlyStoppingHandle
+===================
+
+.. currentmodule:: hybrid_learning.concepts.models.base_handles.early_stopping
+
+.. autoclass:: EarlyStoppingHandle
+    :members:
+
+    .. autoclasstoc::

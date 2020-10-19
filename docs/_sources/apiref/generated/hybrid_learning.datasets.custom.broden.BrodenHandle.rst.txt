@@ -1,0 +1,9 @@
+BrodenHandle
+============
+
+.. currentmodule:: hybrid_learning.datasets.custom.broden
+
+.. autoclass:: BrodenHandle
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,527 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Conducting a concept analysis &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Extending DNN model outputs" href="model_extension.html" />
+    <link rel="prev" title="Using a concept model to find an embedding" href="concept_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conducting a concept analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preparation-getting-the-concept">Preparation: Getting the concept</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collecting-embeddings-and-performances">Collecting embeddings and performances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aggregation-and-selection">Aggregation and selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-assessment">Performance assessment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prediction-performance">Prediction performance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#variance-and-standard-deviation">Variance and standard deviation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cosine-distance">Cosine distance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#using-an-embedding">Using an embedding</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_dataset_handles/index.html">Custom dataset handles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+      <li>Conducting a concept analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/userguide/concept_analysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="conducting-a-concept-analysis">
+<h1>Conducting a concept analysis<a class="headerlink" href="#conducting-a-concept-analysis" title="Permalink to this headline">¶</a></h1>
+<p>Concept analysis refers to</p>
+<ol class="arabic simple">
+<li><p><em>finding</em> <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.embeddings.ConceptEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">concept</span> <span class="pre">embeddings</span></code></a>
+within the latent spaces of a DNN,</p></li>
+<li><p><em>assessing</em> their strength (i.e. prediction performance as
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">concept</span> <span class="pre">models</span></code></a>),</p></li>
+<li><p>possibly <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.EmbeddingReduction.html#hybrid_learning.concepts.analysis.EmbeddingReduction" title="hybrid_learning.concepts.analysis.EmbeddingReduction"><code class="xref py py-class docutils literal notranslate"><span class="pre">*aggregating*</span></code></a>
+several candidates to a single one for stabilization, and</p></li>
+<li><p><em>selecting</em> the final embedding for a <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">concept</span></code></a>.</p></li>
+</ol>
+<p>The base class holding functionality for concept analysis and logging is
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis" title="hybrid_learning.concepts.analysis.ConceptAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptAnalysis</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.analysis</span> <span class="kn">import</span> <span class="n">ConceptAnalysis</span>
+</pre></div>
+</div>
+<p>In the following, an exemplary concept analysis is conducted</p>
+<ul class="simple">
+<li><p>of the concept “face”</p></li>
+<li><p>on a Mask R-CNN model</p></li>
+<li><p>in the last two backbone convolutional layers.</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.analysis</span> <span class="kn">import</span> <span class="n">ConceptAnalysis</span>
+</pre></div>
+</div>
+<p>In the following, an exemplary concept analysis is conducted</p>
+<ul class="simple">
+<li><p>of the concept “face”</p></li>
+<li><p>on a Mask R-CNN model</p></li>
+<li><p>in the last two backbone convolutional layers.</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.analysis</span> <span class="kn">import</span> <span class="n">ConceptAnalysis</span>
+</pre></div>
+</div>
+<p>In the following, an exemplary concept analysis is conducted</p>
+<ul class="simple">
+<li><p>of the concept “face”</p></li>
+<li><p>on a Mask R-CNN model</p></li>
+<li><p>in the last two backbone convolutional layers.</p></li>
+</ul>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#preparation-getting-the-concept" id="id1">Preparation: Getting the concept</a></p></li>
+<li><p><a class="reference internal" href="#collecting-embeddings-and-performances" id="id2">Collecting embeddings and performances</a></p></li>
+<li><p><a class="reference internal" href="#aggregation-and-selection" id="id3">Aggregation and selection</a></p></li>
+<li><p><a class="reference internal" href="#performance-assessment" id="id4">Performance assessment</a></p>
+<ul>
+<li><p><a class="reference internal" href="#prediction-performance" id="id5">Prediction performance</a></p></li>
+<li><p><a class="reference internal" href="#variance-and-standard-deviation" id="id6">Variance and standard deviation</a></p></li>
+<li><p><a class="reference internal" href="#cosine-distance" id="id7">Cosine distance</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#using-an-embedding" id="id8">Using an embedding</a></p></li>
+</ul>
+</div>
+<div class="section" id="preparation-getting-the-concept">
+<h2><a class="toc-backref" href="#id1">Preparation: Getting the concept</a><a class="headerlink" href="#preparation-getting-the-concept" title="Permalink to this headline">¶</a></h2>
+<p>First initialize the concept and the main model to analyse:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Main model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main_model</span> <span class="o">=</span> <span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Concept data and concept</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.custom</span> <span class="kn">import</span> <span class="n">coco</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">2017&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataTriple</span><span class="p">(</span>
+<span class="gp">... </span>  <span class="n">train_val</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>  <span class="n">test</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span><span class="o">=</span><span class="n">SegmentationConcept2D</span><span class="p">(</span><span class="s2">&quot;face&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Main model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main_model</span> <span class="o">=</span> <span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Concept data and concept</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.custom</span> <span class="kn">import</span> <span class="n">coco</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">2017&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataTriple</span><span class="p">(</span>
+<span class="gp">... </span>  <span class="n">train_val</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>  <span class="n">test</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span><span class="o">=</span><span class="n">SegmentationConcept2D</span><span class="p">(</span><span class="s2">&quot;face&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Main model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main_model</span> <span class="o">=</span> <span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Concept data and concept</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.custom</span> <span class="kn">import</span> <span class="n">coco</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">2017&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataTriple</span><span class="p">(</span>
+<span class="gp">... </span>  <span class="n">train_val</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>  <span class="n">test</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span><span class="o">=</span><span class="n">SegmentationConcept2D</span><span class="p">(</span><span class="s2">&quot;face&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Main model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main_model</span> <span class="o">=</span> <span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Concept data and concept</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.custom</span> <span class="kn">import</span> <span class="n">coco</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">2017&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataTriple</span><span class="p">(</span>
+<span class="gp">... </span>  <span class="n">train_val</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>  <span class="n">test</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span><span class="o">=</span><span class="n">SegmentationConcept2D</span><span class="p">(</span><span class="s2">&quot;face&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Main model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main_model</span> <span class="o">=</span> <span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Concept data and concept</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.custom</span> <span class="kn">import</span> <span class="n">coco</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">2017&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataTriple</span><span class="p">(</span>
+<span class="gp">... </span>  <span class="n">train_val</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>  <span class="n">test</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span><span class="o">=</span><span class="n">SegmentationConcept2D</span><span class="p">(</span><span class="s2">&quot;face&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="collecting-embeddings-and-performances">
+<h2><a class="toc-backref" href="#id2">Collecting embeddings and performances</a><a class="headerlink" href="#collecting-embeddings-and-performances" title="Permalink to this headline">¶</a></h2>
+<p>Now one can start an analysis with the desired amounts of runs on
+the layers of interest. If the logging level is set to <code class="docutils literal notranslate"><span class="pre">INFO</span></code>,
+intermediate results are logged.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">ConceptAnalysis</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">concept</span><span class="o">=</span><span class="n">concept</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">main_model</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="c1"># layer info (Iterable with IDs of layers to analyse)</span>
+<span class="gp">... </span>    <span class="n">layer_infos</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;backbone.body.layer3&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="c1"># the number of independent cross-validation runs per layer</span>
+<span class="gp">... </span>    <span class="n">cross_val_runs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="c1"># the number of runs/splits per cross-validation run</span>
+<span class="gp">... </span>    <span class="n">num_val_splits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="c1"># a function to reduce the results of several runs to one</span>
+<span class="gp">... </span>    <span class="n">show_train_progress_bars</span><span class="o">=</span><span class="kc">False</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis_results</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The analysis results format currently is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> which can be
+turned into a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> using
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis.emb_info_to_pandas" title="hybrid_learning.concepts.analysis.ConceptAnalysis.emb_info_to_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">emb_info_to_pandas()</span></code></a>.
+The following shows how to merge all results
+into one <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">run_info</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="n">layer_id</span><span class="p">,</span> <span class="n">run</span><span class="p">):</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">emb_info_to_pandas</span><span class="p">(</span><span class="n">emb</span><span class="p">,</span> <span class="n">stats</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">layer_id</span><span class="p">,</span> <span class="n">runs</span> <span class="ow">in</span> <span class="n">analysis_results</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">run</span><span class="p">,</span> <span class="p">(</span><span class="n">emb</span><span class="p">,</span> <span class="n">stats</span><span class="p">)</span> <span class="ow">in</span> <span class="n">runs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="gp">... </span><span class="p">})</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="aggregation-and-selection">
+<h2><a class="toc-backref" href="#id3">Aggregation and selection</a><a class="headerlink" href="#aggregation-and-selection" title="Permalink to this headline">¶</a></h2>
+<p>The layer-wise best embedding is collected by aggregating the results
+for each layer
+(see <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis.embedding_reduction" title="hybrid_learning.concepts.analysis.ConceptAnalysis.embedding_reduction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embedding_reduction()</span></code></a>).
+To obtain the final best embedding over all layers, their evaluation results
+are compared and the best one is selected
+(see <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis.best_layer_from_stats" title="hybrid_learning.concepts.analysis.ConceptAnalysis.best_layer_from_stats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">best_layer_from_stats()</span></code></a>).
+Both steps are united in <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis.best_embedding" title="hybrid_learning.concepts.analysis.ConceptAnalysis.best_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">best_embedding()</span></code></a>,
+which directly returns
+the best embedding. To automate experiment saving use
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis.best_embedding_with_logging" title="hybrid_learning.concepts.analysis.ConceptAnalysis.best_embedding_with_logging"><code class="xref py py-meth docutils literal notranslate"><span class="pre">best_embedding_with_logging()</span></code></a> instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no analysis results are given, a complete new analysis is conducted.</p>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">best_emb</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">best_embedding</span><span class="p">(</span><span class="n">analysis_results</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">best_emb</span><span class="p">)</span>
+<span class="go">&lt;class &#39;hybrid_learning.concepts.embeddings.ConceptEmbedding&#39;&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="performance-assessment">
+<h2><a class="toc-backref" href="#id4">Performance assessment</a><a class="headerlink" href="#performance-assessment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="prediction-performance">
+<h3><a class="toc-backref" href="#id5">Prediction performance</a><a class="headerlink" href="#prediction-performance" title="Permalink to this headline">¶</a></h3>
+<p>The performance of an embedding can be (re-)evaluated with respect to
+the analysis settings by using
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis.evaluate_embedding" title="hybrid_learning.concepts.analysis.ConceptAnalysis.evaluate_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate_embedding()</span></code></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">best_emb_stats</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">evaluate_embedding</span><span class="p">(</span><span class="n">best_emb</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">emb_info_to_string</span><span class="p">(</span><span class="n">best_emb</span><span class="p">,</span> <span class="n">best_emb_stats</span><span class="p">))</span>
+<span class="go">test_loss         ...</span>
+<span class="go">test_set_iou      ...</span>
+<span class="go">test_mean_iou     ...</span>
+<span class="go">normal vec len    ...</span>
+<span class="go">support factor    ...</span>
+<span class="go">scaling factor    ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="variance-and-standard-deviation">
+<h3><a class="toc-backref" href="#id6">Variance and standard deviation</a><a class="headerlink" href="#variance-and-standard-deviation" title="Permalink to this headline">¶</a></h3>
+<p>The variance and standard deviation of different runs within one layer
+can be obtained via the embedding functionalities:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Embeddings for this layer from the analysis_results:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">stats</span> <span class="ow">in</span>
+<span class="gp">... </span>              <span class="n">analysis_results</span><span class="p">[</span><span class="n">best_emb</span><span class="o">.</span><span class="n">layer_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Variances of the different embedding aspects:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.embeddings</span> <span class="kn">import</span> <span class="n">ConceptEmbedding</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">std_normal_vec</span><span class="p">,</span> <span class="n">std_support_factor</span><span class="p">,</span> <span class="n">std_scaling_factor</span> <span class="o">=</span> \
+<span class="gp">... </span>    <span class="n">ConceptEmbedding</span><span class="o">.</span><span class="n">std_deviation</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="cosine-distance">
+<h3><a class="toc-backref" href="#id7">Cosine distance</a><a class="headerlink" href="#cosine-distance" title="Permalink to this headline">¶</a></h3>
+<p>Cosine distance between concept embeddings from one layer can be
+calculated as follows (including the layer’s <code class="docutils literal notranslate"><span class="pre">best_emb</span></code> in this case):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># pair-wise cosines with last row and column the best_embedding:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">all_vecs</span> <span class="o">=</span> <span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">normal_vec</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">best_emb</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)))</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;best_emb&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairwise_cosines</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="c1"># cosine dist between two vectors:</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">n2</span><span class="p">))</span>
+<span class="gp">... </span>     <span class="k">for</span> <span class="n">n1</span> <span class="ow">in</span> <span class="n">all_vecs</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">n2</span> <span class="ow">in</span> <span class="n">all_vecs</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="n">keys</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">keys</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Mean cosine distance of best to other embeddings in the layer:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mean_pairwise_cosine</span> <span class="o">=</span> <span class="n">pairwise_cosines</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="using-an-embedding">
+<h2><a class="toc-backref" href="#id8">Using an embedding</a><a class="headerlink" href="#using-an-embedding" title="Permalink to this headline">¶</a></h2>
+<p>Finally, the embedding can be used to initialize a concept model
+(here fed to visualization):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models</span> <span class="kn">import</span> \
+<span class="gp">... </span>    <span class="n">ConceptDetectionModel2D</span><span class="p">,</span> <span class="n">ConceptDetection2DTrainTestHandle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_concept_model</span> <span class="o">=</span> <span class="n">ConceptDetectionModel2D</span><span class="o">.</span><span class="n">from_embedding</span><span class="p">(</span><span class="n">best_emb</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hybrid_learning.concepts.visualization</span> <span class="k">as</span> <span class="nn">vis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vis</span><span class="o">.</span><span class="n">visualize_concept_model</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">(</span><span class="n">best_concept_model</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="o">**</span><span class="n">analyzer</span><span class="o">.</span><span class="n">train_val_args</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_concept_model</span> <span class="o">=</span> <span class="n">ConceptDetectionModel2D</span><span class="o">.</span><span class="n">from_embedding</span><span class="p">(</span><span class="n">best_emb</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hybrid_learning.concepts.visualization</span> <span class="k">as</span> <span class="nn">vis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vis</span><span class="o">.</span><span class="n">visualize_concept_model</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">(</span><span class="n">best_concept_model</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="o">**</span><span class="n">analyzer</span><span class="o">.</span><span class="n">train_val_args</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_concept_model</span> <span class="o">=</span> <span class="n">ConceptDetectionModel2D</span><span class="o">.</span><span class="n">from_embedding</span><span class="p">(</span><span class="n">best_emb</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hybrid_learning.concepts.visualization</span> <span class="k">as</span> <span class="nn">vis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">vis</span><span class="o">.</span><span class="n">visualize_concept_model</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">(</span><span class="n">best_concept_model</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="o">**</span><span class="n">analyzer</span><span class="o">.</span><span class="n">train_val_args</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="model_extension.html" class="btn btn-neutral float-right" title="Extending DNN model outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="concept_model.html" class="btn btn-neutral float-left" title="Using a concept model to find an embedding" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

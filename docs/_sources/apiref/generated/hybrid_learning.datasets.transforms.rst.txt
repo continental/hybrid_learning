@@ -1,0 +1,50 @@
+transforms
+==========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.transforms
+
+    .. currentmodule:: hybrid_learning.datasets.transforms
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.datasets.transforms.dict_transforms
+        
+        ~hybrid_learning.datasets.transforms.encoder
+        
+        ~hybrid_learning.datasets.transforms.image_transforms
+        
+        ~hybrid_learning.datasets.transforms.tuple_transforms
+        
+        ~hybrid_learning.datasets.transforms.utils
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

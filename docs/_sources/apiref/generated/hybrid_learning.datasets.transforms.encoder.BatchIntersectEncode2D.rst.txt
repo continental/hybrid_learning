@@ -1,0 +1,9 @@
+BatchIntersectEncode2D
+======================
+
+.. currentmodule:: hybrid_learning.datasets.transforms.encoder
+
+.. autoclass:: BatchIntersectEncode2D
+    :members:
+
+    .. autoclasstoc::

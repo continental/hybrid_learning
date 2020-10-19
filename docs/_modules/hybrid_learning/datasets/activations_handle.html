@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.datasets.activations_handle &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.datasets.activations_handle</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.datasets.activations_handle</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Wrapper dealing with generating / saving activation maps from a dataset.&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Subset</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
+
+
+<div class="viewcode-block" id="ActivationDatasetWrapper"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper">[docs]</a><span class="k">class</span> <span class="nc">ActivationDatasetWrapper</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+    <span class="c1"># noinspection PyUnresolvedReferences</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper for image datasets that will generate and yield activation maps.</span>
+<span class="sd">    Behaves like a sequence of tuples of:</span>
+
+<span class="sd">    :Activation map:</span>
+<span class="sd">        Activation map tensor of the given model and the given layer for</span>
+<span class="sd">        image at the corresponding index in the wrapped dataset</span>
+
+<span class="sd">    :Ground Truth:</span>
+<span class="sd">        Ground truth at the corresponding index in the wrapped dataset</span>
+
+<span class="sd">    If the activation map generator is given during init with</span>
+<span class="sd">    ``lazy_generation`` set to ``True``, the data is lazily generated,</span>
+<span class="sd">    i.e. any call to</span>
+<span class="sd">    :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`</span>
+<span class="sd">    (resp. :py:meth:`getitem`) will generate the corresponding activation</span>
+<span class="sd">    map if it does not yet exist.</span>
+<span class="sd">    To generate all activation maps, call :py:meth:`generate_act_maps`,</span>
+<span class="sd">    but be aware that this can be very time consuming depending on</span>
+<span class="sd">    the generator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+
+    <span class="n">_HASH_LEN</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="sd">&quot;&quot;&quot;Length of hash for comparing model :py:meth:`torch.nn.Module.state_dict`</span>
+<span class="sd">    (includes leading ``0x``)&quot;&quot;&quot;</span>
+
+    <span class="n">_ACT_MAPS_ROOT_ROOT</span> <span class="o">=</span> <span class="s2">&quot;activations&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Usual parent directory of all activation folders;</span>
+<span class="sd">    by default assumed to be sibling to ``images`` and ``masks`` folder,</span>
+<span class="sd">    see :py:attr:`_default_activations_root`.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_default_activations_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Default root folder for storing activation map files.</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">acts_basename</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{img_base}</span><span class="s2">_</span><span class="si">{model_hash}</span><span class="s2">-</span><span class="si">{module_id}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">img_base</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">),</span>
+            <span class="n">model_hash</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_description</span><span class="p">,</span>
+            <span class="n">module_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_key</span>
+        <span class="p">)</span>
+        <span class="n">acts_dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ACT_MAPS_ROOT_ROOT</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">acts_dirname</span><span class="p">,</span> <span class="n">acts_basename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">dataset</span><span class="p">:</span> <span class="n">BaseDataset</span><span class="p">,</span>
+                 <span class="n">layer_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">model_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">act_map_gen</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">act_map_filepath_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">force_rebuild</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">activations_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">lazy_generation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">data_args</span>
+                 <span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param dataset: Dataset to wrap; must be a sequence of tuples of</span>
+
+<span class="sd">            ``(image as :py:class:`torch.Tensor`,</span>
+<span class="sd">            ground truth as :py:class:`torch.Tensor`)``</span>
+
+<span class="sd">            the default transformation assumes that the ground truth are masks</span>
+<span class="sd">            (same sized images)</span>
+<span class="sd">        :param layer_key: optional description of the layer to obtain</span>
+<span class="sd">            activation maps from;</span>
+<span class="sd">        :param act_map_gen: function yielding from an image the activation</span>
+<span class="sd">            map to save; intended to be a</span>
+<span class="sd">            :py:class:`~hybrid_learning.concepts.models.model_extension.ModelStump`</span>
+<span class="sd">        :param model_description: description of the model parameters from which</span>
+<span class="sd">            activation maps are generated;</span>
+<span class="sd">            used to provide default for :py:attr:`act_maps_root`;</span>
+<span class="sd">            defaults to class name of ``act_map_gen``</span>
+<span class="sd">        :param activations_root: root directory under which to store and find</span>
+<span class="sd">            the activation maps;</span>
+<span class="sd">            defaults: :py:attr:`_default_activations_root`</span>
+<span class="sd">        :param transforms: see ``__init__()`` of</span>
+<span class="sd">            :py:class:`~hybrid_learning.datasets.base.BaseDataset`</span>
+<span class="sd">        :param lazy_generation: if the ``act_map_gen`` is given, whether to</span>
+<span class="sd">            lazily generate missing activation or to initialize them all</span>
+<span class="sd">            during init</span>
+<span class="sd">        :param dataset_root: dataset root directory;</span>
+<span class="sd">            defaults to ``dataset.dataset_root``</span>
+<span class="sd">        :param split: dataset split identifier; defaults to</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.base.BaseDataset.split` of</span>
+<span class="sd">            ``dataset``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="c1"># Default values</span>
+        <span class="n">data_args</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">data_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;split&#39;</span><span class="p">,</span>
+                          <span class="c1"># dataset.split</span>
+                          <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;split&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                          <span class="c1"># dataset.dataset.split</span>
+                          <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                  <span class="s2">&quot;split&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">data_args</span><span class="p">[</span><span class="s1">&#39;dataset_root&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">data_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dataset_root&#39;</span><span class="p">,</span>
+                          <span class="c1"># dataset.dataset_root</span>
+                          <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;dataset_root&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span>
+                          <span class="c1"># dataset.dataset.dataset_root</span>
+                          <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                                  <span class="s2">&quot;dataset_root&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="c1"># Value checks</span>
+        <span class="k">if</span> <span class="n">data_args</span><span class="p">[</span><span class="s1">&#39;dataset_root&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dataset_root is None: &quot;</span>
+                             <span class="s2">&quot;not given and dataset specifies none&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ActivationDatasetWrapper</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data_args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">:</span> <span class="n">BaseDataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="sd">&quot;&quot;&quot;The dataset to wrap; activation maps are created from input;</span>
+<span class="sd">        the ground truth is equal to the original one.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">layer_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">act_map_gen</span><span class="p">,</span> <span class="s1">&#39;stump_head&#39;</span><span class="p">):</span>
+            <span class="n">layer_key</span> <span class="o">=</span> <span class="n">act_map_gen</span><span class="o">.</span><span class="n">stump_head</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_key</span> <span class="ow">or</span> <span class="s1">&#39;unknown_layer&#39;</span>
+        <span class="sd">&quot;&quot;&quot;Optional description of the layer from which the activation maps</span>
+<span class="sd">        were retrieved.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Determine the model description</span>
+        <span class="k">if</span> <span class="n">act_map_gen</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">model_description</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either model or model_description must be given.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">model_description</span> \
+            <span class="k">if</span> <span class="n">model_description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">act_map_gen</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="sd">&quot;&quot;&quot;Description of the model with which activation maps were generated.</span>
+<span class="sd">        Used to create default activation map root name</span>
+<span class="sd">        (by creating form of hash).&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">act_maps_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> \
+            <span class="n">activations_root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_activations_root</span>
+        <span class="sd">&quot;&quot;&quot;Root directory under which to store and locate activation maps.&quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">act_maps_root</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">act_map_filepath_fn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span>
+                                                       <span class="s2">&quot;image_filepath&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;dataset&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;Either act_map_filepath_fn must be given or dataset &quot;</span>
+                     <span class="s2">&quot;(type </span><span class="si">{}</span><span class="s2">) must provide function image_filepath &quot;</span>
+                     <span class="s2">&quot;or have a member dataset.dataset that does so&quot;</span>
+                     <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;dataset&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
+                                                           <span class="s2">&quot;image_filepath&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;Either act_map_filepath_fn must be given or dataset &quot;</span>
+                     <span class="s2">&quot;(type </span><span class="si">{}</span><span class="s2">) or its member dataset.dataset (type </span><span class="si">{}</span><span class="s2">) must &quot;</span>
+                     <span class="s2">&quot;provide a function image_filepath&quot;</span>
+                     <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">act_map_filepath_fn</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_act_map_filepath_fn</span>
+        <span class="sd">&quot;&quot;&quot;The function to determine the activation map filepath relative to</span>
+<span class="sd">        the given activations root at index ``i``.</span>
+<span class="sd">        The activations root :py:attr:`act_maps_root` is used.</span>
+<span class="sd">        It must accept the index and the original dataset.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            It should be stable against reindexing of the original dataset</span>
+<span class="sd">            like shuffling or subsetting!</span>
+
+<span class="sd">        The default requires an ``image_filepath`` function in ``dataset`` or</span>
+<span class="sd">        ``dataset.dataset`` that yields unique image file names. See</span>
+<span class="sd">        :py:meth:`_default_act_map_filepath_fn`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Now ensure existence of all activation maps if not lazy_generation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">act_map_gen</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">act_map_gen</span>
+        <span class="sd">&quot;&quot;&quot;Callable that yields an activation map given a valid input datum.</span>
+<span class="sd">        Input data is assumed to origin from the original :py:attr:`dataset`.</span>
+<span class="sd">        Used to generate missing activation maps in :py:meth:`getitem`.</span>
+<span class="sd">        If ``lazy_generation=False``, all missing activation maps are</span>
+<span class="sd">        generated on ``__init__`` call. If additionally</span>
+<span class="sd">        ``force_rebuild=True``, also existing ones are replaced.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_gen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lazy_generation</span><span class="p">:</span>
+            <span class="c1"># Generate the activation maps for the specified model and layer:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_act_maps</span><span class="p">(</span><span class="n">force_rebuild</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_gen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Sanity check: Do all activation maps exist?</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+                      <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_exists</span><span class="p">(</span><span class="n">i</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="s2">&quot;Act map at index </span><span class="si">{}</span><span class="s2"> missing from root directory </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;(assumed path </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_maps_root</span><span class="p">,</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.getitem"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem">[docs]</a>    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get activation map and original ground truth for item at index ``i``.</span>
+
+<span class="sd">        Used for</span>
+<span class="sd">        :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`.</span>
+<span class="sd">        If the activation map does not exist and a generator is given in</span>
+<span class="sd">        :py:attr:`act_map_gen`, generate and save the activation map.</span>
+
+<span class="sd">        :return: tuple of the loaded or generated activation map and the</span>
+<span class="sd">            target of the original dataset for that act map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get activation map (generate and save lazily if possible)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_gen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_exists</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_act_map</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">act_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_act_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">act_map_gen</span><span class="p">,</span>
+                                                               <span class="n">img_t</span><span class="p">))</span>
+        <span class="n">act_map</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_act_map</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="c1"># Get mask</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">act_map</span><span class="p">,</span> <span class="n">mask</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.__len__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Length determined by the length of the wrapped dataset.</span>
+<span class="sd">        See :py:attr:`dataset`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_resize_to_fit</span><span class="p">(</span><span class="n">fit_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resize image to the size of ``fit_t``.</span>
+<span class="sd">        ``fit_t`` must be :py:class:`torch.Tensor` with</span>
+<span class="sd">        ``len(fit_t.size())&gt;=2``.</span>
+<span class="sd">        This method can be used e.g. for definition of</span>
+<span class="sd">        :py:attr:`transformations`.</span>
+
+<span class="sd">        :param fit_t: :py:class:`torch.Tensor` to extract target size from</span>
+<span class="sd">            (last two dimensions)</span>
+<span class="sd">        :param img_t: :py:class:`torch.Tensor` representation of the image to</span>
+<span class="sd">            resize</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Resize to activation map size</span>
+        <span class="n">act_map_img_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">fit_t</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">fit_t</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">resizer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToPILImage</span><span class="p">(),</span>
+                <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">act_map_img_size</span><span class="p">),</span>
+                <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
+            <span class="p">])</span>
+        <span class="k">return</span> <span class="n">resizer</span><span class="p">(</span><span class="n">img_t</span><span class="p">)</span>
+
+    <span class="c1"># def _default_transforms(self, inp: torch.Tensor,</span>
+    <span class="c1">#                         ground_truth: torch.Tensor</span>
+    <span class="c1">#                         ) -&gt; Tuple[torch.Tensor, torch.Tensor]:</span>
+    <span class="c1">#     &quot;&quot;&quot;Default transformation resizing activation maps to input.&quot;&quot;&quot;</span>
+    <span class="c1">#     return inp, self._resize_to_fit(fit_t=inp, img_t=ground_truth)</span>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.act_map_filepath"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">act_map_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the path to the activation map file.</span>
+<span class="sd">        The base directory is :py:attr:`act_maps_root`.</span>
+<span class="sd">        The basename is:</span>
+
+<span class="sd">        - *If :py:attr:`dataset` or its member ``dataset`` features a</span>
+<span class="sd">          ``image_filepath()`` method:*</span>
+<span class="sd">          the same basename as the original input image, with .png resp. .jpg</span>
+<span class="sd">          replaced by .pkl</span>
+<span class="sd">        - *Else:*</span>
+<span class="sd">          the zero-padded decimal index number ending with .pkl</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Make sure the used :py:attr:`act_map_filepath_fn` yields unique IDs</span>
+<span class="sd">            for all elements of the :py:attr:`dataset`. Otherwise, the wrong</span>
+<span class="sd">            activation maps may be loaded and duplicates overwritten.</span>
+
+<span class="sd">        :param i: index of the image to get activation map for.</span>
+<span class="sd">        :return: (relative or absolute) path to the activation map for datum</span>
+<span class="sd">            at index ``i``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath_fn</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">act_maps_root</span><span class="p">,</span> <span class="n">act_fname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper._default_act_map_filepath_fn"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_act_map_filepath_fn">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_default_act_map_filepath_fn</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">BaseDataset</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Obtain the act map filepath relative to the</span>
+<span class="sd">        activations root.</span>
+<span class="sd">        As activations root, :py:attr:`act_maps_root` is used.</span>
+<span class="sd">        It is assumed that</span>
+
+<span class="sd">        - the images are saved as ``unique_id.{png,jpg}``, that</span>
+<span class="sd">        - either ``dataset`` or ``dataset.dataset`` (e.g. in case of a</span>
+<span class="sd">          :py:class:`torch.utils.data.Subset` instance) provide a function</span>
+<span class="sd">          ``image_filepath(i: int)``, and that</span>
+<span class="sd">        - this ``image_filepath`` function yields</span>
+<span class="sd">          ``some/path/to/img/unique_id.{png,jpg}`` for the image at position</span>
+<span class="sd">          ``i``, with ``unique_id`` being stable against shuffling of the</span>
+<span class="sd">          indices ``i``.</span>
+
+<span class="sd">        Then the activation map filepath is given as ``unique_id.pkl``</span>
+<span class="sd">        (path relative to an activation map root).</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Determine the correct image filepath</span>
+        <span class="c1"># Normal case</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;image_filepath&quot;</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">):</span>
+            <span class="n">img_fp</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="c1"># Dataset wrapped in Subset -&gt; take care of index permutation</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">Subset</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;image_filepath&quot;</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">):</span>
+            <span class="n">img_fp</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Could not determine image_filepath function within dataset &quot;</span>
+                 <span class="s2">&quot;or its dataset member; dataset type: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                 <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">)))</span>
+        <span class="n">img_fname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">img_fp</span><span class="p">)</span>
+        <span class="n">act_fname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span><span class="n">img_fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">))</span>
+
+        <span class="c1"># # The following is not stable against shuffled or subsetted datasets!</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     # Length of the maximum index</span>
+        <span class="c1">#     num_letters = len(str(len(dataset)))</span>
+        <span class="c1">#     act_fname: str = (&quot;{!s:0&gt;&quot; + str(num_letters) + &quot;}.pkl&quot;).format(i)</span>
+        <span class="k">return</span> <span class="n">act_fname</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.act_map_exists"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists">[docs]</a>    <span class="k">def</span> <span class="nf">act_map_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check whether the activation map at index ``i`` was already created.</span>
+
+<span class="sd">        :param i: index in :py:attr:`dataset` for which to check</span>
+<span class="sd">            whether an activation map was created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act_fp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">act_fp</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">act_fp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.load_act_map"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_act_map">[docs]</a>    <span class="k">def</span> <span class="nf">load_act_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load act map as :py:class:`torch.Tensor` for given index ``i``.</span>
+
+<span class="sd">        :param i: index to load activation map for</span>
+<span class="sd">        :return: :py:class:`torch.Tensor` representation of activation map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">map_location</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.load_image"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image">[docs]</a>    <span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load the image/original input for index ``i``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.save_act_map"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.save_act_map">[docs]</a>    <span class="k">def</span> <span class="nf">save_act_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">act_map</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Save an activation map at index ``i`` via pytorch pickling.</span>
+
+<span class="sd">        :param i: index of the image to which the activation map corresponds</span>
+<span class="sd">        :param act_map: activation map to save (:py:class:`torch.Tensor`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act_fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">act_fp</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Tried saving activation map for index </span><span class="si">{}</span><span class="s2"> to file </span><span class="si">{}</span><span class="s2">,&quot;</span>
+                 <span class="s2">&quot; but file already exists&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">act_fp</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">act_fp</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">act_map</span><span class="p">,</span> <span class="n">act_fp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.generate_act_map"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">generate_act_map</span><span class="p">(</span><span class="n">act_map_gen</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                         <span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate activation map :py:class:`torch.Tensor` of image.</span>
+<span class="sd">        To generate it, use ``act_map_gen`` callable.</span>
+
+<span class="sd">        :param img_t: image for which to obtain activation map;</span>
+<span class="sd">            make sure all necessary transformations are applied</span>
+<span class="sd">        :param act_map_gen: model generating the activation map from the image</span>
+<span class="sd">        :return: activation map of layer as :py:class:`torch.Tensor`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Run wrapper to obtain intermediate outputs</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="c1"># move input to correct device</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">act_map_gen</span><span class="o">.</span><span class="n">parameters</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">act_map_gen</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
+                <span class="n">img_t</span> <span class="o">=</span> <span class="n">img_t</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="n">act_map</span> <span class="o">=</span> <span class="n">act_map_gen</span><span class="o">.</span><span class="n">eval</span><span class="p">()(</span><span class="n">img_t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="c1"># Squeeze batch dimension</span>
+            <span class="n">act_map</span> <span class="o">=</span> <span class="n">act_map</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">act_map</span></div>
+
+<div class="viewcode-block" id="ActivationDatasetWrapper.generate_act_maps"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps">[docs]</a>    <span class="k">def</span> <span class="nf">generate_act_maps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_rebuild</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate activation maps for all images.</span>
+
+<span class="sd">        :param force_rebuild: whether to overwrite existing images or not</span>
+<span class="sd">        :param show_progress_bar: whether to show the progress using</span>
+<span class="sd">            :py:class:`tqdm.tqdm`</span>
+<span class="sd">        :param kwargs: further arguments to the progress bar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act_maps_to_process</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+                               <span class="k">if</span> <span class="n">force_rebuild</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_exists</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">act_maps_to_process</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+            <span class="n">act_maps_to_process</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">act_maps_to_process</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;act_map&quot;</span><span class="p">,</span>
+                          <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Activation maps newly generated: &quot;</span><span class="p">),</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">act_maps_to_process</span><span class="p">:</span>
+            <span class="c1"># Get activation map</span>
+            <span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">act_map</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_act_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">act_map_gen</span><span class="p">,</span>
+                                                          <span class="n">img_t</span><span class="p">)</span>
+
+            <span class="c1"># Save</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_map_exists</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">act_map_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_act_map</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">act_map</span><span class="o">=</span><span class="n">act_map</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+encoder
+=======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.transforms.encoder
+
+    .. currentmodule:: hybrid_learning.datasets.transforms.encoder
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~BatchConvOp
+        
+        ~BatchIntersectDecode2D
+        
+        ~BatchIntersectEncode2D
+        
+        ~BatchIoUEncode2D
+        
+        ~ConvOpWrapper
+        
+        ~IntersectDecode
+        
+        ~IntersectEncode
+        
+        ~IoUEncode
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~same_padding
+        
+
+    
+    

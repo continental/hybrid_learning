@@ -1,0 +1,44 @@
+fasseg
+======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.custom.fasseg
+
+    .. currentmodule:: hybrid_learning.datasets.custom.fasseg
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~FASSEGHandle
+        
+        ~FASSEGParts
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quickstart Guide &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="User Guide" href="../userguide/index.html" />
+    <link rel="prev" title="Welcome to hybrid_learning’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-the-source-code">Getting the Source Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preliminaries">Preliminaries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pytorch-for-your-machine">Pytorch for your Machine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#windows-pycocotools-for-coco-datasets">Windows: pycocotools for COCO datasets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installation-of-other-packages">Installation of other packages</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#create-and-install-as-package">Create and Install as Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#for-developers">For Developers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#documentation-generation">Documentation Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-checks">Code checks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Quickstart Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/quickstart/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="quickstart-guide">
+<h1>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#installation" id="id1">Installation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#getting-the-source-code" id="id2">Getting the Source Code</a></p></li>
+<li><p><a class="reference internal" href="#preliminaries" id="id3">Preliminaries</a></p>
+<ul>
+<li><p><a class="reference internal" href="#pytorch-for-your-machine" id="id4">Pytorch for your Machine</a></p></li>
+<li><p><a class="reference internal" href="#windows-pycocotools-for-coco-datasets" id="id5">Windows: pycocotools for COCO datasets</a></p></li>
+<li><p><a class="reference internal" href="#installation-of-other-packages" id="id6">Installation of other packages</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#create-and-install-as-package" id="id7">Create and Install as Package</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#for-developers" id="id8">For Developers</a></p>
+<ul>
+<li><p><a class="reference internal" href="#documentation-generation" id="id9">Documentation Generation</a></p></li>
+<li><p><a class="reference internal" href="#code-checks" id="id10">Code checks</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2><a class="toc-backref" href="#id1">Installation</a><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="getting-the-source-code">
+<h3><a class="toc-backref" href="#id2">Getting the Source Code</a><a class="headerlink" href="#getting-the-source-code" title="Permalink to this headline">¶</a></h3>
+<p>For now just use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code>.</p>
+</div>
+<div class="section" id="preliminaries">
+<h3><a class="toc-backref" href="#id3">Preliminaries</a><a class="headerlink" href="#preliminaries" title="Permalink to this headline">¶</a></h3>
+<p>The project is built against <code class="docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.6.10</span></code>.
+Find</p>
+<ul class="simple">
+<li><p>requirements for deployment in the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file,</p></li>
+<li><p>additional requirements for development in the <code class="docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code> file, and</p></li>
+<li><p>the direct dependencies in the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file.</p></li>
+</ul>
+<p>Follow the instructions below for (machine specific) installation.</p>
+<div class="section" id="pytorch-for-your-machine">
+<h4><a class="toc-backref" href="#id4">Pytorch for your Machine</a><a class="headerlink" href="#pytorch-for-your-machine" title="Permalink to this headline">¶</a></h4>
+<p>If no build tools are available on your machine, installation of <code class="docutils literal notranslate"><span class="pre">torch</span></code>
+and <code class="docutils literal notranslate"><span class="pre">torchvision</span></code> (<code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">torchvision</span> <span class="pre">torch</span></code>) may fail
+with build error.
+The latest stable version of <code class="docutils literal notranslate"><span class="pre">torch</span></code> and <code class="docutils literal notranslate"><span class="pre">torchvision</span></code> can be manually
+installed by selecting the corresponding <code class="docutils literal notranslate"><span class="pre">pip</span></code> install command in the
+Quick start section of the <a class="reference external" href="https://pytorch.org/">pytorch homepage</a>.</p>
+</div>
+<div class="section" id="windows-pycocotools-for-coco-datasets">
+<h4><a class="toc-backref" href="#id5">Windows: pycocotools for COCO datasets</a><a class="headerlink" href="#windows-pycocotools-for-coco-datasets" title="Permalink to this headline">¶</a></h4>
+<p>The COCO dataset handles use the package <code class="docutils literal notranslate"><span class="pre">pycocotools&gt;=2.0</span></code>.
+For Linux, simply proceed with the next section, as <code class="docutils literal notranslate"><span class="pre">pycocotools</span></code> can
+be installed from the repositories via</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install pycocotools
+</pre></div>
+</div>
+<p>For Windows, make sure to have installed</p>
+<ul class="simple">
+<li><p>the <code class="docutils literal notranslate"><span class="pre">C++</span></code> <em>Build Tools for Visual Studio Code</em> from
+<a class="reference external" href="https://visualstudio.microsoft.com/downloads/">here</a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy&gt;=1.18.2</span></code> (<code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">numpy</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Cython&gt;=0.29.16</span></code> (<code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">Cython</span></code>)</p></li>
+</ul>
+<p>Then one can build the python3 pycocotools for Windows e.g. using the
+following port:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install <span class="s2">&quot;git+https://github.com/philferriere/cocoapi.git#egg=pycocotools&amp;subdirectory=PythonAPI&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installation-of-other-packages">
+<h4><a class="toc-backref" href="#id6">Installation of other packages</a><a class="headerlink" href="#installation-of-other-packages" title="Permalink to this headline">¶</a></h4>
+<p>To install the requirements for deployment simply install them via the
+provided <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install -r requirements.txt
+</pre></div>
+</div>
+<p>For development (test execution, linting, documentation generation),
+install from <code class="docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install -r requirements-dev.txt
+</pre></div>
+</div>
+<p>If you encounter an memory error you could also disable pip caching by</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip --no-cache-dir install -r requirements.txt
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="create-and-install-as-package">
+<h3><a class="toc-backref" href="#id7">Create and Install as Package</a><a class="headerlink" href="#create-and-install-as-package" title="Permalink to this headline">¶</a></h3>
+<p>To create an installable wheel, make sure <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> and <code class="docutils literal notranslate"><span class="pre">wheel</span></code> are installed
+and up-to-date (usually pre-installed in virtual environments):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install --upgrade setuptools wheel
+</pre></div>
+</div>
+<p>Build the wheel into the directory <code class="docutils literal notranslate"><span class="pre">dist</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py bdist_wheel -d dist
+</pre></div>
+</div>
+<p>Now the built wheel package can be installed into any environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install /path/to/dist/hybrid_learning-VERSION.whl
+</pre></div>
+</div>
+<p>If any installation issues occur due to missing torch or torchvision dependencies,
+manually ensure a current version of <code class="docutils literal notranslate"><span class="pre">torch</span></code> and <code class="docutils literal notranslate"><span class="pre">torchvision</span></code> is installed
+(see Preliminaries section).</p>
+</div>
+</div>
+<div class="section" id="for-developers">
+<h2><a class="toc-backref" href="#id8">For Developers</a><a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="documentation-generation">
+<h3><a class="toc-backref" href="#id9">Documentation Generation</a><a class="headerlink" href="#documentation-generation" title="Permalink to this headline">¶</a></h3>
+<p>To generate the <a class="reference external" href="https://www.sphinx-doc.org/">sphinx</a> documentation,
+make sure the following packages are installed (included in development requirements):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx_automodapi</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">autoclasstoc</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx_rtd_theme</span></code></p></li>
+</ul>
+<p>Then call:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m sphinx docs/source docs/build
+</pre></div>
+</div>
+<p>The entry point for the resulting documentation then is <code class="docutils literal notranslate"><span class="pre">docs/build/index.html</span></code>.
+Note that you will need an internet connection to successfully download the
+object inventories for cross-referencing external documentations.</p>
+<p>For a clean build remove the directories</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/build</span></code>: The built HTML documentation as well as build artifacts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/source/apiref/generated</span></code>: The auto-generated API documentation files</p></li>
+</ul>
+<p>One can also use the provided Makefile at <code class="docutils literal notranslate"><span class="pre">docs/Makefile</span></code>.
+For this, ensure the shell command <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">sphinx</span></code> can be executed in the
+command line. Then call one of</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make -f docs/Makefile clean                        <span class="c1"># clean artifacts from previous builds</span>
+make -f docs/Makefile build                        <span class="c1"># normal sphinx html build</span>
+make -f docs/Makefile build <span class="nv">SPHINXOPTS</span><span class="o">=</span><span class="s2">&quot;-b latex&quot;</span>  <span class="c1"># build with additional options for sphinx</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-checks">
+<h3><a class="toc-backref" href="#id10">Code checks</a><a class="headerlink" href="#code-checks" title="Permalink to this headline">¶</a></h3>
+<p><strong>Preliminaries</strong>: The train and test images and the <code class="docutils literal notranslate"><span class="pre">pytest</span></code> python package.</p>
+<p>For mini training and testing, example images need to be downloaded.
+The needed images are specified in the items of the <code class="docutils literal notranslate"><span class="pre">images</span></code> list in the JSON annotation files.
+The online sources of the images can be found in the <code class="docutils literal notranslate"><span class="pre">flickr_url</span></code> field of the items in the <code class="docutils literal notranslate"><span class="pre">images</span></code> list,
+the required filenames can be found in the <code class="docutils literal notranslate"><span class="pre">file_name</span></code> field.
+Find the annotation files in <code class="docutils literal notranslate"><span class="pre">dataset/coco_test/annotations</span></code> and put</p>
+<ul class="simple">
+<li><p>images listed in the training annotation file into <code class="docutils literal notranslate"><span class="pre">dataset/coco_test/images/train2017</span></code>,</p></li>
+<li><p>images listed in the validation annotation file into <code class="docutils literal notranslate"><span class="pre">dataset/coco_test/images/val2017</span></code>.</p></li>
+</ul>
+<p>For running the tests, ensure <code class="docutils literal notranslate"><span class="pre">pytest</span></code> is installed (included in development requirements),
+and call from within the project root directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -c pytest.ini test/
+</pre></div>
+</div>
+<p>For running <a class="reference external" href="https://docs.python.org/3/library/doctest.html">doctest</a> on the
+docstrings run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -c pytest.ini hybrid_learning/ docs/source/
+</pre></div>
+</div>
+<p>For all at once</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -c pytest.ini hybrid_learning/ docs/source/ test/
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../userguide/index.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to hybrid_learning’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

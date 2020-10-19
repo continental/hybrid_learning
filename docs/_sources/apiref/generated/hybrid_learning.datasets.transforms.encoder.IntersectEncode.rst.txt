@@ -1,0 +1,9 @@
+IntersectEncode
+===============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.encoder
+
+.. autoclass:: IntersectEncode
+    :members:
+
+    .. autoclasstoc::

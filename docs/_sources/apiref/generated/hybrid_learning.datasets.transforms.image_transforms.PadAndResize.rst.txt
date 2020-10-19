@@ -1,0 +1,9 @@
+PadAndResize
+============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autoclass:: PadAndResize
+    :members:
+
+    .. autoclasstoc::

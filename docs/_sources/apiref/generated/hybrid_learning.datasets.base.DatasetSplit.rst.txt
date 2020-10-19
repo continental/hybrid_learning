@@ -1,0 +1,9 @@
+DatasetSplit
+============
+
+.. currentmodule:: hybrid_learning.datasets.base
+
+.. autoclass:: DatasetSplit
+    :members:
+
+    .. autoclasstoc::

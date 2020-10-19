@@ -1,0 +1,9 @@
+WithThresh
+==========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autoclass:: WithThresh
+    :members:
+
+    .. autoclasstoc::

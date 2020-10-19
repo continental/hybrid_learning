@@ -1,0 +1,63 @@
+model\_extension
+================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.models.model_extension
+
+    .. currentmodule:: hybrid_learning.concepts.models.model_extension
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ActivationMapGrabber
+        
+        ~ExtendedModelStump
+        
+        ~HooksHandle
+        
+        ~ModelExtender
+        
+        ~ModelStump
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~dummy_output
+        
+        ~output_size
+        
+        ~output_sizes
+        
+
+    
+    

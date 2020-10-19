@@ -1,0 +1,733 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.concepts.models.model_extension &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.concepts.models.model_extension</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.concepts.models.model_extension</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Wrapper classes to slice torch.nn.modules.</span>
+<span class="sd">The main mechanism used are hooks to obtain layer intermediate output.</span>
+<span class="sd">The base class to use this mechanism is :py:class:`HooksHandle`.</span>
+
+<span class="sd">This is used to</span>
+
+<span class="sd">- *extend the model* output by the intermediate output(s)</span>
+<span class="sd">  (:py:class:`ActivationMapGrabber`),</span>
+<span class="sd">- use the intermediate output to *attach further modules* to a model</span>
+<span class="sd">  (:py:class:`ModelExtender`)</span>
+<span class="sd">- *cut (and extend) a model* at a layer</span>
+<span class="sd">  (:py:class:`ModelStump`, :py:class:`ExtendedModelStump`)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> \
+    <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span>
+<span class="kn">import</span> <span class="nn">torch.utils.hooks</span>
+
+
+<div class="viewcode-block" id="HooksHandle"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle">[docs]</a><span class="k">class</span> <span class="nc">HooksHandle</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper that registers and unregisters hooks from model that save</span>
+<span class="sd">    intermediate output. For this, the pytorch hook mechanism is used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HooksHandle.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                 <span class="n">module_ids</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param model: the model to wrap</span>
+<span class="sd">        :param module_ids: the IDs of sub-modules to obtain intermediate</span>
+<span class="sd">            output from;</span>
+
+<span class="sd">            .. note::</span>
+<span class="sd">                If a sub-module is used several times, its output can only</span>
+<span class="sd">                be captured after the first call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">module_ids</span> <span class="o">=</span> <span class="n">module_ids</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HooksHandle</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="sd">&quot;&quot;&quot;Original model from which intermediate and final output are</span>
+<span class="sd">        retrieved.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_intermediate_outs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> \
+            <span class="p">{</span><span class="n">m_id</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">m_id</span> <span class="ow">in</span> <span class="n">module_ids</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;Intermediate storage for outputs of hooked sub-modules.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hook_handles</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">RemovableHandle</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;Dictionary of hooks; for each sub-module to grab output from,</span>
+<span class="sd">        a hook is registered.</span>
+<span class="sd">        On each forward, the hook for a sub-module of ID ``m`` writes the</span>
+<span class="sd">        intermediate output of the sub-module into ``_intermediate_outs[m]``.</span>
+<span class="sd">        The dictionary saves for the sub-module ID the hook handle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">m_id</span> <span class="ow">in</span> <span class="n">module_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_submodule</span><span class="p">(</span><span class="n">m_id</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">registered_submodules</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;List of IDs of the registered sub-modules.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hook_handles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="HooksHandle.register_submodule"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle.register_submodule">[docs]</a>    <span class="k">def</span> <span class="nf">register_submodule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Register further submodule of to extract intermediate output from.</span>
+<span class="sd">        The ``module_id`` must be a valid name of a sub-module of</span>
+<span class="sd">        :py:attr:`wrapped_model`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">module_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hook_handles</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">module_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to register a module_id which was None&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">m_hook</span><span class="p">(</span><span class="n">_module</span><span class="p">,</span> <span class="n">_inp</span><span class="p">,</span> <span class="n">outp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=unused-argument</span>
+            <span class="sd">&quot;&quot;&quot;Hook that saves intermediate output of sub-module.&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_intermediate_outs</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">outp</span>
+
+        <span class="n">sub_module</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_module_by_id</span><span class="p">(</span><span class="n">module_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hook_handles</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_module</span><span class="o">.</span><span class="n">register_forward_hook</span><span class="p">(</span><span class="n">m_hook</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HooksHandle.unregister_submodule"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle.unregister_submodule">[docs]</a>    <span class="k">def</span> <span class="nf">unregister_submodule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Unregister a submodule for intermediate output retrieval.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">module_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hook_handles</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Tried to remove unknown submodule of ID </span><span class="si">{}</span><span class="s2">&quot;</span>
+                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_id</span><span class="p">))</span>
+        <span class="c1"># remove hook from self.hooks</span>
+        <span class="n">hook_handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hook_handles</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">module_id</span><span class="p">)</span>
+        <span class="c1"># unregister hook from self.model</span>
+        <span class="n">hook_handle</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="HooksHandle.get_module_by_id"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle.get_module_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_module_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get actual sub-module object within wrapped model by module ID.&quot;&quot;&quot;</span>
+        <span class="c1"># Sub-module select may be replaced by the generic technique in Net2Vec</span>
+        <span class="n">named_modules</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">m_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">named_modules</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">((</span><span class="s2">&quot;Tried to register a hook to non-existing &quot;</span>
+                            <span class="s2">&quot;sub-module </span><span class="si">{}</span><span class="s2">; available sub-modules: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m_id</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">named_modules</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="n">named_modules</span><span class="p">[</span><span class="n">m_id</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="HooksHandle.forward"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle.forward">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pytorch forward method.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="ActivationMapGrabber"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber">[docs]</a><span class="k">class</span> <span class="nc">ActivationMapGrabber</span><span class="p">(</span><span class="n">HooksHandle</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Wrapper class to obtain intermediate outputs from models.</span>
+<span class="sd">    This is done using the hooking mechanism of :py:class:`torch.nn.Module`.</span>
+
+<span class="sd">    The wrapper adds to the output of a model the intermediate output of</span>
+<span class="sd">    specified sub-modules of it. The output of a forward pass then then is as</span>
+<span class="sd">    tuple of the form</span>
+<span class="sd">    ``(output_of_wrapped_model, {module_id: intermediate_out_of_sub_module})``.</span>
+
+<span class="sd">    The module ID is the specifier with which the sub-module can be selected</span>
+<span class="sd">    from :py:meth:`torch.nn.Module.named_modules` of the wrapped ``model``.</span>
+
+<span class="sd">    The sub-modules can be registered and unregistered.</span>
+<span class="sd">    The currently registered sub-modules to obtain intermediate output from and</span>
+<span class="sd">    the corresponding hooks are stored in the dictionary</span>
+<span class="sd">    :py:attr:`~HooksHandle.hook_handles`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ActivationMapGrabber.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                 <span class="n">module_ids</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param model: the model to wrap</span>
+<span class="sd">        :param module_ids: the IDs of sub-modules to obtain intermediate output</span>
+<span class="sd">            from;</span>
+
+<span class="sd">            .. note:</span>
+<span class="sd">                Sub-modules used several times will only be evaluated the first</span>
+<span class="sd">                time called!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ActivationMapGrabber</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                                                   <span class="n">module_ids</span><span class="o">=</span><span class="n">module_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActivationMapGrabber.forward"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Return tuple of outputs of the wrapped model and of the sub-modules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">(</span><span class="o">*</span><span class="n">inps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intermediate_outs</span></div>
+
+<div class="viewcode-block" id="ActivationMapGrabber.stump"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.stump">[docs]</a>    <span class="k">def</span> <span class="nf">stump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide a :py:class:`ModelStump` (in eval mode) which yields act</span>
+<span class="sd">        maps of given sub-module.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">module_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_submodules</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Submodule </span><span class="si">{}</span><span class="s2"> is not registered&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ModelStump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">,</span> <span class="n">stump_head</span><span class="o">=</span><span class="n">module_id</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="ModelExtender"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender">[docs]</a><span class="k">class</span> <span class="nc">ModelExtender</span><span class="p">(</span><span class="n">ActivationMapGrabber</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class wraps a given model and extends its output.</span>
+<span class="sd">    The extension are models taking intermediate output of the original model</span>
+<span class="sd">    at given sub-modules.</span>
+<span class="sd">    An extension is specified by the information in a dictionary</span>
+<span class="sd">    ``{&lt;sub-module ID&gt; : {&lt;name&gt;: &lt;model&gt;}}``.</span>
+
+<span class="sd">    where the sub-module must be one of the wrapped model, and the ``&lt;model&gt;``</span>
+<span class="sd">    is the :py:class:`torch.nn.Module` to feed the sub-module output. The</span>
+<span class="sd">    name must be unique amongst all registered models:</span>
+<span class="sd">    It is checked when registering new extensions and used as key for the</span>
+<span class="sd">    extension model outputs.</span>
+
+<span class="sd">    Extensions can be registered and unregistered using the corresponding</span>
+<span class="sd">    methods :py:meth:`register_extension` and :py:meth:`unregister_extension`.</span>
+
+<span class="sd">    The information about registered extensions can be accessed via the</span>
+<span class="sd">    following properties:</span>
+
+<span class="sd">    - :py:attr:`extensions`:</span>
+<span class="sd">      extension models indexed by sub-module ID in the format described above</span>
+<span class="sd">    - :py:attr:`extension_models`:</span>
+<span class="sd">      Just a dict-like with registered models by name</span>
+<span class="sd">    - :py:attr:`name_registrations`:</span>
+<span class="sd">      Just a dict with registered extension names by sub-module</span>
+
+<span class="sd">    The output of a forward run then is a tuple of the main model output</span>
+<span class="sd">    and a dict ``{&lt;name&gt;: &lt;ext model output&gt;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ModelExtender.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                 <span class="n">extensions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param model: the model to extend</span>
+<span class="sd">        :param extensions: see :py:attr:`extension_models`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModelExtender</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                                            <span class="n">module_ids</span><span class="o">=</span><span class="n">extensions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">exts</span> <span class="ow">in</span> <span class="n">extensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">ext_name</span><span class="p">,</span> <span class="n">ext_mod</span> <span class="ow">in</span> <span class="n">exts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ext_mod</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="p">(</span><span class="s2">&quot;Extension item of name </span><span class="si">{}</span><span class="s2"> to be registered at &quot;</span>
+                         <span class="s2">&quot;sub-module </span><span class="si">{}</span><span class="s2"> not of type torch.nn.Module, but of &quot;</span>
+                         <span class="s2">&quot;type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext_name</span><span class="p">,</span> <span class="n">module_id</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">ext_mod</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension_models</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;Dictionary of ``extension_models`` modules indexed by the layer they</span>
+<span class="sd">        are applied to. Do only change via :py:meth:`register_extension` and</span>
+<span class="sd">        :py:meth:`unregister_extension`, as the indices must be in</span>
+<span class="sd">        synchronization with registered submodules.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;Dictionary mapping main model sub-modules to their registered</span>
+<span class="sd">        extension model names. The names of the extensions must match those</span>
+<span class="sd">        used as keys in :py:attr:`extension_models`:</span>
+<span class="sd">        ``{&lt;sub-module ID&gt;: [&lt;extension name&gt;, ...]}``</span>
+<span class="sd">        Do only change via :py:meth:`register_extension` and</span>
+<span class="sd">        :py:meth:`unregister_extension`, as the indices must be in</span>
+<span class="sd">        synchronization with registered submodules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_extensions</span><span class="p">(</span><span class="n">extensions</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name_registrations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Dict mapping main model sub-modules to their registered</span>
+<span class="sd">        extension model names.</span>
+<span class="sd">        The names of the extensions must match those used as keys in</span>
+<span class="sd">        :py:attr:`extension_models`:</span>
+<span class="sd">        ``{&lt;sub-module ID&gt;: [&lt;extension name&gt;, ...]}``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Nested dict holding all extension modules indexed by ID and layer.</span>
+<span class="sd">        Merged information in :py:attr:`name_registrations` and</span>
+<span class="sd">        :py:attr:`extension_models`.</span>
+
+<span class="sd">        :return: Dict of the form</span>
+<span class="sd">            ``{&lt;sub-module ID&gt;: {&lt;ext name&gt;: &lt;registered ext model&gt;}}``</span>
+<span class="sd">            The name is unique amongst all registered extension models over</span>
+<span class="sd">            all sub-modules</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">sub_mod</span><span class="p">:</span> <span class="p">{</span><span class="n">e_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension_models</span><span class="p">[</span><span class="n">e_name</span><span class="p">]</span>
+                          <span class="k">for</span> <span class="n">e_name</span> <span class="ow">in</span> <span class="n">e_names</span><span class="p">}</span>
+                <span class="k">for</span> <span class="n">sub_mod</span><span class="p">,</span> <span class="n">e_names</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_registrations</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">extension_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;List of the names of all registered extensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension_models</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+<div class="viewcode-block" id="ModelExtender.register_extension"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.register_extension">[docs]</a>    <span class="k">def</span> <span class="nf">register_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Register a new extension model as name.</span>
+<span class="sd">        Updates the hooks needed for acquiring extension output.</span>
+
+<span class="sd">        :raise: :py:exc:`ValueError` if there is a name for which already an</span>
+<span class="sd">            extension is registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Tried to overwrite module under existing name: &quot;</span>
+                              <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># update hooks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_submodule</span><span class="p">(</span><span class="n">module_id</span><span class="o">=</span><span class="n">module_id</span><span class="p">)</span>
+
+        <span class="c1"># update corresponding model registration list</span>
+        <span class="k">if</span> <span class="n">module_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_registrations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># update model list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension_models</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">model</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="ModelExtender.unregister_extension"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.unregister_extension">[docs]</a>    <span class="k">def</span> <span class="nf">unregister_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Unregister an existing extension by name.</span>
+<span class="sd">        Updates the hooks and the registration lists.&quot;&quot;&quot;</span>
+        <span class="c1"># Model not registered?</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Tried to unregister extension of unknown name </span><span class="si">{}</span><span class="s2">&quot;</span>
+                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># update corresponding model registration list</span>
+        <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_id</span> <span class="k">for</span> <span class="n">m_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_registrations</span>
+                          <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_registrations</span><span class="p">[</span><span class="n">m_id</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="p">[</span><span class="n">module_id</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># if now no extension is registered at a sub-module, remove its</span>
+        <span class="c1"># registration</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="p">[</span><span class="n">module_id</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name_registrations</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">module_id</span><span class="p">)</span>
+            <span class="c1"># clean up hooks</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unregister_submodule</span><span class="p">(</span><span class="n">module_id</span><span class="p">)</span>
+
+        <span class="c1"># update model list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension_models</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ModelExtender.register_extensions"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.register_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">register_extensions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">new_extensions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Register all specified new extensions.</span>
+
+<span class="sd">        :raise: :py:exc:`ValueError` if there is a name for which already an</span>
+<span class="sd">            extension is registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">exts</span> <span class="ow">in</span> <span class="n">new_extensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">exts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">module_id</span><span class="o">=</span><span class="n">module_id</span><span class="p">,</span>
+                                        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ModelExtender.forward"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Pytorch forward method.</span>
+
+<span class="sd">        :return: Tuple of the form</span>
+<span class="sd">            ``(&lt;main model out&gt;, {&lt;ext name&gt;: &lt;ext out&gt;})``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the sub-module intermediate outputs by sub-module ID:</span>
+        <span class="n">extended_out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ModelExtender</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">*</span><span class="n">inps</span><span class="p">)</span>
+        <span class="n">main_model_out</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">extended_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">intermediate_outs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Now feed the intermediate outputs to the correspondingly registered</span>
+        <span class="c1"># extension models:</span>
+        <span class="n">extension_outs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">intermediate_out</span> <span class="ow">in</span> <span class="n">intermediate_outs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_registrations</span><span class="p">[</span><span class="n">module_id</span><span class="p">]:</span>
+                <span class="n">extension_outs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension_models</span><span class="p">[</span><span class="n">name</span><span class="p">](</span>
+                    <span class="n">intermediate_out</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">main_model_out</span><span class="p">,</span> <span class="n">extension_outs</span></div></div>
+
+
+<div class="viewcode-block" id="ModelStump"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump">[docs]</a><span class="k">class</span> <span class="nc">ModelStump</span><span class="p">(</span><span class="n">HooksHandle</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Obtain the intermediate output of a sub-module of a complete NN.</span>
+<span class="sd">    This is a smaller version of the</span>
+<span class="sd">    :py:class:`~hybrid_learning.concepts.models.model_extension.ActivationMapGrabber`:</span>
+
+<span class="sd">    - It only handles the output of one sub-module, its stump head.</span>
+<span class="sd">    - It does not retrieve the output of the main model.</span>
+
+<span class="sd">    In the other points it is the same as</span>
+<span class="sd">    :py:class:`~hybrid_learning.concepts.models.model_extension.ActivationMapGrabber`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: enable=line-too-long</span>
+
+<div class="viewcode-block" id="ModelStump.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">stump_head</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param model: model to obtain intermediate output from.</span>
+<span class="sd">        :param stump_head: ID of the sub-module from which to obtain</span>
+<span class="sd">            intermediate output.</span>
+
+<span class="sd">            .. note::</span>
+<span class="sd">                If the sub-module occurs several times, only the first output</span>
+<span class="sd">                is collected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModelStump</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stump_head</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stump_head</span> <span class="o">=</span> <span class="n">stump_head</span>
+
+        <span class="c1"># Most current applications require eval mode, so make this the default:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stump_head</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ID of the sub-module from which the activation maps are retrieved.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stump_head</span>
+
+    <span class="nd">@stump_head</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">stump_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stump_head</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Before setting the stump_head, make sure it is registered</span>
+<span class="sd">        for act map retrieval.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">stump_head</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+                <span class="ow">and</span> <span class="n">stump_head</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">registered_submodules</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_submodule</span><span class="p">(</span><span class="n">module_id</span><span class="o">=</span><span class="n">stump_head</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stump_head</span> <span class="o">=</span> <span class="n">stump_head</span>
+
+<div class="viewcode-block" id="ModelStump.register_submodule"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump.register_submodule">[docs]</a>    <span class="k">def</span> <span class="nf">register_submodule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Register a sub-module hook.</span>
+<span class="sd">        If :py:attr:`stump_head` is unset, set it to this sub-module.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModelStump</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">register_submodule</span><span class="p">(</span><span class="n">module_id</span><span class="o">=</span><span class="n">module_id</span><span class="p">)</span>
+        <span class="c1"># Set stump to be the new and only registered sub-module if it is not</span>
+        <span class="c1"># set:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stump_head</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stump_head</span> <span class="o">=</span> <span class="n">module_id</span></div>
+
+<div class="viewcode-block" id="ModelStump.unregister_submodule"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump.unregister_submodule">[docs]</a>    <span class="k">def</span> <span class="nf">unregister_submodule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Unregister a submodule for intermediate output retrieval.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ModelStump</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">unregister_submodule</span><span class="p">(</span><span class="n">module_id</span><span class="o">=</span><span class="n">module_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stump_head</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stump_head</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ModelStump.forward"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pytorch forward method: Return intermediate output of stump head.</span>
+<span class="sd">        Provides __call__ functionality.&quot;&quot;&quot;</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_model</span><span class="p">(</span><span class="o">*</span><span class="n">inps</span><span class="p">)</span>
+        <span class="n">act_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intermediate_outs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stump_head</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">act_map</span></div></div>
+
+
+<div class="viewcode-block" id="ExtendedModelStump"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html#hybrid_learning.concepts.models.model_extension.ExtendedModelStump">[docs]</a><span class="k">class</span> <span class="nc">ExtendedModelStump</span><span class="p">(</span><span class="n">ModelStump</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Optionally apply a modification to the model stump output</span>
+<span class="sd">    in the forward method.</span>
+<span class="sd">    Use this e.g. to select one of multiple outputs of a module:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        ExtendedModelStump(model, stump_head, lambda x: x[&#39;out_of_interest&#39;])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ExtendedModelStump.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html#hybrid_learning.concepts.models.model_extension.ExtendedModelStump.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">stump_head</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">modification</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ExtendedModelStump</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">stump_head</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">modification</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;modification function for model intermediate &quot;</span>
+                             <span class="s2">&quot;out must be callable!&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modification</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">modification</span></div>
+
+<div class="viewcode-block" id="ExtendedModelStump.forward"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html#hybrid_learning.concepts.models.model_extension.ExtendedModelStump.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Collect output of stump head &amp; return ``modification(stump_head)``&quot;&quot;&quot;</span>
+        <span class="n">outp</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ExtendedModelStump</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">*</span><span class="n">inps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">modification</span><span class="p">(</span><span class="n">outp</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="dummy_output"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.dummy_output.html#hybrid_learning.concepts.models.model_extension.dummy_output">[docs]</a><span class="k">def</span> <span class="nf">dummy_output</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">layer_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Select dummy output of model&#39;s given or all layers for all-zero</span>
+<span class="sd">    tensor of input size.</span>
+
+<span class="sd">    :param input_size: input size of one sample to feed in</span>
+<span class="sd">        (make sure to include batch dimension!)</span>
+<span class="sd">    :param model: the model to investigate</span>
+<span class="sd">    :param layer_ids: the layers to investigate;</span>
+<span class="sd">        defaults to all listed in the model&#39;s</span>
+<span class="sd">        :py:attr:`~torch.nn.Module.named_modules`</span>
+<span class="sd">    :return: a dict of the outputs for each layer ID if they could be determined</span>
+<span class="sd">        (i.e. layer output is a tensor)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=no-member</span>
+    <span class="n">inp_tensor</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">input_size</span><span class="p">))</span>
+    <span class="c1"># pylint: enable=no-member</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">inp_tensor</span> <span class="o">=</span> <span class="n">inp_tensor</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">layer_ids</span> <span class="o">=</span> <span class="n">layer_ids</span> <span class="ow">or</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">()]</span>
+    <span class="n">grabber</span> <span class="o">=</span> <span class="n">ActivationMapGrabber</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_ids</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">outp</span> <span class="o">=</span> <span class="n">grabber</span><span class="o">.</span><span class="n">eval</span><span class="p">()(</span><span class="n">inp_tensor</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outp</span></div>
+
+
+<div class="viewcode-block" id="output_sizes"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.output_sizes.html#hybrid_learning.concepts.models.model_extension.output_sizes">[docs]</a><span class="k">def</span> <span class="nf">output_sizes</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">layer_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">has_batch_dim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">ignore_non_tensor_outs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Obtain the output sizes of the given or all layers for given input size.</span>
+<span class="sd">    The layer outputs are obtained by feeding the model an all zero Tensor of</span>
+<span class="sd">    given input size. The output size can only be determined, if the output</span>
+<span class="sd">    of the layer is a :py:class:`torch.Tensor`.</span>
+<span class="sd">    Other entries are skipped, if ``ignore_non_tensor_outs=True``, and</span>
+<span class="sd">    otherwise, an exception is raised. In such cases, consider using</span>
+<span class="sd">    :py:func:`~hybrid_learning.concepts.models.model_extension.dummy_output`</span>
+<span class="sd">    directly.</span>
+
+<span class="sd">    :param ignore_non_tensor_outs:</span>
+<span class="sd">    :param input_size: input size of one sample to feed in; it is assumed to</span>
+<span class="sd">        have no batch dimension, if ``has_batch_dim == False``</span>
+<span class="sd">    :param model: the model to investigate</span>
+<span class="sd">    :param layer_ids: the layers to investigate; defaults to all listed in the</span>
+<span class="sd">        model&#39;s :py:attr:`~torch.nn.Module.named_modules`</span>
+<span class="sd">    :param has_batch_dim: whether the given tensor has batch dimension;</span>
+<span class="sd">        if not, it is added</span>
+<span class="sd">    :return: a dict of the sizes for each layer output tensor</span>
+<span class="sd">        (batch dimension stripped)</span>
+<span class="sd">    :raises: :py:exc:`AttributeError`, if one of the considered layers does</span>
+<span class="sd">        not output a tensor (but e.g. a dict) and</span>
+<span class="sd">        ``ignore_non_tensor_outs == False``; use</span>
+<span class="sd">        :py:func:`~hybrid_learning.concepts.models.model_extension.dummy_output`</span>
+<span class="sd">        directly in this case</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_size</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty input_size not supported.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_batch_dim</span><span class="p">:</span>
+        <span class="n">input_size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">input_size</span><span class="p">]</span>
+    <span class="n">outps</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">dummy_output</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">layer_ids</span><span class="p">)</span>
+    <span class="n">outps_sizes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">outp</span> <span class="ow">in</span> <span class="n">outps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outp</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_non_tensor_outs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;Output of layer </span><span class="si">{}</span><span class="s2"> was not of type torch.Tensor but </span><span class="si">{}</span><span class="s2">;&quot;</span>
+                     <span class="s2">&quot;non-tensor types not supported for determining size.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                     <span class="s2">&quot;model: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">outp</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">model</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outp_size</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">outp</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outp_size</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;Output size of layer </span><span class="si">{}</span><span class="s2"> is 1D (</span><span class="si">{}</span><span class="s2">) and does not include &quot;</span>
+                     <span class="s2">&quot;batch dimension&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">outp_size</span><span class="p">))</span>
+            <span class="n">outps_sizes</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">outp</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># strip batch dimension</span>
+    <span class="k">return</span> <span class="n">outps_sizes</span></div>
+
+
+<div class="viewcode-block" id="output_size"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.model_extension.output_size.html#hybrid_learning.concepts.models.model_extension.output_size">[docs]</a><span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                <span class="n">has_batch_dim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Feed dummy input of input_size to model to determine the model output</span>
+<span class="sd">    size.</span>
+<span class="sd">    Will raise if the model output is not a single tensor.</span>
+<span class="sd">    This essentially is a wrapper around</span>
+<span class="sd">    :py:func:`~hybrid_learning.concepts.models.model_extension.output_sizes`</span>
+<span class="sd">    that uses the fact that the model also occurs in its</span>
+<span class="sd">    :py:meth:`torch.nn.Module.named_modules` listing, with ID ``&#39;&#39;``.</span>
+<span class="sd">    So, the model output can also be obtained by registering a hook to ``&#39;&#39;``.</span>
+
+<span class="sd">    :param model: the model the output of which is to be investigated</span>
+<span class="sd">    :param input_size: a single, all-zero tensor of that size is fed to</span>
+<span class="sd">        the model</span>
+<span class="sd">    :param has_batch_dim: whether the given ``input_size`` already features</span>
+<span class="sd">        a batch dimension; added if not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">main_model_out_id</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">output_sizes</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+                        <span class="n">layer_ids</span><span class="o">=</span><span class="p">[</span><span class="n">main_model_out_id</span><span class="p">],</span>
+                        <span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span>
+                        <span class="n">has_batch_dim</span><span class="o">=</span><span class="n">has_batch_dim</span><span class="p">,</span>
+                        <span class="n">ignore_non_tensor_outs</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">)[</span><span class="n">main_model_out_id</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

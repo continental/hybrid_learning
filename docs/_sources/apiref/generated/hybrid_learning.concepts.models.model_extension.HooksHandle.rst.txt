@@ -1,0 +1,9 @@
+HooksHandle
+===========
+
+.. currentmodule:: hybrid_learning.concepts.models.model_extension
+
+.. autoclass:: HooksHandle
+    :members:
+
+    .. autoclasstoc::

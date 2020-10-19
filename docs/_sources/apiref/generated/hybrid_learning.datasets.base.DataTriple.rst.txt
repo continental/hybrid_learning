@@ -1,0 +1,9 @@
+DataTriple
+==========
+
+.. currentmodule:: hybrid_learning.datasets.base
+
+.. autoclass:: DataTriple
+    :members:
+
+    .. autoclasstoc::

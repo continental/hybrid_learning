@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Custom dataset handles &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="MS COCO" href="coco.html" />
+    <link rel="prev" title="Extending DNN model outputs" href="../model_extension.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview/index.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a concept analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Custom dataset handles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="coco.html">MS COCO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broden.html">Broden</a></li>
+<li class="toctree-l3"><a class="reference internal" href="activation_map_handling.html">Activation Map Storage and Handling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+      <li>Custom dataset handles</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/userguide/custom_dataset_handles/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="custom-dataset-handles">
+<h1>Custom dataset handles<a class="headerlink" href="#custom-dataset-handles" title="Permalink to this headline">¶</a></h1>
+<p>The custom dataset handles are meant to handle file stored image datasets,
+and are all derived from <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a>.
+Available custom handles are:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.coco.KeypointsDataset.html#hybrid_learning.datasets.custom.coco.KeypointsDataset" title="hybrid_learning.datasets.custom.coco.KeypointsDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coco.KeypointsDataset</span></code></a></p></td>
+<td><p>Handler for (a subset of) a COCO keypoints dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.coco.ConceptDataset.html#hybrid_learning.datasets.custom.coco.ConceptDataset" title="hybrid_learning.datasets.custom.coco.ConceptDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coco.ConceptDataset</span></code></a></p></td>
+<td><p>Data handle for ground truth segmentations of visual concepts (body parts) generated from COCO keypoints.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle" title="hybrid_learning.datasets.custom.broden.BrodenHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broden.BrodenHandle</span></code></a></p></td>
+<td><p>Handle to collect a sub-dataset of a dataset following Broden format.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle" title="hybrid_learning.datasets.custom.fasseg.FASSEGHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fasseg.FASSEGHandle</span></code></a></p></td>
+<td><p>Handle for FASSEG-like datasets.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Useful wrappers are:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActivationDatasetWrapper</span></code></a></p></td>
+<td><p>Wrapper for image datasets that will generate and yield activation maps.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Also worth noting are the
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a>
+<code class="docutils literal notranslate"><span class="pre">dict</span></code> transformations that allow boolean combination of
+masks and (boolean) classification labels. For details see
+their class documentation and the example given in
+<a class="reference internal" href="broden.html#boolean-label-combinations"><span class="std std-ref">Boolean Label Combinations</span></a>.</p>
+<p>In the following, usage examples for some handles are shown.
+For details about the dataset formats have a look at the class documentations.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="coco.html">MS COCO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="broden.html">Broden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="activation_map_handling.html">Activation Map Storage and Handling</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="coco.html" class="btn btn-neutral float-right" title="MS COCO" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../model_extension.html" class="btn btn-neutral float-left" title="Extending DNN model outputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

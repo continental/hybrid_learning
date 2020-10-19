@@ -1,0 +1,9 @@
+OnBothSides
+===========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+.. autoclass:: OnBothSides
+    :members:
+
+    .. autoclasstoc::

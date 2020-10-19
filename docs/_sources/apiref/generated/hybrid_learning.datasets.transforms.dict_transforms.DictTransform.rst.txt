@@ -1,0 +1,9 @@
+DictTransform
+=============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: DictTransform
+    :members:
+
+    .. autoclasstoc::

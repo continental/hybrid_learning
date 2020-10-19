@@ -1,0 +1,858 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.datasets.transforms.encoder &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.datasets.transforms.encoder</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.datasets.transforms.encoder</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Intersection and IoU encoder and decoder for binary and non-binary masks.</span>
+
+<span class="sd">The basic operations are the batch encoder based on :py:class:`BatchConvOp`.</span>
+<span class="sd">These are wrapped by children of :py:class:`ConvOpWrapper`, which enable</span>
+<span class="sd">also non-batch-wise transformation and optional binarizing before and after</span>
+<span class="sd">the encoding.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="c1"># The pytorch forward method should be overridden with a more specific</span>
+<span class="c1"># signature, thus:</span>
+<span class="c1"># pylint: disable=arguments-differ</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">.image_transforms</span> <span class="kn">import</span> <span class="n">WithThresh</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">settings_to_repr</span>
+
+
+<div class="viewcode-block" id="BatchConvOp"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchConvOp.html#hybrid_learning.datasets.transforms.encoder.BatchConvOp">[docs]</a><span class="k">class</span> <span class="nc">BatchConvOp</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for encoder that use convolution operations.&quot;&quot;&quot;</span>
+
+    <span class="n">AREA_DIMS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Indices of axes in which the image area is defined.</span>
+<span class="sd">    The targets are expected to have size with the following dimensions:</span>
+
+<span class="sd">    - ``size()[0]``: batch_dim</span>
+<span class="sd">    - ``size()[1]``: channels</span>
+<span class="sd">    - ``size()[AREA_DIMS]``: size dimensions of one filter&#39;s activation map,</span>
+<span class="sd">      e.g. ``(2, 3)`` for 2D and ``(2, 3, 4)`` for 3D</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proto_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The kernel associated with the convolutional masking operation.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kernel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The kernel size of the proto-type shape.</span>
+<span class="sd">        (See :py:attr:`proto_shape`).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce the instance.&quot;&quot;&quot;</span>
+        <span class="c1"># If proto shape is default from kernel_size, only provide kernel_size</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">proto_shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+<div class="viewcode-block" id="BatchConvOp.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchConvOp.html#hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Representation based on this instances settings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">settings_to_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_to_valid_proto_shape</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate or create :py:attr`proto_shape`.</span>
+
+<span class="sd">        :raises: :py:exc:`ValueError` if both ``proto_shape`` and</span>
+<span class="sd">            ``kernel_size`` are ``None`` or the ``proto_shape`` is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kernel_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">proto_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either kernel_size or proto_shape must be given, &quot;</span>
+                             <span class="s2">&quot;but both None&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">proto_shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">proto_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">proto_shape</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;proto_shape must be </span><span class="si">{}</span><span class="s2">-dimensional, but &quot;</span>
+                                  <span class="s2">&quot;shape was </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">),</span>
+                                                         <span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">proto_shape</span>
+
+    <span class="k">def</span> <span class="nf">_validate_masks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Raise if ``masks`` are invalid with informative error message.</span>
+
+<span class="sd">        :raises: :py:exc:`ValueError`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># masks must be tensor</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;masks must be given as torch.Tensor, but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">masks</span><span class="p">)))</span>
+        <span class="c1"># masks size check</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">masks</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;masks must have a size of len </span><span class="si">{}</span><span class="s2"> of the form &quot;</span>
+                              <span class="s2">&quot;(batch_size, 1, &lt;img info, e.g. &quot;</span>
+                              <span class="s2">&quot;*(width, height)&gt;), but was of size </span><span class="si">{}</span><span class="s2">&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">masks</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">masks</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="ow">or</span> \
+                <span class="n">masks</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Input masks (size </span><span class="si">{}</span><span class="s2">) are smaller than proto &quot;</span>
+                              <span class="s2">&quot;shape (size </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">masks</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+<div class="viewcode-block" id="BatchConvOp.forward"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchConvOp.html#hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for the convolutional operation on batch of masks.</span>
+<span class="sd">        Validates the masks and ensures the encoder is on the correct device.</span>
+
+<span class="sd">        :param masks: :py:class:`torch.Tensor` of shape</span>
+<span class="sd">            ``(batch_size, 1, width, height)`` holding masks for one batch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_masks</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">masks</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">masks</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_op</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BatchConvOp.conv_op"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchConvOp.html#hybrid_learning.datasets.transforms.encoder.BatchConvOp.conv_op">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">conv_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The convolutional operation on the masks (without validation).</span>
+
+<span class="sd">        :param masks: :py:class:`torch.Tensor` of shape</span>
+<span class="sd">            ``(batch_size, 1, width, height)`` holding masks for one batch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="BatchIntersectEncode2D"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D">[docs]</a><span class="k">class</span> <span class="nc">BatchIntersectEncode2D</span><span class="p">(</span><span class="n">BatchConvOp</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply intersection encoding to batch of input masks of shape</span>
+<span class="sd">    ``(batch, 1, height, width)``.</span>
+
+<span class="sd">    The idea of intersection encoding is to have a generalized and continuous</span>
+<span class="sd">    bounding box score. The better a given proto-shape (e.g. a box)</span>
+<span class="sd">    intersects with the ground truth shape, the higher the value in ``[0,1]``.</span>
+<span class="sd">    More precisely, in an IoU encoding of a segmentation target, a pixel holds</span>
+<span class="sd">    the value how much of a pre-defined proto-shape centered at this pixel</span>
+<span class="sd">    intersects with the ground truth segmentation.</span>
+
+<span class="sd">    Such a proto shape is defined by a (not necessarily binary) mask,</span>
+<span class="sd">    which may be at most the size of the target mask.</span>
+
+
+<span class="sd">    **Theoretical notes**</span>
+
+<span class="sd">    The set intersection is implemented as fuzzy set intersection with</span>
+<span class="sd">    respect to the product t-norm. This means, the intersection is</span>
+<span class="sd">    ``element_wise_prod(A, B)``, and the value of a pixel in a mask is</span>
+<span class="sd">    treated similar to probability that the pixel belongs to the mask.</span>
+<span class="sd">    We use reduction by sum to calculate the area of a fuzzy mask.</span>
+
+<span class="sd">    Using sum reduction allows to use the intersection area value for union</span>
+<span class="sd">    calculation:</span>
+<span class="sd">    The product t-norm fuzzy union is defined as element-wise</span>
+<span class="sd">    :math:`A + B - A \cdot B` for sets :math:`A, B`.</span>
+<span class="sd">    Thus, the union area is:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        sum(A + B - A*B) = sum(A) + sum(B) - sum(A*B)</span>
+
+<span class="sd">    where ``sum`` is the reduction by sum and ``sum(A*B)``</span>
+<span class="sd">    is the intersection area.</span>
+
+<span class="sd">    The following holds for a factor ``c``:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        intersect(c*A, B) == c * intersect(A, B).</span>
+
+<span class="sd">    This is used to normalize the intersection value by the proto shape size</span>
+<span class="sd">    if requested, i.e. ``c=area(proto shape)``.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        In the case that at least one of proto shape or the segmentation mask</span>
+<span class="sd">        is binary with values in ``{0, 1}``, the product t-norm fuzzy</span>
+<span class="sd">        intersection is equivalent to the minimum t-norm fuzzy intersection,</span>
+<span class="sd">        which is ``element_wise_min(A, B)``. If both proto shape and</span>
+<span class="sd">        segmentation feature non-binary values, the product intersection can</span>
+<span class="sd">        become much smaller than the minimum intersection.</span>
+
+
+<span class="sd">    **Implementation Notes**</span>
+
+<span class="sd">    The intersection calculation for each possible &quot;center pixel&quot;,</span>
+<span class="sd">    i.e. proto shape location, is done by applying a convolution to the</span>
+<span class="sd">    segmentation mask, the weights of which hold the mask.</span>
+
+<span class="sd">    To change from 2D to other image dimensionality, replace the padding and</span>
+<span class="sd">    convolution layer and adapt :py:attr:`~BatchConvOp.AREA_DIMS`</span>
+<span class="sd">    accordingly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BatchIntersectEncode2D.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">normalize_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;proto_shape&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param proto_shape: the proto shape definition in a form accepted by</span>
+<span class="sd">            :py:func:`numpy.array`</span>
+<span class="sd">        :param kernel_size: if ``proto_shape`` is ``None``,</span>
+<span class="sd">            use all-ones rectangular shape of ``kernel_size``</span>
+<span class="sd">        :param normalize_by: whether to normalize the intersection output,</span>
+<span class="sd">            i.e. divide it by the total area of the proto shape or the</span>
+<span class="sd">            target, or none; allowed options:</span>
+<span class="sd">            ``&#39;proto_shape&#39;``, ``&#39;target&#39;``, ``&#39;none&#39;``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">normalize_by</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;proto_shape&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;normalize_by must be one of &quot;</span>
+                              <span class="s2">&quot;(&#39;none&#39;, &#39;proto_shape&#39;, &#39;target&#39;) but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">normalize_by</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BatchIntersectEncode2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">proto_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_valid_proto_shape</span><span class="p">(</span><span class="n">proto_shape</span><span class="o">=</span><span class="n">proto_shape</span><span class="p">,</span>
+                                                 <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">proto_shape</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Attributes:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize_by</span> <span class="o">=</span> <span class="n">normalize_by</span>
+        <span class="sd">&quot;&quot;&quot;Whether to normalize the intersection area.</span>
+<span class="sd">        Divide the intersection area value by:</span>
+
+<span class="sd">        ========================= =======</span>
+<span class="sd">        Value of ``normalize_by``  Divisor = total area of ...</span>
+<span class="sd">        ========================= =======</span>
+<span class="sd">        ``&#39;proto_shape&#39;``         ... the proto shape</span>
+<span class="sd">        ``&#39;target&#39;``              ... the target.</span>
+<span class="sd">        ========================= =======</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Modules:</span>
+        <span class="c1"># Beware: The padding for ZeroPad2d has crude specification:</span>
+        <span class="c1"># 1. width pad, 2. height pad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">(</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">same_padding</span><span class="p">((</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="sd">&quot;&quot;&quot;Padding to obtain same size as input after convolution&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intersect_conv</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                              <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Convolution to calculate the intersection for each location of</span>
+<span class="sd">        ``proto_shape``&quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intersect_conv</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">proto_shape</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+                                           <span class="c1"># unsqueeze batch and channel axes</span>
+                                           <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intersect_conv</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+                                         <span class="c1"># unsqueeze batch axis</span>
+                                         <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># pylint: enable=no-member</span>
+
+        <span class="c1"># Set to non-trainable:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proto_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The proto shape used for intersection calculation&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intersect_conv</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span>
+                <span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
+                    <span class="n">normalize_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalize_by</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BatchIntersectEncode2D.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">settings_to_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BatchIntersectEncode2D.conv_op"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.conv_op">[docs]</a>    <span class="k">def</span> <span class="nf">conv_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Encode given masks as IoU masks.</span>
+
+<span class="sd">        :param masks: :py:class:`torch.Tensor` of shape</span>
+<span class="sd">            ``(batch_dim, 1, width, height)`` holding the segmentation masks</span>
+<span class="sd">            for one batch.</span>
+<span class="sd">        :return: tensor of the same size as masks tensor holding IoU encoding</span>
+<span class="sd">            of the latter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="c1"># Calc intersect in each location of proto_shape:</span>
+        <span class="n">intersect</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect_conv</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+
+        <span class="c1"># Normalization:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_by</span> <span class="o">==</span> <span class="s2">&quot;proto_shape&quot;</span><span class="p">:</span>
+            <span class="n">intersect</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_by</span> <span class="o">==</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span>
+            <span class="n">intersect</span> <span class="o">/=</span> \
+                <span class="n">masks</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">intersect</span></div></div>
+
+
+<div class="viewcode-block" id="BatchIoUEncode2D"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D">[docs]</a><span class="k">class</span> <span class="nc">BatchIoUEncode2D</span><span class="p">(</span><span class="n">BatchConvOp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply intersection over union encoding to an input batch.</span>
+<span class="sd">    The batch is assumed to be of shape ``(batch_size, 1, height, width).``</span>
+
+<span class="sd">    **Idea**</span>
+
+<span class="sd">    The idea of intersection over union (IoU) encoding is to have a generalized</span>
+<span class="sd">    and continuous bounding box score. The better a given proto-shape</span>
+<span class="sd">    (e.g. a box) overlaps with the ground truth shape, the higher the value</span>
+<span class="sd">    in ``[0,1]``.</span>
+<span class="sd">    More precisely, in an IoU encoding of a segmentation target, a pixel holds</span>
+<span class="sd">    the IoU value of the actual segmentation with a pre-defined proto-shape</span>
+<span class="sd">    centered at this pixel. In a traditional segmentation a pixel holds the</span>
+<span class="sd">    information whether it is part of a visual object in the image.</span>
+
+<span class="sd">    Such a proto shape is defined by a (not necessarily binary) mask,</span>
+<span class="sd">    which may be at most the size of the target mask.</span>
+
+
+<span class="sd">    **Theoretical Notes**</span>
+
+<span class="sd">    Since the pixel values of proto shape and segmentation mask need not be</span>
+<span class="sd">    binary, they are treated as fuzzy sets. Intersection and union of masks</span>
+<span class="sd">    are calculated with respect to the product t-norm (see</span>
+<span class="sd">    :py:class:`BatchIntersectEncode2D`).</span>
+<span class="sd">    The area values are collected by reduction by sum.</span>
+
+
+<span class="sd">    **Implementation Notes**</span>
+
+<span class="sd">    To change from 2D to other image dimensionality, replace the padding and</span>
+<span class="sd">    pooling layer and adapt :py:attr:`~BatchConvOp.AREA_DIMS` accordingly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BatchIoUEncode2D.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">smooth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param proto_shape: the proto shape definition in a form accepted by</span>
+<span class="sd">            :py:func:`numpy.array`</span>
+<span class="sd">        :param kernel_size: if ``proto_shape`` is ``None``,</span>
+<span class="sd">            use all-ones rectangular shape of ``kernel_size``</span>
+<span class="sd">        :param smooth: smoothing summand for smooth division</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BatchIoUEncode2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Modules:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intersect_encoder</span><span class="p">:</span> <span class="n">BatchIntersectEncode2D</span> <span class="o">=</span> <span class="n">BatchIntersectEncode2D</span><span class="p">(</span>
+            <span class="n">proto_shape</span><span class="o">=</span><span class="n">proto_shape</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+            <span class="n">normalize_by</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Attributes:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area_proto_shape</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto_shape</span><span class="p">))</span>
+        <span class="sd">&quot;&quot;&quot;Area of the proto shape; calculate only once for speed-up&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">smooth</span>
+        <span class="sd">&quot;&quot;&quot;Smoothening summand for smooth division.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Set to non-trainable:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proto_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The proto shape used for IoU calculation&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect_encoder</span><span class="o">.</span><span class="n">proto_shape</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">smooth</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BatchIoUEncode2D.smooth_division"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.smooth_division">[docs]</a>    <span class="k">def</span> <span class="nf">smooth_division</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dividend</span><span class="p">,</span> <span class="n">divisor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Smoothed division using smoothening summand to avoid division by 0.</span>
+
+<span class="sd">        :return: result of smooth division.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dividend</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">divisor</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BatchIoUEncode2D.conv_op"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.conv_op">[docs]</a>    <span class="k">def</span> <span class="nf">conv_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Encode given masks as IoU masks.</span>
+
+<span class="sd">        :param masks: :py:class:`torch.Tensor` of shape</span>
+<span class="sd">            ``(batch_size, 1, width, height)`` holding the segmentation masks</span>
+<span class="sd">            for one batch</span>
+<span class="sd">        :return: :py:class:`torch.Tensor` of the same size as masks tensor</span>
+<span class="sd">            holding IoU encoding of the latter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Calc intersect in each location of proto_shape</span>
+        <span class="c1"># (also does value checks):</span>
+        <span class="n">intersect</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect_encoder</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+
+        <span class="c1"># Calc:</span>
+        <span class="c1"># union = area_masks + area_proto_shape</span>
+        <span class="c1">#         - intersect in each location of proto_shape</span>
+        <span class="n">area_masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">masks</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">)</span>  <span class="c1"># along area axes</span>
+        <span class="n">area_sum</span> <span class="o">=</span> <span class="p">((</span><span class="n">area_masks</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_proto_shape</span><span class="p">)</span>
+                    <span class="c1"># unsqueeze image dimensions</span>
+                    <span class="o">.</span><span class="n">view</span><span class="p">([</span><span class="o">*</span><span class="n">area_masks</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AREA_DIMS</span><span class="p">))]))</span>
+        <span class="n">union</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">area_sum</span> <span class="o">-</span> <span class="n">intersect</span>
+
+        <span class="c1"># Calc IoU in each location of proto_shape</span>
+        <span class="n">iou</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">smooth_division</span><span class="p">(</span><span class="n">intersect</span><span class="p">,</span> <span class="n">union</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iou</span></div></div>
+
+
+<div class="viewcode-block" id="BatchIntersectDecode2D"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D">[docs]</a><span class="k">class</span> <span class="nc">BatchIntersectDecode2D</span><span class="p">(</span><span class="n">BatchConvOp</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given batch of IoU encoded masks, estimates the original</span>
+<span class="sd">    segmentation mask.</span>
+
+<span class="sd">    This estimation is done by</span>
+
+<span class="sd">    1. &quot;bloating&quot; each pixel: Create a mask with the :py:attr:`proto_shape`</span>
+<span class="sd">       at the pixel&#39;s location, with the :py:attr:`proto_shape` weighted by</span>
+<span class="sd">       the pixel value</span>
+<span class="sd">    2. adding up all bloated pixel masks to obtain one mask</span>
+
+<span class="sd">    Consider the convolution that describes the IoU encoding of the given mask.</span>
+<span class="sd">    Then above steps can be simplified to a convolution with kernel and padding</span>
+<span class="sd">    the ones from the encoding convolution but</span>
+
+<span class="sd">    - kernel and padding flipped along each dimension;</span>
+<span class="sd">      in 2D, the two flips are equivalent to a rotation by 180°,</span>
+<span class="sd">    - kernel normalized by L1 norm (after that, the values in the convolution</span>
+<span class="sd">      sum up to 1)</span>
+
+<span class="sd">    **Derivation**</span>
+
+<span class="sd">    The decoder formulas can be derived as follows:</span>
+<span class="sd">    Consider a pixel :math:`p` in the to be estimated segmentation mask, and</span>
+<span class="sd">    its coordinates :math:`(p_{a})_{a \in \text{axes}}`</span>
+<span class="sd">    with image axes being the axes describing a single image,</span>
+<span class="sd">    e.g. in 2D ``(width, height)``.</span>
+<span class="sd">    The bloat mask of a pixel :math:`p^{iou}` in the IoU encoded mask can</span>
+<span class="sd">    only contribute to the value of :math:`p` if the :py:attr:`proto_shape`</span>
+<span class="sd">    centered at :math:`p^{iou}` would reach to :math:`p`, i.e. if the</span>
+<span class="sd">    distance to :math:`p` in each image axis :math:`a` is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        - \text{ceil}(0.5 \cdot (\text{proto_shape_size}[a] - 1))</span>
+<span class="sd">        &amp;\leq p_{a} - p^{iou}_{a}  \\</span>
+<span class="sd">        &amp;\leq  \text{floor}(0.5 \cdot (\text{proto_shape_size}[a] - 1))</span>
+
+<span class="sd">    where</span>
+<span class="sd">    :math:`p_{a} - p^{iou}_{a} &lt; 0`</span>
+<span class="sd">    means :math:`p^{iou}` is left of :math:`p`, and right else.</span>
+<span class="sd">    This describes a kernel of the same size as the IoU encoding kernel but</span>
+<span class="sd">    with padding flipped in each dimension.</span>
+<span class="sd">    The kernel entries, i.e. the contribution of :math:`p^{iou}` in kernel</span>
+<span class="sd">    position :math:`(pos_{a})_{a \in \text{axes}}` to :math:`p`, are:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \text{proto_shape}[</span>
+<span class="sd">            (p_{a} - p^{iou}_{a}</span>
+<span class="sd">             + \text{floor}(0.5 \cdot (\text{proto_shape_size}[a] - 1))_{a}</span>
+<span class="sd">        ] \\</span>
+<span class="sd">        = \text{proto_shape}[(\text{proto_shape_size}[a] - pos_{a})_{a}]</span>
+
+<span class="sd">    which is the :py:attr:`proto_shape` kernel of the IoU encoding but</span>
+<span class="sd">    flipped in each dimension.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BatchIntersectDecode2D.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param proto_shape: the proto shape used for IoU encoding in a form</span>
+<span class="sd">            accepted by :py:func:`numpy.array`</span>
+<span class="sd">        :param kernel_size: if ``proto_shape`` is ``None``,</span>
+<span class="sd">            use all-ones rectangular shape of ``kernel_size``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parameter post-processing:</span>
+        <span class="n">proto_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_valid_proto_shape</span><span class="p">(</span><span class="n">proto_shape</span><span class="o">=</span><span class="n">proto_shape</span><span class="p">,</span>
+                                                 <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+
+        <span class="c1"># flip all axes and normalize:</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="n">proto_shape</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">proto_shape</span><span class="p">)</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">shape</span>
+        <span class="c1"># Beware: The padding for ZeroPad2d has crude specification:</span>
+        <span class="c1"># 1. width pad, 2. height pad</span>
+        <span class="n">unflipped_padding</span> <span class="o">=</span> <span class="n">same_padding</span><span class="p">((</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="p">[</span><span class="n">unflipped_padding</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">unflipped_padding</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                   <span class="n">unflipped_padding</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">unflipped_padding</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">BatchIntersectDecode2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Modules:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Padding to obtain same size as input after convolution&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_conv</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                            <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Convolution to calculate the intersection for each location of</span>
+<span class="sd">        proto_shape&quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_conv</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+                                         <span class="c1"># unsqueeze batch and channel axes</span>
+                                         <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder_conv</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">0.</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+                                       <span class="c1"># unsqueeze batch axis</span>
+                                       <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c1"># pylint: enable=no-member</span>
+
+        <span class="c1"># Set to non-trainable:</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">decoding_proto_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The kernel of the decoder (flipped and normalized IoU encoding</span>
+<span class="sd">        proto shape).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder_conv</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span>
+                <span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proto_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The (L1-normalized) proto shape used for the IoU encoding.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decoding_proto_shape</span><span class="p">))</span>  <span class="c1"># undo flipping</span>
+
+<div class="viewcode-block" id="BatchIntersectDecode2D.conv_op"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.conv_op">[docs]</a>    <span class="k">def</span> <span class="nf">conv_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Forward pass: Apply decoding convolution&quot;&quot;&quot;</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder_conv</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">masks</span></div></div>
+
+
+<div class="viewcode-block" id="ConvOpWrapper"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.ConvOpWrapper.html#hybrid_learning.datasets.transforms.encoder.ConvOpWrapper">[docs]</a><span class="k">class</span> <span class="nc">ConvOpWrapper</span><span class="p">(</span><span class="n">WithThresh</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base wrapper class to turn convolutional batch operations into single</span>
+<span class="sd">    mask operations.</span>
+<span class="sd">    Wraps classes inheriting from :py:class:`BatchConvOp`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConvOpWrapper.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.ConvOpWrapper.html#hybrid_learning.datasets.transforms.encoder.ConvOpWrapper.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trafo</span><span class="p">:</span> <span class="n">BatchConvOp</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ConvOpWrapper</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trafo</span><span class="o">=</span><span class="n">trafo</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">:</span> <span class="n">BatchConvOp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">proto_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Wrap the :py:attr:`BatchConvOp.proto_shape`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">proto_shape</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kernel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Wrap the :py:attr:`BatchConvOp.kernel_size`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">kernel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings; essentially merged from wrapped encoder and super.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IntersectEncode"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IntersectEncode.html#hybrid_learning.datasets.transforms.encoder.IntersectEncode">[docs]</a><span class="k">class</span> <span class="nc">IntersectEncode</span><span class="p">(</span><span class="n">ConvOpWrapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Intersection encode a single mask.</span>
+<span class="sd">    This is a wrapper around :py:class:`BatchIntersectEncode2D`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IntersectEncode.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IntersectEncode.html#hybrid_learning.datasets.transforms.encoder.IntersectEncode.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">normalize_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;proto_shape&#39;</span><span class="p">,</span>
+                 <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">thresh_args</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param thresh_args: thresholding arguments;</span>
+<span class="sd">            see :py:class:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IntersectEncode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">trafo</span><span class="o">=</span><span class="n">BatchIntersectEncode2D</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+                                         <span class="n">proto_shape</span><span class="o">=</span><span class="n">proto_shape</span><span class="p">,</span>
+                                         <span class="n">normalize_by</span><span class="o">=</span><span class="n">normalize_by</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">thresh_args</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IoUEncode"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IoUEncode.html#hybrid_learning.datasets.transforms.encoder.IoUEncode">[docs]</a><span class="k">class</span> <span class="nc">IoUEncode</span><span class="p">(</span><span class="n">ConvOpWrapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;IoU encode a single mask.</span>
+<span class="sd">    This is a wrapper around :py:class:`BatchIoUEncode2D`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IoUEncode.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IoUEncode.html#hybrid_learning.datasets.transforms.encoder.IoUEncode.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">smooth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">thresh_args</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param thresh_args: thresholding arguments;</span>
+<span class="sd">            see :py:class:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IoUEncode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">trafo</span><span class="o">=</span><span class="n">BatchIoUEncode2D</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+                                   <span class="n">proto_shape</span><span class="o">=</span><span class="n">proto_shape</span><span class="p">,</span>
+                                   <span class="o">**</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">)</span> <span class="k">if</span> <span class="n">smooth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                      <span class="k">else</span> <span class="p">{})),</span>
+            <span class="o">**</span><span class="n">thresh_args</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IntersectDecode"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IntersectDecode.html#hybrid_learning.datasets.transforms.encoder.IntersectDecode">[docs]</a><span class="k">class</span> <span class="nc">IntersectDecode</span><span class="p">(</span><span class="n">ConvOpWrapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;IoU encode a single mask.</span>
+<span class="sd">    This is a wrapper around :py:class:`BatchIntersectDecode2D`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IntersectDecode.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IntersectDecode.html#hybrid_learning.datasets.transforms.encoder.IntersectDecode.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">proto_shape</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">thresh_args</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param thresh_args: thresholding arguments;</span>
+<span class="sd">            see :py:class:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IntersectDecode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">trafo</span><span class="o">=</span><span class="n">BatchIntersectDecode2D</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+                                         <span class="n">proto_shape</span><span class="o">=</span><span class="n">proto_shape</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">thresh_args</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="same_padding"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.encoder.same_padding.html#hybrid_learning.datasets.transforms.encoder.same_padding">[docs]</a><span class="k">def</span> <span class="nf">same_padding</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the left and right padding for mode ``&#39;same&#39;`` for each dim</span>
+<span class="sd">    and concat.</span>
+
+<span class="sd">    Mode ``&#39;same&#39;`` here means</span>
+<span class="sd">    ``Conv(kernel_size)(Pad(padding)(x)).size() == x.size()``.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Currently (Apr 2019), :py:class:`torch.nn.ZeroPad2d` requires the</span>
+<span class="sd">        padding in a special format: first width paddings, then height paddings.</span>
+<span class="sd">        So the entries from kernel_size need to be swapped to obtain the</span>
+<span class="sd">        correct padding as input for :py:class:`torch.nn.ZeroPad2d`.</span>
+
+<span class="sd">    :return: padding tuple as</span>
+<span class="sd">        ``(left dim0, right dim0, left dim1, right dim1, ...)``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kernel_size</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid kernel size </span><span class="si">{}</span><span class="s2">; must be integers &gt; 0&quot;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">))</span>
+
+    <span class="c1"># get tuples of (left pad, right pad) for each dim</span>
+    <span class="n">left_right_paddings</span> <span class="o">=</span> <span class="p">[</span><span class="n">_same_padding_for_dim</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kernel_size</span><span class="p">]</span>
+    <span class="c1"># flatten and return:</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">left_right</span> <span class="ow">in</span> <span class="n">left_right_paddings</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">left_right</span><span class="p">])</span></div>
+
+
+<span class="k">def</span> <span class="nf">_same_padding_for_dim</span><span class="p">(</span><span class="n">kernel_dim_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Calc left and right padding to have same padding for kernel dim size.</span>
+
+<span class="sd">    If the kernel dimension is odd, one obtains symmetric padding,</span>
+<span class="sd">    else asymmetric one. The padding is distributed over left and right</span>
+<span class="sd">    using the constraints</span>
+<span class="sd">    ``total_padding = kernel_dim_size - 1`` and</span>
+<span class="sd">    ``0 &lt;= (right_padding - left_padding) &lt;= 1``.</span>
+<span class="sd">    This yields the same results as ``same`` padding in tensorflow with</span>
+<span class="sd">    ``stride == 1``, compare https://stackoverflow.com/questions/45254554/</span>
+<span class="sd">    *(no code is taken from there)*.</span>
+
+<span class="sd">    :return: Tuple of left and right 1D padding for the given kernel dimension.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total_padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">kernel_dim_size</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">left_padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">total_padding</span> <span class="o">//</span> <span class="mi">2</span>  <span class="c1"># the shorter value</span>
+    <span class="n">right_padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">total_padding</span> <span class="o">-</span> <span class="n">left_padding</span>
+    <span class="k">return</span> <span class="n">left_padding</span><span class="p">,</span> <span class="n">right_padding</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

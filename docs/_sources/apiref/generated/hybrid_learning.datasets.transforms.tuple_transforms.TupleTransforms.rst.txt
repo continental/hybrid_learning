@@ -1,0 +1,9 @@
+TupleTransforms
+===============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+.. autoclass:: TupleTransforms
+    :members:
+
+    .. autoclasstoc::

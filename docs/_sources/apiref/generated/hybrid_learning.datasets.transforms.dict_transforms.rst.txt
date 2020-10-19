@@ -1,0 +1,56 @@
+dict\_transforms
+================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+    .. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AND
+        
+        ~DictTransform
+        
+        ~DropAnn
+        
+        ~FlattenDict
+        
+        ~Merge
+        
+        ~NOT
+        
+        ~OR
+        
+        ~RestrictDict
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

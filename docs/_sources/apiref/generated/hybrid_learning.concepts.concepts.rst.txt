@@ -1,0 +1,46 @@
+concepts
+========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.concepts
+
+    .. currentmodule:: hybrid_learning.concepts.concepts
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Concept
+        
+        ~ConceptTypes
+        
+        ~SegmentationConcept2D
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

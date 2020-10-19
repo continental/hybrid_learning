@@ -1,0 +1,9 @@
+Merge
+=====
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: Merge
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,9 @@
+ConceptEmbeddingHandle
+======================
+
+.. currentmodule:: hybrid_learning.concepts.enforcement
+
+.. autoclass:: ConceptEmbeddingHandle
+    :members:
+
+    .. autoclasstoc::

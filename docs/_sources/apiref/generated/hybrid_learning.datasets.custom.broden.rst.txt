@@ -1,0 +1,44 @@
+broden
+======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.custom.broden
+
+    .. currentmodule:: hybrid_learning.datasets.custom.broden
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~BrodenHandle
+        
+        ~BrodenLabel
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

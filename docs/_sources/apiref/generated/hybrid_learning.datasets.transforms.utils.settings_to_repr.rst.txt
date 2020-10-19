@@ -1,0 +1,6 @@
+hybrid\_learning.datasets.transforms.utils.settings\_to\_repr
+=============================================================
+
+.. currentmodule:: hybrid_learning.datasets.transforms.utils
+
+.. autofunction:: settings_to_repr

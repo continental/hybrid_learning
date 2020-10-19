@@ -1,0 +1,6 @@
+hybrid\_learning.concepts.visualization.visualize\_concept\_models
+==================================================================
+
+.. currentmodule:: hybrid_learning.concepts.visualization
+
+.. autofunction:: visualize_concept_models

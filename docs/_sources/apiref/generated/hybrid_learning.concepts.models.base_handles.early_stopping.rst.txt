@@ -1,0 +1,42 @@
+early\_stopping
+===============
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.models.base_handles.early_stopping
+
+    .. currentmodule:: hybrid_learning.concepts.models.base_handles.early_stopping
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~EarlyStoppingHandle
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

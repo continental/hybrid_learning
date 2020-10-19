@@ -1,0 +1,9 @@
+FASSEGParts
+===========
+
+.. currentmodule:: hybrid_learning.datasets.custom.fasseg
+
+.. autoclass:: FASSEGParts
+    :members:
+
+    .. autoclasstoc::

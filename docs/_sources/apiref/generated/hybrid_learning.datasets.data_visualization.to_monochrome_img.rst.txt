@@ -1,0 +1,6 @@
+hybrid\_learning.datasets.data\_visualization.to\_monochrome\_img
+=================================================================
+
+.. currentmodule:: hybrid_learning.datasets.data_visualization
+
+.. autofunction:: to_monochrome_img

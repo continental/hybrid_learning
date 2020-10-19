@@ -1,0 +1,55 @@
+base
+====
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.base
+
+    .. currentmodule:: hybrid_learning.datasets.base
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~BaseDataset
+        
+        ~DataTriple
+        
+        ~DatasetSplit
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~cross_validation_splits
+        
+
+    
+    

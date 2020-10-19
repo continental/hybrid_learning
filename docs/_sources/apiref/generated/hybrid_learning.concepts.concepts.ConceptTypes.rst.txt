@@ -1,0 +1,9 @@
+ConceptTypes
+============
+
+.. currentmodule:: hybrid_learning.concepts.concepts
+
+.. autoclass:: ConceptTypes
+    :members:
+
+    .. autoclasstoc::

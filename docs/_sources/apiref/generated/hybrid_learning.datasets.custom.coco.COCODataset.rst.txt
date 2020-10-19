@@ -1,0 +1,9 @@
+COCODataset
+===========
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco
+
+.. autoclass:: COCODataset
+    :members:
+
+    .. autoclasstoc::

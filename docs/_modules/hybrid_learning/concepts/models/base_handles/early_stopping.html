@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.concepts.models.base_handles.early_stopping &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.concepts.models.base_handles.early_stopping</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.concepts.models.base_handles.early_stopping</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handle for early stopping.&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="EarlyStoppingHandle"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle">[docs]</a><span class="k">class</span> <span class="nc">EarlyStoppingHandle</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Handle encapsulating early stopping checks.</span>
+<span class="sd">    It measures the progress given the previous steps and determines whether</span>
+<span class="sd">    one should proceed or stop early. This value is then stored in require_stop.</span>
+
+<span class="sd">    *Usage:* Initialize the handle, then apply after each epoch</span>
+<span class="sd">    :py:meth:`step` to the loss tensor. :py:meth:`step` will update the</span>
+<span class="sd">    current best values and returns the new value of :py:attr:`require_stop`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EarlyStoppingHandle.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_delta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">patience</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param min_delta: minimum decrease of the loss value such that</span>
+<span class="sd">            it is considered progress.</span>
+<span class="sd">            If the loss should be increasing, assign corresponding negative</span>
+<span class="sd">            ``min_delta``</span>
+<span class="sd">        :param patience: number of steps (epochs) with no progress after</span>
+<span class="sd">            which to suggest to stop;</span>
+<span class="sd">            values &lt;=0 are mapped to 1 (i.e. no patience,</span>
+<span class="sd">            stop if no progress since last step)</span>
+<span class="sd">        :param verbose: logging verbosity level.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_delta</span> <span class="o">=</span> <span class="n">min_delta</span>
+        <span class="sd">&quot;&quot;&quot;Minimum decrease (increase if &lt;0) of loss value per step to be</span>
+<span class="sd">        considered a progress.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patience</span> <span class="o">=</span> <span class="n">patience</span> <span class="k">if</span> <span class="n">patience</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="sd">&quot;&quot;&quot;Number of steps with no progress after which to suggest to stop.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="sd">&quot;&quot;&quot;Verbosity level (simple logging switch).&quot;&quot;&quot;</span>
+
+        <span class="c1"># variables specific to a training phase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">require_stop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Whether the early stopping handle would suggest to stop</span>
+<span class="sd">        or to proceed. Updated using the :py:meth:`step` method.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Counter for counting the number of steps without progress.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Storage for the current best loss value for comparison.</span>
+<span class="sd">        Needed to derive whether any progress was made in the sense of a new</span>
+<span class="sd">        best value.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="EarlyStoppingHandle.reset"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset the history of the handle to start at step 0.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">require_stop</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="EarlyStoppingHandle.step"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update stopping flag according to latest epoch results.</span>
+<span class="sd">        If stopping is required, set :py:attr:`require_stop` to ``True``.</span>
+
+<span class="sd">        :param loss: the loss of the last epoch unseen to the handle</span>
+<span class="sd">        :return: the new value of :py:attr:`require_stop`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Init _curr_best_loss at the first step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span> <span class="ow">or</span> <span class="n">loss</span>
+
+        <span class="c1"># Was there any improvement according to self.min_delta?</span>
+        <span class="n">progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span> <span class="o">-</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_delta</span>
+
+        <span class="c1"># Update epoch counter according to progress</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">progress</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># call model not improved</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># reset if improvement</span>
+
+        <span class="c1"># Save (and log) current best test loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="k">if</span> <span class="n">loss</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span> <span class="k">else</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Current best loss </span><span class="si">%f</span><span class="se">\t</span><span class="s2">no improvement since </span><span class="si">%d</span><span class="s2"> epochs&quot;</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span><span class="p">)</span>
+
+        <span class="c1"># No progress for too long?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">patience</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">require_stop</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">((</span><span class="s2">&quot;No improvement greater </span><span class="si">%f</span><span class="s2"> from best result </span><span class="si">%f</span><span class="s2"> &quot;</span>
+                         <span class="s2">&quot;since </span><span class="si">%d</span><span class="s2"> steps; suggesting to stop.&quot;</span><span class="p">),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">min_delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr_best_loss</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_no_major_improvement_since</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">require_stop</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;A dict with the settings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">min_delta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_delta</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">patience</span><span class="p">,</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EarlyStoppingHandle.__repr__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;String representation with all properties.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(min_delta=</span><span class="si">{min_delta}</span><span class="s2">, patience=</span><span class="si">{patience}</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;verbose=</span><span class="si">{verbose}</span><span class="s2">)&quot;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="EarlyStoppingHandle.__str__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

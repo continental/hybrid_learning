@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>OR &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="RestrictDict" href="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html" />
+    <link rel="prev" title="NOT" href="hybrid_learning.datasets.transforms.dict_transforms.NOT.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.html">dict_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.html">encoder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.html">image_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.html">tuple_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.transforms.html">transforms</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.transforms.dict_transforms.html">dict_transforms</a> &raquo;</li>
+        
+      <li>OR</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.OR.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="or">
+<h1>OR<a class="headerlink" href="#or" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="hybrid_learning.datasets.transforms.dict_transforms.OR">
+<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.datasets.transforms.dict_transforms.</code><code class="sig-name descname">OR</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">in_keys</span></em>, <em class="sig-param"><span class="n">out_key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">skip_none</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">replace_none</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/dict_transforms.html#OR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.dict_transforms.OR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.transforms.dict_transforms.Merge</span></code></a></p>
+<p>Union/OR operation on binary masks and scalars.</p>
+<p>Init.</p>
+<p>Hand over input keys either as str or as a Merge operation of str.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_keys</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><em>Merge</em></a><em>]</em>) – sequence of either <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> operation
+instances or strings with placeholders for the input keys</p></li>
+<li><p><strong>out_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – key for the output of this operation; used to
+init <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a></p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – on call, whether to overwrite the value at
+<a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> in the given dict if the key already
+exists; raise if key exists and <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is true;
+saved in <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.overwrite" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.overwrite"><code class="xref py py-attr docutils literal notranslate"><span class="pre">overwrite</span></code></a>.</p></li>
+<li><p><strong>replace_none</strong> – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the value to replace any
+<code class="docutils literal notranslate"><span class="pre">None</span></code> values with; see <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.replace_none" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.replace_none"><code class="xref py py-attr docutils literal notranslate"><span class="pre">replace_none</span></code></a></p></li>
+<li><p><strong>skip_none</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.dict_transforms.OR.SYMB" title="hybrid_learning.datasets.transforms.dict_transforms.OR.SYMB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.dict_transforms.OR.SYMB" title="hybrid_learning.datasets.transforms.dict_transforms.OR.SYMB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code></p></td>
+<td><p>The input keys which are child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">consts</span></code></p></td>
+<td><p>The constant string keys in the input keys.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation_keys</span></code></p></td>
+<td><p>The keys used for this parent operation (constants and children output keys).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_in_keys</span></code></p></td>
+<td><p>All string input keys both of self and of all child operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_out_keys</span></code></p></td>
+<td><p>Output keys of self and all child operations.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.dict_transforms.OR.operation" title="hybrid_learning.datasets.transforms.dict_transforms.OR.operation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code></a>(annotations)</p></td>
+<td><p>Store union of <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.in_keys" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a> masks as <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalized_repr</span></code>()</p></td>
+<td><p>Return a str encoding equal for differently sorted operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.dict_transforms.OR.operation" title="hybrid_learning.datasets.transforms.dict_transforms.OR.operation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code></a>(annotations)</p></td>
+<td><p>Store union of <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.in_keys" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a> masks as <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_conjunctive_normal_form</span></code>()</p></td>
+<td><p>Checks whether the current formula is in conjunctive normal form.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>(*in_keys[, out_key, overwrite, …])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return str representation which can be used to reproduce instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
+<td><p>Return str yielding an equal instance with same <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> when parsed.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
+<td><p>Two merge operations are considered equals, if their (normalized) representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations)</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform" title="hybrid_learning.datasets.transforms.dict_transforms.DictTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictTransform</span></code></a></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations)</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt id="hybrid_learning.datasets.transforms.dict_transforms.OR.operation">
+<code class="sig-name descname">operation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">annotations</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/dict_transforms.html#OR.operation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.dict_transforms.OR.operation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store union of <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.in_keys" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a> masks as
+<a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key" title="hybrid_learning.datasets.transforms.dict_transforms.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>annotations</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.transforms.dict_transforms.OR.SYMB">
+<code class="sig-name descname">SYMB</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></em><em class="property"> = '||'</em><a class="headerlink" href="#hybrid_learning.datasets.transforms.dict_transforms.OR.SYMB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html" class="btn btn-neutral float-right" title="RestrictDict" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hybrid_learning.datasets.transforms.dict_transforms.NOT.html" class="btn btn-neutral float-left" title="NOT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

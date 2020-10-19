@@ -1,0 +1,9 @@
+BatchIoUEncode2D
+================
+
+.. currentmodule:: hybrid_learning.datasets.transforms.encoder
+
+.. autoclass:: BatchIoUEncode2D
+    :members:
+
+    .. autoclasstoc::

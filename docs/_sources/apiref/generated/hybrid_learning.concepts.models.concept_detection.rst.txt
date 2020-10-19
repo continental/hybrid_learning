@@ -1,0 +1,44 @@
+concept\_detection
+==================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.models.concept_detection
+
+    .. currentmodule:: hybrid_learning.concepts.models.concept_detection
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ConceptDetection2DTrainTestHandle
+        
+        ~ConceptDetectionModel2D
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

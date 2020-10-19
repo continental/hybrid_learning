@@ -1,0 +1,42 @@
+embeddings
+==========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.embeddings
+
+    .. currentmodule:: hybrid_learning.concepts.embeddings
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ConceptEmbedding
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

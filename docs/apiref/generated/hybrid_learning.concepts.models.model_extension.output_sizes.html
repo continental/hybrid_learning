@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.concepts.models.model_extension.output_sizes &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="visualization" href="hybrid_learning.concepts.visualization.html" />
+    <link rel="prev" title="hybrid_learning.concepts.models.model_extension.output_size" href="hybrid_learning.concepts.models.model_extension.output_size.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.embeddings.html">embeddings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.enforcement.html">enforcement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.kpis.html">kpis</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.base_handles.html">base_handles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_detection.html">concept_detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_segmentation.html">concept_segmentation</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.html">model_extension</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.visualization.html">visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.concepts.models.html">models</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.concepts.models.model_extension.html">model_extension</a> &raquo;</li>
+        
+      <li>hybrid_learning.concepts.models.model_extension.output_sizes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.models.model_extension.output_sizes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hybrid-learning-concepts-models-model-extension-output-sizes">
+<h1>hybrid_learning.concepts.models.model_extension.output_sizes<a class="headerlink" href="#hybrid-learning-concepts-models-model-extension-output-sizes" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="hybrid_learning.concepts.models.model_extension.output_sizes">
+<code class="sig-prename descclassname">hybrid_learning.concepts.models.model_extension.</code><code class="sig-name descname">output_sizes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">input_size</span></em>, <em class="sig-param"><span class="n">layer_ids</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">has_batch_dim</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ignore_non_tensor_outs</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#output_sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.output_sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain the output sizes of the given or all layers for given input size.
+The layer outputs are obtained by feeding the model an all zero Tensor of
+given input size. The output size can only be determined, if the output
+of the layer is a <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>.
+Other entries are skipped, if <code class="docutils literal notranslate"><span class="pre">ignore_non_tensor_outs=True</span></code>, and
+otherwise, an exception is raised. In such cases, consider using
+<a class="reference internal" href="hybrid_learning.concepts.models.model_extension.dummy_output.html#hybrid_learning.concepts.models.model_extension.dummy_output" title="hybrid_learning.concepts.models.model_extension.dummy_output"><code class="xref py py-func docutils literal notranslate"><span class="pre">dummy_output()</span></code></a>
+directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ignore_non_tensor_outs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>input_size</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – input size of one sample to feed in; it is assumed to
+have no batch dimension, if <code class="docutils literal notranslate"><span class="pre">has_batch_dim</span> <span class="pre">==</span> <span class="pre">False</span></code></p></li>
+<li><p><strong>model</strong> (<em>torch.nn.modules.module.Module</em>) – the model to investigate</p></li>
+<li><p><strong>layer_ids</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the layers to investigate; defaults to all listed in the
+model’s <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-attr docutils literal notranslate"><span class="pre">named_modules</span></code></a></p></li>
+<li><p><strong>has_batch_dim</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether the given tensor has batch dimension;
+if not, it is added</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict of the sizes for each layer output tensor
+(batch dimension stripped)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/exceptions.html#AttributeError" title="(in Python v3.6)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>, if one of the considered layers does
+not output a tensor (but e.g. a dict) and
+<code class="docutils literal notranslate"><span class="pre">ignore_non_tensor_outs</span> <span class="pre">==</span> <span class="pre">False</span></code>; use
+<a class="reference internal" href="hybrid_learning.concepts.models.model_extension.dummy_output.html#hybrid_learning.concepts.models.model_extension.dummy_output" title="hybrid_learning.concepts.models.model_extension.dummy_output"><code class="xref py py-func docutils literal notranslate"><span class="pre">dummy_output()</span></code></a>
+directly in this case</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, torch.Size]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hybrid_learning.concepts.visualization.html" class="btn btn-neutral float-right" title="visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hybrid_learning.concepts.models.model_extension.output_size.html" class="btn btn-neutral float-left" title="hybrid_learning.concepts.models.model_extension.output_size" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

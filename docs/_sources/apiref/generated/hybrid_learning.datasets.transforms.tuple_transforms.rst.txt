@@ -1,0 +1,58 @@
+tuple\_transforms
+=================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+    .. currentmodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Compose
+        
+        ~Identity
+        
+        ~OnBothSides
+        
+        ~OnInput
+        
+        ~OnTarget
+        
+        ~OneSided
+        
+        ~ReduceTuple
+        
+        ~SameSize
+        
+        ~TupleTransforms
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

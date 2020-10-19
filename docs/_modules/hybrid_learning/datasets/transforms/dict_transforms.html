@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.datasets.transforms.dict_transforms &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.datasets.transforms.dict_transforms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.datasets.transforms.dict_transforms</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Transformations on dict annotations containing scalars and same-sized masks.</span>
+
+<span class="sd">The annotations that can be processed are supposed to be a dict with string</span>
+<span class="sd">keys and values of floats or :py:class:`numpy.ndarray` (binary) masks.</span>
+
+<span class="sd">The logical merging operations derived from :py:class:`Merge` allow for</span>
+<span class="sd">concatenation. Using them, any operation involving intersection, union,</span>
+<span class="sd">and inversion of masks can be modelled. Scalar values in this case are</span>
+<span class="sd">treated as all-same-valued masks when mixed with mask tensors.</span>
+<span class="sd">For further information have a look at the :py:class:`Merge` documentation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="DictTransform"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform">[docs]</a><span class="k">class</span> <span class="nc">DictTransform</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Basic transformation for dicts.</span>
+<span class="sd">     This means a callable yielding a dict of a single value.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DictTransform.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform.__call__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Call method modifying a given dictionary.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge">[docs]</a><span class="k">class</span> <span class="nc">Merge</span><span class="p">(</span><span class="n">DictTransform</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Merge the binary masks / scalars of the input keys and store them under</span>
+<span class="sd">    the specified output key.</span>
+<span class="sd">    The merge operation may recursively have other child merge operation as</span>
+<span class="sd">    :py:attr:`in_keys`, which are evaluated on the given dictionary before</span>
+<span class="sd">    the parent is.</span>
+
+<span class="sd">    **Operation**</span>
+
+<span class="sd">    The actual operation is hidden in the :py:meth:`__call__` method:</span>
+<span class="sd">    It is given a dictionary of annotations of the form ``{ID: value}`` and</span>
+<span class="sd">    will return the dict with the merged mask added as ``{out_key: value}``.</span>
+<span class="sd">    The intermediate outputs of all child operations are also added, so make</span>
+<span class="sd">    sure to remove them afterwards if they are not needed anymore. The</span>
+<span class="sd">    benefit of this is that results may be reused amongst different operations.</span>
+
+<span class="sd">    **Format**</span>
+
+<span class="sd">    The (recursive) merge operation must be specified in conjunctive normal</span>
+<span class="sd">    form, i.e. of the form</span>
+
+<span class="sd">    .. code::</span>
+
+<span class="sd">        AND(..., [NOT(...), ...], [OR(..., [NOT(..), ...])])</span>
+
+<span class="sd">    (see https://en.wikipedia.org/wiki/Conjunctive_normal_form).</span>
+<span class="sd">    Available operations are</span>
+<span class="sd">    :py:class:`AND` (intersection),</span>
+<span class="sd">    :py:class:`OR` (union), and</span>
+<span class="sd">    :py:class:`NOT` (inversion).</span>
+<span class="sd">    Boolean classification labels are treated as all-one-masks.</span>
+<span class="sd">    One can use :py:meth:`Merge.parse` to parse a string representation of an</span>
+<span class="sd">    operation tree. There, again, the formula must be in conjunctive normal</span>
+<span class="sd">    form and connectors must be encoded as follows:</span>
+
+<span class="sd">    - :py:class:`AND`: a&amp;&amp;b</span>
+<span class="sd">    - :py:class:`OR`: a||b</span>
+<span class="sd">    - :py:class:`NOT`: ~a</span>
+
+<span class="sd">    **Examples**</span>
+
+<span class="sd">    To get all heads, noses, and mouths of real persons in bathrooms, call:</span>
+
+<span class="sd">    &gt;&gt;&gt; a = AND(&quot;person&quot;, OR(&quot;head&quot;, &quot;nose&quot;, &quot;mouth&quot;), NOT(&quot;bathroom&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; a == Merge.parse(&quot;person&amp;&amp;head||nose||mouth&amp;&amp;~bathroom&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;The string symbol of this class (override for sub-classes).&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Merge.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">in_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">],</span> <span class="n">out_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">skip_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">replace_none</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        Hand over input keys either as str or as a Merge operation of str.</span>
+
+<span class="sd">        :param in_keys: sequence of either :py:class:`Merge` operation</span>
+<span class="sd">            instances or strings with placeholders for the input keys</span>
+<span class="sd">        :param out_key: key for the output of this operation; used to</span>
+<span class="sd">            init :py:attr:`~Merge.out_key`</span>
+<span class="sd">        :param overwrite: on call, whether to overwrite the value at</span>
+<span class="sd">            :py:attr:`~Merge.out_key` in the given dict if the key already</span>
+<span class="sd">            exists; raise if key exists and ``overwrite`` is true;</span>
+<span class="sd">            saved in :py:attr:`~Merge.overwrite`.</span>
+<span class="sd">        :param replace_none: if not ``None``, the value to replace any</span>
+<span class="sd">            ``None`` values with; see :py:attr:`~Merge.replace_none`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Got empty list of in_keys!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NOT</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too few in_keys: expected &gt;=2, got 1 (</span><span class="si">{}</span><span class="s2">)&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">in_keys</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">in_keys</span>
+        <span class="sd">&quot;&quot;&quot;The keys of segmentation masks to unite (either string or a merge</span>
+<span class="sd">        operation).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_conjunctive_normal_form</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Specified in_keys are not in conjunctive &quot;</span>
+                              <span class="s2">&quot;normal form! Given: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalized_repr</span><span class="p">()))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">out_key</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The key to use to store the merge output in the annotations dict.</span>
+<span class="sd">        Take care to not accidentally overwrite existing keys</span>
+<span class="sd">        (cf. :py:attr:`overwrite`).&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">overwrite</span>
+        <span class="sd">&quot;&quot;&quot;Whether to overwrite a value in the input dictionary when</span>
+<span class="sd">        applying this operation.</span>
+<span class="sd">        The operation is defined in :py:meth:`operation`.</span>
+<span class="sd">        The key that may be overwritten is stored in :py:attr:`out_key`.</span>
+<span class="sd">        An exception is raised if this is ``False`` and the key exists.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">skip_none</span>
+        <span class="sd">&quot;&quot;&quot;If set to ``True``, when a None input value is encountered simply</span>
+<span class="sd">        ``None`` is returned. If ``False``, an error is raised.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">replace_none</span>
+        <span class="sd">&quot;&quot;&quot;If not ``None``, any received ``None`` value is replaced by the</span>
+<span class="sd">        given value. Key-value pairs with ``None`` value may come from the</span>
+<span class="sd">        input or from child operations.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="Merge.normalized_repr"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.normalized_repr">[docs]</a>    <span class="k">def</span> <span class="nf">normalized_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a str encoding equal for differently sorted operations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">sorted</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">normalized_repr</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="n">key</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="Merge.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return str representation which can be used to reproduce instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">])</span> <span class="o">+</span>
+                <span class="p">(</span><span class="s2">&quot;, out_key=&#39;&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_key</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_key</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span>
+                <span class="s2">&quot;)&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.__str__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return str yielding an equal instance with same</span>
+<span class="sd">        :py:attr:`~Merge.out_key` when parsed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Merge.__eq__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Merge&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Two merge operations are considered equals, if their</span>
+<span class="sd">        (normalized) representations coincide. (See :py:meth:`normalized_repr`).</span>
+<span class="sd">        This means, they recursively have the same children up to commutation.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Duplicate children are not filtered for now,</span>
+<span class="sd">            i.e. ``AND(&quot;a&quot;) != AND(&quot;a&quot;, &quot;a&quot;)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalized_repr</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">normalized_repr</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Merge.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Apply this operation to the ``annotations`` dict.</span>
+<span class="sd">        The operation of this instance is defined in :py:attr:`operation`.</span>
+<span class="sd">        First apply all child operations to the dict.</span>
+<span class="sd">        Hereby try to overwrite a value of annotations if its key correspond</span>
+<span class="sd">        to an :py:attr:`out_key` of a child operation, but do not create the</span>
+<span class="sd">        value of a key twice. Then apply :py:attr:`operation` on the</span>
+<span class="sd">        originally given and generated values now stored in ``annotations``</span>
+<span class="sd">        and store the result also in ``annotations``.</span>
+
+<span class="sd">        :param annotations: dict to modify by adding values for</span>
+<span class="sd">            :py:attr:`all_out_keys`</span>
+<span class="sd">        :return: modified ``annotations`` dict, extended by the keys from</span>
+<span class="sd">            :py:attr:`all_out_keys` with the recursively generated values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># About to overwrite a value without permission?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">in</span> <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">((</span><span class="s2">&quot;out_key </span><span class="si">{}</span><span class="s2"> exists as key in given dict </span><span class="si">{}</span><span class="s2">, and &quot;</span>
+                            <span class="s2">&quot;overwrite is False&quot;</span><span class="p">)</span>
+                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">,</span> <span class="n">annotations</span><span class="p">))</span>
+
+        <span class="c1"># Any needed in_keys missing from annotations?</span>
+        <span class="n">missing_keys</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_in_keys</span> <span class="o">-</span> <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Input keys </span><span class="si">{}</span><span class="s2"> for operation </span><span class="si">{}</span><span class="s2"> missing from &quot;</span>
+                              <span class="s2">&quot;annotation keys </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing_keys</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                                     <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="c1"># Add children outputs:</span>
+        <span class="n">keys_to_overwrite</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_out_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">child_op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="c1"># Output not yet created/existent?</span>
+            <span class="k">if</span> <span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">in</span> <span class="n">keys_to_overwrite</span> <span class="ow">or</span> \
+                    <span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">annotations</span> <span class="o">=</span> <span class="n">child_op</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+            <span class="c1"># Mark output as created.</span>
+            <span class="k">if</span> <span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">in</span> <span class="n">keys_to_overwrite</span><span class="p">:</span>
+                <span class="n">keys_to_overwrite</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span><span class="p">)</span>
+
+        <span class="c1"># Any needed input is None?</span>
+        <span class="n">none_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation_keys</span> <span class="k">if</span>
+                                <span class="n">annotations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">none_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_none</span><span class="p">:</span>  <span class="c1"># Fill output with None</span>
+                <span class="n">annotations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="n">annotations</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">none_keys</span><span class="p">:</span>
+                    <span class="n">annotations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Received None values for keys </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">none_keys</span><span class="p">))</span>
+
+        <span class="c1"># Finally execute operation:</span>
+        <span class="n">annotations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">annotations</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The input keys which are child operations.</span>
+<span class="sd">        Input keys are stored in :py:attr:`in_keys`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">consts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The constant string keys in the input keys.</span>
+<span class="sd">        The :py:attr:`in_keys` contains both the constant keys which are to be</span>
+<span class="sd">        directly found in a given annotations dictionary, and child</span>
+<span class="sd">        operations whose output is used. For getting the child operations</span>
+<span class="sd">        stored in :py:attr:`in_keys` refer to :py:attr:`children`.</span>
+<span class="sd">        Should preserve the order in which children occur in :py:attr:`in_keys`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">operation_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The keys used for this parent operation (constants and children</span>
+<span class="sd">        output keys).</span>
+<span class="sd">        All :py:attr:`consts` and the :py:attr:`out_key` of all</span>
+<span class="sd">        :py:attr:`children` operations.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">consts</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">out_key</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_in_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;All string input keys both of self and of all child operations.</span>
+<span class="sd">        (See :py:attr:`in_keys`.)</span>
+<span class="sd">        These are the keys that must be present in an annotation when called</span>
+<span class="sd">        on it. Should preserve the order in which keys and children occur in</span>
+<span class="sd">        :py:attr:`in_keys`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_key_lists</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">all_in_keys</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">key</span><span class="p">]</span>
+             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">base_key_list</span> <span class="ow">in</span> <span class="n">base_key_lists</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">base_key_list</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_out_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Output keys of self and all child operations.</span>
+<span class="sd">        (See :py:attr:`children`).</span>
+<span class="sd">        Should preserve the order in which children occur in :py:attr:`in_keys`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_key_lists</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">all_out_keys</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]</span> <span class="o">+</span> <span class="p">[{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">}]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">out_key_list</span> <span class="ow">in</span> <span class="n">out_key_lists</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">out_key_list</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Merge.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Actual merge operation on values of the input keys</span>
+<span class="sd">        in annotations.</span>
+<span class="sd">        See :py:attr:`in_keys`.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Merge.parse"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.parse">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">specifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse a merge operation in conjunctive normal form.</span>
+<span class="sd">        Will return the original string if it does not contain operations</span>
+<span class="sd">        specifiers.</span>
+
+<span class="sd">        :param specifier: the string specifier to parse</span>
+<span class="sd">        :param init_args: any keyword arguments for init of the generated</span>
+<span class="sd">            operations (parent and all children);</span>
+<span class="sd">            ``out_key`` is only applied to the parent operation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate</span>
+        <span class="k">if</span> <span class="n">specifier</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">AND</span><span class="o">.</span><span class="n">SYMB</span><span class="p">)</span> <span class="ow">or</span> <span class="n">specifier</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">AND</span><span class="o">.</span><span class="n">SYMB</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong usage of AND symbol </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">AND</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">specifier</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">specifier</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">OR</span><span class="o">.</span><span class="n">SYMB</span><span class="p">)</span> <span class="ow">or</span> <span class="n">specifier</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">OR</span><span class="o">.</span><span class="n">SYMB</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong usage of OR symbol </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">OR</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">specifier</span><span class="p">))</span>
+
+        <span class="n">symbol_classes</span> <span class="o">=</span> <span class="p">{</span><span class="n">AND</span><span class="o">.</span><span class="n">SYMB</span><span class="p">:</span> <span class="n">AND</span><span class="p">,</span> <span class="n">OR</span><span class="o">.</span><span class="n">SYMB</span><span class="p">:</span> <span class="n">OR</span><span class="p">,</span> <span class="n">NOT</span><span class="o">.</span><span class="n">SYMB</span><span class="p">:</span> <span class="n">NOT</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">symb</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">symbol_classes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Validate specifier: Are there double occurrences of symb?</span>
+            <span class="k">if</span> <span class="s1">&#39;&#39;</span> <span class="ow">in</span> <span class="n">specifier</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">symb</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;Invalid specifier for </span><span class="si">{}</span><span class="s2"> (symbol </span><span class="si">{}</span><span class="s2">): </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                     <span class="s2">&quot;but expected </span><span class="si">{}</span><span class="s2">&quot;</span>
+                     <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">symb</span><span class="p">,</span> <span class="n">specifier</span><span class="p">,</span>
+                              <span class="n">symb</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">specifier</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">symb</span><span class="p">)</span> <span class="k">if</span>
+                                         <span class="n">s</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">])))</span>
+            <span class="k">if</span> <span class="n">symb</span> <span class="ow">in</span> <span class="n">specifier</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">Merge</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">init_args</span><span class="p">,</span> <span class="s1">&#39;out_key&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+                             <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">specifier</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">symb</span><span class="p">)</span> <span class="k">if</span> <span class="n">spec</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">],</span>
+                           <span class="o">**</span><span class="n">init_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">specifier</span></div>
+
+<div class="viewcode-block" id="Merge.apply"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.apply">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">specifier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">],</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+              <span class="o">**</span><span class="n">init_args</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse ``specifier`` and return its result on annotations</span>
+<span class="sd">        if it&#39;s an operation.</span>
+
+<span class="sd">        :param specifier: specifier for :py:meth:`parse`</span>
+<span class="sd">        :param annotations: dictionary to which to apply the parsed operation</span>
+<span class="sd">        :param init_args: further keyword arguments to init the parent</span>
+<span class="sd">            operation while parsing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Merge</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)(</span><span class="n">annotations</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.is_conjunctive_normal_form"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge.is_conjunctive_normal_form">[docs]</a>    <span class="k">def</span> <span class="nf">is_conjunctive_normal_form</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current formula is in conjunctive normal form.&quot;&quot;&quot;</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)]</span>
+        <span class="n">children_cls</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">((</span><span class="n">op</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">children</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">AND</span> <span class="ow">in</span> <span class="n">children_cls</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">OR</span><span class="p">)</span> <span class="ow">and</span> <span class="n">OR</span> <span class="ow">in</span> <span class="n">children_cls</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NOT</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="p">(</span><span class="n">OR</span> <span class="ow">in</span> <span class="n">children_cls</span> <span class="ow">or</span> <span class="n">NOT</span> <span class="ow">in</span> <span class="n">children_cls</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">child</span><span class="o">.</span><span class="n">is_conjunctive_normal_form</span><span class="p">()</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="AND"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.AND.html#hybrid_learning.datasets.transforms.dict_transforms.AND">[docs]</a><span class="k">class</span> <span class="nc">AND</span><span class="p">(</span><span class="n">Merge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Intersection/AND operation on binary masks and scalars.&quot;&quot;&quot;</span>
+    <span class="n">SYMB</span> <span class="o">=</span> <span class="s2">&quot;&amp;&amp;&quot;</span>
+
+<div class="viewcode-block" id="AND.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.AND.html#hybrid_learning.datasets.transforms.dict_transforms.AND.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Store intersection of :py:attr:`~Merge.in_keys` masks as</span>
+<span class="sd">        :py:attr:`~Merge.out_key`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">([</span><span class="n">annotations</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation_keys</span><span class="p">],</span>
+                       <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="OR"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.OR.html#hybrid_learning.datasets.transforms.dict_transforms.OR">[docs]</a><span class="k">class</span> <span class="nc">OR</span><span class="p">(</span><span class="n">Merge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Union/OR operation on binary masks and scalars.&quot;&quot;&quot;</span>
+    <span class="n">SYMB</span> <span class="o">=</span> <span class="s2">&quot;||&quot;</span>
+
+<div class="viewcode-block" id="OR.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.OR.html#hybrid_learning.datasets.transforms.dict_transforms.OR.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Store union of :py:attr:`~Merge.in_keys` masks as</span>
+<span class="sd">        :py:attr:`~Merge.out_key`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">annotations</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation_keys</span><span class="p">],</span>
+                      <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div></div>
+
+
+<div class="viewcode-block" id="NOT"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT">[docs]</a><span class="k">class</span> <span class="nc">NOT</span><span class="p">(</span><span class="n">Merge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inversion/NOT operation on binary masks and scalars.&quot;&quot;&quot;</span>
+    <span class="n">SYMB</span> <span class="o">=</span> <span class="s2">&quot;~&quot;</span>
+
+<div class="viewcode-block" id="NOT.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        Note that there currently may only be one input key</span>
+<span class="sd">        (which already determines the output key).</span>
+
+<span class="sd">        :param in_key: the only input key (must be a string currently)</span>
+<span class="sd">        :param init_args: further keyword arguments to</span>
+<span class="sd">            :py:class:`super init &lt;Merge&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NOT</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The only operational input key.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="NOT.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Store inverted version of :py:attr:`~Merge.in_keys` as</span>
+<span class="sd">        :py:attr:`~Merge.out_key`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">annotations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_key</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="NOT.normalized_repr"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT.normalized_repr">[docs]</a>    <span class="k">def</span> <span class="nf">normalized_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Special case of :py:meth:`Merge.normalized_repr`</span>
+<span class="sd">        (:py:class:`NOT` cannot have any children at the moment).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_key</span></div>
+
+<div class="viewcode-block" id="NOT.__str__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_key</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DropAnn"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DropAnn.html#hybrid_learning.datasets.transforms.dict_transforms.DropAnn">[docs]</a><span class="k">class</span> <span class="nc">DropAnn</span><span class="p">(</span><span class="n">DictTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Drop the annotation with given key from the annotations dict.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DropAnn.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DropAnn.html#hybrid_learning.datasets.transforms.dict_transforms.DropAnn.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param drop_key: see :py:attr:`drop_key`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop_key</span> <span class="o">=</span> <span class="n">drop_key</span>
+        <span class="sd">&quot;&quot;&quot;Dict key to drop on call.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="DropAnn.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DropAnn.html#hybrid_learning.datasets.transforms.dict_transforms.DropAnn.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Drop the item at configured key from ``annotations``.</span>
+<span class="sd">        The configured key is stored in :py:attr:`drop_key`.&quot;&quot;&quot;</span>
+        <span class="n">annotations</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">drop_key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">annotations</span></div></div>
+
+
+<div class="viewcode-block" id="RestrictDict"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html#hybrid_learning.datasets.transforms.dict_transforms.RestrictDict">[docs]</a><span class="k">class</span> <span class="nc">RestrictDict</span><span class="p">(</span><span class="n">DictTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Restrict the annotation dictionary to the annotation items with</span>
+<span class="sd">    featuring one of the selected keys.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RestrictDict.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html#hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param selected_keys: see :py:attr:`selected_keys`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected_keys</span>
+        <span class="sd">&quot;&quot;&quot;The keys to restrict the dict to.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="RestrictDict.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html#hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Restrict the annotation dict to the selected keys.</span>
+<span class="sd">        Selected keys are stored in :py:attr:`selected_keys`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">annotations</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_keys</span><span class="p">}</span></div></div>
+
+
+<div class="viewcode-block" id="FlattenDict"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.html#hybrid_learning.datasets.transforms.dict_transforms.FlattenDict">[docs]</a><span class="k">class</span> <span class="nc">FlattenDict</span><span class="p">(</span><span class="n">DictTransform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the annotations dict at selected key.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FlattenDict.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.html#hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param selected_key: see :py:attr:`selected_key`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">selected_key</span>
+        <span class="sd">&quot;&quot;&quot;The key of the annotation value to return.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="FlattenDict.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.html#hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Flatten ``annotations`` dict to its value at the configured key.</span>
+<span class="sd">        The configured key is stored in :py:attr:`selected_key`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">annotations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_key</span><span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

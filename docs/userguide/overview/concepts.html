@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Concept analysis and usage tooling &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Dataset tooling" href="datasets.html" />
+    <link rel="prev" title="Overview" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Overview</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Concept analysis and usage tooling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#analysis-handles">Analysis Handles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#helper-and-utility-classes">Helper and Utility Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#concept-and-concept-embedding-modelling">Concept and Concept Embedding Modelling</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="datasets.html">Dataset tooling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a concept analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_dataset_handles/index.html">Custom dataset handles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="index.html">Overview</a> &raquo;</li>
+        
+      <li>Concept analysis and usage tooling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/userguide/overview/concepts.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="concept-analysis-and-usage-tooling">
+<h1>Concept analysis and usage tooling<a class="headerlink" href="#concept-analysis-and-usage-tooling" title="Permalink to this headline">¶</a></h1>
+<p>The tooling for concept analysis is collected in the module <a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.html#module-hybrid_learning.concepts" title="hybrid_learning.concepts"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.concepts</span></code></a>.
+For details have a look at the <a class="reference internal" href="../../apiref/index.html#api-reference"><span class="std std-ref">API Reference</span></a>.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#analysis-handles" id="id1">Analysis Handles</a></p></li>
+<li><p><a class="reference internal" href="#helper-and-utility-classes" id="id2">Helper and Utility Classes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#training-and-validation-interface" id="id3">Training and Validation Interface</a></p></li>
+<li><p><a class="reference internal" href="#training-kpis" id="id4">Training KPIs</a></p></li>
+<li><p><a class="reference internal" href="#intermediate-output-retrieval" id="id5">Intermediate Output Retrieval</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#concept-and-concept-embedding-modelling" id="id6">Concept and Concept Embedding Modelling</a></p></li>
+</ul>
+</div>
+<div class="section" id="analysis-handles">
+<h2><a class="toc-backref" href="#contents">Analysis Handles</a><a class="headerlink" href="#analysis-handles" title="Permalink to this headline">¶</a></h2>
+<p>The actual analysis handle is <a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.analysis.ConceptAnalysis.html#hybrid_learning.concepts.analysis.ConceptAnalysis" title="hybrid_learning.concepts.analysis.ConceptAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptAnalysis</span></code></a>.</p>
+</div>
+<div class="section" id="helper-and-utility-classes">
+<h2><a class="toc-backref" href="#contents">Helper and Utility Classes</a><a class="headerlink" href="#helper-and-utility-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="training-and-validation-interface">
+<h3><a class="toc-backref" href="#contents">Training and Validation Interface</a><a class="headerlink" href="#training-and-validation-interface" title="Permalink to this headline">¶</a></h3>
+<p>The following handle classes from <a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.html#module-hybrid_learning.concepts.models" title="hybrid_learning.concepts.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">models</span></code></a> are used to provide a generic
+training and validation interface for pytorch models:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle.html#hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle" title="hybrid_learning.concepts.models.base_handles.early_stopping.EarlyStoppingHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EarlyStoppingHandle</span></code></a></p></td>
+<td><p>Handle encapsulating early stopping checks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.models.base_handles.resettable_optimizer.ResettableOptimizer" title="hybrid_learning.concepts.models.base_handles.resettable_optimizer.ResettableOptimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResettableOptimizer</span></code></a></p></td>
+<td><p>Wrapper around torch optimizers to enable reset and automatic learning rate handling.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle.html#hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle" title="hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TrainEvalHandle</span></code></a></p></td>
+<td><p>Handle for training and evaluation of pytorch models.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="training-kpis">
+<h3><a class="toc-backref" href="#contents">Training KPIs</a><a class="headerlink" href="#training-kpis" title="Permalink to this headline">¶</a></h3>
+<p>Some loss and metric functions are available for different training setups of the concept models.
+They all inherit from <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a>.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.AbstractIoULike.html#hybrid_learning.concepts.kpis.AbstractIoULike" title="hybrid_learning.concepts.kpis.AbstractIoULike"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractIoULike</span></code></a></p></td>
+<td><p>General functions for intersection over union like calculation on binarized in- and output.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.AbstractIoULoss.html#hybrid_learning.concepts.kpis.AbstractIoULoss" title="hybrid_learning.concepts.kpis.AbstractIoULoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractIoULoss</span></code></a></p></td>
+<td><p>Shared settings for intersection over union based losses.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.AbstractIoUMetric.html#hybrid_learning.concepts.kpis.AbstractIoUMetric" title="hybrid_learning.concepts.kpis.AbstractIoUMetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractIoUMetric</span></code></a></p></td>
+<td><p>Common properties of IoU calculation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.BalancedBCELoss.html#hybrid_learning.concepts.kpis.BalancedBCELoss" title="hybrid_learning.concepts.kpis.BalancedBCELoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BalancedBCELoss</span></code></a></p></td>
+<td><p>Balanced binary cross entropy loss.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.BatchReduction.html#hybrid_learning.concepts.kpis.BatchReduction" title="hybrid_learning.concepts.kpis.BatchReduction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchReduction</span></code></a></p></td>
+<td><p>Aggregation types to reduce the 0th (meaning the batch) dimension of a tensor.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.IoU.html#hybrid_learning.concepts.kpis.IoU" title="hybrid_learning.concepts.kpis.IoU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IoU</span></code></a></p></td>
+<td><p>Calc sample-wise intersection over union (IoU) values output batch.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.MaskRCNNLoss.html#hybrid_learning.concepts.kpis.MaskRCNNLoss" title="hybrid_learning.concepts.kpis.MaskRCNNLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MaskRCNNLoss</span></code></a></p></td>
+<td><p>Loss and associated data for a standard Mask R-CNN model.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.Net2VecLoss.html#hybrid_learning.concepts.kpis.Net2VecLoss" title="hybrid_learning.concepts.kpis.Net2VecLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Net2VecLoss</span></code></a></p></td>
+<td><p>Simplified intersection over union as loss.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.SetIoU.html#hybrid_learning.concepts.kpis.SetIoU" title="hybrid_learning.concepts.kpis.SetIoU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetIoU</span></code></a></p></td>
+<td><p>Calc set intersection over union (IoU) value for a batch of outputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.TverskyLoss.html#hybrid_learning.concepts.kpis.TverskyLoss" title="hybrid_learning.concepts.kpis.TverskyLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TverskyLoss</span></code></a></p></td>
+<td><p>Calc Tversky loss (balanced Dice loss) for given outputs amd targets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.kpis.WeightedLossSum.html#hybrid_learning.concepts.kpis.WeightedLossSum" title="hybrid_learning.concepts.kpis.WeightedLossSum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WeightedLossSum</span></code></a></p></td>
+<td><p>Weighted sum of loss results.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="intermediate-output-retrieval">
+<h3><a class="toc-backref" href="#contents">Intermediate Output Retrieval</a><a class="headerlink" href="#intermediate-output-retrieval" title="Permalink to this headline">¶</a></h3>
+<p>To retrieve the intermediate output of pytorch models, the <a class="reference external" href="https://pytorch.org/tutorials/beginner/former_torchies/nnft_tutorial.html#forward-and-backward-function-hooks">pytorch hooks mechanism</a> is used.
+Wrappers for adding/retrieving intermediate output of DNNs are defined in the module
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.html#module-hybrid_learning.concepts.models.model_extension" title="hybrid_learning.concepts.models.model_extension"><code class="xref py py-mod docutils literal notranslate"><span class="pre">model_extension</span></code></a>:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber" title="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActivationMapGrabber</span></code></a></p></td>
+<td><p>Wrapper class to obtain intermediate outputs from models.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html#hybrid_learning.concepts.models.model_extension.ExtendedModelStump" title="hybrid_learning.concepts.models.model_extension.ExtendedModelStump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtendedModelStump</span></code></a></p></td>
+<td><p>Optionally apply a modification to the model stump output in the forward method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HooksHandle</span></code></a></p></td>
+<td><p>Wrapper that registers and unregisters hooks from model that save intermediate output.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender" title="hybrid_learning.concepts.models.model_extension.ModelExtender"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelExtender</span></code></a></p></td>
+<td><p>This class wraps a given model and extends its output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelStump</span></code></a></p></td>
+<td><p>Obtain the intermediate output of a sub-module of a complete NN.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.dummy_output.html#hybrid_learning.concepts.models.model_extension.dummy_output" title="hybrid_learning.concepts.models.model_extension.dummy_output"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dummy_output</span></code></a></p></td>
+<td><p>Select dummy output of model’s given or all layers for all-zero tensor of input size.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.output_size.html#hybrid_learning.concepts.models.model_extension.output_size" title="hybrid_learning.concepts.models.model_extension.output_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_size</span></code></a></p></td>
+<td><p>Feed dummy input of input_size to model to determine the model output size.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.output_sizes.html#hybrid_learning.concepts.models.model_extension.output_sizes" title="hybrid_learning.concepts.models.model_extension.output_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_sizes</span></code></a></p></td>
+<td><p>Obtain the output sizes of the given or all layers for given input size.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="concept-and-concept-embedding-modelling">
+<h2><a class="toc-backref" href="#contents">Concept and Concept Embedding Modelling</a><a class="headerlink" href="#concept-and-concept-embedding-modelling" title="Permalink to this headline">¶</a></h2>
+<p>A concept is defined by sample data points and is modeled as an instance of
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span></code></a>.
+A concept can be used to train a model for predicting/detecting it properly.
+Here, concepts are used to train a linear <em>concept model</em> (e.g. an instance of
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D.html#hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D" title="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptSegmentationModel2D</span></code></a>),
+which predicts a concept from the intermediate output of a DNN.
+The parameters of a trained concept model describe a linear <em>concept embedding</em>
+of a concept into a layer of a DNN. Embeddings and operations thereon are
+modeled in <a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.embeddings.ConceptEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptEmbedding</span></code></a>.
+For translation between concept model and concept embedding use</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.to_embedding" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.to_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_embedding()</span></code></a> for model to embedding, and</p></li>
+<li><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.from_embedding" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.from_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_embedding()</span></code></a> for embedding to model.</p></li>
+</ul>
+<p>The relevant modelling classes are:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Concept</span></code></a></p></td>
+<td><p>Representation of a concept with data and meta information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SegmentationConcept2D</span></code></a></p></td>
+<td><p>Concept with segmentation data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.embeddings.ConceptEmbedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConceptEmbedding</span></code></a></p></td>
+<td><p>Representation of an embedding of a concept within a DNN.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConceptDetectionModel2D</span></code></a></p></td>
+<td><p>Pytorch model implementation of a concept embedding for 2D conv layers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D.html#hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D" title="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConceptSegmentationModel2D</span></code></a></p></td>
+<td><p>A concept model that segments the concept in an image.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The concept model classes
+(<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDetectionModel2D</span></code></a> and
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D.html#hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D" title="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptSegmentationModel2D</span></code></a>)
+are accompanied by custom handles for training and testing derived from
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle.html#hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle" title="hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TrainEvalHandle()</span></code></a>.
+The handles are:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_detection.ConceptDetection2DTrainTestHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConceptDetection2DTrainTestHandle</span></code></a></p></td>
+<td><p>Train test handle for concept localization models.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentation2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentation2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentation2DTrainTestHandle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConceptSegmentation2DTrainTestHandle</span></code></a></p></td>
+<td><p>Train and test handle for concept segmentation providing loss and metric defaults.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="datasets.html" class="btn btn-neutral float-right" title="Dataset tooling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

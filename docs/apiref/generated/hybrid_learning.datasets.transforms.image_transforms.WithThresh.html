@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WithThresh &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_square" href="hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html" />
+    <link rel="prev" title="ToDevice" href="hybrid_learning.datasets.transforms.image_transforms.ToDevice.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.html">dict_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.html">encoder</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.html">image_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.html">tuple_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.transforms.html">transforms</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.transforms.image_transforms.html">image_transforms</a> &raquo;</li>
+        
+      <li>WithThresh</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.transforms.image_transforms.WithThresh.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="withthresh">
+<h1>WithThresh<a class="headerlink" href="#withthresh" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh">
+<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.datasets.transforms.image_transforms.</code><code class="sig-name descname">WithThresh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trafo</span></em>, <em class="sig-param"><span class="n">pre_thresh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_thresh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch_wise</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pre_low_class</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pre_high_class</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">post_low_class</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">post_high_class</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/image_transforms.html#WithThresh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.transforms.image_transforms.ImageTransform</span></code></a></p>
+<p>Wrap a batch transformation with binarizing (and unsqueezing) before
+and after.</p>
+<p>The transformation should accept a tensor holding a masks (respectively a
+batch of masks if
+<a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise"><code class="xref py py-attr docutils literal notranslate"><span class="pre">batch_wise</span></code></a>
+is <code class="docutils literal notranslate"><span class="pre">True</span></code>) and return a transformed batch.
+If given, <code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code> is applied before, and
+<code class="docutils literal notranslate"><span class="pre">post_thresh</span></code> after the transformation.
+The transformation is assumed to require a batch of masks, so if
+<a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise"><code class="xref py py-attr docutils literal notranslate"><span class="pre">batch_wise</span></code></a>
+is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the missing batch dimension is handled.
+Thus, this wrapper can also be used to turn a batch operation
+into one on single masks.</p>
+<p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trafo</strong> (<em>Callable</em><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a><em>]</em>) – the transformation instance to wrap</p></li>
+<li><p><strong>pre_thresh</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the tensors to be modified are
+binarized to 0 and 1 values with threshold <code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code> before
+modification</p></li>
+<li><p><strong>post_thresh</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the tensors to be modified are
+binarized to 0 and 1 values with threshold <code class="docutils literal notranslate"><span class="pre">post_thresh</span></code> after
+modification</p></li>
+<li><p><strong>batch_wise</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – see
+<a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise"><code class="xref py py-attr docutils literal notranslate"><span class="pre">batch_wise</span></code></a></p></li>
+<li><p><strong>pre_high_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that exceed <code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code></p></li>
+<li><p><strong>pre_low_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that are below
+<code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code></p></li>
+<li><p><strong>post_high_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that exceed
+<code class="docutils literal notranslate"><span class="pre">post_thresh</span></code></p></li>
+<li><p><strong>post_low_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that are below
+<code class="docutils literal notranslate"><span class="pre">post_thresh</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.settings" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce instance.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageTransform</span></code></a></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.settings" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__init__" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(trafo[, pre_thresh, post_thresh, …])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(masks)</p></td>
+<td><p>Forward method in which to apply the trafo and thresholding.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageTransform</span></code></a></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(masks)</p></td>
+<td><p>Forward method in which to apply the trafo and thresholding.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__">
+<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">masks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/image_transforms.html#WithThresh.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward method in which to apply the trafo and thresholding.</p>
+<p>Pre-threshold, modify, and post-threshold given mask(s).
+The thresholding is applied, if the corresponding
+<a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.pre_thresholder" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.pre_thresholder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pre_thresholder</span></code></a> / <a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.post_thresholder" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.post_thresholder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">post_thresholder</span></code></a>
+is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If <a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise"><code class="xref py py-attr docutils literal notranslate"><span class="pre">batch_wise</span></code></a> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, it is assumed a single mask
+was given (no batch dimension).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>masks</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a>) – <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> of shape
+<code class="docutils literal notranslate"><span class="pre">([batch_size,]</span> <span class="pre">1,</span> <span class="pre">width,</span> <span class="pre">height)</span></code> holding masks for one batch.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the modified and thresholded masks</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trafo</span></em>, <em class="sig-param"><span class="n">pre_thresh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_thresh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch_wise</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pre_low_class</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">pre_high_class</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">post_low_class</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">post_high_class</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/image_transforms.html#WithThresh.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trafo</strong> (<em>Callable</em><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a><em>]</em>) – the transformation instance to wrap</p></li>
+<li><p><strong>pre_thresh</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the tensors to be modified are
+binarized to 0 and 1 values with threshold <code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code> before
+modification</p></li>
+<li><p><strong>post_thresh</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the tensors to be modified are
+binarized to 0 and 1 values with threshold <code class="docutils literal notranslate"><span class="pre">post_thresh</span></code> after
+modification</p></li>
+<li><p><strong>batch_wise</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – see
+<a class="reference internal" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise"><code class="xref py py-attr docutils literal notranslate"><span class="pre">batch_wise</span></code></a></p></li>
+<li><p><strong>pre_high_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that exceed <code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code></p></li>
+<li><p><strong>pre_low_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that are below
+<code class="docutils literal notranslate"><span class="pre">pre_thresh</span></code></p></li>
+<li><p><strong>post_high_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that exceed
+<code class="docutils literal notranslate"><span class="pre">post_thresh</span></code></p></li>
+<li><p><strong>post_low_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – value to set items to that are below
+<code class="docutils literal notranslate"><span class="pre">post_thresh</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise">
+<code class="sig-name descname">batch_wise</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)">bool</a></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.batch_wise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to assume a batch of masks is given (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or a
+single mask (<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.post_thresholder">
+<code class="sig-name descname">post_thresholder</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize" title="hybrid_learning.datasets.transforms.image_transforms.Binarize">Binarize</a><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.post_thresholder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binarizing transformation applied to targets after IoU encoding if
+not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.pre_thresholder">
+<code class="sig-name descname">pre_thresholder</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize" title="hybrid_learning.datasets.transforms.image_transforms.Binarize">Binarize</a><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.pre_thresholder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binarizing transformation applied to targets before IoU encoding
+if not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.settings">
+<em class="property">property </em><code class="sig-name descname">settings</code><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings to reproduce instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.transforms.image_transforms.WithThresh.trafo">
+<code class="sig-name descname">trafo</code><em class="property">: Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.image_transforms.WithThresh.trafo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifier (en- or decoder) module that is used for modifications.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html" class="btn btn-neutral float-right" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_square" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hybrid_learning.datasets.transforms.image_transforms.ToDevice.html" class="btn btn-neutral float-left" title="ToDevice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

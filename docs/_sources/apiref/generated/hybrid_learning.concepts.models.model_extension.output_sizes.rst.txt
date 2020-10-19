@@ -1,0 +1,6 @@
+hybrid\_learning.concepts.models.model\_extension.output\_sizes
+===============================================================
+
+.. currentmodule:: hybrid_learning.concepts.models.model_extension
+
+.. autofunction:: output_sizes

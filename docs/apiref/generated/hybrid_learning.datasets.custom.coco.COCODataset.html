@@ -1,0 +1,825 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>COCODataset &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ConceptDataset" href="hybrid_learning.datasets.custom.coco.ConceptDataset.html" />
+    <link rel="prev" title="BodyParts" href="hybrid_learning.datasets.custom.coco.BodyParts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.custom.coco.html">coco</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
+        
+          <li><a href="hybrid_learning.datasets.custom.coco.html">coco</a> &raquo;</li>
+        
+      <li>COCODataset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.coco.COCODataset.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cocodataset">
+<h1>COCODataset<a class="headerlink" href="#cocodataset" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset">
+<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.datasets.custom.coco.</code><code class="sig-name descname">COCODataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset_root</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">annotations_fp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">split</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/abc.html#abc.ABC" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a>, <a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.base.BaseDataset</span></code></a></p>
+<p>Attributes and functions common for keypoint based datasets derived
+from MS COCO.</p>
+<p>The handle encompasses functionality for:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Item retrieval</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__getitem__" title="hybrid_learning.datasets.base.BaseDataset.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hybrid_learning.datasets.base.BaseDataset.__getitem__()</span></code></a> must be
+implemented in subclasses; available items:</p>
+<ul class="simple">
+<li><p><em>raw annotations:</em>
+Get all raw COCO annotations for an image via <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.raw_anns" title="hybrid_learning.datasets.custom.coco.COCODataset.raw_anns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">raw_anns()</span></code></a>.</p></li>
+<li><p><em>image file path:</em>
+via <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_filepath" title="hybrid_learning.datasets.custom.coco.COCODataset.image_filepath"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image_filepath()</span></code></a>.</p></li>
+<li><p><em>image meta info:</em>
+via <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_meta" title="hybrid_learning.datasets.custom.coco.COCODataset.image_meta"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image_meta()</span></code></a>.</p></li>
+<li><p><em>image attribution and license info:</em>
+via <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_attribution" title="hybrid_learning.datasets.custom.coco.COCODataset.image_attribution"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image_attribution()</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Subsetting</dt>
+<dd class="field-even"><p>Use <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.subset" title="hybrid_learning.datasets.custom.coco.COCODataset.subset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subset()</span></code></a> for subsetting according to given conditions.
+To create/store annotations reflecting this subset, use
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns" title="hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_raw_anns()</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>annotations_fp</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>split</strong> (<em>Union</em><em>[</em><a class="reference internal" href="hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit" title="hybrid_learning.datasets.base.DatasetSplit"><em>hybrid_learning.datasets.base.DatasetSplit</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – root directory under which to find
+images and annotations</p></li>
+<li><p><strong>annotations_fp</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – path to the annotations file</p></li>
+<li><p><strong>split</strong> (<em>Union</em><em>[</em><a class="reference internal" href="hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit" title="hybrid_learning.datasets.base.DatasetSplit"><em>hybrid_learning.datasets.base.DatasetSplit</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the dataset split (as string specifier or directly as
+<a class="reference internal" href="hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit" title="hybrid_learning.datasets.base.DatasetSplit"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetSplit</span></code></a>);
+must be given in case the default <code class="docutils literal notranslate"><span class="pre">dataset_root</span></code> or
+<code class="docutils literal notranslate"><span class="pre">annotations_fp</span></code> are to be used</p></li>
+<li><p><strong>kwargs</strong> – further arguments for super class <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.COMMERCIAL_LICENSE_IDS" title="hybrid_learning.datasets.custom.coco.COCODataset.COMMERCIAL_LICENSE_IDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COMMERCIAL_LICENSE_IDS</span></code></a></p></td>
+<td><p>IDs of COCO image licenses that allow for commercial use.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.DATASET_ROOT_TEMPL" title="hybrid_learning.datasets.custom.coco.COCODataset.DATASET_ROOT_TEMPL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATASET_ROOT_TEMPL</span></code></a></p></td>
+<td><p>Default root directory template for image files that accepts the <code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.ANNOTATION_FP_TEMPL" title="hybrid_learning.datasets.custom.coco.COCODataset.ANNOTATION_FP_TEMPL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANNOTATION_FP_TEMPL</span></code></a></p></td>
+<td><p>Default template for the annotation file path that accepts the <code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>) and the <code class="docutils literal notranslate"><span class="pre">root</span></code> directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.DEFAULT_IMG_SIZE" title="hybrid_learning.datasets.custom.coco.COCODataset.DEFAULT_IMG_SIZE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_IMG_SIZE</span></code></a></p></td>
+<td><p>Default target size of images to use for the default transforms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.settings" title="hybrid_learning.datasets.custom.coco.COCODataset.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Return information to init new dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.license_mapping" title="hybrid_learning.datasets.custom.coco.COCODataset.license_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">license_mapping</span></code></a></p></td>
+<td><p>The mapping of image IDs to license descriptions and URLs.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.settings" title="hybrid_learning.datasets.custom.coco.COCODataset.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Return information to init new dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.subset" title="hybrid_learning.datasets.custom.coco.COCODataset.subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset</span></code></a>(*[, license_ids, body_parts, …])</p></td>
+<td><p>Restrict the items by the given selection criteria.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns" title="hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_raw_anns</span></code></a>([description, save_as])</p></td>
+<td><p>Create the content of a new valid annotations file restricted to the current image IDs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.copy_to" title="hybrid_learning.datasets.custom.coco.COCODataset.copy_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_to</span></code></a>([root_root, description, overwrite, …])</p></td>
+<td><p>Create a new dataset by copying used images and annotations to new root folder.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.load_orig_image" title="hybrid_learning.datasets.custom.coco.COCODataset.load_orig_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_orig_image</span></code></a>(i)</p></td>
+<td><p>Load unmodified image by index in dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_filepath" title="hybrid_learning.datasets.custom.coco.COCODataset.image_filepath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_filepath</span></code></a>(i)</p></td>
+<td><p>Path to image file at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_attribution" title="hybrid_learning.datasets.custom.coco.COCODataset.image_attribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_attribution</span></code></a>(i)</p></td>
+<td><p>Get attribution information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_meta" title="hybrid_learning.datasets.custom.coco.COCODataset.image_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_meta</span></code></a>(i)</p></td>
+<td><p>Load the dict with meta information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.raw_anns" title="hybrid_learning.datasets.custom.coco.COCODataset.raw_anns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">raw_anns</span></code></a>(i)</p></td>
+<td><p>Return the list of raw annotations for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.getitem" title="hybrid_learning.datasets.custom.coco.COCODataset.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(item)</p></td>
+<td><p>Item selection differs depending on the desired annotation data.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.getitem" title="hybrid_learning.datasets.custom.coco.COCODataset.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(item)</p></td>
+<td><p>Item selection differs depending on the desired annotation data.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.__init__" title="hybrid_learning.datasets.custom.coco.COCODataset.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([dataset_root, annotations_fp, split])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.__len__" title="hybrid_learning.datasets.custom.coco.COCODataset.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+<td><p>Length is given by the length of the index mapping.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.__init__" title="hybrid_learning.datasets.custom.coco.COCODataset.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([dataset_root, annotations_fp, split])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.__len__" title="hybrid_learning.datasets.custom.coco.COCODataset.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+<td><p>Length is given by the length of the index mapping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Nice printing function.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></summary><table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset_root</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">annotations_fp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">split</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – root directory under which to find
+images and annotations</p></li>
+<li><p><strong>annotations_fp</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – path to the annotations file</p></li>
+<li><p><strong>split</strong> (<em>Union</em><em>[</em><a class="reference internal" href="hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit" title="hybrid_learning.datasets.base.DatasetSplit"><em>hybrid_learning.datasets.base.DatasetSplit</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the dataset split (as string specifier or directly as
+<a class="reference internal" href="hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit" title="hybrid_learning.datasets.base.DatasetSplit"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetSplit</span></code></a>);
+must be given in case the default <code class="docutils literal notranslate"><span class="pre">dataset_root</span></code> or
+<code class="docutils literal notranslate"><span class="pre">annotations_fp</span></code> are to be used</p></li>
+<li><p><strong>kwargs</strong> – further arguments for super class <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.__len__">
+<code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Length is given by the length of the index mapping.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.all_keypts_visible">
+<em class="property">static </em><code class="sig-name descname">all_keypts_visible</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ann</span></em>, <em class="sig-param"><span class="n">keypoint_idxs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.all_keypts_visible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.all_keypts_visible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether all given keypoints are marked as visible in the given
+annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ann</strong> – coco annotation to check</p></li>
+<li><p><strong>keypoint_idxs</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – keypoint constraints:
+starting indices of keypoints in the <code class="docutils literal notranslate"><span class="pre">keypoint</span></code> list of the
+annotation that must be marked as visible
+(cf. <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs" title="hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_keypoint_idxs()</span></code></a>);
+if <code class="docutils literal notranslate"><span class="pre">None</span></code> or empty, <code class="docutils literal notranslate"><span class="pre">True</span></code> is returned for the annotation
+to be regarded valid</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>whether all specified keypoints are marked as visible in the
+annotation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.copy_to">
+<code class="sig-name descname">copy_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">root_root</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dataset_root</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.copy_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.copy_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new dataset by copying used images and annotations
+to new root folder.</p>
+<p>The following files and folders will be created:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">new_root_root/annotations/</span></code>: annotations root folder</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_root_root/annotations/&lt;anns_file&gt;</span></code>:
+An annotations file of the same basename as <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.annotations_fp" title="hybrid_learning.datasets.custom.coco.COCODataset.annotations_fp"><code class="xref py py-attr docutils literal notranslate"><span class="pre">annotations_fp</span></code></a>
+is created and stored in the annotations folder
+(see <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns" title="hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_raw_anns()</span></code></a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_root_root/images/&lt;img_root&gt;/</span></code>:
+An images root is created of the same basename as
+<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.dataset_root" title="hybrid_learning.datasets.base.BaseDataset.dataset_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hybrid_learning.datasets.base.BaseDataset.dataset_root</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">new_root_root/images/&lt;img_root&gt;/&lt;img_file&gt;</span></code>:
+Each image file used in this dataset is copied to the new images root
+keeping the file basename.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>root_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – root directory under which to create the
+annotations root and new <code class="docutils literal notranslate"><span class="pre">dataset_root</span></code></p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – description used in the annotations info;
+see <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns" title="hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_raw_anns()</span></code></a></p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – do not raise if file or folder exist</p></li>
+<li><p><strong>dataset_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – if new_root_root is not given, it is assumed
+to be <code class="docutils literal notranslate"><span class="pre">dataset_root/../..</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict with the <code class="docutils literal notranslate"><span class="pre">dataset_root</span></code> and <code class="docutils literal notranslate"><span class="pre">annotations_fp</span></code>
+settings to init the new dataset</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.getitem">
+<em class="property">abstract </em><code class="sig-name descname">getitem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.getitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.getitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Item selection differs depending on the desired annotation data.
+Used for
+<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__getitem__" title="hybrid_learning.datasets.base.BaseDataset.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>item</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.image_attribution">
+<code class="sig-name descname">image_attribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.image_attribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_attribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get attribution information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.
+This encompasses:</p>
+<dl class="field-list simple">
+<dt class="field-odd">File_path</dt>
+<dd class="field-odd"><p>the image file path</p>
+</dd>
+<dt class="field-even">Source</dt>
+<dd class="field-even"><p>the static flickr URL (image source)</p>
+</dd>
+<dt class="field-odd">Flickr_page</dt>
+<dd class="field-odd"><p>link to the image flickr page featuring author information</p>
+</dd>
+<dt class="field-even">License</dt>
+<dd class="field-even"><p>the license name</p>
+</dd>
+<dt class="field-odd">License_url</dt>
+<dd class="field-odd"><p>link to the license</p>
+</dd>
+<dt class="field-even">Coco_id</dt>
+<dd class="field-even"><p>the COCO image ID</p>
+</dd>
+<dt class="field-odd">Coco_license_id</dt>
+<dd class="field-odd"><p>the COCO license ID</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, Union[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>]]</p>
+</dd>
+</dl>
+<p>The license information is taken from <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.license_mapping" title="hybrid_learning.datasets.custom.coco.COCODataset.license_mapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">license_mapping()</span></code></a>.
+See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://wiki.creativecommons.org/wiki/best_practices_for_attribution">best practices regarding image attribution information</a>, and</p></li>
+<li><p><a class="reference external" href="https://hadinur.net/2013/11/02/how-to-find-the-original-flickr-photo-url-and-user-from-a-static-flickr-image-urlpermalink/">information on how to get the flickr page of an image via its
+static URL</a></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.image_filepath">
+<code class="sig-name descname">image_filepath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.image_filepath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_filepath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to image file at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.image_meta">
+<code class="sig-name descname">image_meta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.image_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.image_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the dict with meta information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.img_id_iterator">
+<em class="property">classmethod </em><code class="sig-name descname">img_id_iterator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coco</span></em>, <em class="sig-param"><span class="n">img_ids</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">license_ids</span><span class="o">=</span><span class="default_value">4, 5, 6, 7, 8</span></em>, <em class="sig-param"><span class="n">keypoint_idxs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.img_id_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.img_id_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator that iterates over image IDs of the COCO dataset that
+fulfill given selection criteria.
+For details see <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.subset" title="hybrid_learning.datasets.custom.coco.COCODataset.subset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subset()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coco</strong> (<em>Optional</em><em>[</em><em>pycocotools.coco.COCO</em><em>]</em>) – coco handler to get <code class="docutils literal notranslate"><span class="pre">img_ids</span></code></p></li>
+<li><p><strong>img_ids</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – IDs to select from;
+defaults to all image IDs from <code class="docutils literal notranslate"><span class="pre">coco</span></code></p></li>
+<li><p><strong>license_ids</strong> (<em>Optional</em><em>[</em><em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – IDs of accepted licenses;
+if set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, all licenses are accepted</p></li>
+<li><p><strong>keypoint_idxs</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – indices of keypoints in COCO annotations that
+must be visible (cf. <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs" title="hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_keypoint_idxs()</span></code></a>)</p></li>
+<li><p><strong>num</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – number of images to produce (take first <code class="docutils literal notranslate"><span class="pre">num</span></code> ones)</p></li>
+<li><p><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to shuffle the IDs
+(before applying effect of <code class="docutils literal notranslate"><span class="pre">num</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Generator[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a>, <a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)">None</a>, <a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)">None</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.load_orig_image">
+<code class="sig-name descname">load_orig_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.load_orig_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.load_orig_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load unmodified image by index in dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)">PIL.Image.Image</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.raw_anns">
+<code class="sig-name descname">raw_anns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.raw_anns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.raw_anns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of raw annotations for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Dict[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.subset">
+<code class="sig-name descname">subset</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">license_ids</span><span class="o">=</span><span class="default_value">4, 5, 6, 7, 8</span></em>, <em class="sig-param"><span class="n">body_parts</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keypoint_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shuffle</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.subset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.subset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict the items by the given selection criteria.
+Operation changes <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.img_ids" title="hybrid_learning.datasets.custom.coco.COCODataset.img_ids"><code class="xref py py-attr docutils literal notranslate"><span class="pre">img_ids</span></code></a>.
+Selection criteria are:</p>
+<ul class="simple">
+<li><p>Len: Maximum total number of images (and whether to shuffle before
+selecting the first X IDs)</p></li>
+<li><p>License: IDs of licenses one of which the image must have</p></li>
+<li><p>Contained keypoints: the names of keypoints one of which must be
+contained in the image</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>license_ids</strong> (<em>Optional</em><em>[</em><em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – IDs of accepted licenses;
+if set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, all licenses are accepted</p></li>
+<li><p><strong>body_parts</strong> (<em>Optional</em><em>[</em><em>Iterable</em><em>[</em><a class="reference internal" href="hybrid_learning.datasets.custom.coco.BodyParts.html#hybrid_learning.datasets.custom.coco.BodyParts" title="hybrid_learning.datasets.custom.coco.BodyParts"><em>hybrid_learning.datasets.custom.coco.BodyParts</em></a><em>]</em><em>]</em>) – body parts that must (all) be visible in the image</p></li>
+<li><p><strong>keypoint_names</strong> (<em>Optional</em><em>[</em><em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – names of keypoints that must be visible
+(alternative to <code class="docutils literal notranslate"><span class="pre">body_parts</span></code>; see <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs" title="hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_keypoint_idxs()</span></code></a>)</p></li>
+<li><p><strong>num</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – number of images to produce
+(take first <code class="docutils literal notranslate"><span class="pre">num</span></code> ones)</p></li>
+<li><p><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to shuffle the IDs
+(before applying <code class="docutils literal notranslate"><span class="pre">num</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset" title="hybrid_learning.datasets.custom.coco.COCODataset">hybrid_learning.datasets.custom.coco.COCODataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs">
+<em class="property">static </em><code class="sig-name descname">to_keypoint_idxs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coco</span></em>, <em class="sig-param"><span class="n">keypoint_names</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.to_keypoint_idxs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_keypoint_idxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the start indices for the given keypoints within an
+annotations <code class="docutils literal notranslate"><span class="pre">'keypoint'</span></code> field.</p>
+<p>Keypoints</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">{keypt_name1:</span> <span class="pre">(x1,y1,visibility1),</span> <span class="pre">keypt_name2:</span> <span class="pre">(...),</span> <span class="pre">...}</span></code></p>
+</div></blockquote>
+<p>are in COCO annotated as a list of</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">[x1,</span> <span class="pre">y1,</span> <span class="pre">visibility1,</span>&#160;&#160; <span class="pre">x2,</span> <span class="pre">y2,</span> <span class="pre">...]</span></code></p>
+</div></blockquote>
+<p>This method returns the index of the x-coordinates within the
+annotation list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coco</strong> (<em>pycocotools.coco.COCO</em>) – coco handler</p></li>
+<li><p><strong>keypoint_names</strong> (<em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – list of keypoint names to collect the start
+indices for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list with the start indices for the given keypoints</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns">
+<code class="sig-name descname">to_raw_anns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save_as</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco.html#COCODataset.to_raw_anns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.to_raw_anns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the content of a new valid annotations file restricted
+to the current image IDs.
+Optionally also save to <code class="docutils literal notranslate"><span class="pre">save_as</span></code>.
+The content is based on the contents of <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.annotations_fp" title="hybrid_learning.datasets.custom.coco.COCODataset.annotations_fp"><code class="xref py py-attr docutils literal notranslate"><span class="pre">annotations_fp</span></code></a>.</p>
+<p>If the restricted content is stored into a JSON annotations file,
+it can be used to init further instances that are already restricted
+to the current images.
+Useful in combination with <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.subset" title="hybrid_learning.datasets.custom.coco.COCODataset.subset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">subset()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – change the <code class="docutils literal notranslate"><span class="pre">'description'</span></code> under <code class="docutils literal notranslate"><span class="pre">'info'</span></code> to
+<code class="docutils literal notranslate"><span class="pre">description</span></code>; no change if set to <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>save_as</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, dump the new annotations to a
+file located there (will overwrite)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict in the format of a COCO annotations file with
+images and annotations restricted to those used in this
+dataset instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.ANNOTATION_FP_TEMPL">
+<code class="sig-name descname">ANNOTATION_FP_TEMPL</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></em><em class="property"> = '{root}\\annotations\\person_keypoints_{split}2017.json'</em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.ANNOTATION_FP_TEMPL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default template for the annotation file path that accepts the
+<code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>) and the <code class="docutils literal notranslate"><span class="pre">root</span></code> directory.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.COMMERCIAL_LICENSE_IDS">
+<code class="sig-name descname">COMMERCIAL_LICENSE_IDS</code><em class="property">: Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a><span class="p">]</span></em><em class="property"> = (4, 5, 6, 7, 8)</em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.COMMERCIAL_LICENSE_IDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>IDs of COCO image licenses that allow for commercial use.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.DATASET_ROOT_TEMPL">
+<code class="sig-name descname">DATASET_ROOT_TEMPL</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></em><em class="property"> = '..\\dataset\\coco\\images\\{split}2017'</em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.DATASET_ROOT_TEMPL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default root directory template for image files that accepts the
+<code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.DEFAULT_IMG_SIZE">
+<code class="sig-name descname">DEFAULT_IMG_SIZE</code><em class="property">: Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a><span class="p">]</span></em><em class="property"> = (400, 400)</em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.DEFAULT_IMG_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default target size of images to use for the default transforms.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.annotations_fp">
+<code class="sig-name descname">annotations_fp</code><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.annotations_fp" title="Permalink to this definition">¶</a></dt>
+<dd><p>File path to the COCO annotations json file with image and
+keypoint annotations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.coco">
+<code class="sig-name descname">coco</code><em class="property">: COCO</em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.coco" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal COCO handle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.img_ids">
+<code class="sig-name descname">img_ids</code><em class="property">: List<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.img_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mapping of indices in this dataset to COCO image IDs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.license_mapping">
+<em class="property">property </em><code class="sig-name descname">license_mapping</code><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.license_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>The mapping of image IDs to license descriptions and URLs.
+This is extracted from the annotations file loaded by <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.COCODataset.coco" title="hybrid_learning.datasets.custom.coco.COCODataset.coco"><code class="xref py py-attr docutils literal notranslate"><span class="pre">coco</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict <code class="docutils literal notranslate"><span class="pre">{ID:</span> <span class="pre">license_info}</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hybrid_learning.datasets.custom.coco.COCODataset.settings">
+<em class="property">property </em><code class="sig-name descname">settings</code><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.COCODataset.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return information to init new dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hybrid_learning.datasets.custom.coco.ConceptDataset.html" class="btn btn-neutral float-right" title="ConceptDataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hybrid_learning.datasets.custom.coco.BodyParts.html" class="btn btn-neutral float-left" title="BodyParts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

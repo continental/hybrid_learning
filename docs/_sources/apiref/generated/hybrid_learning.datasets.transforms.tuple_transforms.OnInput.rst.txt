@@ -1,0 +1,9 @@
+OnInput
+=======
+
+.. currentmodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+.. autoclass:: OnInput
+    :members:
+
+    .. autoclasstoc::

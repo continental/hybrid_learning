@@ -1,0 +1,9 @@
+FlattenDict
+===========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: FlattenDict
+    :members:
+
+    .. autoclasstoc::

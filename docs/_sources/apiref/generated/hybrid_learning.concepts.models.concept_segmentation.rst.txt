@@ -1,0 +1,44 @@
+concept\_segmentation
+=====================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.models.concept_segmentation
+
+    .. currentmodule:: hybrid_learning.concepts.models.concept_segmentation
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ConceptSegmentation2DTrainTestHandle
+        
+        ~ConceptSegmentationModel2D
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

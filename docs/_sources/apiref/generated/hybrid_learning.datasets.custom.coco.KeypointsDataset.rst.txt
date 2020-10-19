@@ -1,0 +1,9 @@
+KeypointsDataset
+================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco
+
+.. autoclass:: KeypointsDataset
+    :members:
+
+    .. autoclasstoc::

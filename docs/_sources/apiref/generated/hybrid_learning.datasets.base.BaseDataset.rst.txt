@@ -1,0 +1,9 @@
+BaseDataset
+===========
+
+.. currentmodule:: hybrid_learning.datasets.base
+
+.. autoclass:: BaseDataset
+    :members:
+
+    .. autoclasstoc::

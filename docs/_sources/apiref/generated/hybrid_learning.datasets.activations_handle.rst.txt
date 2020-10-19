@@ -1,0 +1,42 @@
+activations\_handle
+===================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.activations_handle
+
+    .. currentmodule:: hybrid_learning.datasets.activations_handle
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ActivationDatasetWrapper
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

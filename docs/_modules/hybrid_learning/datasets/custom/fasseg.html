@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hybrid_learning.datasets.custom.fasseg &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>hybrid_learning.datasets.custom.fasseg</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for hybrid_learning.datasets.custom.fasseg</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Dataset handles for `FASSEG-like datasets &lt;fasseg-datasets&gt;`_.</span>
+
+<span class="sd">.. _fasseg-datasets: https://github.com/massimomauro/FASSEG-repository</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
+
+
+<div class="viewcode-block" id="FASSEGParts"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGParts.html#hybrid_learning.datasets.custom.fasseg.FASSEGParts">[docs]</a><span class="k">class</span> <span class="nc">FASSEGParts</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mapping of part names to colors in FASSEG dataset.&quot;&quot;&quot;</span>
+    <span class="n">EYES</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+    <span class="n">NOSE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+    <span class="n">SKIN</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">HAIR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># incl. brows: &quot;background&quot;,</span>
+    <span class="n">BACKGROUND</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">MOUTH</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FASSEGHandle"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle">[docs]</a><span class="k">class</span> <span class="nc">FASSEGHandle</span><span class="p">(</span><span class="n">BaseDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle for FASSEG-like datasets.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The original FASSEG dataset is not required for this handle.</span>
+<span class="sd">        Any dataset with a format following that of the FASSEG dataset is</span>
+<span class="sd">        supported (folder structure, file types, color codes).</span>
+
+<span class="sd">    The FASSEG dataset can be found here::</span>
+<span class="sd">    https://github.com/massimomauro/FASSEG-repository</span>
+
+<span class="sd">    The required structure for supported datasets is very simple</span>
+
+<span class="sd">    - under :py:attr:`~hybrid_learning.datasets.base.BaseDataset.dataset_root`</span>
+<span class="sd">      all input images</span>
+<span class="sd">    - under :py:attr:`annotations_root`</span>
+<span class="sd">      all annotation files with the same file name as the corresponding input</span>
+<span class="sd">      image</span>
+
+<span class="sd">    Once a handle is instantiated, its ``__getitem__`` yields tuples</span>
+<span class="sd">    of input image and binary part segmentation mask (possibly transformed</span>
+<span class="sd">    by :py:attr:`hybrid_learning.datasets.base.BaseDataset.transforms`).</span>
+<span class="sd">    For details see :py:meth:`getitem`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">part_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The string name of the part that is extracted from the masks.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">part</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_part_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FASSEGHandle.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotations_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">part</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">FASSEGParts</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">part_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param dataset_root: the directory under which to find the images;</span>
+<span class="sd">        :param annotations_root: the directory under which to find the</span>
+<span class="sd">            segmentation masks; assumes as default that</span>
+
+<span class="sd">            - ``dataset_root`` is :file:`{path}/{split}_RGB` and</span>
+<span class="sd">            - ``annotations_root`` is :file:`{path}/{split}_Labels`</span>
+
+<span class="sd">        :param part: the :py:class:`FASSEGParts` instance to use the color of</span>
+<span class="sd">            or the color tuple</span>
+<span class="sd">        :param part_name: the string name of the ``part`` that is extracted;</span>
+<span class="sd">            overridden by ``part.name`` if ``part`` features such an attribute</span>
+<span class="sd">        :param kwargs: parameters for</span>
+<span class="sd">            :py:class:`~hybrid_learning.datasets.base.BaseDataset`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Value checks and default values</span>
+        <span class="k">if</span> <span class="n">part</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">part_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Part specification or part_name needed!&quot;</span><span class="p">)</span>
+        <span class="n">part</span> <span class="o">=</span> <span class="n">part</span> <span class="k">if</span> <span class="n">part</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">FASSEGParts</span><span class="p">[</span><span class="n">part_name</span><span class="p">]</span>
+        <span class="c1"># Dataset root exists?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="s2">&quot;Given dataset_root </span><span class="si">{}</span><span class="s2"> does not exist&quot;</span>
+                                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">))</span>
+        <span class="c1"># Annotations root (given or default) exists?</span>
+        <span class="k">if</span> <span class="n">annotations_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">annotations_root</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="s2">&quot;Given annotations_root </span><span class="si">{}</span><span class="s2"> does not exist&quot;</span>
+                                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotations_root</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">annotations_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">annotations_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">Labels&quot;</span> \
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">annotations_root</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;annotations_root not given and default </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                                  <span class="s2">&quot;does not exist&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotations_root</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">FASSEGHandle</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">part</span> <span class="o">=</span> <span class="n">part</span>
+        <span class="sd">&quot;&quot;&quot;Part of the face and its color to select mask of.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_part_name</span> <span class="o">=</span> <span class="n">part_name</span>
+        <span class="sd">&quot;&quot;&quot;Default for string name of the part if :py:attr:`part` has no</span>
+<span class="sd">        attribute ``name``.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">annotations_root</span>
+        <span class="sd">&quot;&quot;&quot;Path to the annotations root folder under which to find the</span>
+<span class="sd">        annotation files.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">fn</span><span class="p">))]</span>
+        <span class="sd">&quot;&quot;&quot;List of file names of images (and their annotations) handled by</span>
+<span class="sd">        this instance.</span>
+<span class="sd">        Images can be found in the</span>
+<span class="sd">        :py:attr:`~hybrid_learning.datasets.base.BaseDataset.dataset_root` and</span>
+<span class="sd">        annotations in :py:attr:`annotations_root`.</span>
+<span class="sd">        These are used for :py:meth:`getitem`.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Are there labels for all files?</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="s2">&quot;For input image </span><span class="si">{}</span><span class="s2"> no mask file </span><span class="si">{}</span><span class="s2"> exists&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">[</span><span class="n">i</span><span class="p">])),</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_root</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">[</span><span class="n">i</span><span class="p">]))))</span></div>
+
+<div class="viewcode-block" id="FASSEGHandle.__len__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">)</span></div>
+
+    <span class="c1"># noinspection PyTypeChecker</span>
+<div class="viewcode-block" id="FASSEGHandle.getitem"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle.getitem">[docs]</a>    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load image and its mask at index ``i`` and select binary part mask.</span>
+
+<span class="sd">        Used for</span>
+<span class="sd">        :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`.</span>
+<span class="sd">        The value of the return tuple ``(input_img, part_mask)`` are</span>
+<span class="sd">        :py:class:`torch.Tensor` representations of</span>
+<span class="sd">        :py:class:`PIL.Image.Image` image instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+        <span class="c1"># obtain binary mask for specific part:</span>
+        <span class="n">rgb_color</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">part</span><span class="p">)</span>
+        <span class="n">part_mask</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="n">rgb_color</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">part_mask</span></div>
+
+<div class="viewcode-block" id="FASSEGHandle.image_filepath"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle.image_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">image_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provide the path to the image at index ``i``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="FASSEGHandle.mask_filepath"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.fasseg.FASSEGHandle.html#hybrid_learning.datasets.custom.fasseg.FASSEGHandle.mask_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">mask_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provide the path to the mask at index ``i``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_fns</span><span class="p">[</span><span class="n">i</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_default_transforms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
+                            <span class="n">ground_truth</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span>
+                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Default transformation function transforming images to</span>
+<span class="sd">        :py:class:`torch.Tensor`.&quot;&quot;&quot;</span>
+        <span class="n">trafo</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">trafo</span><span class="p">(</span><span class="n">inp</span><span class="p">),</span> <span class="n">trafo</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

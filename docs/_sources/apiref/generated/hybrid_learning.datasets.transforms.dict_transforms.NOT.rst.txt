@@ -1,0 +1,9 @@
+NOT
+===
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: NOT
+    :members:
+
+    .. autoclasstoc::

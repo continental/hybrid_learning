@@ -1,0 +1,6 @@
+hybrid\_learning.datasets.data\_visualization.visualize\_classification\_data
+=============================================================================
+
+.. currentmodule:: hybrid_learning.datasets.data_visualization
+
+.. autofunction:: visualize_classification_data

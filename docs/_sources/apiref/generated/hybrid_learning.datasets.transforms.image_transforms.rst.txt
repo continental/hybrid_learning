@@ -1,0 +1,61 @@
+image\_transforms
+=================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.transforms.image_transforms
+
+    .. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Binarize
+        
+        ~BinarizeByQuantile
+        
+        ~ImageTransform
+        
+        ~PadAndResize
+        
+        ~ToDevice
+        
+        ~WithThresh
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~pad_to_square
+        
+
+    
+    

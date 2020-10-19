@@ -1,0 +1,46 @@
+base\_handles
+=============
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.models.base_handles
+
+    .. currentmodule:: hybrid_learning.concepts.models.base_handles
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.concepts.models.base_handles.early_stopping
+        
+        ~hybrid_learning.concepts.models.base_handles.resettable_optimizer
+        
+        ~hybrid_learning.concepts.models.base_handles.train_test_handle
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

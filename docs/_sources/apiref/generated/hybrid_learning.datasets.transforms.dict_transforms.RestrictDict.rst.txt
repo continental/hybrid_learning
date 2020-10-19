@@ -1,0 +1,9 @@
+RestrictDict
+============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: RestrictDict
+    :members:
+
+    .. autoclasstoc::

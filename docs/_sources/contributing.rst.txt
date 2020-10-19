@@ -1,0 +1,2 @@
+.. Contributing
+.. include:: ../../CONTRIBUTING.md

@@ -1,0 +1,9 @@
+TrainEvalHandle
+===============
+
+.. currentmodule:: hybrid_learning.concepts.models.base_handles.train_test_handle
+
+.. autoclass:: TrainEvalHandle
+    :members:
+
+    .. autoclasstoc::

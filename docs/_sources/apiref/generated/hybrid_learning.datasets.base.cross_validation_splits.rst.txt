@@ -1,0 +1,6 @@
+hybrid\_learning.datasets.base.cross\_validation\_splits
+========================================================
+
+.. currentmodule:: hybrid_learning.datasets.base
+
+.. autofunction:: cross_validation_splits

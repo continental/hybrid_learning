@@ -1,0 +1,9 @@
+FASSEGHandle
+============
+
+.. currentmodule:: hybrid_learning.datasets.custom.fasseg
+
+.. autoclass:: FASSEGHandle
+    :members:
+
+    .. autoclasstoc::

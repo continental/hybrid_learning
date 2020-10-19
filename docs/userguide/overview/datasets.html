@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Dataset tooling &mdash; hybrid_learning  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using a concept model to find an embedding" href="../concept_model.html" />
+    <link rel="prev" title="Concept analysis and usage tooling" href="concepts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="concepts.html">Concept analysis and usage tooling</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dataset tooling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#base-dataset-handles">Base Dataset Handles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-dataset-handles">Custom Dataset Handles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transformations">Transformations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualization-and-utility-functions">Visualization and Utility Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a concept analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_dataset_handles/index.html">Custom dataset handles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="index.html">Overview</a> &raquo;</li>
+        
+      <li>Dataset tooling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/userguide/overview/datasets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dataset-tooling">
+<h1>Dataset tooling<a class="headerlink" href="#dataset-tooling" title="Permalink to this headline">¶</a></h1>
+<p>The tooling for datasets is collected in the module <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.html#module-hybrid_learning.datasets" title="hybrid_learning.datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.datasets</span></code></a>.
+For details have a look at the <a class="reference internal" href="../../apiref/index.html#api-reference"><span class="std std-ref">API Reference</span></a>.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#base-dataset-handles" id="id1">Base Dataset Handles</a></p></li>
+<li><p><a class="reference internal" href="#custom-dataset-handles" id="id2">Custom Dataset Handles</a></p></li>
+<li><p><a class="reference internal" href="#transformations" id="id3">Transformations</a></p></li>
+<li><p><a class="reference internal" href="#visualization-and-utility-functions" id="id4">Visualization and Utility Functions</a></p></li>
+</ul>
+</div>
+<div class="section" id="base-dataset-handles">
+<h2><a class="toc-backref" href="#contents">Base Dataset Handles</a><a class="headerlink" href="#base-dataset-handles" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p></td>
+<td><p>Abstract base class for tuple datasets with storage location.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActivationDatasetWrapper</span></code></a></p></td>
+<td><p>Wrapper for image datasets that will generate and yield activation maps.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="custom-dataset-handles">
+<h2><a class="toc-backref" href="#contents">Custom Dataset Handles</a><a class="headerlink" href="#custom-dataset-handles" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.coco.html#module-hybrid_learning.datasets.custom.coco" title="hybrid_learning.datasets.custom.coco"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coco</span></code></a></p></td>
+<td><p>Standard and concept datasets derived from <a class="reference external" href="coco">MS COCO dataset</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.fasseg.html#module-hybrid_learning.datasets.custom.fasseg" title="hybrid_learning.datasets.custom.fasseg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fasseg</span></code></a></p></td>
+<td><p>Dataset handles for <a class="reference external" href="fasseg-datasets">FASSEG-like datasets</a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.broden.html#module-hybrid_learning.datasets.custom.broden" title="hybrid_learning.datasets.custom.broden"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broden</span></code></a></p></td>
+<td><p>Handles for Broden-like datasets.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="transformations">
+<h2><a class="toc-backref" href="#contents">Transformations</a><a class="headerlink" href="#transformations" title="Permalink to this headline">¶</a></h2>
+<p>Transformations can be used to modify data tuples or values.</p>
+<p class="rubric">Transformations for Tuples</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.Compose.html#hybrid_learning.datasets.transforms.tuple_transforms.Compose" title="hybrid_learning.datasets.transforms.tuple_transforms.Compose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Compose</span></code></a></p></td>
+<td><p>Compose several tuple transforms by sequentially executing them.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.Identity.html#hybrid_learning.datasets.transforms.tuple_transforms.Identity" title="hybrid_learning.datasets.transforms.tuple_transforms.Identity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Identity</span></code></a></p></td>
+<td><p>Simple identity transformation for example for defaults.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.OnBothSides.html#hybrid_learning.datasets.transforms.tuple_transforms.OnBothSides" title="hybrid_learning.datasets.transforms.tuple_transforms.OnBothSides"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnBothSides</span></code></a></p></td>
+<td><p>Apply a given transformation to both input and target of a tuple in parallel.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.OnInput.html#hybrid_learning.datasets.transforms.tuple_transforms.OnInput" title="hybrid_learning.datasets.transforms.tuple_transforms.OnInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnInput</span></code></a></p></td>
+<td><p>Apply a given one-value transformation only to the input of a two-tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.OnTarget.html#hybrid_learning.datasets.transforms.tuple_transforms.OnTarget" title="hybrid_learning.datasets.transforms.tuple_transforms.OnTarget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnTarget</span></code></a></p></td>
+<td><p>Apply a given one-value transformation only to the target of a two-tuple.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.OneSided.html#hybrid_learning.datasets.transforms.tuple_transforms.OneSided" title="hybrid_learning.datasets.transforms.tuple_transforms.OneSided"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneSided</span></code></a></p></td>
+<td><p>Transformation that applies only to one element of a given tuple.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReduceTuple</span></code></a></p></td>
+<td><p>Transform <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">target)</span></code> tuple and then reduce it to one value using a reduction func.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.SameSize.html#hybrid_learning.datasets.transforms.tuple_transforms.SameSize" title="hybrid_learning.datasets.transforms.tuple_transforms.SameSize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SameSize</span></code></a></p></td>
+<td><p>Given a tuple of input and target image, resize the target to the size of the input.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TupleTransforms</span></code></a></p></td>
+<td><p>Base class of tuple transformations.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Transformations for Dicts</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.AND.html#hybrid_learning.datasets.transforms.dict_transforms.AND" title="hybrid_learning.datasets.transforms.dict_transforms.AND"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AND</span></code></a></p></td>
+<td><p>Intersection/AND operation on binary masks and scalars.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform" title="hybrid_learning.datasets.transforms.dict_transforms.DictTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DictTransform</span></code></a></p></td>
+<td><p>Basic transformation for dicts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.DropAnn.html#hybrid_learning.datasets.transforms.dict_transforms.DropAnn" title="hybrid_learning.datasets.transforms.dict_transforms.DropAnn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DropAnn</span></code></a></p></td>
+<td><p>Drop the annotation with given key from the annotations dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.html#hybrid_learning.datasets.transforms.dict_transforms.FlattenDict" title="hybrid_learning.datasets.transforms.dict_transforms.FlattenDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlattenDict</span></code></a></p></td>
+<td><p>Return the value of the annotations dict at selected key.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Merge</span></code></a></p></td>
+<td><p>Merge the binary masks / scalars of the input keys and store them under the specified output key.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT" title="hybrid_learning.datasets.transforms.dict_transforms.NOT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NOT</span></code></a></p></td>
+<td><p>Inversion/NOT operation on binary masks and scalars.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.OR.html#hybrid_learning.datasets.transforms.dict_transforms.OR" title="hybrid_learning.datasets.transforms.dict_transforms.OR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OR</span></code></a></p></td>
+<td><p>Union/OR operation on binary masks and scalars.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html#hybrid_learning.datasets.transforms.dict_transforms.RestrictDict" title="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RestrictDict</span></code></a></p></td>
+<td><p>Restrict the annotation dictionary to the annotation items with featuring one of the selected keys.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Transformations for (Tensor) Images</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize" title="hybrid_learning.datasets.transforms.image_transforms.Binarize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Binarize</span></code></a></p></td>
+<td><p>Simple class for binarizing tensors into high and low class values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.html#hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile" title="hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinarizeByQuantile</span></code></a></p></td>
+<td><p>Set all but the given highest number of pixels / q-th quantile in an image to zero, rest to 1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageTransform</span></code></a></p></td>
+<td><p>Transformations that can be applied to images.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.PadAndResize.html#hybrid_learning.datasets.transforms.image_transforms.PadAndResize" title="hybrid_learning.datasets.transforms.image_transforms.PadAndResize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PadAndResize</span></code></a></p></td>
+<td><p>Transformation that pads an image to square dimensions and then resizes it to fixed size.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.ToDevice.html#hybrid_learning.datasets.transforms.image_transforms.ToDevice" title="hybrid_learning.datasets.transforms.image_transforms.ToDevice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToDevice</span></code></a></p></td>
+<td><p>Move tensors to given device.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.WithThresh.html#hybrid_learning.datasets.transforms.image_transforms.WithThresh" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WithThresh</span></code></a></p></td>
+<td><p>Wrap a batch transformation with binarizing (and unsqueezing) before and after.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html#hybrid_learning.datasets.transforms.image_transforms.pad_to_square" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_square"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad_to_square</span></code></a></p></td>
+<td><p>Symmetrically pad image with constant <code class="docutils literal notranslate"><span class="pre">pad_value</span></code> to obtain square image.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Intersection and Intersection over Union Encoders</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchConvOp.html#hybrid_learning.datasets.transforms.encoder.BatchConvOp" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchConvOp</span></code></a></p></td>
+<td><p>Base class for encoder that use convolution operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D" title="hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchIntersectDecode2D</span></code></a></p></td>
+<td><p>Given batch of IoU encoded masks, estimates the original segmentation mask.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D" title="hybrid_learning.datasets.transforms.encoder.BatchIntersectEncode2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchIntersectEncode2D</span></code></a></p></td>
+<td><p>Apply intersection encoding to batch of input masks of shape <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">1,</span> <span class="pre">height,</span> <span class="pre">width)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D.html#hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D" title="hybrid_learning.datasets.transforms.encoder.BatchIoUEncode2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchIoUEncode2D</span></code></a></p></td>
+<td><p>Apply intersection over union encoding to an input batch.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.ConvOpWrapper.html#hybrid_learning.datasets.transforms.encoder.ConvOpWrapper" title="hybrid_learning.datasets.transforms.encoder.ConvOpWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConvOpWrapper</span></code></a></p></td>
+<td><p>Base wrapper class to turn convolutional batch operations into single mask operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IntersectDecode.html#hybrid_learning.datasets.transforms.encoder.IntersectDecode" title="hybrid_learning.datasets.transforms.encoder.IntersectDecode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntersectDecode</span></code></a></p></td>
+<td><p>IoU encode a single mask.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IntersectEncode.html#hybrid_learning.datasets.transforms.encoder.IntersectEncode" title="hybrid_learning.datasets.transforms.encoder.IntersectEncode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntersectEncode</span></code></a></p></td>
+<td><p>Intersection encode a single mask.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.IoUEncode.html#hybrid_learning.datasets.transforms.encoder.IoUEncode" title="hybrid_learning.datasets.transforms.encoder.IoUEncode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IoUEncode</span></code></a></p></td>
+<td><p>IoU encode a single mask.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.transforms.encoder.same_padding.html#hybrid_learning.datasets.transforms.encoder.same_padding" title="hybrid_learning.datasets.transforms.encoder.same_padding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">same_padding</span></code></a></p></td>
+<td><p>Calculate the left and right padding for mode <code class="docutils literal notranslate"><span class="pre">'same'</span></code> for each dim and concat.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="visualization-and-utility-functions">
+<h2><a class="toc-backref" href="#contents">Visualization and Utility Functions</a><a class="headerlink" href="#visualization-and-utility-functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.apply_mask.html#hybrid_learning.datasets.data_visualization.apply_mask" title="hybrid_learning.datasets.data_visualization.apply_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_mask</span></code></a>(img, mask[, color, alpha])</p></td>
+<td><p>Apply monochrome (possibly non-binary) mask to image of same size with alpha value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.compare_masks.html#hybrid_learning.datasets.data_visualization.compare_masks" title="hybrid_learning.datasets.data_visualization.compare_masks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_masks</span></code></a>(mask1, mask2[, color1, color2])</p></td>
+<td><p>Merge several monochrome masks in different colors into the same image.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.mean_proportion_pos_px.html#hybrid_learning.datasets.data_visualization.mean_proportion_pos_px" title="hybrid_learning.datasets.data_visualization.mean_proportion_pos_px"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_proportion_pos_px</span></code></a>(masks)</p></td>
+<td><p>From the given samples, calculate the mean of the proportion of positive pixels per mask.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.neg_pixel_prop.html#hybrid_learning.datasets.data_visualization.neg_pixel_prop" title="hybrid_learning.datasets.data_visualization.neg_pixel_prop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neg_pixel_prop</span></code></a>(data[, max_num_samples])</p></td>
+<td><p>Collect the mean proportion of negative pixels in the binary segmentation mask data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.to_img.html#hybrid_learning.datasets.data_visualization.to_img" title="hybrid_learning.datasets.data_visualization.to_img"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_img</span></code></a>(tens)</p></td>
+<td><p>Transform a (cuda) tensor to a <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.to_monochrome_img.html#hybrid_learning.datasets.data_visualization.to_monochrome_img" title="hybrid_learning.datasets.data_visualization.to_monochrome_img"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_monochrome_img</span></code></a>(img_t)</p></td>
+<td><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> to monochrome <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code></a> in <code class="docutils literal notranslate"><span class="pre">'L'</span></code> (=8-bit) mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.visualize_classification_data.html#hybrid_learning.datasets.data_visualization.visualize_classification_data" title="hybrid_learning.datasets.data_visualization.visualize_classification_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visualize_classification_data</span></code></a>(dataset[, …])</p></td>
+<td><p>Visualize a dataset yielding tuples of the form <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">target_class_identifier)</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.visualize_mask_transforms.html#hybrid_learning.datasets.data_visualization.visualize_mask_transforms" title="hybrid_learning.datasets.data_visualization.visualize_mask_transforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visualize_mask_transforms</span></code></a>(titled_datasets[, …])</p></td>
+<td><p>Visualize difference between original and the transformed masks of datasets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.data_visualization.visualize_segmentation_data.html#hybrid_learning.datasets.data_visualization.visualize_segmentation_data" title="hybrid_learning.datasets.data_visualization.visualize_segmentation_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visualize_segmentation_data</span></code></a>(dataset[, …])</p></td>
+<td><p>Visualize a dataset yielding tuples of the form <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">target_mask)</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.cross_validation_splits.html#hybrid_learning.datasets.base.cross_validation_splits" title="hybrid_learning.datasets.base.cross_validation_splits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_validation_splits</span></code></a>(train_val_data, …)</p></td>
+<td><p>Split dataset it into <code class="docutils literal notranslate"><span class="pre">num_splits</span></code> and collect tuples of <code class="docutils literal notranslate"><span class="pre">(rest,</span> <span class="pre">split)</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../concept_model.html" class="btn btn-neutral float-right" title="Using a concept model to find an embedding" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="concepts.html" class="btn btn-neutral float-left" title="Concept analysis and usage tooling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Continental Automotive GmbH
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

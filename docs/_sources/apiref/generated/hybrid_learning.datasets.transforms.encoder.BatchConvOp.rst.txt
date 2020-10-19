@@ -1,0 +1,9 @@
+BatchConvOp
+===========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.encoder
+
+.. autoclass:: BatchConvOp
+    :members:
+
+    .. autoclasstoc::

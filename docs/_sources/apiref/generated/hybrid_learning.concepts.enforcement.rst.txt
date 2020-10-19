@@ -1,0 +1,42 @@
+enforcement
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.enforcement
+
+    .. currentmodule:: hybrid_learning.concepts.enforcement
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ConceptEmbeddingHandle
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

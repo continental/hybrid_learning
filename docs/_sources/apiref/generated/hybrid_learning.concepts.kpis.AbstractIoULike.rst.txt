@@ -1,0 +1,9 @@
+AbstractIoULike
+===============
+
+.. currentmodule:: hybrid_learning.concepts.kpis
+
+.. autoclass:: AbstractIoULike
+    :members:
+
+    .. autoclasstoc::

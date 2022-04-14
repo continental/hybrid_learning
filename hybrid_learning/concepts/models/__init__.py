@@ -1,10 +1,15 @@
-"""Models and handles to obtain concept embeddings."""
+"""Models and handles to define and store concept embeddings.
+This encompasses
 
-#  Copyright (c) 2020 Continental Automotive GmbH
+- model architecture definitions
+- an implementation independent format for representing a concept embedding
+  obtained from a linear model, i.e. with a concept vector (the weights)
+  and an offset (the bias)
+- wrappers to extend and (re-)attach to DNNs
+"""
 
-from .base_handles import EarlyStoppingHandle, ResettableOptimizer, \
-    TrainEvalHandle
-from .concept_detection import ConceptDetectionModel2D, \
-    ConceptDetection2DTrainTestHandle
-from .concept_segmentation import ConceptSegmentationModel2D, \
-    ConceptSegmentation2DTrainTestHandle
+#  Copyright (c) 2022 Continental Automotive GmbH
+
+from . import embeddings
+from .concept_models import *
+from .embeddings import ConceptEmbedding

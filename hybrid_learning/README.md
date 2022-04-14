@@ -1,3 +1,3 @@
 # Code
 
-This folder contains all source code (scripts and the hybrid learning package).
+This folder contains the source code of the hybrid learning package.

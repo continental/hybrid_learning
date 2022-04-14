@@ -16,8 +16,8 @@ The dataset then will yield tuples of the original input and the model output.
 
 
 The following example shows how a COCO
-:py:class:`~hybrid_learning.datasets.custom.coco.ConceptDataset` is wrapped
-to produce activation maps of layer 4 of a Mask R-CNN model.
+:py:class:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset` is wrapped
+to produce activation maps of the layer ``features.5`` of an AlexNet model.
 It then yields tuples of
 
 - the activation map tensor obtained from a (transformed) COCO image,
@@ -29,17 +29,12 @@ Preparation: Model and original dataset
 
 To retrieve the activation maps, a
 :py:class:`~hybrid_learning.concepts.models.model_extension.ModelStump`
-can be used. The attribute
-:py:attr:`~hybrid_learning.concepts.models.model_extension.ModelStump.stump_head`
-is by default used to provide the ``layer_key`` during init
-of the wrapper, and the model class name is used for the
-``model_description``.
+can be used.
 
-
->>> from torchvision.models.detection import maskrcnn_resnet50_fpn
+>>> from torchvision.models import alexnet
 >>> from hybrid_learning.concepts.models.model_extension import ModelStump
->>> model = ModelStump(model=maskrcnn_resnet50_fpn(pretrained=True),
-...                    stump_head='backbone.body.layer4').eval()
+>>> model = ModelStump(model=alexnet(pretrained=True),
+...                    stump_head='features.5').eval()
 
 Obtain the dataset to wrap. Note that the
 :py:class:`~hybrid_learning.datasets.base.BaseDataset.dataset_root`
@@ -53,7 +48,8 @@ input is used.
 >>> root = os.path.join("dataset", "coco_test")
 >>> concept_data = coco.ConceptDataset(
 ...     body_parts=[coco.BodyParts.FACE],
-...     dataset_root=os.path.join(root, "images", "train2017")
+...     dataset_root=os.path.join(root, "images", "train2017"),
+...     img_size=(400, 400),
 ... )
 
 
@@ -62,11 +58,15 @@ Wrapper init
 
 Now instantiate an
 :py:class:`~hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper`
-to handle activation map retrieval and saving:
+to handle activation map retrieval. To automatically enable activation map
+file caching, also hand over a cache root:
 
 >>> from hybrid_learning.datasets import ActivationDatasetWrapper
->>> act_dataset = ActivationDatasetWrapper(dataset=concept_data,
-...                                        act_map_gen=model)
+>>> act_dataset = ActivationDatasetWrapper(
+...     dataset=concept_data,
+...     act_map_gen=model,
+...     activations_root=os.path.join(root, "activations", "train2017_alexnet_features.5")
+...  )
 >>> act_map, mask_t = act_dataset[0]
 >>> img_t = act_dataset.load_image(0)  # access the original input image
 
@@ -74,13 +74,13 @@ The activation maps in this case are usual conv layer outputs, i.e.
 one activation map per filter:
 
 >>> list(act_map.size())  # shape: (filters, width, height)
-[2048, 25, 25]
+[192, 24, 24]
 >>> # Show the activation map of the first filter:
 >>> import PIL.Image
 >>> from matplotlib import pyplot as plt
 >>> import torchvision as tv
 >>> a = tv.transforms.ToPILImage()(act_map[0])
->>> plt.imshow(a.resize((400,400), resample=PIL.Image.BOX))
+>>> plt.imshow(a.resize((224, 224), resample=PIL.Image.BOX))
 <matplotlib.image.AxesImage object...>
 
 
@@ -89,8 +89,9 @@ Force activation map rebuild
 
 By default, activation maps are lazily generated and saved.
 To force (re)build of all activation maps after init, one can directly
-call :py:meth:`~hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps`
+call :py:meth:`~hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache`
 (here we drastically reduce the amount of images before doing this):
 
 >>> _ = act_dataset.dataset.subset(num=1)
->>> act_dataset.generate_act_maps(force_rebuild=True, leave=False)
+>>> act_dataset.fill_cache(force_rebuild=True, leave=False)
+ActivationDatasetWrapper(...)

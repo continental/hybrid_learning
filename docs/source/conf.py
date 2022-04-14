@@ -1,6 +1,6 @@
 """Sphinx configuration file."""
 
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 # pylint: skip-file
 # Configuration file for the Sphinx documentation builder.
@@ -26,8 +26,8 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'hybrid_learning')))
 # -- Project information -----------------------------------------------------
 
 project = 'hybrid_learning'
-copyright = '2020, Continental Automotive GmbH'
-author = 'Gesina Schwalbe'
+copyright = '2022, Continental Automotive GmbH'
+author = 'Gesina Schwalbe, Christian Wirth'
 
 # -- General configuration ---------------------------------------------------
 
@@ -38,6 +38,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',  # recursive API doc generation
     'sphinx_automodapi.automodapi',  # easy module overviews
+    'sphinx_automodapi.smart_resolver',  # avoid automodapi resolution errors
     # 'autodocsumm',  # summaries at beginning of autodoc of classes
     'autoclasstoc',  # summaries at beginning of autodoc of classes
     'sphinx.ext.napoleon',  # for pytorch docs
@@ -66,7 +67,8 @@ intersphinx_mapping = {
     # tqdm objects.inv not available as of 2020-06-28
     # (see https://github.com/tqdm/tqdm/issues/705)
     # 'tqdm': ('https://tqdm.github.io/docs', None),
-    'matplotlib': ('https://matplotlib.org/3.2.2', None),
+    'matplotlib': ('https://matplotlib.org', None),
+    'pyparsing': ('https://pyparsing-docs.readthedocs.io/en/latest/', None),
 }
 
 # The number of seconds for timeout. The default is None,
@@ -92,6 +94,9 @@ nitpick_ignore = [
     ('py:class', 'torch.utils.data.dataset.Dataset'),
     # actually torch.utils.data.Dataset
     ('py:class', 'torch.utils.data.dataset.Subset'),
+    ('py:class', 'torch.nn.modules.activation.Sigmoid'),
+    ('py:class', 'torch.nn.modules.padding.ZeroPad2d'),
+    ('py:class', 'torch.nn.modules.container.ModuleDict'),
     ('py:class', 'torch.Size'),  # currently not documented
     ('py:class', 'torch.device'),  # currently not documented
     ('py:class', 'tqdm.std.tqdm'), ('py:class', 'tqdm.tqdm'),
@@ -101,6 +106,10 @@ nitpick_ignore = [
     ('py:class', 'Tuple'), ('py:const', 'logging.INFO'),
     # not in python objects.inv
 ]
+# An extended version of nitpick_ignore, which instead interprets the type and target
+# strings as regular expressions. Note, that the regular expression must match the
+# whole string (as if the ^ and $ markers were inserted).
+#nitpick_ignore_regex = []
 
 # Boolean indicating whether to scan all found documents for
 # autosummary directives, and to generate stub pages for each.
@@ -188,7 +197,23 @@ autoclasstoc_sections = [
 # - "both": Both the class’ and the __init__ method’s docstring
 #   are concatenated and inserted.
 # - "init": Only the __init__ method’s docstring is inserted.
-autoclass_content = 'both'
+autoclass_content = 'class'
+
+# This value selects how the signature will be displayed for the class
+# defined by autoclass directive. The possible values are:
+# "mixed" - Display the signature with the class name.
+# "separated" - Display the signature as a method.
+# The default is "mixed".
+autodoc_class_signature = "mixed"
+
+# This value controls the format of typehints. The setting takes the following values:
+# 'fully-qualified' – Show the module name and its name of typehints
+# 'short' – Suppress the leading module names of the typehints (ex. io.StringIO -> StringIO) (default)
+autodoc_typehints_format = 'short'
+
+# If true, suppress the module name of the python reference if it can be resolved. The default is False.
+# (still experimental)
+python_use_unqualified_type_names = True
 
 # A boolean flag indicating whether to document classes and functions
 # imported in modules. Default is False.

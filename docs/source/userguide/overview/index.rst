@@ -9,3 +9,5 @@ The following pages collect an overview over the available functionalities.
 
     concepts
     datasets
+    fuzzy_logic
+    experimentation

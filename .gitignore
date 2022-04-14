@@ -1,0 +1,12 @@
+cache
+config
+!script/exp_ca/config
+experiments
+dataset
+docs/build
+docs/source/apiref/generated
+**/__pycache__
+**/.pytest_tmpdir
+runs
+src
+**/.ipynb_checkpoints

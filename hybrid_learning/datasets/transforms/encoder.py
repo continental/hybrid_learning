@@ -1,12 +1,12 @@
-"""Intersection and IoU encoder and decoder for binary and non-binary masks.
+"""Batch-wise encoding and decoding operations for binary and non-binary masks.
 
-The basic operations are the batch encoder based on :py:class:`BatchConvOp`.
-These are wrapped by children of :py:class:`ConvOpWrapper`, which enable
-also non-batch-wise transformation and optional binarizing before and after
-the encoding.
+The basic operations are the batch encoder based on :py:class:`BatchWindowOp`.
+Batch-wise operations on images can be wrapped by
+:py:class:`hybrid_learning.datasets.transforms.image_transforms.BatchWiseImageTransform`
+to work on either batches or single masks.
 """
 
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 # The pytorch forward method should be overridden with a more specific
 # signature, thus:
@@ -16,13 +16,12 @@ from typing import Tuple, Dict, Any, Sequence
 
 import numpy as np
 import torch
-
-from .image_transforms import WithThresh
-from .utils import settings_to_repr
+from .common import settings_to_repr
 
 
-class BatchConvOp(abc.ABC, torch.nn.Module):
-    """Base class for encoder that use convolution operations."""
+class BatchWindowOp(abc.ABC, torch.nn.Module):
+    """Base class for encoder that use windowing operations.
+    E.g. convolutions or pooling."""
 
     AREA_DIMS: Tuple[int] = (2, 3)
     """Indices of axes in which the image area is defined.
@@ -35,48 +34,18 @@ class BatchConvOp(abc.ABC, torch.nn.Module):
     """
 
     @property
-    def proto_shape(self) -> np.ndarray:
-        """The kernel associated with the convolutional masking operation."""
-        raise NotImplementedError()
-
-    @property
     def kernel_size(self) -> Tuple[int, ...]:
-        """The kernel size of the proto-type shape.
-        (See :py:attr:`proto_shape`)."""
-        return self.proto_shape.shape
+        """The kernel size of the window."""
+        raise NotImplementedError()
 
     @property
     def settings(self) -> Dict[str, Any]:
         """Settings to reproduce the instance."""
-        # If proto shape is default from kernel_size, only provide kernel_size
-        if np.allclose(self.proto_shape, 1):
-            return dict(kernel_size=self.kernel_size)
-        return dict(proto_shape=self.proto_shape.tolist())
+        return dict(kernel_size=self.kernel_size)
 
     def __repr__(self):
         """Representation based on this instances settings."""
         return settings_to_repr(self, self.settings)
-
-    @classmethod
-    def _to_valid_proto_shape(cls, proto_shape: np.ndarray = None,
-                              kernel_size: Tuple[int, int] = None):
-        """Validate or create :py:attr`proto_shape`.
-
-        :raises: :py:exc:`ValueError` if both ``proto_shape`` and
-            ``kernel_size`` are ``None`` or the ``proto_shape`` is invalid.
-        """
-        if kernel_size is None and proto_shape is None:
-            raise ValueError("Either kernel_size or proto_shape must be given, "
-                             "but both None")
-        if proto_shape is not None:
-            proto_shape = np.array(proto_shape)
-            if len(proto_shape.shape) != len(cls.AREA_DIMS):
-                raise ValueError(("proto_shape must be {}-dimensional, but "
-                                  "shape was {}").format(len(cls.AREA_DIMS),
-                                                         proto_shape.shape))
-        else:
-            proto_shape: np.ndarray = np.ones(kernel_size)
-        return proto_shape
 
     def _validate_masks(self, masks: torch.Tensor):
         """Raise if ``masks`` are invalid with informative error message.
@@ -93,11 +62,11 @@ class BatchConvOp(abc.ABC, torch.nn.Module):
                               "(batch_size, 1, <img info, e.g. "
                               "*(width, height)>), but was of size {}"
                               ).format(len(self.AREA_DIMS) + 2, masks.size()))
-        if masks.size()[-2] < self.proto_shape.shape[-2] or \
-                masks.size()[-1] < self.proto_shape.shape[-1]:
-            raise ValueError(("Input masks (size {}) are smaller than proto "
-                              "shape (size {})")
-                             .format(masks.size(), self.proto_shape.shape))
+        if masks.size()[-2] < self.kernel_size[-2] or \
+                masks.size()[-1] < self.kernel_size[-1]:
+            raise ValueError(("Input masks (size {}) are smaller than kernel "
+                              "size ({})")
+                             .format(masks.size(), self.kernel_size))
 
     def forward(self, masks: torch.Tensor) -> torch.Tensor:
         """Wrapper for the convolutional operation on batch of masks.
@@ -119,6 +88,109 @@ class BatchConvOp(abc.ABC, torch.nn.Module):
             ``(batch_size, 1, width, height)`` holding masks for one batch.
         """
         raise NotImplementedError()
+
+
+class BatchBoxBloat(BatchWindowOp):
+    """Bloat single pixels to full boxes, always choosing the maximum box to
+    be up front.
+    This is a max-pooling operation."""
+
+    @property
+    def kernel_size(self) -> Tuple[int, int]:
+        """The max-pooling operation kernel size."""
+        return self.nms_bloating.kernel_size
+
+    def __init__(self, kernel_size: Tuple[int, int]):
+        """Init.
+
+        :param kernel_size: the window size to which each pixel shall
+            be blown up
+        """
+        super().__init__()
+
+        # Padding
+        # Beware: The padding for ZeroPad2d has crude specification:
+        # 1. width pad, 2. height pad
+        self.padding = torch.nn.ZeroPad2d(
+            padding=same_padding((kernel_size[1], kernel_size[0])))
+        """Padding to obtain same size as input after
+        non-max-suppression bloating."""
+
+        # NMS
+        self.nms_bloating: torch.nn.MaxPool2d = torch.nn.MaxPool2d(
+            kernel_size=kernel_size, stride=(1, 1))
+        """The actual bloating operation.
+        Bloats each pixel to a window of size
+        :py:attr:`BatchBoxBloat.kernel_size`,
+        then overlays them sorted by decreasing pixel value
+        (i.e. the whitest box is up front).
+        This essentially is a max-pooling operation."""
+
+    def conv_op(self, masks: torch.Tensor) -> torch.Tensor:
+        """Apply the bloating to the pixels."""
+        masks = self.padding(masks)
+        masks = self.nms_bloating(masks)
+        return masks
+
+
+class BatchPeakDetection(BatchBoxBloat):
+    """Keep only peak points, i.e. ones that take the maximum value within a
+    window around them.
+    The window is given by :attr:`~BatchBoxBloat.kernel_size`.
+    The returned mask has all non-peaks set to 0.
+    This is a max-pooling operation."""
+
+    def conv_op(self, masks: torch.Tensor) -> torch.Tensor:
+        """Apply the peak filtering."""
+        # bloat the masks using max-pooling
+        bloated_masks: torch.Tensor = super().conv_op(masks)
+        binary_peak_masks: torch.Tensor = (bloated_masks == masks).float()
+        return masks * binary_peak_masks
+
+
+class BatchConvOp(BatchWindowOp):
+    """Base class for encoder that use convolution operations."""
+
+    @property
+    @abc.abstractmethod
+    def proto_shape(self) -> np.ndarray:
+        """The kernel associated with the convolutional masking operation."""
+        raise NotImplementedError()
+
+    @property
+    def kernel_size(self) -> Tuple[int, ...]:
+        """The kernel size of the proto-type shape.
+        (See :py:attr:`proto_shape`)."""
+        return self.proto_shape.shape
+
+    @property
+    def settings(self) -> Dict[str, Any]:
+        """Settings to reproduce the instance."""
+        # If proto shape is default from kernel_size, only provide kernel_size
+        if np.allclose(self.proto_shape, 1):
+            return dict(kernel_size=self.kernel_size)
+        return dict(proto_shape=self.proto_shape.tolist())
+
+    @classmethod
+    def _to_valid_proto_shape(cls, proto_shape: np.ndarray = None,
+                              kernel_size: Tuple[int, int] = None):
+        """Validate or create :py:attr`proto_shape`.
+
+        :raises: :py:exc:`ValueError` if both ``proto_shape`` and
+            ``kernel_size`` are ``None`` or the ``proto_shape`` is invalid.
+        """
+        if kernel_size is None and proto_shape is None:
+            raise ValueError("Either kernel_size or proto_shape must be given, "
+                             "but both None")
+        if proto_shape is not None:
+            proto_shape = np.array(proto_shape)
+            if len(proto_shape.shape) != len(cls.AREA_DIMS):
+                raise ValueError(("proto_shape must be {}-dimensional, but "
+                                  "shape was {}").format(len(cls.AREA_DIMS),
+                                                         proto_shape.shape))
+        else:
+            proto_shape: np.ndarray = np.ones(kernel_size)
+        return proto_shape
 
 
 class BatchIntersectEncode2D(BatchConvOp):
@@ -182,18 +254,18 @@ class BatchIntersectEncode2D(BatchConvOp):
     segmentation mask, the weights of which hold the mask.
 
     To change from 2D to other image dimensionality, replace the padding and
-    convolution layer and adapt :py:attr:`~BatchConvOp.AREA_DIMS`
+    convolution layer and adapt :py:attr:`~BatchWindowOp.AREA_DIMS`
     accordingly.
     """
 
     def __init__(self,
-                 proto_shape: np.ndarray,
+                 proto_shape: np.ndarray = None,
                  kernel_size: Tuple[int, ...] = None,
                  normalize_by: str = 'proto_shape'):
         """Init.
 
         :param proto_shape: the proto shape definition in a form accepted by
-            :py:func:`numpy.array`
+            :py:func:`numpy.ndarray`
         :param kernel_size: if ``proto_shape`` is ``None``,
             use all-ones rectangular shape of ``kernel_size``
         :param normalize_by: whether to normalize the intersection output,
@@ -205,7 +277,7 @@ class BatchIntersectEncode2D(BatchConvOp):
             raise ValueError(("normalize_by must be one of "
                               "('none', 'proto_shape', 'target') but was {}"
                               ).format(normalize_by))
-        super(BatchIntersectEncode2D, self).__init__()
+        super().__init__()
         proto_shape = self._to_valid_proto_shape(proto_shape=proto_shape,
                                                  kernel_size=kernel_size)
         kernel_size = proto_shape.shape
@@ -243,8 +315,7 @@ class BatchIntersectEncode2D(BatchConvOp):
         # pylint: enable=no-member
 
         # Set to non-trainable:
-        for param in self.parameters():
-            param.requires_grad = False
+        self.requires_grad_(False)
         self.eval()
 
     @property
@@ -315,22 +386,22 @@ class BatchIoUEncode2D(BatchConvOp):
     **Implementation Notes**
 
     To change from 2D to other image dimensionality, replace the padding and
-    pooling layer and adapt :py:attr:`~BatchConvOp.AREA_DIMS` accordingly.
+    pooling layer and adapt :py:attr:`~BatchWindowOp.AREA_DIMS` accordingly.
     """
 
     def __init__(self,
-                 proto_shape: np.ndarray,
+                 proto_shape: np.ndarray = None,
                  kernel_size: Tuple[int, ...] = None,
                  smooth: float = 1e-7):
         """Init.
 
         :param proto_shape: the proto shape definition in a form accepted by
-            :py:func:`numpy.array`
+            :py:func:`numpy.ndarray`
         :param kernel_size: if ``proto_shape`` is ``None``,
             use all-ones rectangular shape of ``kernel_size``
         :param smooth: smoothing summand for smooth division
         """
-        super(BatchIoUEncode2D, self).__init__()
+        super().__init__()
 
         # Modules:
         self.intersect_encoder: BatchIntersectEncode2D = BatchIntersectEncode2D(
@@ -344,8 +415,7 @@ class BatchIoUEncode2D(BatchConvOp):
         """Smoothening summand for smooth division."""
 
         # Set to non-trainable:
-        for param in self.parameters():
-            param.requires_grad = False
+        self.requires_grad_(False)
         self.eval()
 
     @property
@@ -449,12 +519,12 @@ class BatchIntersectDecode2D(BatchConvOp):
     """
 
     def __init__(self,
-                 proto_shape: np.ndarray,
+                 proto_shape: np.ndarray = None,
                  kernel_size: Tuple[int, ...] = None):
         """Init.
 
         :param proto_shape: the proto shape used for IoU encoding in a form
-            accepted by :py:func:`numpy.array`
+            accepted by :py:func:`numpy.ndarray`
         :param kernel_size: if ``proto_shape`` is ``None``,
             use all-ones rectangular shape of ``kernel_size``
         """
@@ -471,7 +541,7 @@ class BatchIntersectDecode2D(BatchConvOp):
         padding = [unflipped_padding[1], unflipped_padding[0],
                    unflipped_padding[3], unflipped_padding[2]]
 
-        super(BatchIntersectDecode2D, self).__init__()
+        super().__init__()
 
         # Modules:
         self.padding = torch.nn.ZeroPad2d(padding=padding)
@@ -490,8 +560,7 @@ class BatchIntersectDecode2D(BatchConvOp):
         # pylint: enable=no-member
 
         # Set to non-trainable:
-        for param in self.parameters():
-            param.requires_grad = False
+        self.requires_grad_(False)
         self.eval()
 
     @property
@@ -513,107 +582,17 @@ class BatchIntersectDecode2D(BatchConvOp):
         return masks
 
 
-class ConvOpWrapper(WithThresh):
-    """Base wrapper class to turn convolutional batch operations into single
-    mask operations.
-    Wraps classes inheriting from :py:class:`BatchConvOp`."""
-
-    def __init__(self, trafo: BatchConvOp, **kwargs):
-        super(ConvOpWrapper, self).__init__(trafo=trafo, **kwargs)
-        self.trafo: BatchConvOp = self.trafo
-
-    @property
-    def proto_shape(self) -> np.ndarray:
-        """Wrap the :py:attr:`BatchConvOp.proto_shape`."""
-        return self.trafo.proto_shape
-
-    @property
-    def kernel_size(self) -> Tuple[int, ...]:
-        """Wrap the :py:attr:`BatchConvOp.kernel_size`."""
-        return self.trafo.kernel_size
-
-    @property
-    def settings(self) -> Dict[str, Any]:
-        """Settings; essentially merged from wrapped encoder and super."""
-        return dict(**self.trafo.settings, **super().settings)
-
-
-class IntersectEncode(ConvOpWrapper):
-    """Intersection encode a single mask.
-    This is a wrapper around :py:class:`BatchIntersectEncode2D`.
-    """
-
-    def __init__(self, kernel_size: Tuple[int, int] = None, *,
-                 normalize_by: str = 'proto_shape',
-                 proto_shape: np.ndarray = None,
-                 **thresh_args):
-        # pylint: disable=line-too-long
-        """Init.
-
-        :param thresh_args: thresholding arguments;
-            see :py:class:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh`
-        """
-        # pylint: enable=line-too-long
-        super(IntersectEncode, self).__init__(
-            trafo=BatchIntersectEncode2D(kernel_size=kernel_size,
-                                         proto_shape=proto_shape,
-                                         normalize_by=normalize_by),
-            **thresh_args)
-
-
-class IoUEncode(ConvOpWrapper):
-    """IoU encode a single mask.
-    This is a wrapper around :py:class:`BatchIoUEncode2D`.
-    """
-
-    def __init__(self,
-                 kernel_size: Tuple[int, int], *,
-                 proto_shape: np.ndarray = None,
-                 smooth: float = None,
-                 **thresh_args):
-        # pylint: disable=line-too-long
-        """Init.
-
-        :param thresh_args: thresholding arguments;
-            see :py:class:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh`
-        """
-        # pylint: enable=line-too-long
-        super(IoUEncode, self).__init__(
-            trafo=BatchIoUEncode2D(kernel_size=kernel_size,
-                                   proto_shape=proto_shape,
-                                   **(dict(smooth=smooth) if smooth is not None
-                                      else {})),
-            **thresh_args)
-
-
-class IntersectDecode(ConvOpWrapper):
-    """IoU encode a single mask.
-    This is a wrapper around :py:class:`BatchIntersectDecode2D`.
-    """
-
-    def __init__(self,
-                 kernel_size: Tuple[int, int], *,
-                 proto_shape: np.ndarray = None,
-                 **thresh_args):
-        # pylint: disable=line-too-long
-        """Init.
-
-        :param thresh_args: thresholding arguments;
-            see :py:class:`~hybrid_learning.datasets.transforms.image_transforms.WithThresh`
-        """
-        # pylint: enable=line-too-long
-        super(IntersectDecode, self).__init__(
-            trafo=BatchIntersectDecode2D(kernel_size=kernel_size,
-                                         proto_shape=proto_shape),
-            **thresh_args)
-
-
-def same_padding(kernel_size: Sequence[int]) -> Tuple[int, ...]:
+def same_padding(kernel_size: Sequence[int], hang_front: bool = False) -> Tuple[int, ...]:
     """Calculate the left and right padding for mode ``'same'`` for each dim
     and concat.
 
     Mode ``'same'`` here means
     ``Conv(kernel_size)(Pad(padding)(x)).size() == x.size()``.
+
+    Padding is distributed equally on both sides of a dimension.
+    If unequal padding is needed in one dimension, by default (``hang_front==False``)
+    the front gets padded by one pixel less than the back.
+    To instead pad the front more, set ``hang_font==True``.
 
     .. warning::
         Currently (Apr 2019), :py:class:`torch.nn.ZeroPad2d` requires the
@@ -621,6 +600,9 @@ def same_padding(kernel_size: Sequence[int]) -> Tuple[int, ...]:
         So the entries from kernel_size need to be swapped to obtain the
         correct padding as input for :py:class:`torch.nn.ZeroPad2d`.
 
+    :param kernel_size: the list of kernel dimension sizes
+    :param hang_front: whether the front instead of the rear padding should
+        be larger by 1 in case unequal padding is needed
     :return: padding tuple as
         ``(left dim0, right dim0, left dim1, right dim1, ...)``
     """
@@ -629,26 +611,35 @@ def same_padding(kernel_size: Sequence[int]) -> Tuple[int, ...]:
                          .format(kernel_size))
 
     # get tuples of (left pad, right pad) for each dim
-    left_right_paddings = [_same_padding_for_dim(i) for i in kernel_size]
+    left_right_paddings = [_same_padding_for_dim(i, hang_front=hang_front)
+                           for i in kernel_size]
     # flatten and return:
     return tuple([p for left_right in left_right_paddings for p in left_right])
 
 
-def _same_padding_for_dim(kernel_dim_size: int) -> Tuple[int, int]:
+def _same_padding_for_dim(kernel_dim_size: int, hang_front: bool = False) -> Tuple[int, int]:
     """Calc left and right padding to have same padding for kernel dim size.
 
     If the kernel dimension is odd, one obtains symmetric padding,
-    else asymmetric one. The padding is distributed over left and right
-    using the constraints
+    else asymmetric one (with right padding the larger one).
+    The padding is distributed over left and right using the constraints
     ``total_padding = kernel_dim_size - 1`` and
     ``0 <= (right_padding - left_padding) <= 1``.
-    This yields the same results as ``same`` padding in tensorflow with
+    By default (``hang_front==False``), the rear is padded more by 1 in case unequal
+    padding is needed. For ``hang_front==True``, the front instead is padded by 1 more.
+    If ``hang_front==False``, this yields the same results as ``same`` padding in tensorflow with
     ``stride == 1``, compare https://stackoverflow.com/questions/45254554/
     *(no code is taken from there)*.
 
-    :return: Tuple of left and right 1D padding for the given kernel dimension.
+    :param kernel_dim_size: the size of the kernel dimension to calculate padding for
+    :param hang_front: whether the front instead of the rear padding should
+        be larger by 1 in case unequal padding is needed
+    :return: Tuple of front and rear 1D padding for the given kernel dimension
     """
     total_padding: int = kernel_dim_size - 1
-    left_padding: int = total_padding // 2  # the shorter value
-    right_padding: int = total_padding - left_padding
-    return left_padding, right_padding
+    smaller_padding: int = total_padding // 2  # the shorter value
+    larger_padding: int = total_padding - smaller_padding
+    if not hang_front:
+        return smaller_padding, larger_padding
+    return larger_padding, smaller_padding
+

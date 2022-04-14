@@ -1,9 +1,10 @@
 """Common fixtures for testing concept models and analysis."""
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 # Workaround to make pylint cope correctly with pytest fixtures:
 # pylint: disable=redefined-outer-name
 import os
+from typing import Dict, Any, Tuple
 
 import pytest
 import torch
@@ -18,11 +19,28 @@ from hybrid_learning.datasets.custom import coco
 @pytest.fixture(scope="module")
 def main_model() -> torch.nn.Module:
     """Load a main model to work with."""
-    return tv.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+    return tv.models.alexnet(pretrained=False)
 
 
 @pytest.fixture(scope="module")
-def concept() -> SegmentationConcept2D:
+def sample_layer() -> Dict[str, Any]:
+    """Sample layer index to use for testing just on one layer."""
+    return dict(
+        layer_id="features.5",
+        out_channels=192,
+        kernel_size=(2, 2),
+        out_size=(13, 13),  # output size (height, width)
+    )
+
+
+@pytest.fixture(scope="module")
+def input_size() -> Tuple[int, int, int]:
+    """The input size for the used main model."""
+    return 3, 224, 224
+
+
+@pytest.fixture
+def concept(input_size: Tuple[int, int, int]) -> SegmentationConcept2D:
     """Provide a simple concept with tiny dataset for the concept model.
      (use the same data for training, validation, and testing)."""
     concept_name = 'FACE'
@@ -32,7 +50,8 @@ def concept() -> SegmentationConcept2D:
     root = os.path.join("dataset", "coco_test")
     concept_data = coco.ConceptDataset(
         dataset_root=os.path.join(root, "images", "train2017"),
-        body_parts=coco_concepts
+        body_parts=coco_concepts,
+        transforms=coco.ConceptDataset.get_default_transforms(input_size[1:])
     ).subset(
         body_parts=coco_concepts,
         num=max_num_imgs
@@ -43,44 +62,15 @@ def concept() -> SegmentationConcept2D:
         name=concept_name,
         data=DataTriple(train=concept_data, val=concept_data,
                         test=concept_data),
-        rel_size=0.1)
-
-
-@pytest.fixture(scope="module")
-def train_concept():
-    """Provide simple concept with small dataset for concept model training."""
-    concept_name = 'FACE'
-    coco_concepts: Sequence[coco.BodyParts] = [coco.BodyParts[concept_name]]
-    max_num_imgs = 50
-    root = os.path.join("dataset", "coco_test")
-
-    concept_data_train: coco.ConceptDataset = coco.ConceptDataset(
-        dataset_root=os.path.join(root, "images", "train2017"),
-        body_parts=coco_concepts
-    ).subset(body_parts=coco_concepts,
-             num=max_num_imgs)
-
-    concept_data_test: coco.ConceptDataset = coco.ConceptDataset(
-        annotations_fp=os.path.join(
-            root, "annotations", "person_keypoints_val2017.json"),
-        dataset_root=os.path.join(root, "images", "val2017"),
-        body_parts=coco_concepts
-    ).subset(body_parts=coco_concepts,
-             num=max(1, max_num_imgs // 3))
-    assert len(concept_data_test) > 0
-
-    return SegmentationConcept2D(name=concept_name,
-                                 data=DataTriple(train_val=concept_data_train,
-                                                 test=concept_data_test),
-                                 rel_size=0.1)
+        rel_size=0.16)
 
 
 @pytest.fixture
-def concept_model(concept: SegmentationConcept2D, main_model: torch.nn.Module):
+def concept_model(concept: SegmentationConcept2D, main_model: torch.nn.Module,
+                  sample_layer: Dict):
     """Return a standard concept model for given concept for experiments."""
-    layer_idx = 'backbone.body.layer3'
-    in_channels = 1024  # specify for faster initialization
-    concept_model = ConceptDetectionModel2D(concept=concept, model=main_model,
-                                            layer_id=layer_idx,
-                                            in_channels=in_channels)
+    concept_model = ConceptDetectionModel2D(
+        concept=concept, model=main_model,
+        layer_id=sample_layer["layer_id"],
+        in_channels=sample_layer["out_channels"])
     return concept_model

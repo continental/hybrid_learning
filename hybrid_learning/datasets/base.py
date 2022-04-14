@@ -1,18 +1,17 @@
+#  Copyright (c) 2022 Continental Automotive GmbH
 """Basic dataset model.
 
-The abstract BaseDataset handle provides a Sequence, which yields a
+The abstract BaseDataset handle provides a ``Sequence``, which yields a
 :py:class:`torch.Tensor` tuple of ``(input image, ground truth)`` upon a call to
 __getitem__.
 The transformations from image to tensor data can be changed.
 """
 
-#  Copyright (c) 2020 Continental Automotive GmbH
-
 import abc
 import enum
 import os
 from typing import Callable, Tuple, Union, Dict, List, Optional, NamedTuple, \
-    Any, Sequence, ItemsView, KeysView
+    Any, Sequence, ItemsView, KeysView, Hashable
 
 import PIL.Image
 import PIL.ImageEnhance
@@ -20,6 +19,10 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset, Subset
+
+from . import caching
+from . import transforms as trafos
+from .transforms.tuple_transforms import TupleTransforms
 
 
 class DatasetSplit(enum.Enum):
@@ -30,7 +33,7 @@ class DatasetSplit(enum.Enum):
     """The training set (not for testing or validation)."""
     TEST = "test"
     """The test set for testing after finished training."""
-    TRAIN_VAL = "train_val"
+    TRAIN_VAL = "trainval"
     """The combined training and validation set."""
     ALL = "all"
     """Combination of all training, validation, and test set."""
@@ -475,7 +478,8 @@ class DataTriple:
         """Dict of the splits (train, val, test) held in this triple."""
         return {DatasetSplit.TRAIN: self.train,
                 DatasetSplit.TEST: self.test,
-                DatasetSplit.VAL: self.val}
+                DatasetSplit.VAL: self.val,
+                DatasetSplit.TRAIN_VAL: self.train_val}
 
     def items(self) -> ItemsView[DatasetSplit, Dataset]:
         """Dataset split items.
@@ -508,19 +512,33 @@ class BaseDataset(Dataset):
     tuples before return from :py:meth:`__getitem__` can be controlled.
     The default for :py:attr:`transforms` is given by
     The default for :py:attr:`transforms` is given by
-    :py:meth:`_default_transforms`. Override in sub-classes if necessary.
+    :py:attr:`_default_transforms`. Override in sub-classes if necessary.
     The default combination of collected dataset tuples and
-    :py:meth:`_default_transforms` should yield a tuple
+    :py:attr:`_default_transforms` should yield a tuple
     of :py:class:`torch.Tensor` or dicts thereof.
 
     The :py:attr:`hybrid_learning.datasets.base.BaseDataset.dataset_root` is
     assumed to provide information about the storage location.
     Best, all components (input data, annotations, etc.)
     should be stored relative to this root location.
+
+    The transformed tuple values are cached by :py:attr:`transforms_cache`
+    if it is given. Then values are only collected and transformed if they
+    cannot be loaded from the cache. To get the cache descriptor for an entry
+    the, the :py:meth:`descriptor` method is consulted. Make sure to override
+    this appropriately (e.g. by image ID or image file name).
+
+    .. note::
+        In case a :py:class:`~hybrid_learning.datasets.caching.CacheTuple` is
+        used, make sure that ``None`` is returned if any tuple value is
+        ``None``.
     """
 
     def __init__(self, split: DatasetSplit = None, dataset_root: str = None,
-                 transforms: Callable = None):
+                 transforms: Callable = None,
+                 transforms_cache: caching.Cache = None,
+                 after_cache_transforms: Optional[Callable] = None,
+                 device: Optional[Union[torch.device, str]] = 'cpu'):
         """Init.
 
         :param split: The split of the dataset
@@ -528,8 +546,17 @@ class BaseDataset(Dataset):
             :py:attr:`DatasetSplit.VAL`, :py:attr:`DatasetSplit.TEST`).
         :param dataset_root: The location where to store the dataset.
         :param transforms: The transformations to be applied to the data when
-            loaded; defaults to :py:meth:`_default_transforms`
+            loaded; defaults to :py:attr:`_default_transforms`
+        :param transforms_cache: optional cache instance for caching transformed
+            tuples; must return ``None`` in case one of the tuple values has not
+            been cached yet; see :py:attr:`transforms_cache`
+        :param after_cache_transforms: transformations applied after
+            consulting the cache (no matter, whether the tuples was retrieved
+            from cache or not); by default, tensor gradients are disabled
+            and tensors are moved to a common device
+        :param device: device to use in the default ``after_cache_transforms``
         """
+        super().__init__()
         self.split: Optional[DatasetSplit] = split
         """Optional specification what use-case this dataset is meant to
         represent, e.g. training, validation, or testing."""
@@ -540,7 +567,26 @@ class BaseDataset(Dataset):
         """Transformation function applied to each item tuple before return.
         Applied in :py:meth:`__getitem__`.
         Default transformations are sub-class-specific.
+        Items transformed using :py:attr:`transforms` can be cached by setting
+        :py:attr:`transforms_cache`. If the transformations should be applied
+        *always*, regardless of caching, use :py:attr:`after_cache_transforms`.
         """
+        self.transforms_cache: Optional[caching.Cache] = transforms_cache
+        """Cache for the transformed ``(input, target)`` tuples.
+        If set, :py:meth:`__getitem__` will first try to load the tuple from
+        cache before loading and transforming it normally.
+        Items not in the cache are put in there after :py:attr:`transforms` is
+        applied."""
+        self.after_cache_transforms: Callable = \
+            after_cache_transforms or \
+            self._get_default_after_cache_trafo(device)
+        """Transformation function applied after consulting the cache
+        (no matter, whether the tuples was retrieved from cache or not).
+        Use these transformations instead of :py:attr:`transforms` to ensure
+        the transformation is *always* applied, regardless of caching.
+        By default, tensor gradients are disabled and tensors are moved to a
+        common device (see :py:meth:`_get_default_after_cache_trafo`)."""
+
         if dataset_root is not None:
             if not os.path.exists(dataset_root):
                 raise FileNotFoundError("Dataset root {} does not exist"
@@ -548,6 +594,21 @@ class BaseDataset(Dataset):
             if not os.path.isdir(dataset_root):
                 raise NotADirectoryError("Dataset root is not a directory: {}"
                                          .format(dataset_root))
+
+    @classmethod
+    def _get_default_after_cache_trafo(
+            cls, device: Optional[Union[str, torch.device]] = None):
+        """The default transformation after cache depending on the chosen
+        device.
+        Used to get the default for :py:attr:`after_cache_transforms`.
+        Transformation will remove requires_grad from tensors and move tensors
+        to a common ``device`` (defaults to ``'cpu'``).
+        """
+        device = device or 'cpu'
+        return (trafos.OnBothSides(trafos.NoGrad())
+                + trafos.OnBothSides(trafos.ToTensor(
+                    device, sparse=False, dtype=torch.float,
+                    requires_grad=False)))
 
     @abc.abstractmethod
     def __len__(self):
@@ -579,6 +640,19 @@ class BaseDataset(Dataset):
         """
         raise NotImplementedError()
 
+    @abc.abstractmethod
+    def descriptor(self, i: int) -> Hashable:
+        """Return a unique descriptor for the item at position ``i``.
+        This can e.g. be an image ID or the image file name.
+        It is used for caching.
+        """
+        raise NotImplementedError()
+
+    @staticmethod
+    def _tupled(item) -> Tuple:
+        """Wrap item in a tuple if is not already is one."""
+        return item if isinstance(item, tuple) else (item,)
+
     def __getitem__(self, idx: int):
         """Get item from ``idx`` in dataset with transformations applied.
         Transformations must be stored as single tuple transformation in
@@ -587,20 +661,37 @@ class BaseDataset(Dataset):
         :return: tuple output of :py:meth:`getitem` transformed by
             :py:attr:`transforms`
         """
-        inp, target = self.getitem(idx)
-        return self.transforms(inp, target)
+        inp_target, desc = None, None
+        put_to_cache = load_from_cache = self.transforms_cache is not None
+        if load_from_cache:
+            desc: Hashable = self.descriptor(idx)
+            inp_target = self.transforms_cache.load(desc)
+            put_to_cache = inp_target is None
+        if inp_target is None:
+            inp_target = self.getitem(idx)
+            if self.transforms is not None:
+                inp_target = self.transforms(*self._tupled(inp_target))
+        if put_to_cache:
+            self.transforms_cache.put(desc, inp_target)
+        if self.after_cache_transforms is not None:
+            inp_target = self.after_cache_transforms(*self._tupled(inp_target))
+        return inp_target
 
     @property
     def settings(self) -> Dict[str, Any]:
         """Settings of the instance.
          :py:attr:`transforms` info is skipped if set to default."""
         trafo_info = {'transforms': self.transforms} \
-            if self.transforms is not self._default_transforms else {}
+            if self.transforms != self._default_transforms \
+            else {}  # pylint: disable=comparison-with-callable
         split_info = {'split': self.split} if self.split is not None else {}
+        cache_info = ({'transforms_cache': self.transforms_cache}
+                      if self.transforms_cache is not None else {})
         return dict(dataset_root=self.dataset_root,
                     **split_info,
-                    **trafo_info
-                    )
+                    **trafo_info,
+                    after_cache_transforms=self.after_cache_transforms,
+                    **cache_info)
 
     def __repr__(self) -> str:
         """Nice printing function."""
@@ -611,18 +702,12 @@ class BaseDataset(Dataset):
                                                   other=other_info)
 
     # The default function does not use self, but overriding functions may
-    # pylint: disable=no-self-use
-    def _default_transforms(
-            self,
-            inp: Union[PIL.Image.Image, torch.Tensor],
-            ground_truth: Union[PIL.Image.Image, torch.Tensor, Dict]
-    ) -> Tuple[torch.Tensor, Union[torch.Tensor, Dict]]:
-        """Default transformation method (identity).
+    _default_transforms: Optional[TupleTransforms] = None
+    """The default transformation to apply if no other is given.
+    Set to ``None`` to apply no transforms by default.
 
-        :meta public:
-        """
-        return inp, ground_truth
-    # pylint: enable=no-self-use
+    :meta public:
+    """
 
 
 # DATASET INDEX MANIPULATION
@@ -661,6 +746,46 @@ def cross_validation_splits(train_val_data, num_splits: int
         splits.append((train_data, val_data))
 
     return splits
+
+
+def add_gaussian_peak(mask_np: np.ndarray,
+                      centroid: Tuple[float, float],
+                      binary_radius: Union[float, int],
+                      radius_value: float = 0.5,
+                      ) -> np.ndarray:
+    r"""Add a peak to the heatmap ``mask_np`` as a non-normalized gaussian
+    at ``centroid``. The standard deviation is calculated such that the
+    value of the gaussian is ``radius_value`` at L2 distance of``binary_radius``
+    from the centroid.
+    The gaussian is non-normalized, i.e. has maximum 1.
+    For adding, each pixel is set to the maximum of the original value or the
+    new gaussian.
+    The value of a pixel is set to that of its center point, e.g. the pixel
+    at index ``[0,0]`` in the image gets the value of the point ``(0.5, 0.5)``.
+
+    :param mask_np: numpy mask of shape ``(width, height)``
+    :param centroid: the center point of the peak in ``(x, y)`` in pixels
+    :param binary_radius: the radius of the peak if binarized with a threshold
+        of ``radius_value``; is related to the standard deviation of the non-normalized
+        gaussian via :math:`\sigma=\frac{r}{\sqrt{-2 \ln(\text{radius\_value})}}`
+    :param radius_value: the value the point at L2 distance of ``binary_radius``
+        from the peak ``centroid`` should have
+    :return: copy of ``mask_np`` with new peak added
+    """
+    assert len(mask_np.shape) == 2
+    if not (0 < radius_value < 1):
+        raise ValueError("radius_value must be positive float in (0, 1), but was {}".format(radius_value))
+    width, height = mask_np.shape
+    # Pixel centers
+    x_coords: np.ndarray = np.stack([np.arange(width)] * height, axis=1) + 0.5
+    y_coords: np.ndarray = np.stack([np.arange(height)] * width, axis=0) + 0.5
+    # Distance of pixel centers to centroid
+    square_dists = (x_coords - centroid[1]) ** 2 + (y_coords - centroid[0]) ** 2
+    std_dev: float = binary_radius / np.sqrt(2 * np.log(1 / radius_value))
+    # Non-normalized gaussian:
+    gaussian = np.exp(- square_dists / (2 * (std_dev ** 2)))
+    mask_np = np.max(np.stack([gaussian, mask_np], axis=0), axis=0)
+    return mask_np
 
 # HASHING METHODS
 # ---------------

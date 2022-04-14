@@ -1,36 +1,39 @@
 """Tests for concept embeddings."""
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 # pylint: disable=no-self-use
 # pylint: disable=redefined-outer-name
-
-from typing import Sequence, Dict, Tuple, List, Optional
+import os
+from typing import Sequence, Dict, Tuple, List, Optional, Any
 
 import numpy as np
 import pytest
 
 from hybrid_learning.concepts.concepts import Concept, SegmentationConcept2D
-from hybrid_learning.concepts.embeddings import ConceptEmbedding
-from hybrid_learning.concepts.models import ConceptDetectionModel2D
+from hybrid_learning.concepts.models import ConceptDetectionModel2D, ConceptEmbedding
 # noinspection PyUnresolvedReferences
-from .common_fixtures import concept_model, \
+from .common_fixtures import concept_model, input_size, sample_layer, \
     concept, main_model  # pylint: disable=unused-import
 
 
 @pytest.fixture
-def concept_embedding(concept_model: ConceptDetectionModel2D):
+def concept_embedding(concept_model: ConceptDetectionModel2D
+                      ) -> ConceptEmbedding:
     """A concept embedding obtained from a basic concept model."""
-    return concept_model.to_embedding()
+    return concept_model.to_embedding()[0]
 
 
 def to_emb(emb_vals: Sequence[float],
            concept: Concept = None) -> ConceptEmbedding:
     """Given a tuple of (normal_vec, support_factor, scaling_factor) yield
-    embedding.
-    ``model_stump`` is set to None."""
+    embedding."""
     assert 2 <= len(emb_vals) <= 3
-    concept_args = dict(concept=concept, model_stump=None,
-                        normal_vec=emb_vals[0], support_factor=emb_vals[1])
+    concept_args = dict(
+        concept=concept, kernel_size=(1,),
+        state_dict=dict(
+            normal_vec=emb_vals[0],
+            bias=-emb_vals[1] * np.linalg.norm(emb_vals[0]) ** 2),
+        normal_vec_name="normal_vec", bias_name="bias", )
     if len(emb_vals) == 3:
         concept_args["scaling_factor"] = emb_vals[2]
     return ConceptEmbedding(**concept_args)
@@ -158,6 +161,47 @@ class TestConceptEmbedding:
         # printing should not rise error
         str(concept_embedding)
 
+    def test_save_and_load(self, concept_embedding: ConceptEmbedding,
+                           tmp_path: str):
+        """Test save and load."""
+        filepath: str = os.path.join(tmp_path, "test.pt")
+
+        concept_embedding.save(filepath)
+        emb = ConceptEmbedding.load(filepath)
+
+        # torch.nn.Module and Concept aren't saved:
+        assert concept_embedding.main_model is not None
+        assert concept_embedding.concept is not None
+        assert emb.main_model is None
+        assert emb.concept is None
+
+        # Rest is the same:
+        assert emb == ConceptEmbedding(**{
+            k: v for k, v in concept_embedding.settings.items()
+            if k not in ('main_model', 'concept')})
+
+    def test_legacy_load(self, concept_embedding: ConceptEmbedding,
+                         tmp_path: str):
+        """Test the legacy loading from .npz files."""
+        filepath: str = os.path.join(tmp_path, "test.npz")
+
+        # legacy saved embedding:
+        setts: Dict[str, Any] = dict(
+            normal_vec=concept_embedding.normal_vec,
+            support_factor=concept_embedding.support_factor,
+            scaling_factor=concept_embedding.scaling_factor,
+            concept_name=str(concept_embedding.concept_name),
+            layer_id=str(concept_embedding.layer_id))
+        with open(filepath, 'w+b') as npz_file:
+            np.savez(npz_file, **setts)
+
+        emb: ConceptEmbedding = ConceptEmbedding.load(filepath)
+        assert emb == concept_embedding
+
+        # Proper defaults for concept and main model:
+        assert emb.concept is None
+        assert emb.main_model is None
+
     def test_normalize(self):
         """Test fundamental properties of normalization."""
         normal_vec = np.array([3, 4])  # |normal_vec| = 5
@@ -167,8 +211,11 @@ class TestConceptEmbedding:
         normed_support_factor = 5
         normed_scaling_factor = 5
         # noinspection PyTypeChecker
-        emb = ConceptEmbedding(normal_vec=normal_vec,
-                               support_factor=support_factor)
+        emb = ConceptEmbedding(
+            state_dict=dict(
+                normal_vec=normal_vec,
+                bias=-support_factor * np.linalg.norm(normal_vec) ** 2),
+            normal_vec_name="normal_vec", bias_name="bias", kernel_size=(1,))
         assert emb.scaling_factor == scaling_factor, \
             "Scaling factor wrongly initialized."
         normed_emb = emb.normalize()
@@ -201,9 +248,12 @@ class TestConceptEmbedding:
         orig = ([3, 4], 1, 1)
         normal_vec, support_factor, scaling_factor = orig
         # noinspection PyTypeChecker
-        emb = ConceptEmbedding(normal_vec=normal_vec,
-                               support_factor=support_factor,
-                               scaling_factor=scaling_factor)
+        emb = ConceptEmbedding(
+            state_dict=dict(
+                normal_vec=normal_vec,
+                bias=-support_factor * np.linalg.norm(normal_vec) ** 2),
+            normal_vec_name="normal_vec", bias_name="bias", kernel_size=(1,),
+            scaling_factor=scaling_factor)
 
         # Scaling yields new instance and old one is not changed:
         assert emb is not emb.scale(), "Scaling did not yield new instance"
@@ -253,11 +303,14 @@ class TestConceptEmbedding:
     def test_upper_sphere_neg_bias(self):
         """Test embedding normalization with negative bias."""
         weight = np.array([-3, 4])  # |weight| = 5
-        bias = -1
+        support_factor = -1
         normed_weight = np.array([3 / 5, -4 / 5])
-        normed_bias = 5
+        normed_support_factor = 5
         # noinspection PyTypeChecker
-        emb = ConceptEmbedding(normal_vec=weight, support_factor=bias)
+        emb = ConceptEmbedding(
+            state_dict=dict(normal_vec=weight,
+                            bias=-support_factor * np.linalg.norm(weight) ** 2),
+            normal_vec_name="normal_vec", bias_name="bias", kernel_size=(1,))
         normed_emb = emb.unique_upper_sphere()
 
         # Format checks
@@ -269,9 +322,9 @@ class TestConceptEmbedding:
         assert np.allclose(normed_emb.normal_vec, normed_weight), \
             ("Wrong normalized weight: expected {}, but was {}"
              .format(normed_weight, normed_emb.normal_vec))
-        assert np.allclose(normed_emb.support_factor, normed_bias), \
+        assert np.allclose(normed_emb.support_factor, normed_support_factor), \
             ("Wrong normalized bias: expected {}, but was {}"
-             .format(normed_bias, normed_emb.support_factor))
+             .format(normed_support_factor, normed_emb.support_factor))
 
     def test_distance(self):
         """Test some fundamental properties of the distance function for
@@ -290,10 +343,13 @@ class TestConceptEmbedding:
         with pytest.raises(ValueError):
             # Two parallels equally distributed around zero but with opposite
             # pos/neg sides
-            concept_args = dict(concept=concept, model_stump=None)
-            embeddings = [ConceptEmbedding(normal_vec=w, support_factor=b,
-                                           **concept_args)
-                          for w, b in [([0, 1], 2), ([0, -1], 2)]]
+            concept_args = dict(concept=concept)
+            embeddings = [
+                ConceptEmbedding(
+                    state_dict=dict(w=w, B=-b * np.linalg.norm(w) ** 2),
+                    normal_vec_name="w", bias_name="B",
+                    kernel_size=(1,), **concept_args)
+                for w, b in [([0, 1], 2), ([0, -1], 2)]]
             ConceptEmbedding.mean_by_distance(embeddings)
 
         with pytest.raises(ValueError):
@@ -302,12 +358,15 @@ class TestConceptEmbedding:
     def test_distance_mean_results(self, concept: Concept):
         """Test obtaining the mean concept embedding by sample values."""
 
-        concept_args = dict(concept=concept, model_stump=None)
+        concept_args = dict(concept=concept)
         for desc, (embs, (m_w, m_b)) in self.DISTANCE_MEAN_EXAMPLES.items():
             m_w: np.ndarray = np.array(m_w)
-            embeddings = [ConceptEmbedding(normal_vec=w, support_factor=b,
-                                           **concept_args)
-                          for w, b in embs]
+            embeddings = [
+                ConceptEmbedding(
+                    state_dict=dict(w=w, B=-b * np.linalg.norm(w) ** 2),
+                    normal_vec_name="w", bias_name="B",
+                    kernel_size=(1,), **concept_args)
+                for w, b in embs]
             # Actual routine
             m_emb: ConceptEmbedding = \
                 ConceptEmbedding.mean_by_distance(embeddings)
@@ -344,11 +403,14 @@ class TestConceptEmbedding:
         This is that at any point in space the distance of the mean embedding is
         the mean of the distances of the other embeddings."""
         # test points for testing the distance condition in several dimensions
-        concept_args = dict(concept=concept, model_stump=None)
+        concept_args = dict(concept=concept)
         for desc, (embs, _) in self.DISTANCE_MEAN_EXAMPLES.items():
-            embeddings = [ConceptEmbedding(normal_vec=w, support_factor=b,
-                                           **concept_args)
-                          for w, b in embs]
+            embeddings = [
+                ConceptEmbedding(
+                    state_dict=dict(w=w, B=-b * np.linalg.norm(w) ** 2),
+                    normal_vec_name="w", bias_name="B",
+                    kernel_size=(1,), **concept_args)
+                for w, b in embs]
             # Actual routine
             m_emb: ConceptEmbedding = \
                 ConceptEmbedding.mean_by_distance(embeddings)
@@ -369,12 +431,15 @@ class TestConceptEmbedding:
 
     def test_mean_results(self, concept: Concept):
         """Test obtaining the mean concept embedding by sample values."""
-        concept_args = dict(concept=concept, model_stump=None)
+        concept_args = dict(concept=concept)
         for desc, (embs, (m_w, m_b)) in self.INTUITIVE_MEAN_EXAMPLES.items():
             m_w: np.ndarray = np.array(m_w)
-            embeddings = [ConceptEmbedding(normal_vec=w, support_factor=b,
-                                           **concept_args)
-                          for w, b in embs]
+            embeddings = [
+                ConceptEmbedding(
+                    state_dict=dict(w=w, B=-b * np.linalg.norm(w) ** 2),
+                    normal_vec_name="w", bias_name="B",
+                    kernel_size=(1,), **concept_args)
+                for w, b in embs]
             # Actual routine
             m_emb: ConceptEmbedding = ConceptEmbedding.mean(embeddings)
             context_info = (("context:\n  mean embedding: ({}, {}, 1.)"
@@ -418,12 +483,14 @@ class TestConceptEmbedding:
         """Test obtaining the mean concept embedding, meaning the optimal
         mean hyperplane."""
 
-        concept_args = dict(concept=concept, model_stump=None)
+        concept_args = dict(concept=concept)
         for desc, (embs, (m_w, m_b)) in self.INTUITIVE_MEAN_EXAMPLES.items():
             m_w: np.ndarray = np.array(m_w)
-            embeddings = [ConceptEmbedding(normal_vec=w, support_factor=b,
-                                           **concept_args)
-                          for w, b in embs]
+            embeddings = [ConceptEmbedding(
+                state_dict=dict(w=w, B=-b * np.linalg.norm(w) ** 2),
+                normal_vec_name="w", bias_name="B",
+                kernel_size=(1,), **concept_args)
+                for w, b in embs]
             # Actual routine
             m_emb: ConceptEmbedding = ConceptEmbedding.mean_by_angle(embeddings)
             context_info = (("context:\n  mean embedding: ({}, {})"
@@ -453,11 +520,14 @@ class TestConceptEmbedding:
         The condition for the more complex mean here is that at any point the
         mean distances to the hyperplanes along the normal vector equal the
         (unscaled!) distance to the mean hyperplane."""
-        concept_args = dict(concept=concept, model_stump=None)
+        concept_args = dict(concept=concept)
         for desc, (embs, _) in self.INTUITIVE_MEAN_EXAMPLES.items():
-            embs: List[ConceptEmbedding] = \
-                [ConceptEmbedding(normal_vec=w, support_factor=b,
-                                  **concept_args) for w, b in embs]
+            embs: List[ConceptEmbedding] = [
+                ConceptEmbedding(
+                    state_dict=dict(w=w, B=-b * np.linalg.norm(w) ** 2),
+                    normal_vec_name="w", bias_name="B",
+                    kernel_size=(1,), **concept_args)
+                for w, b in embs]
             # Actual routine
             m_emb: ConceptEmbedding = ConceptEmbedding.mean_by_angle(embs) \
                 .normalize().to_pos_scaling()
@@ -505,13 +575,16 @@ class TestConceptEmbedding:
 
     def test_equals(self):
         """Test equality between two concept embeddings."""
-        args = dict(concept=None, model_stump=None)
+        args = dict(concept=None)
 
         def to_emb(normal_vec, support_factor, scaling_factor):
             """Shorthand to concept embedding creation"""
-            return ConceptEmbedding(normal_vec=normal_vec,
-                                    support_factor=support_factor,
-                                    scaling_factor=scaling_factor, **args)
+            return ConceptEmbedding(
+                state_dict=dict(
+                    normal_vec=normal_vec,
+                    bias=-support_factor * np.linalg.norm(normal_vec) ** 2),
+                normal_vec_name="normal_vec", bias_name="bias",
+                kernel_size=(1,), scaling_factor=scaling_factor, **args)
 
         # self == self
         emb = to_emb([1, 3, 3, 2], 45, 3)

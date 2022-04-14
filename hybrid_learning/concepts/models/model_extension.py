@@ -1,4 +1,4 @@
-"""Wrapper classes to slice torch.nn.modules.
+"""Wrapper classes to slice and extend ``torch.nn.modules``.
 The main mechanism used are hooks to obtain layer intermediate output.
 The base class to use this mechanism is :py:class:`HooksHandle`.
 
@@ -11,15 +11,35 @@ This is used to
 - *cut (and extend) a model* at a layer
   (:py:class:`ModelStump`, :py:class:`ExtendedModelStump`)
 """
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 import abc
 from typing import Iterable, Dict, Optional, List, Sequence, Tuple, Any, \
-    Callable
+    Callable, Union
 
 import torch
 import torch.nn
 import torch.utils.hooks
+
+
+class _HookFor:
+    """Callable that can act as hook for :py:class:`torch.nn.Module` and
+    stores intermediate results using given handle."""
+    def __init__(self, module_id: str, handle: 'HooksHandle'):
+        """Init.
+
+        :param module_id: the module ID under which to store the intermediate
+            result; make sure the hook is really registered to this layer!
+        :param handle: the handle to use to store the intermediate layer outputs
+        """
+        self.module_id: str = module_id
+        self.handle: HooksHandle = handle
+
+    def __call__(self, _module, _inp, outp: torch.Tensor
+                 ) -> None:  # pylint: disable=unused-argument
+        """Hook function that saves intermediate output of sub-module."""
+        # noinspection PyProtectedMember
+        self.handle._intermediate_outs[self.module_id] = outp
 
 
 class HooksHandle(torch.nn.Module, abc.ABC):
@@ -40,7 +60,7 @@ class HooksHandle(torch.nn.Module, abc.ABC):
                 be captured after the first call.
         """
         module_ids = module_ids or []
-        super(HooksHandle, self).__init__()
+        super().__init__()
         self.wrapped_model: torch.nn.Module = model
         """Original model from which intermediate and final output are
         retrieved."""
@@ -73,13 +93,10 @@ class HooksHandle(torch.nn.Module, abc.ABC):
         if module_id is None:
             raise ValueError("Tried to register a module_id which was None")
 
-        def m_hook(_module, _inp, outp: torch.Tensor
-                   ) -> None:  # pylint: disable=unused-argument
-            """Hook that saves intermediate output of sub-module."""
-            self._intermediate_outs[module_id] = outp
-
         sub_module = self.get_module_by_id(module_id)
-        self.hook_handles[module_id] = sub_module.register_forward_hook(m_hook)
+        self.hook_handles[module_id] = sub_module.register_forward_hook(
+            _HookFor(module_id=module_id, handle=self)
+        )
 
     def unregister_submodule(self, module_id: str) -> None:
         """Unregister a submodule for intermediate output retrieval."""
@@ -105,6 +122,11 @@ class HooksHandle(torch.nn.Module, abc.ABC):
     def forward(self, *inps):
         """Pytorch forward method."""
         raise NotImplementedError()
+
+    def __del__(self):
+        """Unregister all hooks held by this handle on handle delete."""
+        for hook_handle in self.hook_handles.values():
+            hook_handle.remove()
 
 
 class ActivationMapGrabber(HooksHandle):
@@ -137,13 +159,12 @@ class ActivationMapGrabber(HooksHandle):
                 Sub-modules used several times will only be evaluated the first
                 time called!
         """
-        super(ActivationMapGrabber, self).__init__(model=model,
-                                                   module_ids=module_ids)
+        super().__init__(model=model, module_ids=module_ids)
 
     def forward(self, *inps: Sequence[torch.Tensor]
                 ) -> Tuple[Any, Dict[str, Any]]:
-        """Return tuple of outputs of the wrapped model and of the sub-modules.
-        """
+        """Return tuple of outputs of the wrapped model and of the
+        sub-modules."""
         model_out = self.wrapped_model(*inps)
         return model_out, self._intermediate_outs
 
@@ -183,17 +204,21 @@ class ModelExtender(ActivationMapGrabber):
 
     The output of a forward run then is a tuple of the main model output
     and a dict ``{<name>: <ext model output>}``.
+    If :py:attr:`return_orig_out` is ``False``, only the dict is returned.
     """
 
     def __init__(self, model: torch.nn.Module,
-                 extensions: Dict[str, Dict[str, torch.nn.Module]]):
+                 extensions: Dict[str, Dict[str, torch.nn.Module]],
+                 return_orig_out: bool = True):
         """Init.
 
         :param model: the model to extend
-        :param extensions: see :py:attr:`extension_models`
+        :param extensions: extensions to initially register;
+            for format see :py:attr:`register_extensions`
+        :param return_orig_out: see :py:attr:`return_orig_out`
         """
-        super(ModelExtender, self).__init__(model=model,
-                                            module_ids=extensions.keys())
+        super().__init__(model=model,
+                         module_ids=extensions.keys())
         for module_id, exts in extensions.items():
             for ext_name, ext_mod in exts.items():
                 if not isinstance(ext_mod, torch.nn.Module):
@@ -201,6 +226,10 @@ class ModelExtender(ActivationMapGrabber):
                         ("Extension item of name {} to be registered at "
                          "sub-module {} not of type torch.nn.Module, but of "
                          "type {}").format(ext_name, module_id, type(ext_mod)))
+
+        self.return_orig_out: bool = return_orig_out
+        """Whether to return a tuple ``(original_output, extension_outputs)`` or
+        only the dict ``extension_outputs``."""
         self.extension_models: torch.nn.ModuleDict = torch.nn.ModuleDict()
         """Dictionary of ``extension_models`` modules indexed by the layer they
         are applied to. Do only change via :py:meth:`register_extension` and
@@ -301,6 +330,8 @@ class ModelExtender(ActivationMapGrabber):
             new_extensions: Dict[str, Dict[str, torch.nn.Module]]) -> None:
         """Register all specified new extensions.
 
+        :param new_extensions: extensions in the format
+            ``{module_id: {extension_name: extension_module}}``
         :raise: :py:exc:`ValueError` if there is a name for which already an
             extension is registered.
         """
@@ -310,14 +341,14 @@ class ModelExtender(ActivationMapGrabber):
                                         model=model)
 
     def forward(self, *inps: Sequence[torch.Tensor]
-                ) -> Tuple[Any, Dict[str, Any]]:
+                ) -> Union[Tuple[Any, Dict[str, Any]], Dict[str, Any]]:
         """Pytorch forward method.
 
         :return: Tuple of the form
             ``(<main model out>, {<ext name>: <ext out>})``.
         """
         # Get the sub-module intermediate outputs by sub-module ID:
-        extended_out = super(ModelExtender, self).forward(*inps)
+        extended_out = super().forward(*inps)
         main_model_out: Any = extended_out[0]
         intermediate_outs: Dict[str, Any] = extended_out[1]
 
@@ -329,7 +360,10 @@ class ModelExtender(ActivationMapGrabber):
                 extension_outs[name] = self.extension_models[name](
                     intermediate_out)
 
-        return main_model_out, extension_outs
+        if self.return_orig_out:
+            return main_model_out, extension_outs
+        else:
+            return extension_outs
 
 
 class ModelStump(HooksHandle):
@@ -358,7 +392,7 @@ class ModelStump(HooksHandle):
                 is collected.
         """
 
-        super(ModelStump, self).__init__(model=model)
+        super().__init__(model=model)
         self._stump_head: Optional[str] = None
         self.stump_head = stump_head
 
@@ -382,7 +416,7 @@ class ModelStump(HooksHandle):
     def register_submodule(self, module_id: str) -> None:
         """Register a sub-module hook.
         If :py:attr:`stump_head` is unset, set it to this sub-module."""
-        super(ModelStump, self).register_submodule(module_id=module_id)
+        super().register_submodule(module_id=module_id)
         # Set stump to be the new and only registered sub-module if it is not
         # set:
         if self.stump_head is None:
@@ -390,7 +424,7 @@ class ModelStump(HooksHandle):
 
     def unregister_submodule(self, module_id: str) -> None:
         """Unregister a submodule for intermediate output retrieval."""
-        super(ModelStump, self).unregister_submodule(module_id=module_id)
+        super().unregister_submodule(module_id=module_id)
         if module_id == self.stump_head:
             self.stump_head = None
 
@@ -414,7 +448,7 @@ class ExtendedModelStump(ModelStump):
 
     def __init__(self, model: torch.nn.Module, stump_head: str,
                  modification: Callable):
-        super(ExtendedModelStump, self).__init__(model, stump_head)
+        super().__init__(model, stump_head)
         if not callable(modification):
             raise ValueError("modification function for model intermediate "
                              "out must be callable!")
@@ -422,14 +456,14 @@ class ExtendedModelStump(ModelStump):
 
     def forward(self, *inps):
         """Collect output of stump head & return ``modification(stump_head)``"""
-        outp = super(ExtendedModelStump, self).forward(*inps)
+        outp = super().forward(*inps)
         return self.modification(outp)
 
 
 def dummy_output(model: torch.nn.Module, input_size: Sequence[int],
                  layer_ids: Sequence[str] = None) -> Dict[str, Any]:
     """Select dummy output of model's given or all layers for all-zero
-    tensor of input size.
+    tensor of ``input_size``.
 
     :param input_size: input size of one sample to feed in
         (make sure to include batch dimension!)
@@ -437,17 +471,19 @@ def dummy_output(model: torch.nn.Module, input_size: Sequence[int],
     :param layer_ids: the layers to investigate;
         defaults to all listed in the model's
         :py:attr:`~torch.nn.Module.named_modules`
-    :return: a dict of the outputs for each layer ID if they could be determined
-        (i.e. layer output is a tensor)
+    :return: a dict of the outputs for each layer ID
     """
-    # pylint: disable=no-member
-    inp_tensor: torch.Tensor = torch.zeros(size=tuple(input_size))
-    # pylint: enable=no-member
-    if len(list(model.parameters())) > 0:
-        inp_tensor = inp_tensor.to(next(model.parameters()).device)
-    layer_ids = layer_ids or [name for name, _ in model.named_modules()]
-    grabber = ActivationMapGrabber(model, layer_ids)
-    _, outp = grabber.eval()(inp_tensor)
+    with torch.set_grad_enabled(False):
+        # pylint: disable=no-member
+        inp_tensor: torch.Tensor = torch.zeros(size=tuple(input_size))
+        # pylint: enable=no-member
+        if len(list(model.parameters())) > 0:
+            inp_tensor = inp_tensor.to(next(model.parameters()).device)
+
+        layer_ids = layer_ids or [name for name, _ in model.named_modules()]
+        grabber = ActivationMapGrabber(model, layer_ids)
+        _, outp = grabber.eval()(inp_tensor)
+        grabber.__del__()
     return outp
 
 
@@ -480,33 +516,37 @@ def output_sizes(model: torch.nn.Module, input_size: Sequence[int],
         :py:func:`~hybrid_learning.concepts.models.model_extension.dummy_output`
         directly in this case
     """
+    layer_ids = layer_ids or [name for name, _ in model.named_modules()]
     if len(input_size) == 0:
         raise ValueError("Empty input_size not supported.")
     if not has_batch_dim:
         input_size = [1, *input_size]
-    outps: Dict[str, Any] = dummy_output(model, input_size, layer_ids)
+
     outps_sizes: Dict[str, torch.Size] = {}
-    for layer, outp in outps.items():
+    for layer_id, outp in dummy_output(model, input_size, layer_ids).items():
         if not isinstance(outp, torch.Tensor):
             if not ignore_non_tensor_outs:
                 raise AttributeError(
                     ("Output of layer {} was not of type torch.Tensor but {};"
                      "non-tensor types not supported for determining size.\n"
-                     "model: {}").format(layer, type(outp), str(model)))
+                     "model: {}").format(layer_id, type(outp), str(model)))
         else:
             outp_size: torch.Size = outp.size()
             if len(outp_size) <= 1:
                 raise AttributeError(
                     ("Output size of layer {} is 1D ({}) and does not include "
-                     "batch dimension").format(layer, outp_size))
-            outps_sizes[layer] = outp.size()[1:]  # strip batch dimension
+                     "batch dimension").format(layer_id, outp_size))
+            outps_sizes[layer_id] = outp.size()[1:]  # strip batch dimension
     return outps_sizes
 
 
 def output_size(model: torch.nn.Module, input_size: Sequence[int],
-                has_batch_dim: bool = False) -> torch.Size:
-    """Feed dummy input of input_size to model to determine the model output
-    size.
+                has_batch_dim: bool = False, layer_id: Optional[str] = None,
+                ) -> torch.Size:
+    """Feed dummy input of input_size to model to determine the output size
+    of the layer with ID ``layer_id``.
+    If no layer ID is given, the size of the model final output is returned.
+
     Will raise if the model output is not a single tensor.
     This essentially is a wrapper around
     :py:func:`~hybrid_learning.concepts.models.model_extension.output_sizes`
@@ -517,13 +557,15 @@ def output_size(model: torch.nn.Module, input_size: Sequence[int],
     :param model: the model the output of which is to be investigated
     :param input_size: a single, all-zero tensor of that size is fed to
         the model
+    :param layer_id: the ID of the layer to inspect;
+        if not given, all layers (i.e. ``''``) are inspected
     :param has_batch_dim: whether the given ``input_size`` already features
         a batch dimension; added if not
     """
-    main_model_out_id = ''
+    layer_id = layer_id or ''
     return output_sizes(model,
-                        layer_ids=[main_model_out_id],
+                        layer_ids=[layer_id],
                         input_size=input_size,
                         has_batch_dim=has_batch_dim,
                         ignore_non_tensor_outs=False
-                        )[main_model_out_id]
+                        )[layer_id]

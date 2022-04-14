@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2020 Continental Automotive GmbH
+Copyright (c) 2022 Continental Automotive GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

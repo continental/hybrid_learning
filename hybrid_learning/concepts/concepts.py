@@ -1,11 +1,11 @@
-"""Concept base class, concept types and corresponding sub-classes.
+"""Concept base class, concept types, and corresponding sub-classes.
 
 A concept is represented by dataset splits.
 Different concept types are implemented using sub-classes.
-Depending on the type, the data sets must fulfill different criteria.
+Depending on the type, the data sets must fulfill different validation criteria.
 E.g. a segmentation concept requires segmentation masks as ground truth.
 """
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 import enum
 from collections import Iterable
@@ -139,11 +139,10 @@ class Concept:
 
     def __repr__(self) -> str:
         """Nice printing function."""
-        return "{cls}(\n    name={name},\n    data={data})".format(
+        return "{cls}(\n{content}\n)".format(
             cls=self.__class__.__name__,
-            name=repr(self.name),
-            data=repr(self.data),
-        )
+            content=",\n    ".join(["{}={}".format(key, repr(val))
+                                    for key, val in self.settings.items()]))
 
 
 class SegmentationConcept2D(Concept):
@@ -175,7 +174,7 @@ class SegmentationConcept2D(Concept):
                                   "({} instead of 2): {}"
                                   ).format(len(rel_size), rel_size))
 
-        super(SegmentationConcept2D, self).__init__(name=name, data=data)
+        super().__init__(name=name, data=data)
         self.rel_size: Optional[Tuple[float, float]] = rel_size
         """Size of the concept in ``(width, height)`` relative to the
         image size. If set, used by detection and segmentation concept models
@@ -185,7 +184,7 @@ class SegmentationConcept2D(Concept):
     @property
     def settings(self) -> Dict[str, Any]:
         """Settings dict to reproduce instance. Use as kwargs for init."""
-        return dict(**super(SegmentationConcept2D, self).settings,
+        return dict(**super().settings,
                     rel_size=self.rel_size)
 
     @property
@@ -221,10 +220,11 @@ class SegmentationConcept2D(Concept):
             raise ValueError(("Dataset {desc} mask at index 0, was no "
                               "torch.tensor but of type {}"
                               ).format(type(mask), desc=data_desc))
-        # Correct number of axes?
-        if not 2 <= len(mask.size()) <= 3:
-            raise ValueError(("Dataset {desc} mask at index 0 is not 2D, but "
-                              "has size {}"
+        # Correct number of axes? (2=(h,w), 3=(1,h,w), 4=(gt_types, 1,h,w))
+        if not 2 <= len(mask.size()) <= 4:
+            raise ValueError(("Dataset {desc} mask at index 0 is not 2D "
+                              "or 2D with different ground truth types with size "
+                              "([[gt_types], 1], h, w), but Dataset train mask at index has size {}"
                               ).format(mask.size(), desc=data_desc))
         # Valid number of channels?
         if len(mask.size()) == 3 and mask.size()[0] != 1:
@@ -232,12 +232,6 @@ class SegmentationConcept2D(Concept):
                               "channel information: should be at dimension 0 "
                               "with 1 channel, but mask has size {}")
                              .format(img.size(), desc=data_desc))
-        # Same size as image?
-        if not mask.size()[-2:] == img.size()[-2:]:
-            raise ValueError(("Dataset {desc} input at index 0 has input and "
-                              "mask of differing size: "
-                              "input size={}, mask size={}")
-                             .format(img.size(), mask.size(), desc=data_desc))
 
         return data
 
@@ -246,6 +240,6 @@ class SegmentationConcept2D(Concept):
         :py:meth:`~hybrid_learning.concepts.concepts.Concept.__eq__`
         check ``rel_size``.
         """
-        return (super(SegmentationConcept2D, self).__eq__(other)) and \
+        return (super().__eq__(other)) and \
                (hasattr(other, "rel_size")) and \
                (self.rel_size == other.rel_size)

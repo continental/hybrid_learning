@@ -19,7 +19,7 @@ For more details on Broden and its encoding see :py:class:`BrodenHandle`.
     https://doi.org/10.1109/CVPR.2017.354.
 """
 
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 import os
 from typing import NamedTuple, Optional, Dict, Tuple, List, Sequence, Union, \
@@ -29,10 +29,10 @@ import PIL.Image
 import numpy as np
 import pandas as pd
 import torch
-import torchvision as tv
 from tqdm import tqdm
 
-from .. import transforms as trafo
+from hybrid_learning import fuzzy_logic
+from .. import transforms as trafos
 from ..base import BaseDataset
 
 
@@ -144,6 +144,7 @@ class BrodenHandle(BaseDataset):
                  labels: Sequence[BrodenLabel],
                  dataset_root: str,
                  annotations: pd.DataFrame = None,
+                 annotations_fp: str = None,
                  prune_na: bool = True, prune_na_rule: str = 'all',
                  broden_split: Optional[str] = None,
                  max_num_samples: Optional[int] = None,
@@ -164,6 +165,8 @@ class BrodenHandle(BaseDataset):
         :param annotations: optional initializer for :py:attr:`annotations`,
             which is by default loaded from :py:const:`INDEX_CSV_FILE`;
             use to create sub-sets
+        :param annotations_fp: optional path to the annotations file;
+            by default, ``dataset_root/index.csv`` is assumed
         :param dataset_args: arguments to
             :py:class:`~hybrid_learning.datasets.base.BaseDataset`.
         """
@@ -172,15 +175,15 @@ class BrodenHandle(BaseDataset):
         if len(labels) == 0:
             raise ValueError("Empty labels!")
 
-        self._default_transforms = self.datum_to_tens
-        """The default transformation will return tensors."""
+        super().__init__(dataset_root=dataset_root,
+                         **dataset_args)
 
-        super(BrodenHandle, self).__init__(dataset_root=dataset_root,
-                                           **dataset_args)
+        if annotations_fp is None and annotations is None:
+            annotations_fp = os.path.join(dataset_root, self.INDEX_CSV_FILE)
 
         self.annotations: pd.DataFrame = annotations \
             if annotations is not None \
-            else self.load_annotations_table(self.dataset_root)
+            else self.load_annotations_table(annotations_fp)
         """The actual annotation (meta-)information.
         The columns used here are described below.
 
@@ -238,6 +241,13 @@ class BrodenHandle(BaseDataset):
                             prune_na_rule=prune_na_rule,
                             broden_split=broden_split, shuffle=shuffle)
 
+    @classmethod
+    def _get_default_after_cache_trafo(
+            cls, device: Optional[Union[str, torch.device]] = None):
+        """The default transformation after cache should be ``None`` for this
+        dataset."""
+        return None
+
     def standard_prune(self, max_num_samples: Optional[int] = None,
                        prune_na: bool = True, prune_na_rule: str = 'all',
                        broden_split: Optional[str] = None,
@@ -254,9 +264,10 @@ class BrodenHandle(BaseDataset):
             - ``'all'``: all categories occurring in the specified labels must
               be ``NaN``
             - ``'any'``: any must be ``NaN``
-        :param broden_split: the original dataset had a fix split into
-            training and validation data; choose the corresponding original
-            split (see also :py:attr:`annotations`, where the split
+        :param broden_split: the original dataset had a fixed split into
+            training (``'train'``) and validation (``'val'``) data;
+            choose the corresponding original split
+            (see also  :py:attr:`annotations`, where the split
             meta-information is stored in)
         :param max_num_samples: the maximum number of samples to select;
             if set to ``None``, no restriction is applied
@@ -288,14 +299,8 @@ class BrodenHandle(BaseDataset):
             self.annotations = \
                 self.annotations.loc[self.annotations['split'] == broden_split]
 
-        # Restrict to the selected number of samples (and shuffle)
-        if max_num_samples is None or max_num_samples <= 0 or \
-                max_num_samples > len(self.annotations):
-            max_num_samples = len(self.annotations)
-        if shuffle:
-            self.annotations = self.annotations.sample(n=max_num_samples
-                                                       ).reset_index(drop=True)
-        self.annotations = self.annotations.iloc[:max_num_samples]
+        # Reduce number of samples and shuffle
+        self.cut_to(max_num_samples, shuffle=shuffle)
 
         # Final sanity check
         if len(self) == 0:
@@ -304,25 +309,40 @@ class BrodenHandle(BaseDataset):
 
         return self
 
+    def cut_to(self, max_num_samples: Optional[int] = None,
+               shuffle: bool = False) -> 'BrodenHandle':
+        """Reduce the number of samples to the first ``max_num_samples``,
+        and optionally shuffle."""
+        # Restrict to the selected number of samples
+        if max_num_samples is None or max_num_samples <= 0 or \
+                max_num_samples > len(self.annotations):
+            max_num_samples = len(self.annotations)
+        if shuffle:
+            self.annotations = self.annotations.sample(n=max_num_samples
+                                                       ).reset_index(drop=True)
+        self.annotations = self.annotations.iloc[:max_num_samples]
+        return self
+
     @classmethod
-    def load_annotations_table(cls, dataset_root: str,
-                               index_file: str = None) -> pd.DataFrame:
-        """Load the annotation information from the ``index_file``
-        under ``dataset_root``.
+    def load_annotations_table(cls, annotations_fp: str) -> pd.DataFrame:
+        """Load the annotation information from the file at ``annotations_fp``.
         For simplicity of parsing, all category and the ``"image"`` column
         are parsed to string.
 
-        :param dataset_root: the root directory under which to find the
-            index file
-        :param index_file: the file name / relative path under ``dataset_root``
-            of the index CSV file to load the annotations from;
-            defaults to :py:attr:`INDEX_CSV_FILE`
+        :param annotations_fp: the path to the annotations .csv file
         :return: annotations table with correct types of the category columns
         """
-        index_file = index_file or cls.INDEX_CSV_FILE
-        return pd.read_csv(os.path.join(dataset_root, index_file),
+        if not os.path.isfile(annotations_fp):
+            raise FileNotFoundError("Annotations file {} does not exist"
+                                    .format(annotations_fp))
+        return pd.read_csv(annotations_fp,
                            dtype={col: str for col in
                                   [*cls.CLS_CATS, *cls.SEG_CATS, "image"]})
+
+    def save_annotations_table(self, annotations_fp: str):
+        """Save the current :py:attr:`annotations` to a CSV file at given
+        ``annotations_fp``."""
+        self.annotations.to_csv(annotations_fp)
 
     def parse_label(self, label_spec: Union[str, BrodenLabel],
                     label_infos: pd.DataFrame,
@@ -475,25 +495,25 @@ class BrodenHandle(BaseDataset):
         }
         return anns
 
-    @staticmethod
-    def datum_to_tens(img: PIL.Image.Image, anns: Dict[bool, np.ndarray]
-                      ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        """This transformation will convert an output tuple of image, label dict
-        to a tensor. For the input format see :py:meth:`getitem`.
-        Any ``None`` entries in the annotations dictionary will remain ``None``.
-        """
-        img_t = tv.transforms.ToTensor()(img)
-        # pylint: disable=no-member
-        anns_t = {k: (torch.as_tensor(a, dtype=torch.float)
-                      if a is not None else None) for k, a in anns.items()}
-        # pylint: enable=no-member
-        return img_t, anns_t
+    _default_transforms: trafos.TupleTransforms = \
+        (trafos.OnInput(trafos.ToTensor()) +
+         trafos.OnTarget(trafos.ToTensor(dtype=torch.float)))
+    """This transformation will convert an output tuple of image, label dict
+    to a tensor. For the input format see :py:meth:`getitem`.
+    Any ``None`` entries in the annotations dictionary will remain ``None``.
+    """
+
+    def descriptor(self, i: int) -> str:
+        """Return the relative image file path for item ``i``.
+        This is unique within a Broden dataset and can be used as an ID e.g.
+        for caching."""
+        return self.annotations.iloc[i]['image']
 
     def image_filepath(self, i: int) -> str:
         """Get the path to the image file for row ``i``.
         Information is retrieved from :py:attr:`annotations`."""
         return os.path.join(self.dataset_root, self.IMAGES_ROOT,
-                            self.annotations.iloc[i]['image'])
+                            self.descriptor(i))
 
     def load_ann(self, label: BrodenLabel, i: Optional[int] = None,
                  raw_ann_row: pd.Series = None,
@@ -717,9 +737,9 @@ class BrodenHandle(BaseDataset):
         if by_target:
             dummy_img: PIL.Image.Image = PIL.Image.open(self.image_filepath(0))
             load_fn: Callable[[int], Any] = \
-                (lambda i: self.transforms(dummy_img, self.load_anns(i))[1])
+                (lambda idx: self.transforms(dummy_img, self.load_anns(idx))[1])
         else:
-            load_fn: Callable[[int], Any] = lambda i: self[i]
+            load_fn: Callable[[int], Any] = lambda idx: self[idx]
 
         selector: List[bool] = []
         iterator = range(len(self))
@@ -740,7 +760,7 @@ class BrodenHandle(BaseDataset):
     def custom_label(cls, dataset_root: str, label: str,
                      prune_empty: Union[bool, str] = True,
                      balance_pos_to: Optional[float] = None,
-                     verbose: bool = False,
+                     verbose: bool = True,
                      **init_args):
         # pylint: disable=line-too-long
         """Return a :py:class:`BrodenHandle` instance with output restricted to
@@ -756,17 +776,20 @@ class BrodenHandle(BaseDataset):
           binary mask for the specified label or the bool classification value.
 
         The label may either be a label as would be specified in
-        :py:class:`__init__ <BrodenHandle>` or a string representation of a
-        :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` operation.
+        :py:class:`__init__ <BrodenHandle>` or a formula specification string
+        representing a formula of Boolean
+        :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` operations
+        that can be parsed using a
+        :py:class:`~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic`.
 
         :param dataset_root: the ``dataset_root`` parameter for init of the
             :py:class:`BrodenHandle`
         :param label: the label to restrict to; may either be a valid string
             label name, a valid
             :py:class:`BrodenLabel`, or a valid string representation of a
-            :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` operation
+            :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` operation
             the
-            :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge.all_in_keys`
+            :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_in_keys`
             of which are all valid string label names;
         :param init_args: further init arguments to the :py:class:`BrodenHandle`
         :param balance_pos_to: if a value given, balance the resulting
@@ -789,7 +812,7 @@ class BrodenHandle(BaseDataset):
                               "but were {}").format(init_args))
         # endregion
 
-        merge_op: Optional[trafo.Merge] = None  # Merge op before flatten
+        merge_op: Optional[fuzzy_logic.Merge] = None  # Merge op before flatten
 
         # region Parse the label (and collect Merge operation if necessary):
         # collect: labels, merge_op, final_key (=the final key to which to
@@ -797,18 +820,18 @@ class BrodenHandle(BaseDataset):
         if isinstance(label, BrodenLabel):
             labels: List[BrodenLabel] = [label]
             final_key: str = label.name
-        elif isinstance(label, trafo.Merge):
-            merge_op: trafo.Merge = label
+        elif isinstance(label, fuzzy_logic.Merge):
+            merge_op: fuzzy_logic.Merge = label
             labels: Set[str] = merge_op.all_in_keys
             final_key: str = merge_op.out_key
         elif isinstance(label, str):
             # Can be parsed to merge operation?
-            parsed_label: Union[str, trafo.Merge] = trafo.Merge.parse(label)
+            parsed_label: Union[str, fuzzy_logic.Merge] = fuzzy_logic.BooleanLogic().parser()(label)
             if isinstance(parsed_label, str):
                 labels: List[str] = [label]
                 final_key: str = label
             else:
-                merge_op: trafo.Merge = parsed_label
+                merge_op: fuzzy_logic.Merge = parsed_label
                 labels: Set[str] = merge_op.all_in_keys
                 final_key: str = merge_op.out_key
         else:
@@ -820,23 +843,28 @@ class BrodenHandle(BaseDataset):
         # endregion
 
         # region Collect the transformation
-        trafos: List[trafo.TupleTransforms] = []
-        trafos += [trafo.OnTarget(merge_op),
-                   trafo.OnTarget(trafo.RestrictDict([final_key]))] \
-            if merge_op else []
-        trafos += [cls.datum_to_tens,
-                   trafo.OnTarget(trafo.FlattenDict(final_key))]
         user_defined_trafo = init_args.pop('transforms', None)
+        trafo_list: Optional[trafos.TupleTransforms] = None
+        if merge_op:
+            trafo_list += (trafos.OnTarget(merge_op) +
+                           trafos.OnTarget(trafos.RestrictDict([final_key])))
+        trafo_list += (cls._default_transforms +
+                       trafos.OnTarget(trafos.FlattenDict(final_key)))
+        init_args.setdefault('after_cache_transforms',
+                             BaseDataset._get_default_after_cache_trafo(
+                                 device=init_args.pop('device', None)))
         # endregion
 
-        broden_inst = cls(dataset_root=dataset_root, labels=labels, **init_args)
-        # specify separately for IDE type inference:
-        broden_inst.transforms = trafo.Compose(trafos)
+        # apply restriction of sample number after pruning
+        max_num_samples = init_args.pop('max_num_samples', None)
+        broden_inst = cls(dataset_root=dataset_root, labels=labels,
+                          transforms=trafo_list, **init_args)
 
         if prune_empty:
             broden_inst.prune(
                 lambda a: a is None or (a.dim() > 0 and a.sum() == 0),
                 by_target=True, show_progress_bar=verbose)
+        broden_inst.cut_to(max_num_samples)
         if balance_pos_to is not None:
             broden_inst.balance(lambda a: a, proportion=balance_pos_to,
                                 by_target=True, show_progress_bar=verbose)
@@ -844,6 +872,6 @@ class BrodenHandle(BaseDataset):
         # Append the user-defined transforms
         # (after pruning, since this requires control over the output format!)
         if user_defined_trafo is not None:
-            broden_inst.transforms.append(user_defined_trafo)
+            broden_inst.transforms += user_defined_trafo
 
         return broden_inst

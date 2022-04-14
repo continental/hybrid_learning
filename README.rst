@@ -1,15 +1,18 @@
 Hybrid Learning for DNNs
 ========================
 
-This is an implementation of a suggested hybrid learning life-cycle
-which aims to ensure the correct embedding of visual semantic concepts
-(defined by labeled examples) in the latent space of DNNs.
-The current core functionalities of the provided modules are:
+This is a pytorch implementation of parts of a hybrid learning lifecycle for
+computer vision convolutional neural networks (CNNs).
+It aims to verify that visual semantic concepts (defined by labeled examples)
+are (correctly) represented in the latent space of DNNs and correctly used.
+The core functionalities of the provided modules are:
 
-- *Analysis* (finding and quality assessment) of concept embeddings.
-- *Custom dataset handles* for some standard concept datasets.
-- *Model extension* methods which allow to e.g. extend model output by
-  concept predictions for multi-task training.
+- *Concept analysis*: Finding and quality assessment of embeddings of concepts in a CNN latent space.
+- *Model extension* methods which allow to e.g. extend CNN outputs by concept predictions.
+- *Custom dataset handles* and some useful transformations for some standard concept datasets.
+- *Logic framework*: A framework to formulate, evaluate, and parse (fuzzy) logic rules,
+  e.g., to check whether CNN outputs and concept predictions are plausible.
+- *Experimentation utils* for preparation, processing, and evaluation of standard experiments.
 
 .. entry-point: installation instructions
 
@@ -25,7 +28,7 @@ For now just use ``git clone``.
 Preliminaries
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-The project is built against ``Python 3.6.10``.
+The project is built against ``Python 3.8``.
 Find
 
 - requirements for deployment in the ``requirements.txt`` file,
@@ -199,6 +202,14 @@ For all at once
 
 .. entry-point: contributing
 
+
+Example scripts
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For some example scripts have a look at the ``script`` folder
+and follow the instructions in the ``script/README.md``.
+
+
 Contributing
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -211,7 +222,7 @@ See the project's ``CONTRIBUTING.md``.
 License
 -------------
 
-Copyright (c) 2020 Continental Corporation. All rights reserved.
+Copyright (c) 2022 Continental Corporation. All rights reserved.
 
 This repository is licensed under the MIT license.
 See ``LICENSE.txt`` for the full license text.

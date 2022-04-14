@@ -2,7 +2,7 @@
 
 .. _fasseg-datasets: https://github.com/massimomauro/FASSEG-repository
 """
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 import enum
 import os
@@ -10,9 +10,8 @@ from typing import List, Tuple, Union, Optional
 
 import PIL.Image
 import numpy as np
-import torch
-import torchvision as tv
 
+from .. import transforms as trafos
 from ..base import BaseDataset
 
 
@@ -95,7 +94,7 @@ class FASSEGHandle(BaseDataset):
                 raise ValueError(("annotations_root not given and default {} "
                                   "does not exist").format(annotations_root))
 
-        super(FASSEGHandle, self).__init__(dataset_root=dataset_root, **kwargs)
+        super().__init__(dataset_root=dataset_root, **kwargs)
 
         self.part = part
         """Part of the face and its color to select mask of."""
@@ -148,18 +147,21 @@ class FASSEGHandle(BaseDataset):
 
         return img, part_mask
 
+    def descriptor(self, i: int) -> str:
+        """Return the image file name for index ``i``.
+        This is unique throughout a FASSEG like dataset and can be used for
+        e.g. image IDs for caching."""
+        return self.img_fns[i]
+
     def image_filepath(self, i):
         """Provide the path to the image at index ``i``."""
-        return os.path.join(self.dataset_root, self.img_fns[i])
+        return os.path.join(self.dataset_root, self.descriptor(i))
 
     def mask_filepath(self, i):
         """Provide the path to the mask at index ``i``."""
-        return os.path.join(self.annotations_root, self.img_fns[i])
+        return os.path.join(self.annotations_root, self.descriptor(i))
 
-    def _default_transforms(self, inp: PIL.Image.Image,
-                            ground_truth: PIL.Image.Image
-                            ) -> Tuple[torch.Tensor, torch.Tensor]:
-        """Default transformation function transforming images to
-        :py:class:`torch.Tensor`."""
-        trafo = tv.transforms.ToTensor()
-        return trafo(inp), trafo(ground_truth)
+    _default_transforms: trafos.TupleTransforms = \
+        trafos.OnBothSides(trafos.ToTensor())
+    """Default transformation function transforming images to
+    :py:class:`torch.Tensor`."""

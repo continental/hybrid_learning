@@ -1,17 +1,19 @@
-"""Helper functions for visualization and analysis of (image) datasets."""
+#  Copyright (c) 2022 Continental Automotive GmbH
+"""Helper functions for visualization and analysis of image datasets."""
 
-#  Copyright (c) 2020 Continental Automotive GmbH
-
+import collections.abc
 import textwrap
-from typing import Sequence, List, Dict, Iterable
+from typing import Sequence, List, Dict, Iterable, Optional, Tuple, Union
 
 import PIL.Image
 import PIL.ImageEnhance
 import numpy as np
 import torch
 import torchvision as tv
+from torchvision.transforms.functional import to_pil_image
 from matplotlib import pyplot as plt
 from torch.utils.data import Subset, RandomSampler
+from tqdm import tqdm
 
 from .activations_handle import ActivationDatasetWrapper
 from .base import BaseDataset
@@ -76,14 +78,18 @@ def visualize_mask_transforms(
             assert not isinstance(data, Subset), \
                 "'Subset' requires index adaption"
             img_t, orig_mask_t = data.dataset[ax_idx]
-            img, orig_mask = to_img(img_t), to_img(orig_mask_t)
+            img = to_img(img_t)
+            # TODO: support visualization of stacked masks
+            if not (isinstance(mask_t, torch.Tensor) and 2 <= len(mask_t.size()) <= 3):
+                continue
             mask = to_img(mask_t).resize(img.size, resample=PIL.Image.BOX)
-            applied_masks = apply_mask(apply_mask(img, mask),
-                                       orig_mask, alpha=0.4, color='yellow')
-            pics += [("Masked img {}; green=new, yellow=orig".format(ax_idx),
-                      applied_masks),
-                     ("Mask {}".format(ax_idx),
-                      mask)]
+            if isinstance(orig_mask_t, torch.Tensor) and 2 <= len(orig_mask_t.size()) <= 3:
+                orig_mask = to_img(orig_mask_t).resize(img.size, resample=PIL.Image.BOX)
+                applied_masks = apply_mask(apply_mask(img, mask),
+                                        orig_mask, alpha=0.4, color='yellow')
+                pics.append(("Masked img {}; green=new, yellow=orig".format(ax_idx),
+                             applied_masks))
+            pics.append(("Mask {}".format(ax_idx), mask))
 
         for ax_idx, (title, pic) in enumerate(pics):
             axes[i, ax_idx].set_title('\n'.join(textwrap.wrap(title, 30)))
@@ -196,7 +202,8 @@ def visualize_classification_data(dataset: BaseDataset, save_as: str = None,
         plt.savefig(save_as, transparent=True)
 
 
-def neg_pixel_prop(data, max_num_samples: int = 10) -> float:
+def neg_pixel_prop(data, max_num_samples: Optional[int] = 10,
+                   show_progress_bar: bool = False) -> float:
     """Collect the mean proportion of negative pixels in the binary
     segmentation mask data.
     The proportion is estimated from the first ``max_num_samples`` samples
@@ -208,12 +215,20 @@ def neg_pixel_prop(data, max_num_samples: int = 10) -> float:
         masks (as :py:class:`torch.Tensor`).
     :param max_num_samples: the maximum number of samples to take into
         account for the estimation
+    :param show_progress_bar: whether to show a progress bar for loading the
+        masks
     :return: the proportion of negative pixels in all (resp. the first
         ``num_samples``) binary segmentation masks contained in the given data
     """
     num_samples: int = len(data) if max_num_samples is None else \
         min(len(data), max_num_samples)
-    return 1 - mean_proportion_pos_px([data[i][1] for i in range(num_samples)])
+    iterator = range(num_samples)
+    if show_progress_bar:
+        iterator = tqdm(iterator, desc="Masks loaded")
+    masks = []
+    for i in iterator:
+        masks.append(data[i][1])
+    return 1 - mean_proportion_pos_px(masks)
 
 
 def apply_mask(img: PIL.Image.Image, mask: PIL.Image.Image,
@@ -259,6 +274,21 @@ def apply_mask(img: PIL.Image.Image, mask: PIL.Image.Image,
     return applied_mask
 
 
+def apply_masks(img: PIL.Image.Image, masks: Sequence[Union[torch.Tensor, PIL.Image.Image]],
+                colors: Sequence[str] = ('blue', 'red', 'yellow', 'cyan'),
+                alphas: Union[float, Sequence[float]] = 0.8) -> PIL.Image.Image:
+    if not isinstance(alphas, collections.abc.Iterable):
+        alphas = [alphas] * len(masks)
+    assert len(colors) >= len(masks)
+    assert len(alphas) == len(masks)
+    masks = _to_pil_masks(*masks)
+
+    for color, alpha, mask in zip(colors, alphas, masks):
+        img = apply_mask(img, mask, color=color, alpha=alpha)
+    
+    return img
+
+
 def to_monochrome_img(img_t: torch.Tensor) -> PIL.Image.Image:
     """:py:class:`torch.Tensor` to monochrome :py:class:`PIL.Image.Image` in
     ``'L'`` (=8-bit) mode.
@@ -271,29 +301,45 @@ def to_monochrome_img(img_t: torch.Tensor) -> PIL.Image.Image:
     return img
 
 
-def compare_masks(mask1: PIL.Image.Image, mask2: PIL.Image.Image,
-                  color1: str = 'blue', color2: str = 'red') -> PIL.Image.Image:
+def compare_masks(*masks: Union[torch.Tensor, PIL.Image.Image],
+                  colors: Sequence[str] = ('blue', 'red', 'yellow', 'cyan')) -> PIL.Image.Image:
     """Merge several monochrome masks in different colors into the same image.
 
+    :param masks: monochrome PIL images (model ``'L'`` or ``'1'``),
+        ``RGB`` mode PIL images, or torch tensors;
+        torch tensors are converted to ``'L'`` mode PIL images
     :return: image with bright part of each mask in corresponding color
     """
-    # region Quick sizes check
-    for idx, mask in enumerate([mask1, mask2]):
-        if not mask.size == [mask1, mask2][0].size:
-            raise ValueError(("Mask at index {} has size {}, which differs from"
-                              " mask at index 0 of size {}"
-                              ).format(idx, mask.size, [mask1, mask2][0].size))
-    # endregion
+    assert len(colors) >= len(masks)
+    colors: Iterable[str] = iter(colors)
+    pil_masks: Sequence[PIL.Image.Image] = _to_pil_masks(*masks)
 
-    colors = [color1, color2]
-    colored_mask1 = apply_mask(
-        PIL.Image.new(size=mask1.size, mode='RGB', color='black'),
-        mask1, alpha=1, color=colors[0])
-    colored_mask2 = apply_mask(
-        PIL.Image.new(size=mask2.size, mode='RGB', color='black'),
-        mask2, alpha=1, color=colors[1])
+    colored_masks: List[PIL.Image.Image] = [
+        apply_mask(
+            PIL.Image.new(size=mask.size, mode='RGB'),
+            mask, alpha=1, color=next(colors))
+        if mask.mode != 'RGB' else mask
+        for mask in pil_masks]
+    
     # noinspection PyTypeChecker
     mask_comparison = PIL.Image.fromarray(
-        np.array(colored_mask2) + np.array(colored_mask1),
+        np.clip(np.sum([np.array(mask) for mask in colored_masks], axis=0), a_min=0, a_max=255).astype(np.uint8),
         mode='RGB')
     return mask_comparison
+
+def _to_pil_masks(*masks: Union[torch.Tensor, PIL.Image.Image]) -> Tuple[PIL.Image.Image, ...]:
+    assert len(masks) > 0
+    for mask in [m for m in masks if isinstance(m, torch.Tensor)]:
+        assert len(mask.size()) == 2 or (len(mask.size()) == 3 and mask.size()[0] == 1), \
+            "Encountered mask tensor with more than one channel of shape {}".format(mask.shape)
+    pil_masks: List[PIL.Image.Image] = [
+        mask if isinstance(mask, PIL.Image.Image) else to_pil_image(mask, mode='L')
+        for mask in masks]
+    # region Quick sizes check
+    for idx, mask in enumerate(pil_masks):
+        if not mask.size == pil_masks[0].size:
+            raise ValueError(("Mask at index {} has size {} (w x h), which differs from"
+                              " mask at index 0 of size {} (w x h)"
+                              ).format(idx, mask.size, masks[0].size))
+    # endregion
+    return pil_masks

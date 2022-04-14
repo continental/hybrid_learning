@@ -1,29 +1,67 @@
 """Tests for dataset modifiers."""
-#  Copyright (c) 2020 Continental Automotive GmbH
+#  Copyright (c) 2022 Continental Automotive GmbH
 
 # pylint: disable=not-callable
 # pylint: disable=no-member
 # pylint: disable=no-self-use
-from collections import namedtuple
-from typing import Tuple, Set, Dict, List
+from typing import Tuple, List, Sequence, Optional
 
-import PIL.Image
 import numpy as np
 import pytest
 import torch
+from hybrid_learning.datasets import transforms as trafos
 
-from hybrid_learning.datasets.transforms import Binarize, BatchIoUEncode2D, \
-    BatchIntersectDecode2D, Merge, AND, OR, NOT, PadAndResize, IoUEncode
+from hybrid_learning.datasets.transforms import \
+    Binarize, PadAndResize, IoUEncode, ToActMap, ToBBoxes, Threshold, \
+    general_add, Identity, Compose, SameSize, TupleTransforms, ReduceTuple, \
+    ToTensor
+from hybrid_learning.datasets.transforms.encoder import \
+    BatchIoUEncode2D, BatchIntersectDecode2D, BatchBoxBloat
 
 
 def test_binarizer():
     """Test binarizing functionality"""
+    # noinspection PyArgumentEqualDefault
     binarizer: Binarize = Binarize(0.5)
     # Does __str__ and __repr__ work?
     _, _ = str(binarizer), repr(binarizer)
+
+    # Some example values
     assert float(binarizer(torch.tensor(3))) == 1
     assert float(binarizer(torch.tensor(0.5))) == 0
     assert float(binarizer(torch.tensor(-1))) == 0
+
+
+def test_threshold():
+    """Test the simple thresholding transformation."""
+    # Set lower bound constant:
+    thresholder: Threshold = Threshold(0.5, 1., None)
+    assert float(thresholder(torch.tensor(3))) == 3
+    assert float(thresholder(torch.tensor(1))) == 1
+    assert float(thresholder(torch.tensor(-1))) == 1
+    assert float(thresholder(torch.tensor(0.25))) == 1
+    assert float(thresholder(torch.tensor(0.5))) == 1
+
+    # Set upper bound constant:
+    thresholder: Threshold = Threshold(0.5, None, 1.)
+    assert float(thresholder(torch.tensor(3))) == 1
+    assert float(thresholder(torch.tensor(1))) == 1
+    assert float(thresholder(torch.tensor(-1))) == -1
+    assert float(thresholder(torch.tensor(0.25))) == 0.25
+    assert float(thresholder(torch.tensor(0.5))) == 0.5
+
+    # Setting no high and low values isn't useful but shouldn't raise:
+    thresholder: Threshold = Threshold(0.5, None, None)
+    assert float(thresholder(torch.tensor(3))) == 3
+    assert float(thresholder(torch.tensor(1))) == 1
+    assert float(thresholder(torch.tensor(-1))) == -1
+
+    thresholder: Threshold = Threshold(torch.tensor([0.25, 0.5, 1]), 0, None)
+    assert thresholder(torch.tensor([1, 1, 1])).numpy().tolist() == [1, 1, 0]
+    assert thresholder(torch.tensor([0.5, 0.25, 0.5])).numpy().tolist() == \
+           [0.5, 0, 0]
+    assert thresholder(torch.tensor([0.5, 0.25, 3])).numpy().tolist() == \
+           [0.5, 0, 3]
 
 
 class TestIoUEncoding:
@@ -230,213 +268,63 @@ class TestIoUEncoding:
 
             assert np.allclose(iou_wrap.proto_shape, kernel_size)
 
+    def test_nms(self):
+        """Test the non-max-suppression bloating."""
+        # Identity
+        identity = BatchBoxBloat((1, 1))
+        assert tuple(identity.padding.padding) == (0, 0, 0, 0)
+        # mask batches without channel information
+        ex_masks: Tuple[torch.Tensor, ...] = (
+            torch.rand((2, 3, 3)),
+            torch.ones((1, 1, 1)),
+            torch.zeros((3, 5, 5)))
+        for masks in ex_masks:
+            masks = masks.unsqueeze(1)  # add channel dimension
+            output: torch.Tensor = identity(masks)
+            assert output.float() is output
+            assert masks.detach().numpy().tolist() == \
+                   output.detach().numpy().tolist()
 
-class TestMergeOperations:
-    """Test the dictionary merge operations."""
-
-    def test_equals(self):
-        """Test __eq__"""
-        equal_samples = (
-            (AND('a', 'b'), AND('b', 'a')), (OR('a', 'b'), OR('b', 'a')),
-            (AND(NOT('a'), 'b'), AND('b', NOT('a'))),
+        # Some example values
+        # Format: Tuple of tuples (kernel_size, mask, exp_output)
+        # with mask and expected output without batch and channel dimension
+        ex_masks: Tuple[Tuple, ...] = (
+            # Just about size preservation
+            ([3, 3], [[0] * 3] * 3, [[0] * 3] * 3),
+            # 2x1 kernel
+            ([2, 1], [[0, 0], [1, 0]], [[1, 0], [1, 0]]),
+            # 2x1 kernel
+            ([2, 1], [[0.5, 2], [1, 1]], [[1, 2], [1, 1]]),
+            # 2x2 kernel
+            ([2, 2], [[2, 0.5], [1.7, 1.9]], [[2, 1.9], [1.9, 1.9]]),
+            # 2x2 kernel with padding
+            ([2, 2], np.arange(9).reshape((3, 3)),
+             [[4, 5, 5], [7, 8, 8], [7, 8, 8]]),
         )
-        for first, second in equal_samples:
-            assert first == second
+        for kernel_size, masks, exp_output in ex_masks:
+            nms = BatchBoxBloat(kernel_size)
+            masks = torch.tensor(masks).unsqueeze(0).unsqueeze(0)
+            masks_size: List[int] = list(masks.size())
+            exp_output = torch.tensor(exp_output).unsqueeze(0).unsqueeze(0)
+            output = nms(masks)
 
-        not_equal_samples = (
-            (AND(NOT('a'), 'b'), AND('a', NOT('b'))),
-        )
-        for first, second in not_equal_samples:
-            assert first != second
-
-    def test_normalized_repr(self):
-        """Test the normalized_repr function"""
-        samples = (
-            ("b&&a", "a&&b"), ("b||a", "a||b"),
-            ("a&&b", "a&&b"), ("a||b", "a||b"), ("~a", "~a"),
-            ("b&&d||~c||~e&&a", "a&&b&&d||~c||~e")
-        )
-        for before, after in samples:
-            assert str(Merge.parse(before).normalized_repr()) == after
-
-    def test_repr_and_str(self):
-        """Test the string and representation function."""
-        samples = (
-            (AND('a', 'b'), "a&&b", "AND('a', 'b')"),
-            (AND('b', 'a'), "b&&a", "AND('b', 'a')"),
-            (OR('a', 'b'), "a||b", "OR('a', 'b')"),
-            (OR('b', 'a'), "b||a", "OR('b', 'a')"),
-            (NOT('a'), "~a", "NOT('a')"),
-            (AND(NOT('a'), OR('b', NOT('c'))), "~a&&b||~c",
-             "AND(NOT('a'), OR('b', NOT('c')))"),
-            (AND('a', 'b', out_key='c'), "a&&b", "AND('a', 'b', out_key='c')")
-        )
-        for item, str_out, repr_out in samples:
-            assert str(item) == str_out
-            assert repr(item) == repr_out
-            assert item == Merge.parse(str_out)
-
-    def test_parse(self):
-        """Test main properties of parsing like idempotence"""
-        # parsing and usual calling interchangeable
-        samples = (
-            ("a&&b", AND('a', 'b')), ("a||b", OR('a', 'b')), ("~c", NOT('c')),
-            ("a&&b||c", AND('a', OR('b', 'c'))),
-        )
-        for before, after in samples:
-            assert Merge.parse(before) == after
-
-        # idempotence
-        formulas = ["a&&b", "a||b", "~a", "a&&b||~c"]
-        for formula in formulas:
-            assert str(Merge.parse(formula)) == formula
-
-        # out_key option
-        assert Merge.parse("b&&a", out_key="c").out_key == "c"
-        assert not Merge.parse("b&&a", overwrite=False).overwrite
-
-        # wrong formulas
-        with pytest.raises(ValueError):
-            Merge.parse("~~a")
-        with pytest.raises(ValueError):
-            Merge.parse("&&||")
-        with pytest.raises(ValueError):
-            Merge.parse("~")
-
-    def test_init(self):
-        """Test the different init arguments and the
-        is_conjunctive_normal_form check."""
-        # more than one input value
-        AND('a', 'b', 'c')
-        OR('a', 'b', 'c')
-
-        # out_key, overwrite
-        assert not AND('a', 'b', overwrite=False).overwrite
-        assert not OR('a', 'b', overwrite=False).overwrite
-        assert not NOT('a', overwrite=False).overwrite
-        assert AND('a', 'b', out_key='c').out_key == 'c'
-        assert OR('a', 'b', out_key='c').out_key == 'c'
-        assert NOT('a', out_key='c').out_key == 'c'
-
-        # NOT may not have more than one input
-        with pytest.raises(TypeError):
-            # noinspection PyArgumentList
-            # pylint: disable=too-many-function-args
-            NOT('a', 'b')
-            # pylint: enable=too-many-function-args
-        # NOT must have string input
-        for non_str in (AND('a', 'b'), OR('a', 'b')):
-            with pytest.raises(TypeError):
-                # noinspection PyTypeChecker
-                NOT(non_str)
-
-        # AND, OR must have >= 2 entries
-        for invalid_args in ([], ['a'], [NOT('a')]):
-            with pytest.raises(ValueError):
-                AND(*invalid_args)
-            with pytest.raises(ValueError):
-                OR(*invalid_args)
-
-        # Not conjunctive normal form
-        # AND inside of another operation
-        with pytest.raises(ValueError):
-            OR(AND('a', 'b'), 'c')
-        with pytest.raises(ValueError):
-            AND(AND('a', 'b'), 'c')
-        # OR inside of OR
-        with pytest.raises(ValueError):
-            OR(OR('a', 'b'), 'c')
-
-    def test_call(self):
-        """Test the __call__ function on some samples"""
-        # don't overwrite
-        for spec in ("a&&b", "a||b", "~a"):
-            with pytest.raises(KeyError):
-                Merge.apply(spec, {'c': False}, out_key='c', overwrite=False)
-
-        # overwrite when specified
-        out: Dict[str, float] = Merge.apply("a&&b", {'a': 1, 'b': 0},
-                                            out_key='a', overwrite=True)
-        assert out['a'] == 0
-
-        # masks do not coincide in size
-        for spec in ("a&&b", "a||b"):
-            with pytest.raises(ValueError):
-                Merge.apply(spec, {'a': np.ones(3), 'b': np.zeros(2)})
-
-        size = [3, 3]
-        # samples in format (spec, annotations, out)
-        samples = (
-            # simple examples
-            ("a&&b", {"a": np.ones(size), "b": np.zeros(size)}, np.zeros(size)),
-            ("a||b", {"a": np.ones(size), "b": np.zeros(size)}, np.ones(size)),
-            ("~a", {"a": np.ones(size)}, np.zeros(size)),
-            # more sophisticated ones
-            ("a&&b", {"a": np.array([0, 1, 0]), "b": np.array([1, 0, 1])},
-             np.zeros(size)),
-            ("a||b", {"a": np.array([0, 1, 0]), "b": np.array([1, 0, 1])},
-             np.ones(size)),
-            ("~a", {"a": np.array([0, 1, 0])}, np.array([1, 0, 1])),
-            # mix of scalar and mask
-            ("a&&b", {"a": np.array([0, 1, 0]), "b": 1}, np.array([0, 1, 0])),
-            ("a||b", {"a": np.array([0, 1, 0]), "b": 1}, np.ones(size)),
-            ("~a", {"a": True}, False),
-            ("a&&~b", {"a": np.array([0, 1, 0]), "b": 0}, np.array([0, 1, 0])),
-            ("a||~b", {"a": np.array([0, 1, 0]), "b": 0}, np.ones(size)),
-            # more than 2 values
-            ("a&&b&&c||b",
-             {"a": np.array([0, 1, 1, 1]), "b": np.array([1, 0, 1, 1]),
-              "c": np.array([1, 1, 0, 1])}, np.array([0, 0, 1, 1])),
-        )
-
-        for spec, ann, out in samples:
-            orig_keys: Set[str] = set(ann.keys())
-            operat: Merge = Merge.parse(spec, out_key='out')
-            out_dict = operat(ann)
-            # new keys added
-            assert {*orig_keys, *operat.all_out_keys} == {*out_dict}, \
-                "op: {}".format(repr(operat))
-            # other values not changed
-            for k in ann:
-                assert out_dict[k] is ann[k]
-            # correct out value
-            assert np.allclose(out_dict['out'], out), \
-                "op: {}".format(repr(operat))
-
-    def test_properties(self):
-        """Test the properties around in_keys."""
-        key_spec = namedtuple("KeySpec",
-                              ['spec', 'children', 'consts', 'operation_keys',
-                               'all_in_keys', 'all_out_keys'])
-        samples: List[key_spec] = [
-            key_spec(spec="a&&~b", children=["~b"], consts={"a"},
-                     operation_keys={'a', '~b'},
-                     all_in_keys={'a', 'b'}, all_out_keys={'a&&~b', '~b'}),
-            key_spec(spec="a||b&&~c&&d", children=["a||b", "~c"], consts={"d"},
-                     operation_keys={'a||b', '~c', 'd'},
-                     all_in_keys={'a', 'b', 'c', 'd'},
-                     all_out_keys={'a||b', '~c', 'a||b&&~c&&d'})
-        ]
-
-        for spec in samples:
-            operat = Merge.parse(spec.spec)
-            assert operat.children == [Merge.parse(c) for c in spec.children]
-            assert operat.consts == spec.consts
-            assert operat.operation_keys == spec.operation_keys
-            assert operat.all_in_keys == spec.all_in_keys
-            assert operat.all_out_keys == spec.all_out_keys
-
-        # children
-        # consts
-        # operation keys
-        # all_in_keys
-        # all_out_keys
+            # float output
+            assert output.float() is output
+            # no size change
+            assert list(output.size()) == masks_size, \
+                ("Size mismatch for kernel_size {}\nin\n{}\nout\n{}"
+                 .format(kernel_size, masks, output))
+            # correct value
+            assert (exp_output.detach().float().numpy().tolist() ==
+                    output.detach().numpy().tolist()), \
+                ("Wrong out for kernel_size {}\nin\n{}\nexpected\n{}\nout\n{}"
+                 .format(kernel_size, masks, exp_output, output))
 
 
 def test_pad_and_resize():
     """Test image PadAndResize."""
     trafo: PadAndResize = PadAndResize(img_size=(6, 6),
-                                       interpolation=PIL.Image.NEAREST)
+                                       interpolation="nearest")
     assert trafo.img_size == (6, 6)
 
     img_t: torch.Tensor = torch.ones(size=(1, 1, 3), device='cpu')
@@ -450,3 +338,327 @@ def test_pad_and_resize():
         "Transformed array:\n{}\nExpected array:\n{}".format(
             transformed.numpy(), expected
         )
+
+    # Do not confuse height and width:
+    # noinspection PyArgumentEqualDefault
+    trafo: PadAndResize = PadAndResize(img_size=(6, 8),
+                                       interpolation="bilinear")
+    transformed: torch.Tensor = trafo(img_t)
+    assert isinstance(transformed, torch.Tensor)
+    assert transformed.size()[1:] == (6, 8)
+    assert transformed.numpy().shape[1:] == (6, 8)
+
+
+def test_to_act_map():
+    """Test the ToActMap transforms."""
+
+    # pylint: disable=abstract-method
+    class DummyModule(torch.nn.Module):
+        """Dummy torch module that simply adds 1 to each tensor entry."""
+
+        # noinspection PyMethodMayBeStatic
+        def forward(self, tens: torch.Tensor):
+            """Add 1 to each tensor entry."""
+            return tens + 1
+
+    dummy_mod = DummyModule()
+
+    # Invalid device raises error:
+    with pytest.raises(RuntimeError):
+        ToActMap(act_map_gen=dummy_mod, device="blub")
+
+    # Some value checks using dummy module:
+    assert ToActMap(act_map_gen=dummy_mod)(torch.ones(1)) \
+        .equal(torch.ones(1) + 1)
+    assert ToActMap(act_map_gen=dummy_mod)(torch.tensor([1, 2, 3])) \
+        .equal(torch.tensor([2, 3, 4]))
+
+
+def test_to_bboxes():
+    """Test the ToBBoxes transformation."""
+    assert repr(ToBBoxes(bbox_size=(1, 2))) == \
+           "ToBBoxes(bbox_size=(1, 2))"
+
+    sizes_thresh_masks_expected: List[Tuple[
+        Tuple[int, int], float, List, List]] = [
+        # Bounding box size of 1x1 --> cannot overlap
+        ((1, 1), 0.5, [[1, 0], [0.5, 0]], [[1, 0], [0.5, 0]]),
+        # correct padding for even box size:
+        ((2, 2), 0.5,
+         [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
+         [[1, 1, 0], [1, 1, 0], [0, 0, 0]]),
+        # box ranging out of mask:
+        ((2, 2), 0.5,
+         [[0, 1, 0], [0, 0, 0], [0, 0, 0]],
+         [[1, 1, 0], [0, 0, 0], [0, 0, 0]]),
+        # correct bbox extends for non-square bbox and mask:
+        ((2, 3), 0.5,
+         [[0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 0]],
+         [[0, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 0]],),
+        # correct overlapping:
+        ((2, 2), 0.5,
+         [[0, 0, 0], [0, 1, 0], [0, 0, 0.5]],
+         [[1, 1, 0], [1, 1, 0.5], [0, 0.5, 0.5]]),
+        # correct nms:
+        ((2, 2), 0.5,
+         [[0, 0, 0], [0, 1, 0], [0, 0, 0.5]],
+         [[1, 1, 0], [1, 1, 0.5], [0, 0.5, 0.5]]),
+        # correct nms filtering:
+        ((2, 3), 0.4,
+         [[0, 0, 0, 0], [1, .5, .25, 0], [0, 0, 0, 0]],
+         [[1, 1, .25, .25], [1, 1, .25, .25], [0, 0, 0, 0]],),
+    ]
+    for bbox_size, iou_thr, mask_l, exp_mask_l in sizes_thresh_masks_expected:
+        mask = torch.tensor(mask_l, dtype=torch.float)
+        exp_mask = torch.tensor(exp_mask_l, dtype=torch.float)
+        trafo = ToBBoxes(bbox_size=bbox_size, iou_threshold=iou_thr)
+        outp = trafo(mask)
+        context = ("trafo: {}\ninput: {}\nexpected: {}\noutput: {}"
+                   .format(trafo, mask, exp_mask, outp))
+        assert outp.isclose(exp_mask).all(), context
+
+
+def test_general_add():
+    """Test the general addition defined for the transforms."""
+    # Copy applied:
+    ident: Identity = Identity()
+    output = general_add(ident, None, composition_class=Compose,
+                         identity_class=Identity)
+    assert output == ident
+    assert output is not ident
+
+    samples: List[Sequence[Optional[TupleTransforms]]] = [
+        # Some examples for TupleTransforms:
+        (None, None, None),
+        (None, Identity(), Identity()),
+        (Identity(), Identity(), Identity()),
+        (Identity(), None, Identity()),
+        (Identity(), SameSize(), SameSize()),
+        (SameSize(), Identity(), SameSize()),
+        (Compose([Identity()]), SameSize(), Compose([Identity(), SameSize()])),
+        (SameSize(), Compose([Identity()]), Compose([SameSize(), Identity()])),
+        (Compose([Identity(), SameSize()]), Compose([Identity(), SameSize()]),
+         Compose([Identity(), SameSize(), Identity(), SameSize()])),
+        (Identity(), list(), NotImplemented),
+        (SameSize(), ReduceTuple(Identity(), torch.add),
+         Compose([SameSize(), ReduceTuple(Identity(), torch.add)])),
+        # Some examples for ImageTransforms:
+        (Compose([Identity()]), PadAndResize((1, 1)),
+         Compose([Identity(), PadAndResize((1, 1))])),
+        (PadAndResize((1, 1)), Compose([Binarize()]),
+         Compose([PadAndResize((1, 1)), Binarize()])),
+        (Compose([Threshold()]), Compose([PadAndResize((1, 1)), Binarize()]),
+         Compose([Threshold(), PadAndResize((1, 1)), Binarize()])),
+        (list(), Binarize(), NotImplemented),
+    ]
+    for trafo1, trafo2, expected in samples:
+        output = general_add(trafo1, trafo2, composition_class=Compose,
+                             identity_class=Identity)
+        context = dict(t1=trafo1, t2=trafo2, expected=expected, output=output)
+        assert repr(output) == repr(expected), \
+            "Unexpected sum result; Context:\n{}".format(context)
+        assert output == expected, \
+            "Unexpected sum result; Context:\n{}".format(context)
+        if expected not in (None, NotImplemented):
+            plain_sum = (trafo1 + trafo2)
+            assert output == plain_sum, \
+                "Sums unequal; Context:\n{}".format({**context,
+                                                     'plain sum': plain_sum})
+
+
+def test_to_tensor():
+    """Test function for the to sparse tensor helper function."""
+
+    examples = [
+        # scalar
+        torch.tensor(5),
+        # all-zero tensor
+        torch.zeros((3, 5, 2)),
+        # very sparse tensor of size 2x3
+        torch.tensor([[1, 0, 0], [0, 0, 0]]),
+        # tensor of size 3x2
+        torch.tensor([[1, 3], [0, 2], [0, 0]]),
+        # other types
+        torch.tensor([[1.3, 0], [0, 2.5]], dtype=torch.float64),
+    ]
+    for inp in examples:
+        context = f"input: {inp}"
+
+        # no modifications
+        out: torch.Tensor = ToTensor()(inp)
+        assert out.dtype == inp.dtype, f"wrong dtype for {context}"
+        assert out.size() == inp.size(), f"size change for {context}"
+        assert out.requires_grad == inp.requires_grad, f"requires grad change for {context}"
+
+        # requires grad
+        out: torch.Tensor = ToTensor(requires_grad=False)(inp)
+        assert out.dtype == inp.dtype, f"wrong dtype for {context}"
+        assert out.size() == inp.size(), f"size change for {context}"
+        assert not out.requires_grad, f"requires grad not set to False for {context}"
+
+        # sparse
+        out: torch.sparse.Tensor = ToTensor(sparse=True)(inp)
+        if len(inp.size()) == 0:
+            assert not out.is_sparse
+            continue
+        assert torch.equal(out.to_dense(), inp), f"not invertible for {context}"
+        out: torch.sparse.Tensor = ToTensor(sparse=False)(inp)
+        assert not out.is_sparse, \
+            f"conversion to sparse with sparse set to False for {context}"
+
+        # idempotence
+        assert out.eq(ToTensor()(out)).all()
+        assert out.eq(ToTensor(sparse=False)(ToTensor(sparse=True)(out))).all()
+
+
+@pytest.mark.parametrize("nonzero,dim,dtype,sparse_is_better", [
+    (0, 1, torch.int, True), (1, 10, torch.int, False),
+    (0, 1, torch.float, True), (1, 10, torch.float, False),
+    (0.05, 3, torch.int8, False), (0.03, 3, torch.int8, True),
+    (0.05, 3, torch.uint8, False), (0.03, 3, torch.uint8, True),
+    (0.08, 3, torch.float16, False), (0.07, 3, torch.float16, True),
+    (0.08, 3, torch.bfloat16, False), (0.07, 3, torch.bfloat16, True),
+    (0.08, 3, torch.int16, False), (0.07, 3, torch.int16, True),
+    (0.15, 3, torch.float32, False), (0.14, 3, torch.float32, True),
+    (0.15, 3, torch.int32, False), (0.14, 3, torch.int32, True),
+    (0.26, 3, torch.float64, False), (0.24, 3, torch.float64, True),
+    (0.26, 3, torch.int64, False), (0.24, 3, torch.int64, True),
+])
+def test_sparse_smaller(nonzero, dim, dtype, sparse_is_better):
+    """Test the sparsify check."""
+    tens_parts = []
+    nonzero_abs = int(nonzero * 100)
+    if nonzero_abs > 0:
+        tens_parts.append(torch.ones((int(nonzero * 100),)))
+    if (100 - nonzero_abs) > 0:
+        tens_parts.append(torch.zeros((100 - int(nonzero * 100))))
+    tens = torch.cat(tens_parts) if len(tens_parts) > 1 else tens_parts[0]
+    tens = tens.view((*([1] * (dim - 1)), tens.numel())).to(dtype)
+    print(tens.size(), tens.numel(), tens)
+
+    assert ToTensor.is_sparse_smaller(tens) == sparse_is_better
+    assert ToTensor(sparse='smallest')(tens).is_sparse == sparse_is_better
+
+
+@pytest.mark.parametrize("args,masks,expected,error", [
+    # two-tuple restriction
+    (dict(resize_target=True), (1,2,3), None, IndexError),
+    (dict(only_two_tuples=True), (1,2,3), None, IndexError),
+    # empty input
+    (None, [], None, IndexError),
+    # two-tuple examples
+    (dict(resize_to_index=0), [torch.tensor([[1,2],[3,4]]), torch.tensor([[1]])], [torch.tensor([[1,2],[3,4]]), torch.tensor([[1, 1], [1, 1]])], None),
+    (dict(resize_target=True), [torch.tensor([[1,2],[3,4]]), torch.tensor([[1]])], [torch.tensor([[1,2],[3,4]]), torch.tensor([[1, 1], [1, 1]])], None),
+    (dict(resize_to_index=-1), [torch.tensor([[1,1],[1,1]]), torch.tensor([[1]])], [torch.tensor([[1]]), torch.tensor([[1]])], None),
+    (dict(resize_to_index=1), [torch.tensor([[1,1],[1,1]]), torch.tensor([[1]])], [torch.tensor([[1]]), torch.tensor([[1]])], None),
+    # three-tuple examples
+    (dict(resize_to_index=2), [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([[1]])]*3, None),
+    (dict(resize_to_index=-1), [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([[1]])]*3, None),
+    (dict(resize_to_index=1), [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([1]*9).view(3,3)]*3, None),
+    (dict(resize_to_index=-2), [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([1]*9).view(3,3)]*3, None),
+    (dict(resize_to_index=0), [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([1]*4).view(2,2)]*3, None),
+    (dict(resize_to_index=-3), [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([1]*4).view(2,2)]*3, None),
+    (None, [torch.tensor([1]*4).view(2,2), torch.tensor([1]*9).view(3,3), torch.tensor([[1]])], [torch.tensor([1]*4).view(2,2)]*3, None),
+
+])
+def test_same_size(args, masks, expected, error):
+    if error is not None:
+        with pytest.raises(error):
+            op = SameSize(**(args or {}))
+            op(*masks)
+    else:
+        op = SameSize(**(args or {}))
+        masks = [torch.tensor(mask).float() for mask in masks]
+        expected = [torch.tensor(mask).float() for mask in expected]
+        resized: Tuple[torch.Tensor, ...] = op(*masks)
+        # Same number of masks returned:
+        assert len(resized) == len(expected)
+        # The target size mask is not changed:
+        assert resized[op.resize_to_index].allclose(masks[op.resize_to_index])
+        # Correct outputs:
+        for i in range(len(masks)):
+            assert isinstance(resized[i], torch.Tensor)
+            assert resized[i].allclose(torch.tensor(expected[i])), \
+                "\nExpected: {}\nGot: {}\nAll out masks: {}".format(expected[i], resized[i], resized)
+        
+        # No-op variant:
+        if not op.only_two_tuples:
+            op = SameSize(**{**(args or {}), "resize_to_index": 0})
+            single_in_out: torch.Tensor = op(masks[0])
+            assert isinstance(single_in_out, masks[0].__class__)
+            assert single_in_out.allclose(masks[0])
+
+@pytest.mark.parametrize('indices,inp,expected,error', [
+    # non-int indices
+    ('non-int', None, None, ValueError),
+    (1.1, None, None, ValueError),
+    # too short tuples
+    (2, [False, False], None, IndexError),
+    (-3, [False, False], None, IndexError),
+    # Single positive index
+    (0, [False], [True], None),
+    (0, [False, False], [True, False], None),
+    (1, [False, False], [False, True], None),
+    (0, [False, False, False], [True, False, False], None),
+    (1, [False, False, False], [False, True, False], None),
+    (2, [False, False, False], [False, False, True], None),
+    # Negative index
+    (-1, [False, False, False], [False, False, True], None),
+    (-2, [False, False, False], [False, True, False], None),
+    (-3, [False, False, False], [True, False, False], None),
+    # List of indices
+    ([0, 1], [False, False, False], [True, True, False], None),
+    ([0, 2], [False, False, False], [True, False, True], None),
+    ([0, 2, -2], [False, False, False], [True, True, True], None),
+    # Do not apply trafo twice
+    ([0, 1, -2], [False, False, False], [True, True, False], None),
+])
+def test_on_index(indices, inp, expected, error):
+    trafo = lambda x: not x
+    if error is not None:
+        with pytest.raises(error):
+            op = trafos.OnIndex(indices, trafo)
+            op(*inp)
+    else:
+        op = trafos.OnIndex(indices, trafo)
+        assert list(op(*inp)) == expected
+        assert trafos.OnAll(trafo)(*inp) == tuple([True] * len(expected))
+
+
+@pytest.mark.parametrize('indices,inps,expected', [
+    # No-op:
+    ([0,1,2], [0,1,2], (0,1,2)),
+    # Change order:
+    ([1,0,2], [0,1,2], (1,0,2)),
+    # Subset:
+    ([0,1], [0,1,2], (0,1)),
+    ([0,2], [0,1,2], (0,2)),
+    ([1,2], [0,1,2], (1,2)),
+    ([0], [0,1,2], (0,)),
+    ([1], [0,1,2], (1,)),
+    ([2], [0,1,2], (2,)),
+    # Negative indices:
+    ([0,-2], [0,1,2], (0,1)),
+    ([0,-1], [0,1,2], (0,2)),
+    ([-2,-1], [0,1,2], (1,2)),
+    ([-3], [0,1,2], (0,)),
+    ([-2], [0,1,2], (1,)),
+    ([-1], [0,1,2], (2,)),
+    # Remove duplicates:
+    ([0, 0], [0, 1, 2], (0,)),
+    ([1, 1], [0, 1, 2], (1,)),
+    ([-1, -1], [0, 1, 2], (2,)),
+    ([0, -3], [0, 1, 2], (0,)),
+    ([-2, 1], [0, 1, 2], (1,)),
+    # Remove duplicates in right order:
+    ([0, 1, -3], [0, 1, 2], (0, 1)),
+])
+def test_subset_tuple(indices, inps, expected):
+    assert trafos.SubsetTuple(indices)(*inps) == expected
+
+def test_on_x_twotuple_trafos():
+    trafo = lambda x: True
+    inp = (False, False)
+    assert trafos.OnBothSides(trafo)(*inp) == (True, True)
+    assert trafos.OnInput(trafo)(*inp) == (True, False)
+    assert trafos.OnTarget(trafo)(*inp) == (False, True)

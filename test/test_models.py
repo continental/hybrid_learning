@@ -1,9 +1,9 @@
+#  Copyright (c) 2022 Continental Automotive GmbH
 """Testing routines for the generic model wrapper classes."""
-#  Copyright (c) 2020 Continental Automotive GmbH
 
 # pylint: disable=no-self-use
 
-from hybrid_learning.concepts.models import EarlyStoppingHandle
+from hybrid_learning.concepts.train_eval import EarlyStoppingHandle
 
 
 class TestEarlyStopping:
@@ -17,6 +17,20 @@ class TestEarlyStopping:
         assert not early_stopper.step(0) and not early_stopper.require_stop  # 1
         assert not early_stopper.step(0) and not early_stopper.require_stop  # 2
         assert early_stopper.step(0) and early_stopper.require_stop  # 3
+
+    def test_neg_min_delta(self):
+        """Test positive and negative min_delta."""
+        early_stopper = EarlyStoppingHandle(min_delta=1, verbose=True)
+        assert not early_stopper.step(0)
+        assert not early_stopper.step(-1)
+        assert not early_stopper.step(-2)
+        assert early_stopper.step(-0.9)
+
+        early_stopper = EarlyStoppingHandle(min_delta=-1, verbose=True)
+        assert not early_stopper.step(0)
+        assert not early_stopper.step(1)
+        assert not early_stopper.step(2)
+        assert early_stopper.step(0.9)
 
     def test_reset(self):
         """Does the reset really provide new start?"""

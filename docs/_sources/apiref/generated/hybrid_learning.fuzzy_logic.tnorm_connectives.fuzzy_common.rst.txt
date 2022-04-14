@@ -1,0 +1,42 @@
+fuzzy\_common
+=============
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~NOT
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

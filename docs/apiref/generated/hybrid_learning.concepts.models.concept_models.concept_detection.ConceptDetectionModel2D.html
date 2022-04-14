@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConceptDetectionModel2D &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="concept_segmentation" href="hybrid_learning.concepts.models.concept_models.concept_segmentation.html" />
+    <link rel="prev" title="ConceptDetection2DTrainTestHandle" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.html">concept_models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.html">embeddings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.html">model_extension</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.models.html">models</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.models.concept_models.html">concept_models</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.models.concept_models.concept_detection.html">concept_detection</a> &raquo;</li>
+      <li>ConceptDetectionModel2D</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="conceptdetectionmodel2d">
+<h1>ConceptDetectionModel2D<a class="headerlink" href="#conceptdetectionmodel2d" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.models.concept_models.concept_detection.</span></span><span class="sig-name descname"><span class="pre">ConceptDetectionModel2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concept_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_sigmoid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_laplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_detection.html#ConceptDetectionModel2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Pytorch model implementation of a concept embedding for 2D conv layers.
+The model itself simply is an ensemble (see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.ensemble_count" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.ensemble_count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ensemble_count</span></code></a>) of
+convolutional layers with (optional) sigmoid activation
+(see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">apply_sigmoid</span></code></a>).
+The goal of this model is to tell in each ensemble member from the
+activation map of a <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model</span></code></a>, which spatial regions of the
+activation map belong to a given concept and which not.
+These regions are windows of the concept model <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a>.</p>
+<p>Additional features compared to a normal Conv2D layer:</p>
+<ul class="simple">
+<li><p>Convenience:: During init :py:attr`in_channels` and <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a>
+can be automatically determined from a given main model and concept data.
+Also, if <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding"><code class="xref py py-attr docutils literal notranslate"><span class="pre">apply_padding</span></code></a> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, a zero padding is
+automatically determined such that the output size of the convolution is
+the same as the input size (assuming constantly sized inputs).</p></li>
+<li><p>Flexible architecture:: With the <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_bias" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_bias"><code class="xref py py-attr docutils literal notranslate"><span class="pre">use_bias</span></code></a>, the bias can be
+disabled during init (assumed to be constantly 0).</p></li>
+<li><p>Storage of meta information:: If given during init,
+meta information like references to the <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model</span></code></a> and the
+<a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept</span></code></a> are kept for reproducibility.</p></li>
+<li><p>Storage:: An ensemble can be turned into a generic save format that also
+captures meta and architecture specification
+(see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_embedding()</span></code></a>).</p></li>
+</ul>
+<p>The model forward works as follows:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Input</dt>
+<dd class="field-odd"><p>Activation map output of a 2D convolutional layer.</p>
+</dd>
+<dt class="field-even">Output</dt>
+<dd class="field-even"><p>List of heatmaps (one for each ensemble member) showing which
+centers of boxes of <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a> belong to <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept</span></code></a>.
+The heatmap values are the sigmoid of a convolution operation
+if <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">apply_sigmoid</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concept</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><em>SegmentationConcept2D</em></a><em>]</em>) – </p></li>
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><em>Module</em><em>]</em>) – </p></li>
+<li><p><strong>layer_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>concept_name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>apply_sigmoid</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>apply_padding</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>ensemble_count</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>use_laplace</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>use_bias</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concept</span></code></a></p></td>
+<td><p>The concept for which this model was configured.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept_name" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concept_name</span></code></a></p></td>
+<td><p>The name of the associated concept if known.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_model_stump</span></code></a></p></td>
+<td><p>Stump of the main model for which this instance was configured.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_model</span></code></a></p></td>
+<td><p>Shortcut to access the main model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.layer_id" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.layer_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">layer_id</span></code></a></p></td>
+<td><p>Layer to extract concept from.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_size</span></code></a></p></td>
+<td><p>Size of the convolution kernel.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_channels</span></code></a></p></td>
+<td><p>Number of input channels.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_sigmoid</span></code></a></p></td>
+<td><p>Whether a sigmoid is applied to the output of the forward function before returning it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_padding</span></code></a></p></td>
+<td><p>Whether a zero-padding is applied to the input of the forward function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.settings" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>The current model settings as dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_patches</span></code></p></td>
+<td><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">T_destination</span></code></p></td>
+<td><p>alias of TypeVar('T_destination', bound=<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a>])</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.reset_parameters" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.reset_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_parameters</span></code></a>()</p></td>
+<td><p>Randomly (re)initialize weight and bias.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_embedding</span></code></a>()</p></td>
+<td><p>Return the plain representation of the ensemble as list of <a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptEmbedding</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(inp)</p></td>
+<td><p>Torch model forward evaluation method.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(inp)</p></td>
+<td><p>Torch model forward evaluation method.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_buffer</span></code>(name, tensor[, persistent])</p></td>
+<td><p>Adds a buffer to the module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_parameter</span></code>(name, param)</p></td>
+<td><p>Adds a parameter to the module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
+<td><p>Adds a child module to the current module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_submodule</span></code>(target)</p></td>
+<td><p>Returns the submodule given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parameter</span></code>(target)</p></td>
+<td><p>Returns the parameter given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
+<td><p>Returns the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
+<td><p>Applies <code class="docutils literal notranslate"><span class="pre">fn</span></code> recursively to every submodule (as returned by <code class="docutils literal notranslate"><span class="pre">.children()</span></code>) as well as self.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
+<td><p>Moves all model parameters and buffers to the GPU.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpu</span></code>([device])</p></td>
+<td><p>Moves all model parameters and buffers to the XPU.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cpu</span></code>()</p></td>
+<td><p>Moves all model parameters and buffers to the CPU.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>(dst_type)</p></td>
+<td><p>Casts all parameters and buffers to <code class="xref py py-attr docutils literal notranslate"><span class="pre">dst_type</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
+<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">float</span></code> datatype.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">double</span></code>()</p></td>
+<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">double</span></code> datatype.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">half</span></code>()</p></td>
+<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">half</span></code> datatype.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bfloat16</span></code>()</p></td>
+<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">bfloat16</span></code> datatype.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_empty</span></code>(*, device)</p></td>
+<td><p>Moves the parameters and buffers to the specified device without copying storage.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
+<td><p>Moves and/or casts the parameters and buffers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
+<td><p>Registers a backward hook on the module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_full_backward_hook</span></code>(hook)</p></td>
+<td><p>Registers a backward hook on the module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_pre_hook</span></code>(hook)</p></td>
+<td><p>Registers a forward pre-hook on the module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_hook</span></code>(hook)</p></td>
+<td><p>Registers a forward hook on the module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
+<td><p>Returns a dictionary containing a whole state of the module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
+<td><p>Copies parameters and buffers from <code class="xref py py-attr docutils literal notranslate"><span class="pre">state_dict</span></code> into this module and its descendants.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
+<td><p>Returns an iterator over module parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
+<td><p>Returns an iterator over module parameters, yielding both the name of the parameter as well as the parameter itself.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
+<td><p>Returns an iterator over module buffers.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
+<td><p>Returns an iterator over module buffers, yielding both the name of the buffer as well as the buffer itself.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
+<td><p>Returns an iterator over immediate children modules.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
+<td><p>Returns an iterator over immediate children modules, yielding both the name of the module as well as the module itself.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
+<td><p>Returns an iterator over all modules in the network.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix, remove_duplicate])</p></td>
+<td><p>Returns an iterator over all modules in the network, yielding both the name of the module as well as the module itself.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
+<td><p>Sets the module in training mode.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
+<td><p>Sets the module in evaluation mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
+<td><p>Change if autograd should record operations on parameters in this module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>([set_to_none])</p></td>
+<td><p>Sets gradients of all model parameters to zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
+<td><p>See <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.share_memory_.html#torch.Tensor.share_memory_" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.Tensor.share_memory_()</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
+<td><p>Set the extra representation of the module</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([concept, model, layer_id, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([concept, model, layer_id, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(*input, **kwargs)</p></td>
+<td><p>Call self as a function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setstate__</span></code>(state)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattr__</span></code>(name)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__setattr__</span></code>(name, value)</p></td>
+<td><p>Implement setattr(self, name, value).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code>(name)</p></td>
+<td><p>Implement delattr(self, name).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code>()</p></td>
+<td><p>Default dir() implementation.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concept_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_sigmoid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_count</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_laplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_detection.html#ConceptDetectionModel2D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><em>Module</em><em>]</em>) – model the concept should be embedded in;
+used to create (and later accessible in)
+<a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model_stump</span></code></a>;
+used for <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a> and <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_channels</span></code></a>
+auto-inference</p></li>
+<li><p><strong>layer_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the layer index in
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.state_dict" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code></a>, the output of which is to
+be fed to the the concept model; used to create (and later
+accessible) in <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model_stump</span></code></a>;
+used for <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a> and <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_channels</span></code></a>
+auto-inference</p></li>
+<li><p><strong>concept</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><em>SegmentationConcept2D</em></a><em>]</em>) – Concept to train for; must be a segmentation concept
+featuring ground truth masks; used for <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a> and
+<a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_channels</span></code></a> auto-inference</p></li>
+<li><p><strong>in_channels</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – Number of filters of the
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Conv2d</span></code></a>-Layer to analyse;
+the value is automatically determined if <code class="docutils literal notranslate"><span class="pre">in_channels</span></code> or
+<code class="docutils literal notranslate"><span class="pre">kernel_size</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>;
+an automatically generated value overwrites a given value with a
+warning</p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – Size in activation map pixels of a window for
+which to assess whether it is part of the <code class="docutils literal notranslate"><span class="pre">concept</span></code> or not;
+by default it is determined by the relative sizes in the concept’s
+<a class="reference internal" href="hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size" title="hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rel_size</span></code></a>
+and the layer output size;
+if <code class="docutils literal notranslate"><span class="pre">concept.rel_size</span></code> is not set, <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a> is set to
+<code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code> with a warning</p></li>
+<li><p><strong>concept_name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – The concept name identifier to use for
+<a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept_name" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept_name</span></code></a>; defaults to the name
+given in <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept</span></code></a></p></li>
+<li><p><strong>apply_sigmoid</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">apply_sigmoid</span></code></a></p></li>
+<li><p><strong>apply_padding</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding"><code class="xref py py-attr docutils literal notranslate"><span class="pre">apply_padding</span></code></a></p></li>
+<li><p><strong>ensemble_count</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – number of deep ensemble models,
+see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.ensemble_count" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.ensemble_count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ensemble_count</span></code></a></p></li>
+<li><p><strong>use_laplace</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – if true, the covariance of the prediction are
+approximated using laplace</p></li>
+<li><p><strong>use_bias</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – see <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_bias" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_bias"><code class="xref py py-attr docutils literal notranslate"><span class="pre">use_bias</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_detection.html#ConceptDetectionModel2D.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Torch model forward evaluation method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.from_embedding">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legacy_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_detection.html#ConceptDetectionModel2D.from_embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.from_embedding" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize a concept localization model from an embedding.
+The weight and bias are obtained as follows:</p>
+<dl class="field-list">
+<dt class="field-odd">Weight</dt>
+<dd class="field-odd"><p>The weight is the normal vector of the embedding</p>
+</dd>
+<dt class="field-even">Bias</dt>
+<dd class="field-even"><p>Given the <code class="docutils literal notranslate"><span class="pre">embedding</span></code>’s
+<a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.support_factor" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.support_factor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">support_factor</span></code></a>
+as <span class="math notranslate nohighlight">\(b\)</span>, the bias calculates as
+(compare <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_embedding()</span></code></a>):</p>
+<div class="math notranslate nohighlight">
+\[\text{bias} = - b \cdot (|\text{weight}|^2)\]</div>
+</dd>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embeddings_list</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>]</em>) – the embeddings to use</p></li>
+<li><p><strong>legacy_warnings</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to give warnings about legacy, non-captured
+embedding attributes</p></li>
+<li><p><strong>kwargs</strong> – any keyword arguments to the concept model
+(overwrite the values obtained from embedding)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a concept localization model initialized with the embedding
+information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D"><em>ConceptDetectionModel2D</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_detection.html#ConceptDetectionModel2D.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.reset_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Randomly (re)initialize weight and bias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding">
+<span class="sig-name descname"><span class="pre">to_embedding</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_detection.html#ConceptDetectionModel2D.to_embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding" title="Permalink to this definition"></a></dt>
+<dd><p>Return the plain representation of the ensemble as list of
+<a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptEmbedding</span></code></a>.
+I.e.</p>
+<dl class="field-list simple">
+<dt class="field-odd">As parameters</dt>
+<dd class="field-odd"><p>weight and bias of the concept layers, and</p>
+</dd>
+<dt class="field-even">As meta info</dt>
+<dd class="field-even"><p>the <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept</span></code></a> and <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model</span></code></a>
+with <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.layer_id" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.layer_id"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_id</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a>[<a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a>]</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This must be a deep copy to avoid overwriting in a consecutive
+training session.</p>
+</div>
+<p>The resulting embedding describes the decision hyperplane of the
+concept model. Its normal vector <span class="math notranslate nohighlight">\(n\)</span> is the concept layer weight.
+The orthogonal support vector given by <span class="math notranslate nohighlight">\(b\cdot n\)</span> for a scalar
+factor <span class="math notranslate nohighlight">\(b\)</span> must fulfill</p>
+<div class="math notranslate nohighlight">
+\[\forall v: (v - b\cdot n) \circ n
+= d(v)
+= (v \circ \text{weight}) + \text{bias}\]</div>
+<p>i.e.</p>
+<div class="math notranslate nohighlight">
+\[n = \text{weight} \quad\text{and}\quad
+b = - \frac{\text{bias}} {|\text{weight}|^2}.\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(d(v)\)</span> is the signed distance measure of a vector
+from the hyperplane, i.e.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}d(v)
+\begin{cases}
+    &gt; 0  &amp; \text{iff vector yields a positive prediction,}\\
+    \equiv 0 &amp; \text{iff vector on decision boundary hyperplane,}\\
+    &lt; 0  &amp; \text{iff vector yields a negative prediction.}
+\end{cases}\end{split}\]</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.activation">
+<span class="sig-name descname"><span class="pre">activation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.nn.modules.activation.Sigmoid</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.activation" title="Permalink to this definition"></a></dt>
+<dd><p>The  activation layer to obtain heatmaps in <code class="docutils literal notranslate"><span class="pre">[0,1]</span></code>.
+Defaults to a sigmoid if <code class="docutils literal notranslate"><span class="pre">apply_sigmoid</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> during
+init. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>, no activation is applied.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_padding</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_padding" title="Permalink to this definition"></a></dt>
+<dd><p>Whether a zero-padding is applied to the input of the forward
+function.
+The padding should ensure that the input equals the output size.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_sigmoid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.apply_sigmoid" title="Permalink to this definition"></a></dt>
+<dd><p>Whether a sigmoid is applied to the output of the forward function
+before returning it.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">concept</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><span class="pre">SegmentationConcept2D</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="Permalink to this definition"></a></dt>
+<dd><p>The concept for which this model was configured.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">concept_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept_name" title="Permalink to this definition"></a></dt>
+<dd><p>The name of the associated concept if known.
+Defaults to the name of <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept</span></code></a> if given.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.ensemble_count">
+<span class="sig-name descname"><span class="pre">ensemble_count</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.ensemble_count" title="Permalink to this definition"></a></dt>
+<dd><p>Number of deep ensemble models.
+This is also the first dimension of the forward output.
+Each ensemble member simply is a separate convolutional layer,
+and all members are run in parallel.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_channels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels" title="Permalink to this definition"></a></dt>
+<dd><p>Number of input channels.
+This is the number of output channels of layer to investigate.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size" title="Permalink to this definition"></a></dt>
+<dd><p>Size of the convolution kernel.
+This is the assumed concept size in activation map pixels.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.layer_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layer_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.layer_id" title="Permalink to this definition"></a></dt>
+<dd><p>Layer to extract concept from.
+Shortcut to access the information from <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model_stump</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">torch.nn.modules.module.Module</span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model" title="Permalink to this definition"></a></dt>
+<dd><p>Shortcut to access the main model.
+It is wrapped by <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model_stump</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_model_stump</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><span class="pre">ModelStump</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model_stump" title="Permalink to this definition"></a></dt>
+<dd><p>Stump of the main model for which this instance was configured.
+The concept model is assumed to accept as input the output of this
+model stump (i.e. the corresponding layer of the <a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.main_model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">main_model</span></code></a>).</p>
+<p>Implementation detail::
+The actual attribute is wrapped into a tuple to hide the
+parameters, since these shall not be updated; see
+<a class="reference external" href="https://discuss.pytorch.org/t/how-to-exclude-parameters-from-model/6151">https://discuss.pytorch.org/t/how-to-exclude-parameters-from-model/6151</a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.padding">
+<span class="sig-name descname"><span class="pre">padding</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.nn.modules.padding.ZeroPad2d</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.padding" title="Permalink to this definition"></a></dt>
+<dd><p>The padding to apply before the convolution.
+Defaults to a padding such that the output size equals the input size
+if <code class="docutils literal notranslate"><span class="pre">apply_padding</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> during init. If set to <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+no padding is applied.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.settings" title="Permalink to this definition"></a></dt>
+<dd><p>The current model settings as dictionary.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_bias">
+<span class="sig-name descname"><span class="pre">use_bias</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_bias" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the convolution should have and learn a bias, or
+the bias should be constantly 0.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_laplace">
+<span class="sig-name descname"><span class="pre">use_laplace</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.use_laplace" title="Permalink to this definition"></a></dt>
+<dd><p>Whether training handles should use Laplace approximation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html" class="btn btn-neutral float-left" title="ConceptDetection2DTrainTestHandle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.models.concept_models.concept_segmentation.html" class="btn btn-neutral float-right" title="concept_segmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

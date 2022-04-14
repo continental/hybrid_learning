@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>flatten_cols &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="show_and_save_plot" href="hybrid_learning.experimentation.exp_eval_common.show_and_save_plot.html" />
+    <link rel="prev" title="f_beta" href="hybrid_learning.experimentation.exp_eval_common.f_beta.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.auc.html">auc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.cache_at.html">cache_at</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.constrain_pd.html">constrain_pd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.do_for.html">do_for</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.f_beta.html">f_beta</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">flatten_cols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.show_and_save_plot.html">show_and_save_plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.to_fig_for.html">to_fig_for</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.update_dict.html">update_dict</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a> &raquo;</li>
+      <li>flatten_cols</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.exp_eval_common.flatten_cols.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="flatten-cols">
+<h1>flatten_cols<a class="headerlink" href="#flatten-cols" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="hybrid_learning.experimentation.exp_eval_common.flatten_cols">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.experimentation.exp_eval_common.</span></span><span class="sig-name descname"><span class="pre">flatten_cols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/experimentation/exp_eval_common.html#flatten_cols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.experimentation.exp_eval_common.flatten_cols" title="Permalink to this definition"></a></dt>
+<dd><p>If items in an dataframe are iterables, flatten these.
+Flattening here means:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;idx1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;idx2&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,)},</span>
+<span class="gp">... </span>                   <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;idx1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">),</span> <span class="s1">&#39;idx2&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,)},</span>
+<span class="gp">... </span>                   <span class="s1">&#39;keep&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;idx1&#39;</span><span class="p">:</span> <span class="s1">&#39;k1&#39;</span><span class="p">,</span> <span class="s1">&#39;idx2&#39;</span><span class="p">:</span> <span class="s1">&#39;k2&#39;</span><span class="p">}})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">flatten_cols</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">keep_columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;keep&#39;</span><span class="p">])</span>
+<span class="go">   orig_idx  a  b  keep</span>
+<span class="go">0         0  1  x    k1</span>
+<span class="go">1         0  2  y    k1</span>
+<span class="go">2         1  3  z    k2</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>DataFrame</em>) – the dataframe to create a modified version of</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the columns to include into the new frame with values flattened</p></li>
+<li><p><strong>keep_columns</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – spread entries from these columns from a row to the rows
+newly created from that row</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new dataframe <code class="docutils literal notranslate"><span class="pre">new_df</span></code> with columns <code class="docutils literal notranslate"><span class="pre">['orig_idx',</span> <span class="pre">*columns,</span> <span class="pre">*keep_columns]</span></code>
+where for each index <code class="docutils literal notranslate"><span class="pre">idx</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code> in <code class="docutils literal notranslate"><span class="pre">columns</span></code>, <code class="docutils literal notranslate"><span class="pre">kcol</span></code> in <code class="docutils literal notranslate"><span class="pre">keep_columns</span></code>:
+<code class="docutils literal notranslate"><span class="pre">df.loc[idx,</span> <span class="pre">col][i]</span> <span class="pre">==</span> <span class="pre">new_df[new_df['orig_idx']==idx][col].iloc[i]</span></code>
+and <code class="docutils literal notranslate"><span class="pre">new_df.loc[idx,</span> <span class="pre">kcol]</span> <span class="pre">==</span> <span class="pre">df.loc[new_df.loc[idx,</span> <span class="pre">'orig_idx'],</span> <span class="pre">kcol]</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.exp_eval_common.f_beta.html" class="btn btn-neutral float-left" title="f_beta" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.exp_eval_common.show_and_save_plot.html" class="btn btn-neutral float-right" title="show_and_save_plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

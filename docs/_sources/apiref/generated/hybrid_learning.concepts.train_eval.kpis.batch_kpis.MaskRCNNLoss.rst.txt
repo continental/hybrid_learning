@@ -1,0 +1,9 @@
+MaskRCNNLoss
+============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+.. autoclass:: MaskRCNNLoss
+    :members:
+
+    .. autoclasstoc::

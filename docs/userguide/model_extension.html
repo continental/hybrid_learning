@@ -1,71 +1,36 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Extending DNN model outputs &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Custom dataset handles" href="custom_dataset_handles/index.html" />
-    <link rel="prev" title="Conducting a concept analysis" href="concept_analysis.html" /> 
+    <link rel="prev" title="Conducting a Concept Analysis" href="concept_analysis.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,25 +38,14 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="overview/index.html">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concept_model.html">Using a concept model to find an embedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concept_analysis.html">Conducting a concept analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concept_analysis.html">Conducting a Concept Analysis</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Extending DNN model outputs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#extend-model-output-by-activation-maps">Extend model output by activation maps</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#mini-example">Mini-example</a></li>
@@ -107,79 +61,40 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="custom_dataset_handles/index.html">Custom dataset handles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy_logic.html">Fuzzy Logic Operations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apiref/index.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">User Guide</a> &raquo;</li>
-        
       <li>Extending DNN model outputs</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/userguide/model_extension.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="extending-dnn-model-outputs">
-<h1>Extending DNN model outputs<a class="headerlink" href="#extending-dnn-model-outputs" title="Permalink to this headline">¶</a></h1>
+<h1>Extending DNN model outputs<a class="headerlink" href="#extending-dnn-model-outputs" title="Permalink to this headline"></a></h1>
 <p>The module <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.model_extension.html#module-hybrid_learning.concepts.models.model_extension" title="hybrid_learning.concepts.models.model_extension"><code class="xref py py-mod docutils literal notranslate"><span class="pre">model_extension</span></code></a> provides
 functionality to wrap models and extend their output by attaching
 further modules to intermediate layers.
@@ -188,7 +103,7 @@ It utilizes the
 <a class="reference external" href="https://pytorch.org/tutorials/beginner/former_torchies/nnft_tutorial.html#forward-and-backward-function-hooks">pytorch hooking mechanism</a>
 to extract intermediate layer outputs <em>(no code from the cited tutorial is used)</em>.</p>
 <p>Derived classes are:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -227,10 +142,10 @@ to extract intermediate layer outputs <em>(no code from the cited tutorial is us
 </ul>
 </div>
 <div class="section" id="extend-model-output-by-activation-maps">
-<h2><a class="toc-backref" href="#id1">Extend model output by activation maps</a><a class="headerlink" href="#extend-model-output-by-activation-maps" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Extend model output by activation maps</a><a class="headerlink" href="#extend-model-output-by-activation-maps" title="Permalink to this headline"></a></h2>
 <p>This can be achieved by the</p>
 <div class="section" id="mini-example">
-<h3><a class="toc-backref" href="#id2">Mini-example</a><a class="headerlink" href="#mini-example" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id2">Mini-example</a><a class="headerlink" href="#mini-example" title="Permalink to this headline"></a></h3>
 <p>Consider a simple example network composed of two linear operations
 realizing <span class="math notranslate nohighlight">\(tnn(x) = 3\cdot(x+2)\)</span>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
@@ -275,11 +190,11 @@ The output of the wrapper now consists of a tuple of</p>
 </div>
 </div>
 <div class="section" id="more-complex-example">
-<h3><a class="toc-backref" href="#id3">More complex example</a><a class="headerlink" href="#more-complex-example" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id3">More complex example</a><a class="headerlink" href="#more-complex-example" title="Permalink to this headline"></a></h3>
 <p>In the following a pre-trained Mask R-CNN model is wrapped to obtain
 the outputs of the last two convolutional blocks in the backend.
 These are handed over via a list of their keys in the
-<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-meth docutils literal notranslate"><span class="pre">named_modules()</span></code></a> dict.
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">named_modules()</span></code></a> dict.
 Note that they are registered in the order the IDs are given.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nn</span> <span class="o">=</span> <span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -323,7 +238,7 @@ cannot be registered twice):</p>
 </div>
 </div>
 <div class="section" id="attaching-further-modules">
-<h2><a class="toc-backref" href="#id4">Attaching Further Modules</a><a class="headerlink" href="#attaching-further-modules" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Attaching Further Modules</a><a class="headerlink" href="#attaching-further-modules" title="Permalink to this headline"></a></h2>
 <p>An application of accessing DNN intermediate outputs is to extend
 the DNN by attaching further (output) modules.
 As an example, we will extend a Mask R-CNN by several fully connected
@@ -333,7 +248,7 @@ output neurons at two layers. The main model is:</p>
 </pre></div>
 </div>
 <div class="section" id="defining-the-extended-wrapped-mdel">
-<h3><a class="toc-backref" href="#id5">Defining the extended (wrapped) mdel</a><a class="headerlink" href="#defining-the-extended-wrapped-mdel" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Defining the extended (wrapped) mdel</a><a class="headerlink" href="#defining-the-extended-wrapped-mdel" title="Permalink to this headline"></a></h3>
 <p>To extend the model, hand over the model and a dictionary of extensions.
 This dictionary maps layer IDs to named modules, i.e. dicts of
 extension modules indexed by unique IDs.
@@ -375,7 +290,7 @@ list of registrations:</p>
 </div>
 </div>
 <div class="section" id="the-extended-output">
-<h3><a class="toc-backref" href="#id6">The extended output</a><a class="headerlink" href="#the-extended-output" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">The extended output</a><a class="headerlink" href="#the-extended-output" title="Permalink to this headline"></a></h3>
 <p>When evaluated, the output is a tuple of the Mask R-CNN output and
 a dict with the output of each extension indexed by their ID.
 This can now normally be backpropagated:</p>
@@ -390,7 +305,7 @@ This can now normally be backpropagated:</p>
 </div>
 </div>
 <div class="section" id="handling-registrations-of-attachments">
-<h3><a class="toc-backref" href="#id7">Handling Registrations of Attachments</a><a class="headerlink" href="#handling-registrations-of-attachments" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Handling Registrations of Attachments</a><a class="headerlink" href="#handling-registrations-of-attachments" title="Permalink to this headline"></a></h3>
 <p>For un-/(re-)registration of modules use
 <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.register_extensions" title="hybrid_learning.concepts.models.model_extension.ModelExtender.register_extensions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register_extensions()</span></code></a>
 and <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelExtender.html#hybrid_learning.concepts.models.model_extension.ModelExtender.unregister_extension" title="hybrid_learning.concepts.models.model_extension.ModelExtender.unregister_extension"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unregister_extension()</span></code></a>:</p>
@@ -420,58 +335,33 @@ and <a class="reference internal" href="../apiref/generated/hybrid_learning.conc
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="custom_dataset_handles/index.html" class="btn btn-neutral float-right" title="Custom dataset handles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="concept_analysis.html" class="btn btn-neutral float-left" title="Conducting a concept analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="concept_analysis.html" class="btn btn-neutral float-left" title="Conducting a Concept Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom_dataset_handles/index.html" class="btn btn-neutral float-right" title="Custom dataset handles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

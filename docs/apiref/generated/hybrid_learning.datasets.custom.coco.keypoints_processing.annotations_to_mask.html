@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>annotations_to_mask &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="any_keypts_visible" href="hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible.html" />
+    <link rel="prev" title="annotations_to_heatmap" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.custom.coco.html">coco</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.html">coco</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.keypoints_processing.html">keypoints_processing</a> &raquo;</li>
+      <li>annotations_to_mask</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="annotations-to-mask">
+<h1>annotations_to_mask<a class="headerlink" href="#annotations-to-mask" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.custom.coco.keypoints_processing.</span></span><span class="sig-name descname"><span class="pre">annotations_to_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keypoint_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skeleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/keypoints_processing.html#annotations_to_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Create a mask of the linked keypoints from the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> list.
+Keypoints are specified by their <code class="docutils literal notranslate"><span class="pre">keypoint_idxs</span></code>.
+It is assumed that the original image considered in <code class="docutils literal notranslate"><span class="pre">annotations</span></code>
+has <code class="docutils literal notranslate"><span class="pre">annotation_wh</span></code>, which is the used as the size of the created mask.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotation_wh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code> size of the
+original image assumed by the annotation and output size of the mask;
+format: <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code> in pixels</p></li>
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>]</em>) – annotations from which to create mask</p></li>
+<li><p><strong>keypoint_idxs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em><em>]</em>) – indices of the starting positions of keypoints to
+process; the keypoints are saved in a list of the form
+<code class="docutils literal notranslate"><span class="pre">[x1,y1,v1,</span> <span class="pre">x2,y2,v2,</span> <span class="pre">...]</span></code>, and to process keypoints 1 and 2 one
+needs <code class="docutils literal notranslate"><span class="pre">keypoint_idxs=[0,3]</span></code>;
+<code class="docutils literal notranslate"><span class="pre">keypoint_idxs</span></code> should be given as a list of “parts”, where each
+part is a list of keypoint indices which should be connected by
+a link line in the mask;
+in case just a list of <code class="docutils literal notranslate"><span class="pre">int</span></code> values is given, these are assumed to
+represent only one part</p></li>
+<li><p><strong>skeleton</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – list of links as tuples <code class="docutils literal notranslate"><span class="pre">[kpt1_idx,</span> <span class="pre">kpt2_idx]</span></code>;
+this is the skeleton list from the COCO annotations, only each
+entry reduced by 1</p></li>
+<li><p><strong>pt_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – radius of a point relative to the height of the annotated
+person (as returned by <a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotation_to_tot_height()</span></code></a>);
+if the height cannot be estimated, it is assumed to be the image height</p></li>
+<li><p><strong>link_width</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – the width the line of a link should have
+relative to the person height (see <code class="docutils literal notranslate"><span class="pre">pt_radius</span></code>);
+defaults to 2x the <code class="docutils literal notranslate"><span class="pre">pt_radius</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>mask (same size as original image)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>Image</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap.html" class="btn btn-neutral float-left" title="annotations_to_heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible.html" class="btn btn-neutral float-right" title="any_keypts_visible" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+quantifiers
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.quantifiers
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.quantifiers
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ALL
+        
+        ~ANY
+        
+        ~AbstractQuantifier
+        
+        ~AbstractTorchOrNumpyQuantifier
+        
+        ~WHERE
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

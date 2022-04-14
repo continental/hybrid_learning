@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.train_eval.train_eval_funs &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.train_eval.train_eval_funs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.train_eval.train_eval_funs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Basic methods for training and evaluation of models with callback calls.&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="c1"># Paper implementations using variable names from the paper:</span>
+<span class="c1"># pylint: disable=invalid-name,not-callable,too-many-arguments</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> \
+    <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span>
+<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Optimizer</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">.callbacks</span> <span class="kn">import</span> <span class="n">CallbackEvents</span><span class="p">,</span> <span class="n">run_callbacks</span>
+<span class="kn">from</span> <span class="nn">.hessian</span> <span class="kn">import</span> <span class="n">exact_hessian</span>
+<span class="kn">from</span> <span class="nn">.kpis.aggregating_kpis</span> <span class="kn">import</span> <span class="n">filter_aggregating_kpi_keys</span>
+<span class="kn">from</span> <span class="nn">...datasets</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.base_handles</span> <span class="kn">import</span> <span class="n">ResettableOptimizer</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="device_of"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.train_eval_funs.device_of.html#hybrid_learning.concepts.train_eval.train_eval_funs.device_of">[docs]</a><span class="k">def</span> <span class="nf">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return the device of the given pytorch model.</span>
+<span class="sd">    Distributed models are not supported.&quot;&quot;&quot;</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span> \
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()))</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
+    <span class="k">return</span> <span class="n">device</span></div>
+
+
+<div class="viewcode-block" id="loader"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.train_eval_funs.loader.html#hybrid_learning.concepts.train_eval.train_eval_funs.loader">[docs]</a><span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
+                       <span class="n">BaseDataset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="o">*</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+           <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">num_workers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Prepare and return a torch data loader with device-dependent</span>
+<span class="sd">    multi-processing settings.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        If using ``num_workers &gt; 1`` the dataset must be pickleable,</span>
+<span class="sd">        including caches and all transformations.</span>
+<span class="sd">        This is usually no problem except for datasets or transformations</span>
+<span class="sd">        holding references to models:</span>
+<span class="sd">        These will not be pickleable once the forward method was called</span>
+<span class="sd">        without disabling the gradients</span>
+<span class="sd">        (``with torch.set_grad_enabled(False): ...``).</span>
+<span class="sd">        Make sure this is not the case.</span>
+
+<span class="sd">    :param data: data to obtain loader for</span>
+<span class="sd">    :param batch_size: the batch size to apply</span>
+<span class="sd">    :param shuffle: Whether the loader should shuffle the data or not;</span>
+<span class="sd">        e.g. shuffle training data and do not shuffle evaluation data</span>
+<span class="sd">    :param device: the desired device to work on</span>
+<span class="sd">        (determines whether to pin memory); defaults to cuda if it is available</span>
+<span class="sd">    :param model: if device is not given, the device is determined from</span>
+<span class="sd">        ``model`` if this is given</span>
+<span class="sd">    :param num_workers: if a positive integer, multi-process data loading</span>
+<span class="sd">        is done with this amount of worker processes</span>
+<span class="sd">        (otherwise a blocking single-process is used)</span>
+<span class="sd">    :return: a data loader for the given data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="p">(</span><span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                                  <span class="k">else</span> <span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">))</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span> <span class="ow">and</span> <span class="n">device</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;You tried to run training with a cuda device (</span><span class="si">%s</span><span class="s2">) other &quot;</span>
+            <span class="s2">&quot;than the default one (index 0). Currently, the default &quot;</span>
+            <span class="s2">&quot;collate_fn of the DataLoader does always move tensors to &quot;</span>
+            <span class="s2">&quot;the default cuda device, which may lead to a RuntimeError &quot;</span>
+            <span class="s2">&quot;if the tensors produced by the dataset are on the &quot;</span>
+            <span class="s2">&quot;non-default cuda device.&quot;</span>
+            <span class="s2">&quot;Consider instead exporting&quot;</span>
+            <span class="s2">&quot;CUDA_VISIBLE_DEVICES=&lt;your device index&gt;&quot;</span>
+            <span class="s2">&quot;on the command line before calling the script and set&quot;</span>
+            <span class="s2">&quot;the device simply to the default &#39;cuda&#39; one.&quot;</span><span class="p">,</span>
+            <span class="n">device</span>
+        <span class="p">)</span>
+    <span class="n">worker_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">num_workers</span> <span class="ow">and</span> <span class="n">num_workers</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">worker_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">)</span>
+        <span class="c1"># Cuda tensors require specific multiprocessing context:</span>
+        <span class="k">if</span> <span class="n">device</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
+            <span class="n">worker_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span>
+                <span class="c1"># pin_memory=True,  # only works for CPU-tensor datasets</span>
+                <span class="n">persistent_workers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">multiprocessing_context</span><span class="o">=</span><span class="s1">&#39;spawn&#39;</span><span class="p">,</span>
+            <span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">worker_kwargs</span><span class="p">,</span>
+                      <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_average_disagreement</span><span class="p">(</span><span class="n">outputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Collect a list of boolean pairwise disagreements of the outputs.</span>
+<span class="sd">    Disagreement here means inequality after binarizing with a threshold of 0.5.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pairwise_disagreement</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)):</span>
+        <span class="n">probs_1</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">probs_2</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="n">preds_1</span> <span class="o">=</span> <span class="n">probs_1</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+        <span class="n">preds_2</span> <span class="o">=</span> <span class="n">probs_2</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+        <span class="n">pairwise_disagreement</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">preds_1</span><span class="p">,</span> <span class="n">preds_2</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">pairwise_disagreement</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">_to_ens_loss_fn</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                                      <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+                    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                                  <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Decorate a loss function on one output to work on an ensemble of</span>
+<span class="sd">    outputs.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">ens_loss_fn</span><span class="p">(</span><span class="n">outs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">targ</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply a loss to all outputs for a common target.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">loss_fn</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">targ</span><span class="p">)</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">outs</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">ens_loss_fn</span>
+
+
+<div class="viewcode-block" id="train_one_epoch"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.train_eval_funs.train_one_epoch.html#hybrid_learning.concepts.train_eval.train_eval_funs.train_one_epoch">[docs]</a><span class="k">def</span> <span class="nf">train_one_epoch</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">loss_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">metric_fns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                                       <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span>
+        <span class="n">train_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Optimizer</span><span class="p">,</span> <span class="s1">&#39;ResettableOptimizer&#39;</span><span class="p">],</span>
+        <span class="n">callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="n">CallbackEvents</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">callback_context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span>
+        <span class="n">loss_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;loss&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Train for one epoch, evaluate, and return history and test results.</span>
+<span class="sd">    History and test results are stored in a :py:class:`pandas.DataFrame`.</span>
+<span class="sd">    The device used is the one the model lies on. Distributed models are</span>
+<span class="sd">    not supported.</span>
+
+<span class="sd">    Additional features:</span>
+
+<span class="sd">    - ``ensemble_count``: if set and &gt;0, it is assumed the model is an</span>
+<span class="sd">      ensemble and returns a stack of result tensors (stacked in dim 0).</span>
+<span class="sd">      The additional metric ``&#39;disag@0.5&#39;`` (average disagreement of</span>
+<span class="sd">      ensemble outputs if binarized at a threshold of 0.5) is calculated</span>
+<span class="sd">      and added to the results.</span>
+
+<span class="sd">    :meta public:</span>
+
+<span class="sd">    :param model: model to train</span>
+<span class="sd">    :param loss_fn: function that calculates the optimization objective</span>
+<span class="sd">        value</span>
+<span class="sd">    :param metric_fns: further KPI functions to gather training stats</span>
+<span class="sd">    :param train_loader: train data loader</span>
+<span class="sd">    :param optimizer: optimizer to use for weight update steps</span>
+<span class="sd">        initialized with model&#39;s weights</span>
+<span class="sd">    :param callbacks: callbacks to feed with callback context after each batch,</span>
+<span class="sd">        and before and after training epoch</span>
+<span class="sd">    :param callback_context: dict with any additional context to be handed</span>
+<span class="sd">        over to the callbacks as keyword arguments</span>
+<span class="sd">    :param ensemble_count: if set to a value &gt;0 treat the output</span>
+<span class="sd">        of the model as ``ensemble_count`` outputs stacked in dim 0</span>
+<span class="sd">    :param prefix: prefix to prepend to KPI names for the final</span>
+<span class="sd">        :py:class:`pandas.Series` naming</span>
+<span class="sd">    :param loss_key: key the loss should have in the output</span>
+<span class="sd">    :return: training history as :py:class:`pandas.DataFrame` with</span>
+
+<span class="sd">        :columns:</span>
+<span class="sd">            ``loss`` and the KPI names (keys from dict ``metric_fns``),</span>
+<span class="sd">        :index: the batch indices,</span>
+<span class="sd">        :items:</span>
+<span class="sd">            the results of KPI evaluations of the output on the training</span>
+<span class="sd">            batch (i.e. *before* back-propagation step)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty training loader (no batches)! &quot;</span>
+                         <span class="s2">&quot;Batch size too large?&quot;</span><span class="p">)</span>
+    <span class="n">train_</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">ensemble_count</span> <span class="k">if</span> <span class="n">ensemble_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+        <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;ensemble_count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ensemble_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">_to_ens_loss_fn</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">)</span>
+
+    <span class="c1"># very simple way to find out the correct device for</span>
+    <span class="c1"># non-distributed models:</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">kpi_fn</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="n">metric_fns</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">loss_fn</span><span class="p">]:</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">kpi_fn</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="kc">None</span><span class="p">)(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># Training</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">train_kpi_vals</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">train_</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span>
+                 <span class="p">[</span><span class="n">loss_key</span><span class="p">,</span>
+                  <span class="o">*</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metric_fns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="o">+</span> <span class="p">([</span><span class="s1">&#39;disag@0.5&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">ensemble_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">[]))]],</span>
+        <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">))))</span>
+
+    <span class="n">callback_context</span> <span class="o">=</span> <span class="n">callback_context</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">callback_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">train_loader</span><span class="o">=</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">run_type</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
+        <span class="n">batches</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">),</span>
+        <span class="n">aggregating_kpis</span><span class="o">=</span><span class="n">filter_aggregating_kpi_keys</span><span class="p">(</span><span class="n">metric_fns</span><span class="p">))</span>
+    <span class="n">run_callbacks</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackEvents</span><span class="o">.</span><span class="n">BEFORE_EPOCH_TRAIN</span><span class="p">,</span>
+                  <span class="n">callback_context</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">batch_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">train_loader</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># Reset optimizer gradients</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+        <span class="c1"># Calculate &amp; collect loss tensor &amp; metric(s) values</span>
+        <span class="n">kpi_tensors</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">outputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">loss_tensor</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">kpi_tensors</span><span class="p">[</span><span class="n">train_</span><span class="p">(</span><span class="n">loss_key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">loss_tensor</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">outputs</span>
+
+        <span class="k">if</span> <span class="n">ensemble_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">kpi_tensors</span><span class="p">[</span><span class="n">train_</span><span class="p">(</span><span class="s1">&#39;disag@0.5&#39;</span><span class="p">)]</span> <span class="o">=</span> \
+                    <span class="n">_average_disagreement</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">kpi_tensors</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">train_</span><span class="p">(</span><span class="n">m</span><span class="p">):</span> <span class="n">fn</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">metric_fns</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="n">train_kpi_vals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kpi_tensors</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="c1"># Do back-propagation and apply to weight</span>
+        <span class="n">loss_tensor</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="c1"># Logging</span>
+        <span class="n">callback_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">batch</span><span class="o">=</span><span class="n">batch_idx</span><span class="p">,</span>
+                                <span class="n">kpi_train</span><span class="o">=</span><span class="n">train_kpi_vals</span><span class="p">,</span> <span class="p">)</span>
+        <span class="n">run_callbacks</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackEvents</span><span class="o">.</span><span class="n">AFTER_BATCH_TRAIN</span><span class="p">,</span>
+                      <span class="n">callback_context</span><span class="p">)</span>
+
+    <span class="c1"># Obtain values for aggregating kpis</span>
+    <span class="n">batch_idx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">kpi_name</span> <span class="ow">in</span> <span class="n">filter_aggregating_kpi_keys</span><span class="p">(</span><span class="n">metric_fns</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">metric_fns</span><span class="p">[</span><span class="n">kpi_name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">train_kpi_vals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">batch_idx</span><span class="p">][</span><span class="n">train_</span><span class="p">(</span><span class="n">kpi_name</span><span class="p">)]</span> <span class="o">=</span> \
+            <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span>
+
+    <span class="n">run_callbacks</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackEvents</span><span class="o">.</span><span class="n">AFTER_EPOCH_TRAIN</span><span class="p">,</span>
+                  <span class="n">callback_context</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">train_kpi_vals</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="evaluate"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.train_eval_funs.evaluate.html#hybrid_learning.concepts.train_eval.train_eval_funs.evaluate">[docs]</a><span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+             <span class="n">kpi_fns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">],</span>
+             <span class="n">val_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
+             <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;val&#39;</span><span class="p">,</span>
+             <span class="n">callbacks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="n">CallbackEvents</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">callback_context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate the model wrt loss and ``metric_fns`` on the test data.</span>
+<span class="sd">    The reduction method for the KPI values is ``mean``.</span>
+<span class="sd">    The device used is the one of the model lies on (see</span>
+<span class="sd">    :py:func:`device_of`). Distributed models are not supported.</span>
+
+<span class="sd">    :meta public:</span>
+<span class="sd">    :param model: the model to evaluate;</span>
+<span class="sd">        must return a single tensor or sequence of tensors on call to forward</span>
+<span class="sd">    :param kpi_fns: dictionary with KPI IDs and evaluation functions for</span>
+<span class="sd">        the KPIs to evaluate</span>
+<span class="sd">    :param val_loader: data loader with data to evaluate on</span>
+<span class="sd">    :param prefix: prefix to prepend to KPI names for the final</span>
+<span class="sd">        :py:class:`pandas.Series` naming</span>
+<span class="sd">    :param callbacks: callbacks to feed with callback context after each batch</span>
+<span class="sd">        and after finishing evaluation</span>
+<span class="sd">    :param callback_context: dict with any additional context to be handed</span>
+<span class="sd">        over to the callbacks as keyword arguments</span>
+<span class="sd">    :param ensemble_count: if set to a value &gt;0 treat the output</span>
+<span class="sd">        of the model as ``ensemble_count`` outputs stacked in dim 0</span>
+<span class="sd">    :return: Dictionary of all KPI values in the format:</span>
+<span class="sd">        ``{&lt;KPI-name&gt;: &lt;KPI value as float&gt;}``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">ensemble_count</span> <span class="k">if</span> <span class="n">ensemble_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+        <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;ensemble_count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># very simple way to find out the correct device for</span>
+    <span class="c1"># non-distributed models:</span>
+    <span class="n">prefix_</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">kpi_fn</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="kc">None</span><span class="p">)(</span><span class="n">device</span><span class="p">)</span>
+         <span class="k">for</span> <span class="n">kpi_fn</span> <span class="ow">in</span> <span class="n">kpi_fns</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+    <span class="c1"># Value check and defaults</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Empty evaluation data loader (no &quot;</span>
+                                  <span class="s2">&quot;batches)! Batch size too large?&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Combine loss and metrics as general KPI measures</span>
+    <span class="n">eval_kpi_vals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">prefix_</span><span class="p">(</span><span class="n">m</span><span class="p">):</span> <span class="mf">0.</span>
+                                       <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">kpi_fns</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+    <span class="n">aggregating_kpis</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_aggregating_kpi_keys</span><span class="p">(</span><span class="n">kpi_fns</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">num_batches</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span>
+    <span class="n">callback_context</span> <span class="o">=</span> <span class="n">callback_context</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">callback_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">val_loader</span><span class="o">=</span><span class="n">val_loader</span><span class="p">,</span> <span class="n">run_type</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
+        <span class="n">batches</span><span class="o">=</span><span class="n">num_batches</span><span class="p">,</span> <span class="n">aggregating_kpis</span><span class="o">=</span><span class="n">aggregating_kpis</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="c1"># Gather KPI values from all batches</span>
+        <span class="k">for</span> <span class="n">batch_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">val_loader</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">outputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ensemble_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">eval_kpi_vals</span><span class="p">[</span><span class="n">prefix_</span><span class="p">(</span><span class="s1">&#39;disag@0.5&#39;</span><span class="p">)]</span> <span class="o">=</span> \
+                        <span class="n">eval_kpi_vals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prefix_</span><span class="p">(</span><span class="s1">&#39;disag@0.5&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> \
+                        <span class="n">_average_disagreement</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">outputs</span>
+
+            <span class="k">for</span> <span class="n">kpi_name</span> <span class="ow">in</span> <span class="n">aggregating_kpis</span><span class="p">:</span>
+                <span class="n">kpi_fns</span><span class="p">[</span><span class="n">kpi_name</span><span class="p">](</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">kpi_name</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">kpi_fns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">aggregating_kpis</span><span class="p">):</span>
+                <span class="n">eval_kpi_vals</span><span class="p">[</span><span class="n">prefix_</span><span class="p">(</span><span class="n">kpi_name</span><span class="p">)]</span> <span class="o">+=</span> \
+                    <span class="n">kpi_fns</span><span class="p">[</span><span class="n">kpi_name</span><span class="p">](</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+            <span class="n">callback_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kpi_val</span><span class="o">=</span><span class="n">eval_kpi_vals</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch_idx</span><span class="p">)</span>
+            <span class="n">run_callbacks</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackEvents</span><span class="o">.</span><span class="n">AFTER_BATCH_EVAL</span><span class="p">,</span>
+                          <span class="n">callback_context</span><span class="p">)</span>
+
+        <span class="c1"># Aggregate KPI values of all batches via mean.</span>
+        <span class="c1"># Obtain final values for aggregating kpis.</span>
+        <span class="k">for</span> <span class="n">kpi_name</span><span class="p">,</span> <span class="n">kpi_fn</span> <span class="ow">in</span> <span class="n">kpi_fns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">kpi_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aggregating_kpis</span><span class="p">:</span>
+                <span class="n">eval_kpi_vals</span><span class="p">[</span><span class="n">prefix_</span><span class="p">(</span><span class="n">kpi_name</span><span class="p">)]</span> <span class="o">/=</span> <span class="n">num_batches</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># noinspection PyUnresolvedReferences</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">kpi_fn</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                <span class="n">eval_kpi_vals</span><span class="p">[</span><span class="n">prefix_</span><span class="p">(</span><span class="n">kpi_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> \
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span>
+
+    <span class="n">eval_kpi_vals</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">eval_kpi_vals</span><span class="p">)</span>
+    <span class="n">callback_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kpi_val</span><span class="o">=</span><span class="n">eval_kpi_vals</span><span class="p">)</span>
+    <span class="n">run_callbacks</span><span class="p">(</span><span class="n">callbacks</span><span class="p">,</span> <span class="n">CallbackEvents</span><span class="o">.</span><span class="n">AFTER_EPOCH_EVAL</span><span class="p">,</span>
+                  <span class="n">callback_context</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">eval_kpi_vals</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="predict_laplace"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.train_eval_funs.predict_laplace.html#hybrid_learning.concepts.train_eval.train_eval_funs.predict_laplace">[docs]</a><span class="k">def</span> <span class="nf">predict_laplace</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                    <span class="n">data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">var0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs prediction with probit approximation of the Bayesian posterior.</span>
+<span class="sd">    See [MacKay1992]_ for details.</span>
+
+<span class="sd">    Assumptions on the layers to process</span>
+<span class="sd">    (currently:: layers are assumed to be named ``&quot;concept_layer_{i}&quot;``)</span>
+
+<span class="sd">    - ALl layers are convolutional layers with attributes ``kernel`` and</span>
+<span class="sd">      ``bias``.</span>
+<span class="sd">    - Hessian available for each layer as attribute ``layer.hessian``</span>
+<span class="sd">    - If ``var0`` is unset, variance is available for each layer as</span>
+<span class="sd">      attribute ``layer.var0``</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Implementation note:: Currently, the kernel is flattened out for the</span>
+<span class="sd">        calculation, leading to a considerable consumption of memory.</span>
+<span class="sd">        Make sure enough memory is available.</span>
+
+<span class="sd">    .. [MacKay1992] MacKay, David JC.</span>
+<span class="sd">        &quot;The evidence framework applied to classification networks.&quot;</span>
+<span class="sd">        Neural computation 4.5 (1992): 720-736.</span>
+<span class="sd">        https://github.com/wiseodd/last_layer_laplace/blob/master/paper/laplace/llla_binary.py</span>
+
+<span class="sd">    :param model: The pytorch model</span>
+<span class="sd">    :param data: The input data to predict for</span>
+<span class="sd">    :param device: The device to use for computations; defaults to model device</span>
+<span class="sd">    :param var0: The var0 constant. If not given,</span>
+<span class="sd">        uses ``layer.var0``</span>
+<span class="sd">    :return: The predictions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># TODO: hand-over the layers to process</span>
+    <span class="k">for</span> <span class="n">concept_layer_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">):</span>
+
+        <span class="n">concept_layer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;concept_layer_</span><span class="si">{</span><span class="n">concept_layer_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># region: Value checks</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">,</span> <span class="s1">&#39;hessian&#39;</span><span class="p">),</span> \
+            <span class="p">(</span><span class="s2">&quot;Make sure the layer </span><span class="si">{}</span><span class="s2"> has registered a buffer &#39;hessian&#39;&quot;</span>
+             <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">,</span> <span class="s1">&#39;bias&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">,</span> <span class="s1">&#39;kernel_size&#39;</span><span class="p">)),</span> \
+            <span class="s2">&quot;Given layer </span><span class="si">{}</span><span class="s2"> no Conv layer?&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">)</span>
+        <span class="c1"># endregion</span>
+
+        <span class="k">if</span> <span class="n">var0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">concept_layer</span><span class="p">,</span> <span class="s1">&#39;var0&#39;</span><span class="p">)</span>
+            <span class="n">var0</span> <span class="o">=</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">var0</span>
+
+        <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">flatten</span><span class="p">()])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="n">output_dim</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">output_dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+             <span class="o">-</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="o">/</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">output_dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+             <span class="o">-</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="o">/</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># https://discuss.pytorch.org/t/manual-implementation-of-unrolled-3d-convolutions/91021/3</span>
+        <span class="n">unfolded_input_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">unfold</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">,</span>
+            <span class="n">stride</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">unfolded_input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span>
+                                        <span class="n">unfolded_input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+                             <span class="n">unfolded_input_tensor</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">unfolded_input_tensor</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">@</span> <span class="n">phi</span>
+
+        <span class="n">S</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
+            <span class="n">concept_layer</span><span class="o">.</span><span class="n">hessian</span><span class="p">[</span><span class="n">concept_layer_idx</span><span class="p">]</span>
+            <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">var0</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">phi</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">S</span> <span class="o">@</span> <span class="n">phi</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">t</span><span class="p">())</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">phi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_dim</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="second_stage_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.train_eval_funs.second_stage_train.html#hybrid_learning.concepts.train_eval.train_eval_funs.second_stage_train">[docs]</a><span class="k">def</span> <span class="nf">second_stage_train</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                       <span class="n">nll_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                                        <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                       <span class="n">train_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
+                       <span class="n">val_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
+                       <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate the model wrt loss and ``metric_fns`` on the test data.</span>
+<span class="sd">    The reduction method for the KPI values is ``mean``.</span>
+<span class="sd">    The device used is the one of the model lies on (see</span>
+<span class="sd">    :py:func:`device_of`). Distributed models are not supported.</span>
+<span class="sd">    This method is used for different post training optimization procedures.</span>
+
+<span class="sd">    :meta public:</span>
+
+<span class="sd">    :param model: the model to evaluate</span>
+<span class="sd">    :param nll_fn: The loss function, usually negative log likelihood</span>
+<span class="sd">        (cross entropy) or a different, proper scoring function</span>
+<span class="sd">    :param train_loader: data loader with train data</span>
+<span class="sd">    :param val_loader: data loader with validation data</span>
+<span class="sd">    :return: Dictionary of all KPI values in the format:</span>
+<span class="sd">        ``{&lt;KPI-name&gt;: &lt;KPI value as float&gt;}``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">nll_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">use_laplace</span><span class="p">:</span>
+        <span class="c1"># Compute the laplace approximation of the posterior</span>
+        <span class="n">mu</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">_initialize_hessian</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">mininterval</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="n">_approximate_hessian</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">nll_fn</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+
+            <span class="n">_optimize_posterior_variance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">,</span> <span class="n">nll_fn</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_initialize_hessian</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes/resets the Hessians and the mean vector of the last layer</span>
+<span class="sd">    (consistent of weights and bias).</span>
+
+<span class="sd">    :return: A list of mean tensors</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># TODO: hand-over the layers to process</span>
+    <span class="k">for</span> <span class="n">concept_layer_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">):</span>
+        <span class="n">concept_layer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;concept_layer_</span><span class="si">{</span><span class="n">concept_layer_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span><span class="p">:</span>
+            <span class="n">mu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">flatten</span><span class="p">()]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+        <span class="n">concept_layer</span><span class="o">.</span><span class="n">hessian</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">concept_layer</span><span class="o">.</span><span class="n">var0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting Laplace &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;(Hessian </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">concept_layer_0</span><span class="o">.</span><span class="n">hessian</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Starting Laplace &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;(Hessian </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">concept_layer_0</span><span class="o">.</span><span class="n">hessian</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">): &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;GPU Memory </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">memory_allocated</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">2</span><span class="si">}</span><span class="s1">/&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">memory_reserved</span><span class="p">()</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">2</span><span class="si">}</span><span class="s1"> allocated/reserved&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mu</span>
+
+
+<span class="k">def</span> <span class="nf">_approximate_hessian</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                         <span class="n">x_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                         <span class="n">y_data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                         <span class="n">mu</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                         <span class="n">nll_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                                          <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Step for iteratively approximating the Hessian by computing a running</span>
+<span class="sd">    mean of the hessian.</span>
+
+<span class="sd">    :param model: The concept model with initialized Hessian</span>
+<span class="sd">    :param x_data: The input data (of the current batch)</span>
+<span class="sd">    :param y_data: The target data (of the current batch)</span>
+<span class="sd">    :param mu: The mean vectors</span>
+<span class="sd">        (from :py:meth:`~TrainEvalHandle._initialize_hessian`)</span>
+<span class="sd">    :param nll_fn: The loss function, usually negative log likelihood</span>
+<span class="sd">        (cross entropy) or a different, proper scoring function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="mf">0.95</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">losses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># TODO: hand-over layers to process</span>
+    <span class="k">for</span> <span class="n">concept_layer_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">):</span>
+
+        <span class="n">concept_layer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;concept_layer_</span><span class="si">{</span><span class="n">concept_layer_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">output_dim</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">output_dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">x_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                             <span class="o">-</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                             <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="o">/</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">output_dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">x_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+                             <span class="o">-</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                             <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="o">/</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># https://discuss.pytorch.org/t/manual-implementation-of-unrolled-3d-convolutions/91021/3</span>
+        <span class="n">unfolded_input_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">unfold</span><span class="p">(</span>
+            <span class="n">x_data</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">,</span>
+            <span class="n">stride</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">unfolded_input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span>
+                                        <span class="n">unfolded_input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span>
+                             <span class="n">unfolded_input_tensor</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">phi</span> <span class="o">=</span> <span class="n">unfolded_input_tensor</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">mu</span><span class="p">[</span><span class="n">concept_layer_idx</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">@</span> <span class="n">phi</span>
+
+        <span class="n">nll</span> <span class="o">=</span> <span class="n">nll_fn</span><span class="p">(</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">x_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="n">y_data</span><span class="p">)</span>
+        <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nll</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+
+        <span class="c1"># Sum reduction instead mean, hence len(data)</span>
+        <span class="n">H_</span> <span class="o">=</span> <span class="n">exact_hessian</span><span class="p">(</span><span class="n">nll</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_data</span><span class="p">),</span> <span class="p">[</span><span class="n">mu</span><span class="p">[</span><span class="n">concept_layer_idx</span><span class="p">]],</span>
+                           <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="n">concept_layer</span><span class="o">.</span><span class="n">hessian</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> \
+            <span class="n">rho</span> <span class="o">*</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">hessian</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">H_</span>
+
+
+<span class="k">def</span> <span class="nf">_optimize_posterior_variance</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">val_loader</span><span class="p">:</span> <span class="n">DataLoader</span><span class="p">,</span>
+        <span class="n">nll_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the posterior variance of the Laplace approximation.</span>
+<span class="sd">    Has to be called after :py:meth:`~TrainEvalHandle._approximate_hessian`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device_of</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="c1"># Gridsearch over precision/variance values of the posterior</span>
+    <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">70</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                <span class="n">mininterval</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+    <span class="n">nlls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">val</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">var0</span> <span class="ow">in</span> <span class="n">pbar</span><span class="p">:</span>
+        <span class="n">nll</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">val_loader</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">predict_laplace</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">var0</span><span class="p">)</span>
+            <span class="n">nll</span> <span class="o">+=</span> <span class="n">nll_fn</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">target</span><span class="p">)</span>
+        <span class="n">val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var0</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">nlls</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nll</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_loader</span><span class="p">))</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="n">var0</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s1">&#39;nll&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">nll</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_loader</span><span class="p">))</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
+             <span class="s1">&#39;best_v&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">nlls</span><span class="p">))],</span> <span class="s1">&#39;best_nll&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">nlls</span><span class="p">)},</span>
+            <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">nlls</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">nlls</span><span class="p">)</span> <span class="o">-</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Posterior variance tuning stopped early after&#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nlls</span><span class="p">)</span><span class="si">}</span><span class="s1"> tests.&#39;</span><span class="p">)</span>
+            <span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">break</span>
+
+    <span class="n">best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">nlls</span><span class="p">)</span>
+    <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best var0: </span><span class="si">{</span><span class="n">val</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">best</span><span class="p">)]</span><span class="si">}</span><span class="s1"> @ </span><span class="si">{</span><span class="n">nlls</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">best</span><span class="p">)]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">):</span>
+        <span class="n">concept_layer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;concept_layer_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">concept_layer</span><span class="o">.</span><span class="n">var0</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">best</span><span class="p">)]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

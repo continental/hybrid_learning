@@ -1,0 +1,42 @@
+base
+====
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.custom.coco.base
+
+    .. currentmodule:: hybrid_learning.datasets.custom.coco.base
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~COCODataset
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

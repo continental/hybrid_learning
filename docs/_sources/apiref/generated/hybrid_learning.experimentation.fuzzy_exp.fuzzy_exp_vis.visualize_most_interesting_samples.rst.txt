@@ -1,0 +1,6 @@
+visualize\_most\_interesting\_samples
+=====================================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis
+
+.. autofunction:: visualize_most_interesting_samples

@@ -57,8 +57,9 @@ Boolean Label Combinations
 
 The Broden dataset has some drawbacks which may---depending on the
 use-case---require
-:py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` transformations
-of several labels (all of union, intersection, and inversion may be needed):
+:py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge`
+transformations of several labels (all of union, intersection, and inversion
+may be needed):
 
 - One *part* label may belong to different super-*objects* labels,
   e.g. all of *person*, *cat*, *train* have a *head*, and both *person* and
@@ -72,11 +73,11 @@ of several labels (all of union, intersection, and inversion may be needed):
   from a *head*.
 
 *Boolean combinations* of the labels to overcome above specialties,
-can be achieved by a :py:mod:`~hybrid_learning.datasets.transforms.dict_transforms`
-transformation. This is eased by using the
+can be achieved by :py:mod:`~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic`
+operations. This is eased by using the
 :py:meth:`~hybrid_learning.datasets.custom.broden.BrodenHandle.custom_label`
-generator function, which accepts a
-:py:mod:`~hybrid_learning.datasets.transforms.dict_transforms.Merge`
+generator function, which accepts such a
+:py:mod:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge`
 transformation and returns a dataset instance with the required labels
 and transformation. The ground truth output of this dataset then is
 only the custom label, no ``dict`` any more (mind this for defining further
@@ -89,5 +90,8 @@ pruning rules). More precisely one can automate
 
 An example label spec for persons in crop gardens would be
 
->>> from hybrid_learning.datasets.transforms.dict_transforms import AND, OR
+>>> from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND, OR
 >>> label_spec = AND('person', OR('vegetable_garden-s', 'herb_garden-s'))
+
+For further details on how to specify logical mask combinations of labels
+see :ref:`userguide/fuzzy_logic:Fuzzy Logic Operations`.

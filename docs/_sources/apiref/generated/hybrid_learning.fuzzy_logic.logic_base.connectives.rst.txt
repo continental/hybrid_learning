@@ -1,0 +1,50 @@
+connectives
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.logic_base.connectives
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.connectives
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AbstractAND
+        
+        ~AbstractIMPLIEDBY
+        
+        ~AbstractIMPLIES
+        
+        ~AbstractNOT
+        
+        ~AbstractOR
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

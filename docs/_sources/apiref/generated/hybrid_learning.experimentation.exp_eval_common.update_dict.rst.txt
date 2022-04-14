@@ -1,0 +1,6 @@
+update\_dict
+============
+
+.. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+.. autofunction:: update_dict

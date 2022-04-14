@@ -1,0 +1,9 @@
+TverskyLoss
+===========
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+.. autoclass:: TverskyLoss
+    :members:
+
+    .. autoclasstoc::

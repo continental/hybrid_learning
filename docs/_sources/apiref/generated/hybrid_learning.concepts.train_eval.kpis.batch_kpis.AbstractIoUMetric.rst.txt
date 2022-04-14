@@ -1,0 +1,9 @@
+AbstractIoUMetric
+=================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+.. autoclass:: AbstractIoUMetric
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,9 @@
+ResultsHandle
+=============
+
+.. currentmodule:: hybrid_learning.concepts.analysis.results
+
+.. autoclass:: ResultsHandle
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.models.concept_models.concept_detection &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.models.concept_models.concept_detection</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.models.concept_models.concept_detection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Model for concept detection, and its training and evaluation handle.</span>
+<span class="sd">See :py:class:`ConceptDetectionModel2D` and</span>
+<span class="sd">:py:class:`ConceptDetection2DTrainTestHandle` for details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span>
+
+<span class="kn">from</span> <span class="nn">..model_extension</span> <span class="kn">import</span> <span class="n">ModelStump</span><span class="p">,</span> <span class="n">output_size</span>
+<span class="kn">from</span> <span class="nn">...train_eval</span> <span class="kn">import</span> <span class="n">predict_laplace</span><span class="p">,</span> <span class="n">TrainEvalHandle</span>
+<span class="kn">from</span> <span class="nn">...concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span><span class="p">,</span> <span class="n">Concept</span>
+<span class="kn">from</span> <span class="nn">..embeddings</span> <span class="kn">import</span> <span class="n">ConceptEmbedding</span>
+<span class="kn">from</span> <span class="nn">....datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+<span class="kn">from</span> <span class="nn">....datasets.transforms</span> <span class="kn">import</span> <span class="n">SameSize</span><span class="p">,</span> <span class="n">same_padding</span><span class="p">,</span> <span class="n">TupleTransforms</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">,</span> <span class="n">OnInput</span>
+
+<span class="c1"># pylint: disable=too-many-arguments</span>
+<span class="c1"># pylint: disable=not-callable</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ConceptDetectionModel2D"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D">[docs]</a><span class="k">class</span> <span class="nc">ConceptDetectionModel2D</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pytorch model implementation of a concept embedding for 2D conv layers.</span>
+<span class="sd">    The model itself simply is an ensemble (see :py:attr:`ensemble_count`) of</span>
+<span class="sd">    convolutional layers with (optional) sigmoid activation</span>
+<span class="sd">    (see :py:attr:`apply_sigmoid`).</span>
+<span class="sd">    The goal of this model is to tell in each ensemble member from the</span>
+<span class="sd">    activation map of a :py:attr:`main_model`, which spatial regions of the</span>
+<span class="sd">    activation map belong to a given concept and which not.</span>
+<span class="sd">    These regions are windows of the concept model :py:attr:`kernel_size`.</span>
+
+<span class="sd">    Additional features compared to a normal Conv2D layer:</span>
+
+<span class="sd">    - Convenience:: During init :py:attr`in_channels` and :py:attr:`kernel_size`</span>
+<span class="sd">      can be automatically determined from a given main model and concept data.</span>
+<span class="sd">      Also, if :py:attr:`apply_padding` is set to ``True``, a zero padding is</span>
+<span class="sd">      automatically determined such that the output size of the convolution is</span>
+<span class="sd">      the same as the input size (assuming constantly sized inputs).</span>
+<span class="sd">    - Flexible architecture:: With the :py:attr:`use_bias`, the bias can be</span>
+<span class="sd">      disabled during init (assumed to be constantly 0).</span>
+<span class="sd">    - Storage of meta information:: If given during init,</span>
+<span class="sd">      meta information like references to the :py:attr:`main_model` and the</span>
+<span class="sd">      :py:attr:`concept` are kept for reproducibility.</span>
+<span class="sd">    - Storage:: An ensemble can be turned into a generic save format that also</span>
+<span class="sd">      captures meta and architecture specification</span>
+<span class="sd">      (see :py:meth:`to_embedding`).</span>
+
+<span class="sd">    The model forward works as follows:</span>
+
+<span class="sd">    :Input: Activation map output of a 2D convolutional layer.</span>
+<span class="sd">    :Output:</span>
+<span class="sd">        List of heatmaps (one for each ensemble member) showing which</span>
+<span class="sd">        centers of boxes of :py:attr:`kernel_size` belong to :py:attr:`concept`.</span>
+<span class="sd">        The heatmap values are the sigmoid of a convolution operation</span>
+<span class="sd">        if :py:attr:`apply_sigmoid` is ``True``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">concept</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SegmentationConcept2D</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The concept for which this model was configured.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concept</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">concept_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The name of the associated concept if known.</span>
+<span class="sd">        Defaults to the name of :py:attr:`concept` if given.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concept_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_concept_name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@concept_name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">concept_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Setter for concept name.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_concept_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">c_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">main_model_stump</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModelStump</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Stump of the main model for which this instance was configured.</span>
+<span class="sd">        The concept model is assumed to accept as input the output of this</span>
+<span class="sd">        model stump (i.e. the corresponding layer of the :py:attr:`main_model`).</span>
+
+<span class="sd">        Implementation detail::</span>
+<span class="sd">        The actual attribute is wrapped into a tuple to hide the</span>
+<span class="sd">        parameters, since these shall not be updated; see</span>
+<span class="sd">        https://discuss.pytorch.org/t/how-to-exclude-parameters-from-model/6151</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main_model_stump</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">main_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Shortcut to access the main model.</span>
+<span class="sd">         It is wrapped by :py:attr:`main_model_stump`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_model_stump</span><span class="o">.</span><span class="n">wrapped_model</span> \
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_model_stump</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">layer_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Layer to extract concept from.</span>
+<span class="sd">        Shortcut to access the information from :py:attr:`main_model_stump`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_model_stump</span><span class="o">.</span><span class="n">stump_head</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kernel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Size of the convolution kernel.</span>
+<span class="sd">        This is the assumed concept size in activation map pixels.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_layer_0</span><span class="o">.</span><span class="n">kernel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Number of input channels.</span>
+<span class="sd">        This is the number of output channels of layer to investigate.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_layer_0</span><span class="o">.</span><span class="n">in_channels</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">apply_sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether a sigmoid is applied to the output of the forward function</span>
+<span class="sd">        before returning it.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">apply_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether a zero-padding is applied to the input of the forward</span>
+<span class="sd">        function.</span>
+<span class="sd">        The padding should ensure that the input equals the output size.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The current model settings as dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">concept</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">main_model</span><span class="p">,</span>
+            <span class="n">layer_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_id</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span>
+            <span class="n">concept_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">concept_name</span><span class="p">,</span>
+            <span class="n">apply_sigmoid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_sigmoid</span><span class="p">,</span>
+            <span class="n">apply_padding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_padding</span><span class="p">,</span>
+            <span class="n">ensemble_count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">,</span>
+            <span class="n">use_laplace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_laplace</span><span class="p">,</span>
+            <span class="n">use_bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_bias</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ConceptDetectionModel2D.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">concept</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SegmentationConcept2D</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">layer_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">concept_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">apply_sigmoid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">apply_padding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">use_laplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">use_bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param model: model the concept should be embedded in;</span>
+<span class="sd">            used to create (and later accessible in)</span>
+<span class="sd">            :py:attr:`main_model_stump`;</span>
+<span class="sd">            used for :py:attr:`kernel_size` and :py:attr:`in_channels`</span>
+<span class="sd">            auto-inference</span>
+<span class="sd">        :param layer_id: the layer index in</span>
+<span class="sd">            :py:meth:`~torch.nn.Module.state_dict`, the output of which is to</span>
+<span class="sd">            be fed to the the concept model; used to create (and later</span>
+<span class="sd">            accessible) in :py:attr:`main_model_stump`;</span>
+<span class="sd">            used for :py:attr:`kernel_size` and :py:attr:`in_channels`</span>
+<span class="sd">            auto-inference</span>
+<span class="sd">        :param concept: Concept to train for; must be a segmentation concept</span>
+<span class="sd">            featuring ground truth masks; used for :py:attr:`kernel_size` and</span>
+<span class="sd">            :py:attr:`in_channels` auto-inference</span>
+<span class="sd">        :param in_channels: Number of filters of the</span>
+<span class="sd">            :py:class:`~torch.nn.Conv2d`-Layer to analyse;</span>
+<span class="sd">            the value is automatically determined if ``in_channels`` or</span>
+<span class="sd">            ``kernel_size`` is ``None``;</span>
+<span class="sd">            an automatically generated value overwrites a given value with a</span>
+<span class="sd">            warning</span>
+<span class="sd">        :param kernel_size: Size in activation map pixels of a window for</span>
+<span class="sd">            which to assess whether it is part of the ``concept`` or not;</span>
+<span class="sd">            by default it is determined by the relative sizes in the concept&#39;s</span>
+<span class="sd">            :py:attr:`~hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size`</span>
+<span class="sd">            and the layer output size;</span>
+<span class="sd">            if ``concept.rel_size`` is not set, :py:attr:`kernel_size` is set to</span>
+<span class="sd">            ``(1, 1)`` with a warning</span>
+<span class="sd">        :param concept_name: The concept name identifier to use for</span>
+<span class="sd">            :py:attr:`concept_name`; defaults to the name</span>
+<span class="sd">            given in :py:attr:`concept`</span>
+<span class="sd">        :param apply_sigmoid: see :py:attr:`apply_sigmoid`</span>
+<span class="sd">        :param apply_padding: see :py:attr:`apply_padding`</span>
+<span class="sd">        :param ensemble_count: number of deep ensemble models,</span>
+<span class="sd">            see :py:attr:`ensemble_count`</span>
+<span class="sd">        :param use_laplace: if true, the covariance of the prediction are</span>
+<span class="sd">            approximated using laplace</span>
+<span class="sd">        :param use_bias: see :py:attr:`use_bias`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_laplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">use_laplace</span>
+        <span class="sd">&quot;&quot;&quot;Whether training handles should use Laplace approximation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">ensemble_count</span>  <span class="c1"># TODO: make read-only</span>
+        <span class="sd">&quot;&quot;&quot;Number of deep ensemble models.</span>
+<span class="sd">        This is also the first dimension of the forward output.</span>
+<span class="sd">        Each ensemble member simply is a separate convolutional layer,</span>
+<span class="sd">        and all members are run in parallel.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">use_bias</span>  <span class="c1"># TODO: make read-only</span>
+        <span class="sd">&quot;&quot;&quot;Whether the convolution should have and learn a bias, or</span>
+<span class="sd">        the bias should be constantly 0.&quot;&quot;&quot;</span>
+
+        <span class="c1"># region: Meta data</span>
+        <span class="k">if</span> <span class="n">concept</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">concept</span><span class="p">:</span> <span class="n">SegmentationConcept2D</span> <span class="o">=</span> <span class="n">SegmentationConcept2D</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">concept</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_concept</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SegmentationConcept2D</span><span class="p">]</span> <span class="o">=</span> <span class="n">concept</span>
+        <span class="sd">&quot;&quot;&quot;Internal storage of the concept to localize.</span>
+<span class="sd">        See :py:attr:`concept`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_concept_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">concept_name</span>
+        <span class="sd">&quot;&quot;&quot;Default value for :py:attr:`concept_name` property</span>
+<span class="sd">        if :py:attr:`concept` is ``None``.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main_model_stump</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ModelStump</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> \
+            <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">layer_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+            <span class="p">(</span><span class="n">ModelStump</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">),)</span>
+        <span class="sd">&quot;&quot;&quot;Stump of the main model in the head of which to localize the</span>
+<span class="sd">        concept embedding. Assumed to be used to generate the activation maps</span>
+<span class="sd">        needed for concept analysis training.</span>
+<span class="sd">        Must be wrapped into a tuple to hide the parameters from being added to</span>
+<span class="sd">        the :py:meth:`torch.nn.Module.state_dict`, since these are not to be</span>
+<span class="sd">        updated.&quot;&quot;&quot;</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Automatically determine kernel_size and in_channels if one isn&#39;t given</span>
+        <span class="c1"># (this may be time consuming as it requires one run through the model);</span>
+        <span class="c1"># automatic determination is not possible if concept.rel_size is None,</span>
+        <span class="c1"># in this case set the kernel_size to (1,1)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">in_channels</span><span class="p">,</span> <span class="n">kernel_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_determine_channels_and_kernel</span><span class="p">(</span>
+                <span class="n">kernel_size</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_model_stump</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">)</span>
+
+        <span class="c1"># region: Layers</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> \
+            <span class="s2">&quot;kernel size not of len 2: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="c1"># Beware: The padding for ZeroPad2d has crude specification:</span>
+        <span class="c1"># 1. width pad, 2. height pad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">apply_padding</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">(</span>
+                <span class="n">padding</span><span class="o">=</span><span class="n">same_padding</span><span class="p">((</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+        <span class="sd">&quot;&quot;&quot;The padding to apply before the convolution.</span>
+<span class="sd">        Defaults to a padding such that the output size equals the input size</span>
+<span class="sd">        if ``apply_padding`` is set to ``True`` during init. If set to ``None``,</span>
+<span class="sd">        no padding is applied.&quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ensemble_count</span><span class="p">):</span>
+            <span class="c1"># TODO: use ModuleList</span>
+            <span class="n">concept_layer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+                                            <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span>
+                                            <span class="n">out_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                            <span class="n">bias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_bias</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_laplace</span><span class="p">:</span>
+                <span class="n">unfolded_input_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">unfold</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span>
+                                <span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                    <span class="n">padding</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">padding</span><span class="p">,</span>
+                    <span class="n">stride</span><span class="o">=</span><span class="n">concept_layer</span><span class="o">.</span><span class="n">stride</span><span class="p">)</span>
+                <span class="n">concept_layer</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;hessian&#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                    <span class="n">unfolded_input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+                        <span class="mi">1</span> <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="n">unfolded_input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span>
+                        <span class="mi">1</span> <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)),</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">concept_layer</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;var0&#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;concept_layer_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">concept_layer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span> <span class="k">if</span> <span class="n">apply_sigmoid</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;The  activation layer to obtain heatmaps in ``[0,1]``.</span>
+<span class="sd">        Defaults to a sigmoid if ``apply_sigmoid`` is set to ``True`` during</span>
+<span class="sd">        init. If set to ``None``, no activation is applied.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_determine_channels_and_kernel</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+            <span class="n">in_channels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+            <span class="n">main_model_stump</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModelStump</span><span class="p">],</span>
+            <span class="n">concept</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SegmentationConcept2D</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Determine the ``in_channel`` and ``kernel_size`` information from</span>
+<span class="sd">        the available inputs.</span>
+<span class="sd">        If ``in_channels`` is not given, the ``main_model_stump`` and one</span>
+<span class="sd">        sample of the ``concept`` (data) are used to determine it using.</span>
+<span class="sd">        If ``kernel_size`` is not given, also the ``rel_size`` of the</span>
+<span class="sd">        ``concept`` is used if given, else ``kernel_size`` is set to ``(1, 1)``.</span>
+<span class="sd">        Internally, :py:meth:`_layer_out_info` is used.</span>
+
+<span class="sd">        For the parameters see ``__init__``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">kernel_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">kernel_size</span>
+
+        <span class="c1"># region: Value checks</span>
+        <span class="n">_missing</span> <span class="o">=</span> <span class="s2">&quot;in_channels&quot;</span> <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;kernel_size&quot;</span>
+        <span class="k">if</span> <span class="n">concept</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;concept not given, so cannot auto-infer &quot;</span>
+                             <span class="s2">&quot;sizes, but </span><span class="si">{}</span><span class="s2"> isn&#39;t given.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_missing</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">main_model_stump</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;model or layer_id not given, so cannot auto-infer&quot;</span>
+                             <span class="s2">&quot; sizes, but </span><span class="si">{}</span><span class="s2"> isn&#39;t given.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_missing</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="n">auto_layer_out_size</span><span class="p">,</span> <span class="n">auto_kernel_size</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_layer_out_info</span><span class="p">(</span><span class="n">concept</span><span class="p">,</span> <span class="n">main_model_stump</span><span class="p">)</span>
+
+        <span class="c1"># in_channels is by default the number of output filters of the layer:</span>
+        <span class="n">auto_in_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">auto_layer_out_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># region: Warnings for deviations</span>
+        <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">in_channels</span> <span class="o">!=</span> <span class="n">auto_in_channels</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;The number of in_channels specified for </span><span class="si">%s</span><span class="s2"> was </span><span class="si">%d</span><span class="s2">, but the&quot;</span>
+                <span class="s2">&quot; automatically determined value was </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">auto_in_channels</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kernel_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">kernel_size</span> <span class="o">!=</span> <span class="n">auto_kernel_size</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;The kernel_size specified for </span><span class="si">%s</span><span class="s2"> was </span><span class="si">%d</span><span class="s2">, but the&quot;</span>
+                <span class="s2">&quot; automatically determined value was </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">auto_kernel_size</span><span class="p">)</span>
+        <span class="c1"># endregion</span>
+
+        <span class="n">in_channels</span> <span class="o">=</span> <span class="n">auto_in_channels</span> <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">in_channels</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="n">auto_kernel_size</span> <span class="k">if</span> <span class="n">kernel_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">kernel_size</span>
+        <span class="k">return</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">kernel_size</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_layer_out_info</span><span class="p">(</span><span class="n">concept</span><span class="p">:</span> <span class="n">Concept</span><span class="p">,</span>
+                        <span class="n">main_model_stump</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Size</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Extract channel and kernel size information from model output.</span>
+<span class="sd">        This is done by collecting the layer output size from one forward run</span>
+<span class="sd">        of the model.</span>
+<span class="sd">        It is then assumed that the layer output is a tensor of shape</span>
+<span class="sd">        ``(output channels/filters, height, width, ...)``, where</span>
+<span class="sd">        ``height, width, ...`` is activation map shape information that</span>
+<span class="sd">        should have the same number of dimensions as the</span>
+<span class="sd">        :py:attr:`~hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size` of</span>
+<span class="sd">        the ``concept``, if this is set.</span>
+
+<span class="sd">        :param main_model_stump: the model of which to analyse the output;</span>
+<span class="sd">            output must be a single tensor with size of shape</span>
+<span class="sd">            ``(output channels/filters, width, height, ...)``</span>
+<span class="sd">        :param concept: the concept from which to draw the dummy sample size</span>
+<span class="sd">            and the concept size</span>
+<span class="sd">        :return: tuple of</span>
+<span class="sd">            :in_channels: number of output channels of the layer) and of</span>
+<span class="sd">            :kernel_size:</span>
+<span class="sd">                the size in activation map pixels the kernel must have to</span>
+<span class="sd">                provide (up to rounding) the same aspect ratio as specified</span>
+<span class="sd">                in the :py:attr:`~hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size`</span>
+<span class="sd">                of the ``concept`` if this is set;</span>
+<span class="sd">                if ``concept.rel_size`` is not set, ``kernel_size`` is ``(1,1)``</span>
+<span class="sd">        :return: tuple of ``(in_channels, kernel_size)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="n">inp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">concept</span><span class="o">.</span><span class="n">train_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># layer output size without batch dimension:</span>
+        <span class="n">layer_out_size</span> <span class="o">=</span> <span class="n">output_size</span><span class="p">(</span><span class="n">main_model_stump</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+
+        <span class="c1"># Some size checks:</span>
+        <span class="c1"># assuming layer_out_size = batch + (filters, width, height)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_out_size</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;The size of layer </span><span class="si">{}</span><span class="s2"> output was not of shape &quot;</span>
+                 <span class="s2">&quot;(filters, width, height), but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                 <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">main_model_stump</span><span class="o">.</span><span class="n">stump_head</span><span class="p">,</span> <span class="n">layer_out_size</span><span class="p">))</span>
+
+        <span class="c1"># assuming layer_out_size[1:] gives same image dimensions as</span>
+        <span class="c1"># concept.rel_size</span>
+        <span class="n">rel_size</span> <span class="o">=</span> <span class="n">concept</span><span class="o">.</span><span class="n">rel_size</span> \
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concept</span><span class="p">,</span> <span class="n">SegmentationConcept2D</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">rel_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">rel_size</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_out_size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;The concept size has </span><span class="si">{}</span><span class="s2"> image dimensions, the layer &quot;</span>
+                 <span class="s2">&quot;output has </span><span class="si">{}</span><span class="s2">; concept size: </span><span class="si">{}</span><span class="s2">, layer out size: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                 <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">concept</span><span class="o">.</span><span class="n">rel_size</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_out_size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="n">concept</span><span class="o">.</span><span class="n">rel_size</span><span class="p">,</span> <span class="n">layer_out_size</span><span class="p">))</span>
+
+        <span class="c1"># kernel_size is by default the percentage of the layer output size</span>
+        <span class="c1"># given by concept size;</span>
+        <span class="c1"># if concept.rel_size is not set, it is (1,1)</span>
+        <span class="k">if</span> <span class="n">rel_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">concept</span><span class="o">.</span><span class="n">rel_size</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Some concept size entries are invalid (not &quot;</span>
+                                  <span class="s2">&quot;in [0,1]): </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept</span><span class="o">.</span><span class="n">rel_size</span><span class="p">))</span>
+            <span class="n">auto_kernel_size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">o</span><span class="p">)))</span>
+                                      <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">concept</span><span class="o">.</span><span class="n">rel_size</span><span class="p">,</span>
+                                                      <span class="n">layer_out_size</span><span class="p">[</span><span class="mi">1</span><span class="p">:])])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">auto_kernel_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">layer_out_size</span><span class="p">,</span> <span class="n">auto_kernel_size</span>
+
+<div class="viewcode-block" id="ConceptDetectionModel2D.reset_parameters"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Randomly (re)initialize weight and bias.&quot;&quot;&quot;</span>
+
+        <span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">reset_params</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Try to call a parameter reset method within module.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s1">&#39;reset_parameters&#39;</span><span class="p">):</span>
+                <span class="c1"># noinspection PyCallingNonCallable</span>
+                <span class="n">module</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+            <span class="n">reset_params</span><span class="p">(</span><span class="n">child</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptDetectionModel2D.to_embedding"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding">[docs]</a>    <span class="k">def</span> <span class="nf">to_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the plain representation of the ensemble as list of</span>
+<span class="sd">        :py:class:`~hybrid_learning.concepts.models.embeddings.ConceptEmbedding`.</span>
+<span class="sd">        I.e.</span>
+
+<span class="sd">        :as parameters: weight and bias of the concept layers, and</span>
+<span class="sd">        :as meta info:</span>
+<span class="sd">            the :py:attr:`concept` and :py:attr:`main_model`</span>
+<span class="sd">            with :py:attr:`layer_id`.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This must be a deep copy to avoid overwriting in a consecutive</span>
+<span class="sd">            training session.</span>
+
+<span class="sd">        The resulting embedding describes the decision hyperplane of the</span>
+<span class="sd">        concept model. Its normal vector :math:`n` is the concept layer weight.</span>
+<span class="sd">        The orthogonal support vector given by :math:`b\cdot n` for a scalar</span>
+<span class="sd">        factor :math:`b` must fulfill</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \forall v: (v - b\cdot n) \circ n</span>
+<span class="sd">            = d(v)</span>
+<span class="sd">            = (v \circ \text{weight}) + \text{bias}</span>
+
+<span class="sd">        i.e.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            n = \text{weight} \quad\text{and}\quad</span>
+<span class="sd">            b = - \frac{\text{bias}} {|\text{weight}|^2}.</span>
+
+<span class="sd">        Here, :math:`d(v)` is the signed distance measure of a vector</span>
+<span class="sd">        from the hyperplane, i.e.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d(v)</span>
+<span class="sd">            \begin{cases}</span>
+<span class="sd">                &gt; 0  &amp; \text{iff vector yields a positive prediction,}\\</span>
+<span class="sd">                \equiv 0 &amp; \text{iff vector on decision boundary hyperplane,}\\</span>
+<span class="sd">                &lt; 0  &amp; \text{iff vector yields a negative prediction.}</span>
+<span class="sd">            \end{cases}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeddings_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">):</span>
+            <span class="n">concept_layer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;concept_layer_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span>
+                     <span class="n">concept_layer</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="c1"># Preparation for rename model -&gt; main_model</span>
+            <span class="n">main_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">common_setts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">state_dict</span><span class="o">=</span><span class="n">state</span><span class="p">,</span>
+                                <span class="n">main_model</span><span class="o">=</span><span class="n">main_model</span><span class="p">,</span>
+                                <span class="n">model_stump</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">main_model_stump</span><span class="p">)</span>
+            <span class="n">embeddings_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ConceptEmbedding</span><span class="p">(</span>
+                <span class="o">**</span><span class="n">common_setts</span><span class="p">,</span>
+                <span class="n">normal_vec_name</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span>
+                <span class="n">bias_name</span><span class="o">=</span><span class="s1">&#39;bias&#39;</span> <span class="k">if</span> <span class="n">concept_layer</span><span class="o">.</span><span class="n">bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">embeddings_list</span></div>
+
+<div class="viewcode-block" id="ConceptDetectionModel2D.from_embedding"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.from_embedding">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_embedding</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">,</span>
+                                              <span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]],</span>
+                       <span class="n">legacy_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptDetectionModel2D&#39;</span><span class="p">:</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Initialize a concept localization model from an embedding.</span>
+<span class="sd">        The weight and bias are obtained as follows:</span>
+
+<span class="sd">        :weight: The weight is the normal vector of the embedding</span>
+<span class="sd">        :bias:</span>
+<span class="sd">            Given the ``embedding``&#39;s</span>
+<span class="sd">            :py:attr:`~hybrid_learning.concepts.models.embeddings.ConceptEmbedding.support_factor`</span>
+<span class="sd">            as :math:`b`, the bias calculates as</span>
+<span class="sd">            (compare :py:meth:`to_embedding`):</span>
+
+<span class="sd">            .. math:: \text{bias} = - b \cdot (|\text{weight}|^2)</span>
+
+<span class="sd">        :param embeddings_list: the embeddings to use</span>
+<span class="sd">        :param legacy_warnings: whether to give warnings about legacy, non-captured</span>
+<span class="sd">            embedding attributes</span>
+<span class="sd">        :param kwargs: any keyword arguments to the concept model</span>
+<span class="sd">            (overwrite the values obtained from embedding)</span>
+<span class="sd">        :return: a concept localization model initialized with the embedding</span>
+<span class="sd">            information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+
+        <span class="c1"># region Value check</span>
+        <span class="c1"># Add option to hand over single concept model for backward compat.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">,</span> <span class="n">ConceptEmbedding</span><span class="p">):</span>
+            <span class="n">embeddings_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">embeddings_list</span><span class="p">]</span>
+        <span class="n">ensemble_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ensemble_count&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ensemble_count</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Data mismatch: Ensemble count = </span><span class="si">{</span><span class="n">ensemble_count</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Embeddings = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">)</span><span class="si">}</span><span class="s1"> ... &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;fixing count (assuming singular best embedding)&#39;</span><span class="p">)</span>
+            <span class="n">ensemble_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ensemble_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ensemble_count</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Model init</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;main_model&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                  <span class="s1">&#39;in_channels&#39;</span><span class="p">:</span> <span class="n">embeddings_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normal_vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                  <span class="s1">&#39;kernel_size&#39;</span><span class="p">:</span> <span class="n">embeddings_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                  <span class="o">**</span><span class="n">embeddings_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">meta_info</span><span class="p">,</span>
+                  <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
+        <span class="c1"># Treat legacy naming:</span>
+        <span class="k">if</span> <span class="s1">&#39;main_model&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;main_model&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;model_stump&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;model_stump&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;use_vi&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;use_vi&#39;</span><span class="p">]</span>
+        <span class="n">c_model</span> <span class="o">=</span> <span class="n">ConceptDetectionModel2D</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">embedding</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">embeddings_list</span><span class="p">):</span>
+            <span class="c1"># Apply the scaling factor</span>
+            <span class="n">scaled_embedding</span> <span class="o">=</span> <span class="n">embedding</span><span class="o">.</span><span class="n">scale</span><span class="p">()</span>
+            <span class="n">emb_state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="sa">f</span><span class="s1">&#39;concept_layer_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">scaled_embedding</span><span class="o">.</span><span class="n">state_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="c1"># Consistency check</span>
+            <span class="k">if</span> <span class="n">legacy_warnings</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">emb_state_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The key </span><span class="si">%s</span><span class="s2"> from state_dict of embedding </span><span class="si">%s</span><span class="s2">&quot;</span>
+                                                <span class="s2">&quot; is not in the concept model state_dict with keys </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                                <span class="n">key</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">c_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="c1"># Update &amp; proper reshaping</span>
+            <span class="n">state_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">c_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                               <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">emb_state_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">c_model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()})</span>
+
+        <span class="n">c_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">c_model</span></div>
+
+<div class="viewcode-block" id="ConceptDetectionModel2D.forward"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Torch model forward evaluation method.&quot;&quot;&quot;</span>
+        <span class="c1"># region Size checks</span>
+        <span class="c1"># Suppress tracer warning</span>
+        <span class="c1"># https://github.com/pytorch/pytorch/issues/19364#issuecomment-484225256</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span>
+                                    <span class="n">category</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">jit</span><span class="o">.</span><span class="n">TracerWarning</span><span class="p">,</span>
+                                    <span class="n">module</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;.*&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Got tensor of size </span><span class="si">{}</span><span class="s2"> but expected size &quot;</span>
+                                  <span class="s2">&quot;(batch, in_channels, height, width) with &quot;</span>
+                                  <span class="s2">&quot;in_channels=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Laplace prediction in eval mode</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_laplace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_layer_0</span><span class="o">.</span><span class="n">var0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">outps</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">predict_laplace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_sigmoid</span><span class="p">:</span>
+                <span class="n">outps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">outps</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">outps</span>
+
+        <span class="c1"># Normal prediction</span>
+        <span class="n">outp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">inp</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_padding</span><span class="p">:</span>
+            <span class="n">outp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">padding</span><span class="p">(</span><span class="n">outp</span><span class="p">)</span>
+
+        <span class="n">outp_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_count</span><span class="p">):</span>
+            <span class="n">out_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;concept_layer_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)(</span><span class="n">outp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_sigmoid</span><span class="p">:</span>
+                <span class="n">out_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">out_val</span><span class="p">)</span>
+            <span class="n">outp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out_val</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">outp_list</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConceptDetection2DTrainTestHandle"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle">[docs]</a><span class="k">class</span> <span class="nc">ConceptDetection2DTrainTestHandle</span><span class="p">(</span><span class="n">TrainEvalHandle</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Train test handle for concept localization models.</span>
+<span class="sd">    Applies sensible defaults to ``model_output_transform``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DEFAULT_MASK_INTERPOLATION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bilinear&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Interpolation method used in default transforms for resizing masks</span>
+<span class="sd">    to activation map size. Argument may be one of the modes accepted by</span>
+<span class="sd">    :py:func:`torch.nn.functional.interpolate`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConceptDetection2DTrainTestHandle.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">concept_model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span><span class="p">,</span>
+                 <span class="n">data</span><span class="p">:</span> <span class="n">DataTriple</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">model_output_transform</span><span class="p">:</span> <span class="n">TupleTransforms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">metric_input_transform</span><span class="p">:</span> <span class="n">TupleTransforms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span>
+                 <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        For further parameter descriptions see ``__init__()`` of</span>
+<span class="sd">        :py:class:`~hybrid_learning.concepts.train_eval.base_handles.train_test_handle.TrainEvalHandle`.</span>
+
+<span class="sd">        :param concept_model: the concept localization model to work on with</span>
+<span class="sd">            concept.</span>
+<span class="sd">        :param data: data for the concept model, i.e. Sequence of tuples</span>
+<span class="sd">            ``(activation, mask)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="c1"># Default transforms: resize model to image output</span>
+        <span class="c1"># (take care of clamping after bilinear upscaling!</span>
+        <span class="k">if</span> <span class="n">model_output_transform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">model_output_transform</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">SameSize</span><span class="p">(</span><span class="n">resize_target</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">interpolation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_MASK_INTERPOLATION</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="n">OnInput</span><span class="p">(</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">concept_model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">model_output_transform</span><span class="o">=</span><span class="n">model_output_transform</span><span class="p">,</span>
+            <span class="n">metric_input_transform</span><span class="o">=</span><span class="n">metric_input_transform</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="c1"># Trick to teach IDE the type of self.model:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

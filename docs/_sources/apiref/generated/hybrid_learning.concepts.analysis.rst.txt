@@ -9,27 +9,29 @@ analysis
 
     
     
-    
-
-
-    
-    
-    
-
-
-    
-    
-    .. rubric:: Classes
+    .. rubric:: Sub-modules
 
     .. autosummary::
         :toctree:
-        :nosignatures:
+        :recursive:
         
-        ~ConceptAnalysis
+        ~hybrid_learning.concepts.analysis.analysis_handle
         
-        ~EmbeddingReduction
+        ~hybrid_learning.concepts.analysis.results
+        
+        ~hybrid_learning.concepts.analysis.visualization
         
 
+    
+    
+
+
+    
+    
+    
+
+
+    
     
     
 

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dataset Caching &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Fuzzy Logic Operations" href="../fuzzy_logic.html" />
+    <link rel="prev" title="Activation Map Storage and Handling" href="activation_map_handling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview/index.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a Concept Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Custom dataset handles</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="coco.html">MS COCO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="broden.html">Broden</a></li>
+<li class="toctree-l3"><a class="reference internal" href="activation_map_handling.html">Activation Map Storage and Handling</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Dataset Caching</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#about-caches">About Caches</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-a-cache-to-a-dataset">Adding a Cache to a Dataset</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzy_logic.html">Fuzzy Logic Operations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+          <li><a href="index.html">Custom dataset handles</a> &raquo;</li>
+      <li>Dataset Caching</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/userguide/custom_dataset_handles/caching.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="dataset-caching">
+<h1>Dataset Caching<a class="headerlink" href="#dataset-caching" title="Permalink to this headline"></a></h1>
+<p>The base dataset class <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a>
+defined in this library supports basic caching functionality.
+Respective cache handles are defined in <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.caching.html#module-hybrid_learning.datasets.caching" title="hybrid_learning.datasets.caching"><code class="xref py py-mod docutils literal notranslate"><span class="pre">caching</span></code></a>.</p>
+<div class="section" id="about-caches">
+<h2>About Caches<a class="headerlink" href="#about-caches" title="Permalink to this headline"></a></h2>
+<p>The base class of cache handles is <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache" title="hybrid_learning.datasets.caching.Cache"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cache</span></code></a>.
+A cache implementation provides methods
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.put" title="hybrid_learning.datasets.caching.Cache.put"><code class="xref py py-meth docutils literal notranslate"><span class="pre">put()</span></code></a> and
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.load" title="hybrid_learning.datasets.caching.Cache.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a>
+which will store a given object respectively load a previously pushed object using a
+given descriptor. If load is called upon a descriptor for which no object
+has been stored so far, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned.</p>
+<p>An example is here given for a file cache that stores objects to disk using <code class="docutils literal notranslate"><span class="pre">torch.save()</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.caching</span> <span class="kn">import</span> <span class="n">PTCache</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mycache</span> <span class="o">=</span> <span class="n">PTCache</span><span class="p">(</span><span class="n">cache_root</span><span class="o">=</span><span class="s2">&quot;.pytest_tmpdir&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">descriptor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;unique_descriptor&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mycache</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mycache</span><span class="o">.</span><span class="n">cache_root</span><span class="p">,</span> <span class="n">descriptor</span> <span class="o">+</span> <span class="s2">&quot;.pt&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mycache</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">descriptor</span><span class="p">))</span>
+<span class="go">tensor([1., 2., 3.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mycache</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;descriptor_of_not_yet_stored_object&quot;</span><span class="p">))</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-a-cache-to-a-dataset">
+<h2>Adding a Cache to a Dataset<a class="headerlink" href="#adding-a-cache-to-a-dataset" title="Permalink to this headline"></a></h2>
+<p>Implementations of <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a>
+allow to specify a cache handle in order to cache transformed items.
+They feature a <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.descriptor" title="hybrid_learning.datasets.base.BaseDataset.descriptor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">descriptor()</span></code></a>
+method that returns the unique descriptor of the sample at an index.
+If the dataset is assigned a <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.transforms_cache" title="hybrid_learning.datasets.base.BaseDataset.transforms_cache"><code class="xref py py-attr docutils literal notranslate"><span class="pre">transforms_cache</span></code></a>
+handle, these descriptors are used to load or put a transformed sample into the cache.
+To apply further transformations to items, independent on whether they were
+loaded from cache or newly transformed using <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.transforms" title="hybrid_learning.datasets.base.BaseDataset.transforms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">transforms</span></code></a>,
+use the <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.after_cache_transforms" title="hybrid_learning.datasets.base.BaseDataset.after_cache_transforms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">after_cache_transforms()</span></code></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets.custom</span> <span class="kn">import</span> <span class="n">coco</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept_data</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">body_parts</span><span class="o">=</span><span class="p">[</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">dataset_root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;train2017&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">transforms_cache</span><span class="o">=</span><span class="n">mycache</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Also, caching can be applied manually by decorating
+<code class="docutils literal notranslate"><span class="pre">__getitem__</span></code>-like functions with a cache’s
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.wrap" title="hybrid_learning.datasets.caching.Cache.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wrap()</span></code></a> method.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="activation_map_handling.html" class="btn btn-neutral float-left" title="Activation Map Storage and Handling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../fuzzy_logic.html" class="btn btn-neutral float-right" title="Fuzzy Logic Operations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

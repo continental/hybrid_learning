@@ -1,0 +1,60 @@
+lukasiewicz
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Attributes
+
+    .. autosummary::
+        :toctree:
+        
+        ~Logic
+
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AND
+        
+        ~IMPLIEDBY
+        
+        ~IMPLIES
+        
+        ~Logic
+        
+        ~LukasiewiczLogic
+        
+        ~OR
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

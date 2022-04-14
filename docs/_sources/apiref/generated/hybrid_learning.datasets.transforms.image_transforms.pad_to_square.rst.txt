@@ -1,6 +1,0 @@
-hybrid\_learning.datasets.transforms.image\_transforms.pad\_to\_square
-======================================================================
-
-.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
-
-.. autofunction:: pad_to_square

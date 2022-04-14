@@ -1,0 +1,6 @@
+fix\_formula\_obj
+=================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers
+
+.. autofunction:: fix_formula_obj

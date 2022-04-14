@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.analysis.visualization &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.analysis.visualization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.analysis.visualization</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions for visualization of analysis results, datasets, and models&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="c1"># torch and numpy produce some pylint issues:</span>
+<span class="c1"># pylint: disable=no-member</span>
+<span class="c1"># pylint: disable=not-callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">data_visualization</span> <span class="k">as</span> <span class="n">datavis</span>
+<span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models</span> <span class="kn">import</span> <span class="n">ConceptDetection2DTrainTestHandle</span> <span class="k">as</span> <span class="n">ConceptModelHandle</span><span class="p">,</span> <span class="n">ConceptEmbedding</span>
+
+
+<div class="viewcode-block" id="visualize_concept_model"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.visualization.visualize_concept_model.html#hybrid_learning.concepts.analysis.visualization.visualize_concept_model">[docs]</a><span class="k">def</span> <span class="nf">visualize_concept_model</span><span class="p">(</span><span class="n">handle</span><span class="p">:</span> <span class="n">ConceptModelHandle</span><span class="p">,</span>
+                            <span class="n">max_num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                            <span class="n">label_templ</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">axes</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">start_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">transform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Visualize predictions of a segmentation concept model on test samples.</span>
+<span class="sd">    Visualization results will be shown using</span>
+<span class="sd">    :py:func:`matplotlib.pyplot.imshow` functionality and are optionally</span>
+<span class="sd">    saved to a file.</span>
+
+<span class="sd">    :param handle: the train/test handle for the concept model to evaluate</span>
+<span class="sd">        (holds model and data)</span>
+<span class="sd">    :param start_idx: relevant if axes is given; the row index to</span>
+<span class="sd">        start filling axes</span>
+<span class="sd">    :param axes: optionally, one can specify an :py:class:`matplotlib.axes.Axes`</span>
+<span class="sd">        object to work on; generated by default</span>
+<span class="sd">    :param max_num_samples: how many test samples to visualize</span>
+<span class="sd">    :param label_templ: template that is formatted and printed along with</span>
+<span class="sd">        each sample; must contain a placeholder for the image ID as ``&#39;{}&#39;``</span>
+<span class="sd">    :param save_as: .png file path to store the image file in using</span>
+<span class="sd">        :py:func:`matplotlib.pyplot.savefig`; not saved if ``None``</span>
+<span class="sd">    :param transform: a transformation to be applied to the tuple of</span>
+<span class="sd">        model output and ground truth mask before mask visualization</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">label_templ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">label_templ</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;label_templ </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label_templ</span><span class="p">)</span> <span class="o">+</span>
+                         <span class="s2">&quot;did not contain format string </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test</span><span class="p">,</span> <span class="s1">&#39;load_image&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Test data of handle does not provide function&quot;</span>
+                             <span class="s2">&quot; load_image!&quot;</span><span class="p">)</span>
+    <span class="n">load_image</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test</span><span class="p">,</span> <span class="s1">&#39;load_image&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">load_image</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;load_image of handle.test_data is not callable!&quot;</span><span class="p">)</span>
+    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_num_samples</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">num_samples</span><span class="p">))</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">start_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># ensure start index not shifted if axes auto-generated</span>
+
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">):</span>
+        <span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">load_image</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">datavis</span><span class="o">.</span><span class="n">to_img</span><span class="p">(</span><span class="n">img_t</span><span class="p">)</span>
+        <span class="n">act_map</span><span class="p">,</span> <span class="n">mask_t</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">test</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="c1"># the predicted mask</span>
+        <span class="n">pred_mask_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">act_map</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                                     <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pred_mask_t</span><span class="p">,</span> <span class="n">mask_t</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">pred_mask_t</span><span class="p">,</span> <span class="n">mask_t</span><span class="p">)</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">datavis</span><span class="o">.</span><span class="n">to_img</span><span class="p">(</span><span class="n">mask_t</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                                                          <span class="n">resample</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">)</span>
+        <span class="n">pred_mask</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> \
+            <span class="n">datavis</span><span class="o">.</span><span class="n">to_img</span><span class="p">(</span><span class="n">pred_mask_t</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">)</span>
+        <span class="n">threshed_pred_mask</span> <span class="o">=</span> <span class="n">datavis</span><span class="o">.</span><span class="n">to_img</span><span class="p">((</span><span class="n">pred_mask_t</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span> \
+            <span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">)</span>
+        <span class="n">inverted_pred_mask</span> <span class="o">=</span> <span class="n">datavis</span><span class="o">.</span><span class="n">to_img</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred_mask_t</span><span class="p">)</span> \
+            <span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">)</span>
+
+        <span class="c1"># a comparison with the ground truth</span>
+        <span class="n">mask_red</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">datavis</span><span class="o">.</span><span class="n">apply_mask</span><span class="p">(</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span> <span class="n">mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+        <span class="n">pred_mask_blue</span><span class="p">:</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">datavis</span><span class="o">.</span><span class="n">apply_mask</span><span class="p">(</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span> <span class="n">pred_mask</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="n">mask_comparison</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pred_mask_blue</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask_red</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+
+        <span class="n">pics</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Original image with</span><span class="se">\n</span><span class="s2">predicted mask in green&quot;</span><span class="p">:</span>
+                <span class="n">datavis</span><span class="o">.</span><span class="n">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">pred_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;Original image with</span><span class="se">\n</span><span class="s2">pred, threshed mask in green&quot;</span><span class="p">:</span>
+                <span class="n">datavis</span><span class="o">.</span><span class="n">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">threshed_pred_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;Original image masked</span><span class="se">\n</span><span class="s2">by predicted mask&quot;</span><span class="p">:</span>
+                <span class="n">datavis</span><span class="o">.</span><span class="n">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">inverted_pred_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span>
+            <span class="s2">&quot;Overlay of</span><span class="se">\n</span><span class="s2">ground truth mask (red) &amp;</span><span class="se">\n</span><span class="s2">predicted mask (blue);&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">pink = true positive&quot;</span><span class="p">:</span>
+                <span class="n">mask_comparison</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">label_templ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="n">start_idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label_templ</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ax_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">pic</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pics</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="n">start_idx</span><span class="p">,</span> <span class="n">ax_idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="n">start_idx</span><span class="p">,</span> <span class="n">ax_idx</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">pic</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="visualize_concept_models"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.visualization.visualize_concept_models.html#hybrid_learning.concepts.analysis.visualization.visualize_concept_models">[docs]</a><span class="k">def</span> <span class="nf">visualize_concept_models</span><span class="p">(</span><span class="n">titled_handles</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ConceptModelHandle</span><span class="p">],</span>
+                             <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">transform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Visualize the predictions of several concept models in a common image.</span>
+<span class="sd">    See :py:func:`visualize_concept_model`.</span>
+
+<span class="sd">    :param titled_handles: dict of</span>
+<span class="sd">        ``{title: concept model train/test handle (holding model and data)}``</span>
+<span class="sd">    :param save_as: file path to the .png file to save using</span>
+<span class="sd">        :py:func:`matplotlib.pyplot.savefig`; not saved if ``None``</span>
+<span class="sd">    :param transform: a transformation to be applied to the model output</span>
+<span class="sd">        before mask visualization</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">titled_handles</span><span class="p">)))</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">titled_handles</span><span class="p">),</span> <span class="mi">4</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">handle</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">titled_handles</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">visualize_concept_model</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">max_num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                <span class="n">label_templ</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; (Img </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                                <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">start_idx</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                                <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pairwise_cosines"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.visualization.pairwise_cosines.html#hybrid_learning.concepts.analysis.visualization.pairwise_cosines">[docs]</a><span class="k">def</span> <span class="nf">pairwise_cosines</span><span class="p">(</span><span class="n">embs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">],</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provide :py:class:`pandas.DataFrame` with pairwise cosines of</span>
+<span class="sd">    embedding normal vectors.&quot;&quot;&quot;</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">embs</span><span class="p">))</span>
+    <span class="n">all_normal_vecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">normal_vec</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embs</span><span class="p">]</span>
+    <span class="n">pairwise_cos</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n1</span> <span class="o">*</span> <span class="n">n2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">n2</span><span class="p">))</span>
+          <span class="k">for</span> <span class="n">n1</span> <span class="ow">in</span> <span class="n">all_normal_vecs</span><span class="p">]</span> <span class="k">for</span> <span class="n">n2</span> <span class="ow">in</span> <span class="n">all_normal_vecs</span><span class="p">],</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">keys</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pairwise_cos</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

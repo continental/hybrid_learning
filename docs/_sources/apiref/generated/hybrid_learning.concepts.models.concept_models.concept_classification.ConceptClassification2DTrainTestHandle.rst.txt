@@ -1,0 +1,9 @@
+ConceptClassification2DTrainTestHandle
+======================================
+
+.. currentmodule:: hybrid_learning.concepts.models.concept_models.concept_classification
+
+.. autoclass:: ConceptClassification2DTrainTestHandle
+    :members:
+
+    .. autoclasstoc::

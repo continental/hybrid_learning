@@ -1,0 +1,9 @@
+AND
+===
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.boolean
+
+.. autoclass:: AND
+    :members:
+
+    .. autoclasstoc::

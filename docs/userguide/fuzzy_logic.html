@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuzzy Logic Operations &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="../apiref/index.html" />
+    <link rel="prev" title="Dataset Caching" href="custom_dataset_handles/caching.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concept_analysis.html">Conducting a Concept Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_dataset_handles/index.html">Custom dataset handles</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fuzzy Logic Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modelling-approach">Modelling Approach</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-ideas">Basic Ideas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#base-classes">Base Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#variadic-operations">Variadic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parsing-formulas">Parsing Formulas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-operator-builders-and-logics">Defining Operator Builders and Logics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+      <li>Fuzzy Logic Operations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/userguide/fuzzy_logic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="fuzzy-logic-operations">
+<h1>Fuzzy Logic Operations<a class="headerlink" href="#fuzzy-logic-operations" title="Permalink to this headline"></a></h1>
+<p>One core feature of the provided libraries are the operations defined in
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.html#module-hybrid_learning.fuzzy_logic" title="hybrid_learning.fuzzy_logic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic</span></code></a>.
+These allow to</p>
+<ul class="simple">
+<li><p>define logical formulas as truth functions</p></li>
+<li><p>define logics as a collection of such logical operations</p></li>
+<li><p>parse logical formulas to and from string infix representation for a given logic</p></li>
+</ul>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#modelling-approach" id="id1">Modelling Approach</a></p>
+<ul>
+<li><p><a class="reference internal" href="#basic-ideas" id="id2">Basic Ideas</a></p></li>
+<li><p><a class="reference internal" href="#base-classes" id="id3">Base Classes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#variadic-operations" id="id4">Variadic Operations</a></p></li>
+<li><p><a class="reference internal" href="#parsing-formulas" id="id5">Parsing Formulas</a></p></li>
+<li><p><a class="reference internal" href="#defining-operator-builders-and-logics" id="id6">Defining Operator Builders and Logics</a></p></li>
+</ul>
+</div>
+<div class="section" id="modelling-approach">
+<h2><a class="toc-backref" href="#contents">Modelling Approach</a><a class="headerlink" href="#modelling-approach" title="Permalink to this headline"></a></h2>
+<p>A logic in mathematics is a collection of logical symbols that may be used
+to formulate formulas. Symbols are variables and constants, functions, and
+logical operations, i.e.
+logical connectives (e.g. AND <span class="math notranslate nohighlight">\(\wedge\)</span>, OR <span class="math notranslate nohighlight">\(\vee\)</span>, NOT <span class="math notranslate nohighlight">\(\neg\)</span>),
+quantifiers (e.g. <span class="math notranslate nohighlight">\(\exists\)</span>, <span class="math notranslate nohighlight">\(\forall\)</span>), and
+logical predicates (e.g. GreaterThan <span class="math notranslate nohighlight">\(&gt;\)</span>).</p>
+<div class="section" id="basic-ideas">
+<h3><a class="toc-backref" href="#contents">Basic Ideas</a><a class="headerlink" href="#basic-ideas" title="Permalink to this headline"></a></h3>
+<p>The core data exchange format between operations is a dictionary (the <code class="docutils literal notranslate"><span class="pre">annotations</span></code>).
+This holds the groundings of variables and constants (i.e. mapping their names to values),
+and outputs of previous operations, e.g. truth values.
+This common storage for domain values and truth values enables easy reuse of prior operation outputs.
+Operations (functions, logical operations) are then callables that accept such an annotations dictionary,
+and add their output as further key-value pair.
+Operations are defined by specifying the keys of values that should be used from the annotations dictionary.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grounding</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">operation</span> <span class="o">=</span> <span class="n">AND</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">operation</span><span class="p">(</span><span class="n">grounding</span><span class="p">)</span>
+<span class="go">{&#39;a&#39;: True, &#39;b&#39;: False, &#39;a&amp;&amp;b&#39;: 0}</span>
+</pre></div>
+</div>
+<p>Also, for efficient computation, a family of (truth) values may be stored as a vector under one key.
+Operations will then take care of broadcasting.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grounding</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AND</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)(</span><span class="n">grounding</span><span class="p">)</span>
+<span class="go">{&#39;a&#39;: array([ True, False]), &#39;b&#39;: True, &#39;a&amp;&amp;b&#39;: array([1, 0])}</span>
+</pre></div>
+</div>
+<p>An operation may also output a vector of values. Mathematically, this then is a family of operations
+with each operation producing one of the vector entries as output.
+This allows to handle a DNN that produces a mask tensor as output as a family of operations.</p>
+</div>
+<div class="section" id="base-classes">
+<h3><a class="toc-backref" href="#contents">Base Classes</a><a class="headerlink" href="#base-classes" title="Permalink to this headline"></a></h3>
+<p>In this framework, logical formulas and theories are modelled
+using the base classes
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> and
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logic</span></code></a>
+as follows.</p>
+<p class="rubric">Variables and Constants</p>
+<p>Variables are represented by string keys.
+They may be grounded (have a value assigned) by adding the key-value pair
+to the annotations dictionary.
+Constants are treated like grounded variables.</p>
+<p class="rubric">Functions and Logical Operations</p>
+<p>These are instances of
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a>.
+Provided base classes and implementations of typical logical operations are:</p>
+<ul class="simple">
+<li><p><em>Predicates</em> (e.g. <code class="docutils literal notranslate"><span class="pre">IsPartOfA</span></code>, <code class="docutils literal notranslate"><span class="pre">GreaterThan</span></code>):
+These receive an arbitrary domain value, e.g. an image, and return a truth value.
+An example would be a DNN-based binary classifier (image in, truth value out).
+Some useful predicates are defined in <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.predicates.html#module-hybrid_learning.fuzzy_logic.predicates" title="hybrid_learning.fuzzy_logic.predicates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic.predicates</span></code></a>.</p></li>
+<li><p><em>(Fuzzy) logical connectives</em> (e.g. <code class="docutils literal notranslate"><span class="pre">AND</span></code>, <code class="docutils literal notranslate"><span class="pre">OR</span></code>, <code class="docutils literal notranslate"><span class="pre">NOT</span></code>, <code class="docutils literal notranslate"><span class="pre">IMPLIES</span></code>):
+These receive truth values (either Boolean or fuzzy), e.g. outputs from previous
+operations, and return a truth value.
+Base classes are defined in <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.connectives.html#module-hybrid_learning.fuzzy_logic.logic_base.connectives" title="hybrid_learning.fuzzy_logic.logic_base.connectives"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic.logic_base.connectives</span></code></a>.
+Standard connectives from Boolean and
+<a class="reference external" href="https://en.wikipedia.org/wiki/T-norm_fuzzy_logics">t-norm fuzzy logics</a>.
+are defined in <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.html#module-hybrid_learning.fuzzy_logic.tnorm_connectives" title="hybrid_learning.fuzzy_logic.tnorm_connectives"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic.tnorm_connectives</span></code></a>.</p></li>
+<li><p><em>Quantifiers</em> (e.g. <code class="docutils literal notranslate"><span class="pre">EXISTS</span></code>, <code class="docutils literal notranslate"><span class="pre">FORALL</span></code>):
+These reduce a domain of values, e.g. a set of image samples,
+to a single truth value, using a child predicate (the body formula)
+and a truth value reduction.
+Base classes and some standard quantifiers are defined in
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.quantifiers.html#module-hybrid_learning.fuzzy_logic.quantifiers" title="hybrid_learning.fuzzy_logic.quantifiers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic.quantifiers</span></code></a>.</p></li>
+</ul>
+<p class="rubric">Formulas</p>
+<p>Fromulas are computational trees of operations.
+As placeholder keys, Merge operations may use string keys of annotations values,
+or directly specify a child operation that should produce the value to use.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span><span class="p">,</span> <span class="n">OR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">operation</span> <span class="o">=</span> <span class="n">AND</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">OR</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">),</span> <span class="n">keep_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;b||c&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">operation</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="go">{&#39;a&#39;: True, &#39;b&#39;: False, &#39;c&#39;: True, &#39;b||c&#39;: True, &#39;(b||c)&amp;&amp;a&#39;: 1}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">operation</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="go">{&#39;a&#39;: True, &#39;b&#39;: False, &#39;c&#39;: True, &#39;b||c&#39;: True, &#39;(b||c)&amp;&amp;a&#39;: 1}</span>
+</pre></div>
+</div>
+<p>The children operations are applied to the grounding dictionary
+before the parent operation, adding their outputs.
+In case the output of the root operation is a truth value, such a computational tree
+of operations constitutes a logical formula.</p>
+<p class="rubric">Logics</p>
+<p>A logic is here defined by a collection of operation builders for building formulas.
+To allow parsing of infix notation, these are associated with an operator precedence
+(their order in the collection).
+The base class for this is
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logic</span></code></a>,
+and some logics with standard connectives are defined in
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.html#module-hybrid_learning.fuzzy_logic.tnorm_connectives" title="hybrid_learning.fuzzy_logic.tnorm_connectives"><code class="xref py py-class docutils literal notranslate"><span class="pre">tnorm_connectives</span></code></a>.
+For building a standard logic including some predicates one can use
+<a class="reference internal" href="../apiref/generated/hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_logic()</span></code></a>.
+To derive custom operation builders from
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> types,
+one can use a <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a>.</p>
+<p class="rubric">Parsing</p>
+<p>A logic allows parsing of infix notation string representations of formulas using a
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser" title="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">FormulaParser</span></code></a>.
+Calling <code class="docutils literal notranslate"><span class="pre">str</span></code> on the resulting formula returns an equivalent parsable string
+representation of the formula.</p>
+</div>
+</div>
+<div class="section" id="variadic-operations">
+<h2><a class="toc-backref" href="#contents">Variadic Operations</a><a class="headerlink" href="#variadic-operations" title="Permalink to this headline"></a></h2>
+<p>At the heart of a merge operation lies the
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a>
+function that receives the domain or truth values referenced by the operation settings,
+and returns the actual operation output.
+The class method <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_()</span></code></a>
+will return a callable that accepts a list of values (or a dict of values, ignoring the keys),
+and directly return the output of the operation.
+For further details and examples see
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_()</span></code></a>.</p>
+</div>
+<div class="section" id="parsing-formulas">
+<h2><a class="toc-backref" href="#contents">Parsing Formulas</a><a class="headerlink" href="#parsing-formulas" title="Permalink to this headline"></a></h2>
+<p>For parsing a string specification of a formula into an operation object,
+one requires a list of operation builders, e.g. operation classes or
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a>
+instances, that are ordered by precedence (higher index = higher precedence).
+Instances of the default <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser" title="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">FormulaParser</span></code></a>
+can be called on an infix notation of a formula and will return the parsed object.
+The symbols for representing the operations in the infix formula are assumed to be the
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-class docutils literal notranslate"><span class="pre">SYMB</span></code></a> attributes
+of the operation builders.
+The <code class="docutils literal notranslate"><span class="pre">str</span></code> to the formula object is the inverse to this default parsing operation.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic</span> <span class="kn">import</span> <span class="n">FormulaParser</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span><span class="p">,</span> <span class="n">OR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">formula_spec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&amp;&amp;b||c&amp;&amp;d&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FormulaParser</span><span class="p">([</span><span class="n">AND</span><span class="p">,</span> <span class="n">OR</span><span class="p">])(</span><span class="n">formula_spec</span><span class="p">)</span>
+<span class="go">AND(&#39;a&#39;, OR(&#39;b&#39;, &#39;c&#39;), &#39;d&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FormulaParser</span><span class="p">([</span><span class="n">OR</span><span class="p">,</span> <span class="n">AND</span><span class="p">])(</span><span class="n">formula_spec</span><span class="p">)</span>
+<span class="go">OR(AND(&#39;a&#39;, &#39;b&#39;), AND(&#39;c&#39;, &#39;d&#39;))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">FormulaParser</span><span class="p">([</span><span class="n">AND</span><span class="p">,</span> <span class="n">OR</span><span class="p">])(</span><span class="n">formula_spec</span><span class="p">))</span>
+<span class="go">&#39;(b||c)&amp;&amp;a&amp;&amp;d&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="defining-operator-builders-and-logics">
+<h2><a class="toc-backref" href="#contents">Defining Operator Builders and Logics</a><a class="headerlink" href="#defining-operator-builders-and-logics" title="Permalink to this headline"></a></h2>
+<p>A logic is a sequence of operator builders for feeding a parser.
+Besides acting as a collection, the <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logic</span></code></a>
+base class offers some convenience methods for easy parsing and operation building.
+See the <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logic</span></code></a> documentation
+and the <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.parser" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic.parser"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parser()</span></code></a> methods for details.</p>
+<p>Operator builders must be a callable that returns an operation,
+provide a <code class="docutils literal notranslate"><span class="pre">SYMB</span></code> attribute and a <code class="docutils literal notranslate"><span class="pre">variadic_</span></code> function, which is fulfilled,
+e.g., by a <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> subclass
+or an <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a> object.
+Using <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a>,
+one can specify additional keyword arguments for the init call to a
+<a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> class,
+e.g., change the default <code class="docutils literal notranslate"><span class="pre">SYMB</span></code>.
+A merge builder can be created using the standard init, or using the
+class method <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">with_()</span></code></a>
+of a <a class="reference internal" href="../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> class.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic</span> <span class="kn">import</span> <span class="n">MergeBuilder</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.quantifiers</span> <span class="kn">import</span> <span class="n">ALL</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ALL</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">symb</span><span class="o">=</span><span class="s1">&#39;AllPixels&#39;</span><span class="p">)</span>
+<span class="go">ALL(&#39;mask&#39;, dim=(-2, -1), symb=&#39;AllPixels&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">MergeBuilder</span><span class="p">(</span><span class="n">ALL</span><span class="p">,</span> <span class="n">symb</span><span class="o">=</span><span class="s1">&#39;AllPixels&#39;</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">)</span>
+<span class="go">ALL(&#39;mask&#39;, dim=(-2, -1), symb=&#39;AllPixels&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Using functional interface integrated with Merge classes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">ALL</span><span class="o">.</span><span class="n">with_</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">symb_</span><span class="p">(</span><span class="s1">&#39;AllPixels&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">)</span>
+<span class="go">ALL(&#39;mask&#39;, dim=(-2, -1), symb=&#39;AllPixels&#39;)</span>
+</pre></div>
+</div>
+<p>The builders also support variadic instance generation:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ALL</span><span class="o">.</span><span class="n">variadic_</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">symb</span><span class="o">=</span><span class="s1">&#39;AllPixels&#39;</span><span class="p">)</span>
+<span class="go">ALL(_variadic=True, dim=(-2, -1), symb=&#39;AllPixels&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ALL</span><span class="o">.</span><span class="n">with_</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">symb_</span><span class="p">(</span><span class="s1">&#39;AllPixels&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">variadic_</span><span class="p">()</span>
+<span class="go">ALL(_variadic=True, dim=(-2, -1), symb=&#39;AllPixels&#39;)</span>
+</pre></div>
+</div>
+<p>Such operator builders can now be used to enrich one of the standard logics,
+as used in the standard logics builder
+<a class="reference internal" href="../apiref/generated/hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_logic()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic</span> <span class="kn">import</span> <span class="n">Logic</span><span class="p">,</span> <span class="n">logic_by_name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logic</span><span class="p">:</span> <span class="n">Logic</span> <span class="o">=</span> <span class="n">logic_by_name</span><span class="p">(</span><span class="s1">&#39;product&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logic</span>
+<span class="go">ProductLogic()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logic</span><span class="o">.</span><span class="n">operators</span>
+<span class="go">[...IMPLIEDBY..., ...IMPLIES..., ...AND..., ...OR..., ...NOT...]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logic</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ALL</span><span class="o">.</span><span class="n">with_</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">symb_</span><span class="p">(</span><span class="s1">&#39;AllPixels&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logic</span><span class="o">.</span><span class="n">operators</span>
+<span class="go">[..., ...OR..., MergeBuilder(hybrid_learning.fuzzy_logic.quantifiers.ALL, symb=&#39;AllPixels&#39;, additional_args={&#39;dim&#39;: (-2, -1)}), ...NOT...]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logic</span><span class="o">.</span><span class="n">parser</span><span class="p">()(</span><span class="s1">&#39;AllPixels mask || b&#39;</span><span class="p">)</span>
+<span class="go">OR(ALL(&#39;mask&#39;, dim=(-2, -1), symb=&#39;AllPixels&#39;), &#39;b&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom_dataset_handles/caching.html" class="btn btn-neutral float-left" title="Dataset Caching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../apiref/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

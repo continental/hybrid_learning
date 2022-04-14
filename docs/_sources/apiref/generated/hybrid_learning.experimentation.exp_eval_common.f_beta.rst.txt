@@ -1,0 +1,6 @@
+f\_beta
+=======
+
+.. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+.. autofunction:: f_beta

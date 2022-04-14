@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.tnorm_connectives.boolean &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Boolean logic and connectives.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">.fuzzy_common</span> <span class="kn">import</span> <span class="n">_tens_to_bool</span><span class="p">,</span> <span class="n">_array_to_bool</span>
+<span class="kn">from</span> <span class="nn">..logic_base</span> <span class="kn">import</span> <span class="n">Logic</span> <span class="k">as</span> <span class="n">BaseLogic</span><span class="p">,</span> <span class="n">stack_tensors</span><span class="p">,</span> <span class="n">TorchOrNumpyOperation</span>
+<span class="kn">from</span> <span class="nn">..logic_base.connectives</span> <span class="kn">import</span> <span class="n">AbstractAND</span><span class="p">,</span> <span class="n">AbstractOR</span><span class="p">,</span> <span class="n">AbstractNOT</span><span class="p">,</span> <span class="n">AbstractIMPLIES</span><span class="p">,</span> <span class="n">AbstractIMPLIEDBY</span>
+
+
+<div class="viewcode-block" id="BoolTorchOrNumpyOperation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation">[docs]</a><span class="k">class</span> <span class="nc">BoolTorchOrNumpyOperation</span><span class="p">(</span><span class="n">TorchOrNumpyOperation</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for Boolean operations that threshold their inputs before operation.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BoolTorchOrNumpyOperation.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">bool_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bool_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">bool_thresh</span> <span class="k">if</span> <span class="n">bool_thresh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">0.5</span>
+        <span class="sd">&quot;&quot;&quot;Threshold in [0,1] to apply to masks for binarization before operation.</span>
+<span class="sd">        Defaults to ``0.5``.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;bool_thresh&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool_thresh</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">setting_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setting_defaults</span><span class="p">,</span> <span class="s1">&#39;bool_thresh&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+
+<div class="viewcode-block" id="BoolTorchOrNumpyOperation.bool_numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.bool_numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">bool_numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Numpy operation assuming Boolean values.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BoolTorchOrNumpyOperation.bool_torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.bool_torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">bool_torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Torch operation assuming Boolean values.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BoolTorchOrNumpyOperation.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.numpy_operation">[docs]</a>    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">bool_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold the ``inputs`` at ``bool_thresh`` and apply operation.</span>
+<span class="sd">        Default for ``bool_thresh`` first is :py:attr:`bool_thresh` (if available), then 0.5.&quot;&quot;&quot;</span>
+        <span class="n">thresh</span> <span class="o">=</span> <span class="n">bool_thresh</span> <span class="k">if</span> <span class="n">bool_thresh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;bool_thresh&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">_array_to_bool</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="n">thresh</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool_numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BoolTorchOrNumpyOperation.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BoolTorchOrNumpyOperation.torch_operation">[docs]</a>    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">bool_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;AND on pytorch tensors.&quot;&quot;&quot;</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">bool_thresh</span> <span class="k">if</span> <span class="n">bool_thresh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;bool_thresh&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">BoolTensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tens_to_bool</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="n">thresh</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bool_torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AND"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND">[docs]</a><span class="k">class</span> <span class="nc">AND</span><span class="p">(</span><span class="n">AbstractAND</span><span class="p">,</span> <span class="n">BoolTorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Intersection/AND operation on binary masks and scalars.</span>
+<span class="sd">    Store intersection of :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys`</span>
+<span class="sd">    masks as :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key`.</span>
+<span class="sd">    AND with just one input key ``x`` is treated like ``x&amp;&amp;True``, i.e. identity.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AND.bool_numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.bool_numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;AND on numpy-like vectors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AND.bool_torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.bool_torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;AND on pytorch tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">stack_tensors</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="OR"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR">[docs]</a><span class="k">class</span> <span class="nc">OR</span><span class="p">(</span><span class="n">AbstractOR</span><span class="p">,</span> <span class="n">BoolTorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Union/OR operation on binary masks and scalars.</span>
+<span class="sd">    Store union of :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys`</span>
+<span class="sd">    masks as :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key`.</span>
+<span class="sd">    OR with just one input key ``x`` is treated like ``x||True``, i.e. identity.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OR.bool_numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.bool_numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;OR on numpy-like vectors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="OR.bool_torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.bool_torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;OR on torch tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">stack_tensors</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="NOT"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT">[docs]</a><span class="k">class</span> <span class="nc">NOT</span><span class="p">(</span><span class="n">AbstractNOT</span><span class="p">,</span> <span class="n">BoolTorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inversion/NOT operation on binary masks and scalars.</span>
+<span class="sd">    Store inverted version of :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys`</span>
+<span class="sd">    as :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key`.</span>
+<span class="sd">    Only accepts one input key.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NOT.bool_numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT.bool_numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_numpy_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;NOT on numpy-like vectors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NOT.bool_torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT.bool_torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_torch_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;NOT on pytorch tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IMPLIES"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES">[docs]</a><span class="k">class</span> <span class="nc">IMPLIES</span><span class="p">(</span><span class="n">AbstractIMPLIES</span><span class="p">,</span> <span class="n">BoolTorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pixel-wise implication logical connective on binary masks and scalars.</span>
+<span class="sd">    It is realized as the binary equivalent</span>
+<span class="sd">    :math:`\left(a\rightarrow b\right) = \left((\neg a) \vee b\right)`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IMPLIES.bool_numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES.bool_numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_numpy_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;IMPLIES on two numpy-like tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">inp_a</span><span class="p">),</span> <span class="n">inp_b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IMPLIES.bool_torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES.bool_torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_torch_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;IMPLIES on two torch tensors.</span>
+<span class="sd">        The output device is the one of the first tensor.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">inp_a</span><span class="p">),</span> <span class="n">inp_b</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IMPLIEDBY"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY">[docs]</a><span class="k">class</span> <span class="nc">IMPLIEDBY</span><span class="p">(</span><span class="n">AbstractIMPLIEDBY</span><span class="p">,</span> <span class="n">BoolTorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Goedel inverted logic IMPLIES connective.</span>
+<span class="sd">    For details see :py:class:`IMPLIES`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IMPLIEDBY.bool_torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY.bool_torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_torch_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Inverted Goedel logical IMPLIES on tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">IMPLIES</span><span class="o">.</span><span class="n">bool_torch_operation</span><span class="p">(</span><span class="n">inp_b</span><span class="p">,</span> <span class="n">inp_a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IMPLIEDBY.bool_numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY.bool_numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">bool_numpy_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Inverted Goedel logical IMPLIES on numpy arrays.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">IMPLIES</span><span class="o">.</span><span class="n">bool_numpy_operation</span><span class="p">(</span><span class="n">inp_b</span><span class="p">,</span> <span class="n">inp_a</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BooleanLogic"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic">[docs]</a><span class="k">class</span> <span class="nc">BooleanLogic</span><span class="p">(</span><span class="n">BaseLogic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Boolean logic and parser.</span>
+<span class="sd">    For details and examples see the super-class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_CONNECTIVES</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span>
+        <span class="n">BaseLogic</span><span class="o">.</span><span class="n">DEFAULT_CONNECTIVES</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">AND</span><span class="o">=</span><span class="n">AND</span><span class="p">,</span> <span class="n">OR</span><span class="o">=</span><span class="n">OR</span><span class="p">,</span> <span class="n">NOT</span><span class="o">=</span><span class="n">NOT</span><span class="p">,</span> <span class="n">IMPLIES</span><span class="o">=</span><span class="n">IMPLIES</span><span class="p">,</span> <span class="n">IMPLIEDBY</span><span class="o">=</span><span class="n">IMPLIEDBY</span><span class="p">))</span></div>
+
+
+<span class="n">Logic</span> <span class="o">=</span> <span class="n">BooleanLogic</span>
+<span class="sd">&quot;&quot;&quot;Alias for logic handle.&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

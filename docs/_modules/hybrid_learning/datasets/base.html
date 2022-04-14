@@ -1,69 +1,33 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>hybrid_learning.datasets.base &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,19 +35,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">User Guide</a></li>
@@ -91,83 +44,45 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>hybrid_learning.datasets.base</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for hybrid_learning.datasets.base</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Basic dataset model.</span>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Basic dataset model.</span>
 
-<span class="sd">The abstract BaseDataset handle provides a Sequence, which yields a</span>
+<span class="sd">The abstract BaseDataset handle provides a ``Sequence``, which yields a</span>
 <span class="sd">:py:class:`torch.Tensor` tuple of ``(input image, ground truth)`` upon a call to</span>
 <span class="sd">__getitem__.</span>
 <span class="sd">The transformations from image to tensor data can be changed.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
-
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> \
-    <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">ItemsView</span><span class="p">,</span> <span class="n">KeysView</span>
+    <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">ItemsView</span><span class="p">,</span> <span class="n">KeysView</span><span class="p">,</span> <span class="n">Hashable</span>
 
 <span class="kn">import</span> <span class="nn">PIL.Image</span>
 <span class="kn">import</span> <span class="nn">PIL.ImageEnhance</span>
@@ -175,6 +90,10 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">Subset</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">caching</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">trafos</span>
+<span class="kn">from</span> <span class="nn">.transforms.tuple_transforms</span> <span class="kn">import</span> <span class="n">TupleTransforms</span>
 
 
 <div class="viewcode-block" id="DatasetSplit"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit">[docs]</a><span class="k">class</span> <span class="nc">DatasetSplit</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
@@ -185,7 +104,7 @@
     <span class="sd">&quot;&quot;&quot;The training set (not for testing or validation).&quot;&quot;&quot;</span>
     <span class="n">TEST</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
     <span class="sd">&quot;&quot;&quot;The test set for testing after finished training.&quot;&quot;&quot;</span>
-    <span class="n">TRAIN_VAL</span> <span class="o">=</span> <span class="s2">&quot;train_val&quot;</span>
+    <span class="n">TRAIN_VAL</span> <span class="o">=</span> <span class="s2">&quot;trainval&quot;</span>
     <span class="sd">&quot;&quot;&quot;The combined training and validation set.&quot;&quot;&quot;</span>
     <span class="n">ALL</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
     <span class="sd">&quot;&quot;&quot;Combination of all training, validation, and test set.&quot;&quot;&quot;</span>
@@ -630,7 +549,8 @@
         <span class="sd">&quot;&quot;&quot;Dict of the splits (train, val, test) held in this triple.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">train</span><span class="p">,</span>
                 <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TEST</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">,</span>
-                <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">VAL</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">}</span></div>
+                <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">VAL</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span>
+                <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TRAIN_VAL</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_val</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="DataTriple.items"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ItemsView</span><span class="p">[</span><span class="n">DatasetSplit</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Dataset split items.</span>
@@ -663,19 +583,33 @@
 <span class="sd">    tuples before return from :py:meth:`__getitem__` can be controlled.</span>
 <span class="sd">    The default for :py:attr:`transforms` is given by</span>
 <span class="sd">    The default for :py:attr:`transforms` is given by</span>
-<span class="sd">    :py:meth:`_default_transforms`. Override in sub-classes if necessary.</span>
+<span class="sd">    :py:attr:`_default_transforms`. Override in sub-classes if necessary.</span>
 <span class="sd">    The default combination of collected dataset tuples and</span>
-<span class="sd">    :py:meth:`_default_transforms` should yield a tuple</span>
+<span class="sd">    :py:attr:`_default_transforms` should yield a tuple</span>
 <span class="sd">    of :py:class:`torch.Tensor` or dicts thereof.</span>
 
 <span class="sd">    The :py:attr:`hybrid_learning.datasets.base.BaseDataset.dataset_root` is</span>
 <span class="sd">    assumed to provide information about the storage location.</span>
 <span class="sd">    Best, all components (input data, annotations, etc.)</span>
 <span class="sd">    should be stored relative to this root location.</span>
+
+<span class="sd">    The transformed tuple values are cached by :py:attr:`transforms_cache`</span>
+<span class="sd">    if it is given. Then values are only collected and transformed if they</span>
+<span class="sd">    cannot be loaded from the cache. To get the cache descriptor for an entry</span>
+<span class="sd">    the, the :py:meth:`descriptor` method is consulted. Make sure to override</span>
+<span class="sd">    this appropriately (e.g. by image ID or image file name).</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        In case a :py:class:`~hybrid_learning.datasets.caching.CacheTuple` is</span>
+<span class="sd">        used, make sure that ``None`` is returned if any tuple value is</span>
+<span class="sd">        ``None``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseDataset.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">split</span><span class="p">:</span> <span class="n">DatasetSplit</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">transforms</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                 <span class="n">transforms</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">transforms_cache</span><span class="p">:</span> <span class="n">caching</span><span class="o">.</span><span class="n">Cache</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">after_cache_transforms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init.</span>
 
 <span class="sd">        :param split: The split of the dataset</span>
@@ -683,8 +617,17 @@
 <span class="sd">            :py:attr:`DatasetSplit.VAL`, :py:attr:`DatasetSplit.TEST`).</span>
 <span class="sd">        :param dataset_root: The location where to store the dataset.</span>
 <span class="sd">        :param transforms: The transformations to be applied to the data when</span>
-<span class="sd">            loaded; defaults to :py:meth:`_default_transforms`</span>
+<span class="sd">            loaded; defaults to :py:attr:`_default_transforms`</span>
+<span class="sd">        :param transforms_cache: optional cache instance for caching transformed</span>
+<span class="sd">            tuples; must return ``None`` in case one of the tuple values has not</span>
+<span class="sd">            been cached yet; see :py:attr:`transforms_cache`</span>
+<span class="sd">        :param after_cache_transforms: transformations applied after</span>
+<span class="sd">            consulting the cache (no matter, whether the tuples was retrieved</span>
+<span class="sd">            from cache or not); by default, tensor gradients are disabled</span>
+<span class="sd">            and tensors are moved to a common device</span>
+<span class="sd">        :param device: device to use in the default ``after_cache_transforms``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatasetSplit</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span>
         <span class="sd">&quot;&quot;&quot;Optional specification what use-case this dataset is meant to</span>
 <span class="sd">        represent, e.g. training, validation, or testing.&quot;&quot;&quot;</span>
@@ -695,7 +638,26 @@
         <span class="sd">&quot;&quot;&quot;Transformation function applied to each item tuple before return.</span>
 <span class="sd">        Applied in :py:meth:`__getitem__`.</span>
 <span class="sd">        Default transformations are sub-class-specific.</span>
+<span class="sd">        Items transformed using :py:attr:`transforms` can be cached by setting</span>
+<span class="sd">        :py:attr:`transforms_cache`. If the transformations should be applied</span>
+<span class="sd">        *always*, regardless of caching, use :py:attr:`after_cache_transforms`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">caching</span><span class="o">.</span><span class="n">Cache</span><span class="p">]</span> <span class="o">=</span> <span class="n">transforms_cache</span>
+        <span class="sd">&quot;&quot;&quot;Cache for the transformed ``(input, target)`` tuples.</span>
+<span class="sd">        If set, :py:meth:`__getitem__` will first try to load the tuple from</span>
+<span class="sd">        cache before loading and transforming it normally.</span>
+<span class="sd">        Items not in the cache are put in there after :py:attr:`transforms` is</span>
+<span class="sd">        applied.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_cache_transforms</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> \
+            <span class="n">after_cache_transforms</span> <span class="ow">or</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_after_cache_trafo</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Transformation function applied after consulting the cache</span>
+<span class="sd">        (no matter, whether the tuples was retrieved from cache or not).</span>
+<span class="sd">        Use these transformations instead of :py:attr:`transforms` to ensure</span>
+<span class="sd">        the transformation is *always* applied, regardless of caching.</span>
+<span class="sd">        By default, tensor gradients are disabled and tensors are moved to a</span>
+<span class="sd">        common device (see :py:meth:`_get_default_after_cache_trafo`).&quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="n">dataset_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Dataset root </span><span class="si">{}</span><span class="s2"> does not exist&quot;</span>
@@ -703,6 +665,21 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="s2">&quot;Dataset root is not a directory: </span><span class="si">{}</span><span class="s2">&quot;</span>
                                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">))</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_default_after_cache_trafo</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The default transformation after cache depending on the chosen</span>
+<span class="sd">        device.</span>
+<span class="sd">        Used to get the default for :py:attr:`after_cache_transforms`.</span>
+<span class="sd">        Transformation will remove requires_grad from tensors and move tensors</span>
+<span class="sd">        to a common ``device`` (defaults to ``&#39;cpu&#39;``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="s1">&#39;cpu&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">OnBothSides</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">NoGrad</span><span class="p">())</span>
+                <span class="o">+</span> <span class="n">trafos</span><span class="o">.</span><span class="n">OnBothSides</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(</span>
+                    <span class="n">device</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span>
+                    <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="BaseDataset.__len__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__len__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -734,6 +711,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="BaseDataset.descriptor"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.descriptor">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">descriptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a unique descriptor for the item at position ``i``.</span>
+<span class="sd">        This can e.g. be an image ID or the image file name.</span>
+<span class="sd">        It is used for caching.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_tupled</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Wrap item in a tuple if is not already is one.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">item</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">item</span><span class="p">,)</span>
+
 <div class="viewcode-block" id="BaseDataset.__getitem__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get item from ``idx`` in dataset with transformations applied.</span>
 <span class="sd">        Transformations must be stored as single tuple transformation in</span>
@@ -742,20 +732,37 @@
 <span class="sd">        :return: tuple output of :py:meth:`getitem` transformed by</span>
 <span class="sd">            :py:attr:`transforms`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">inp</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
+        <span class="n">inp_target</span><span class="p">,</span> <span class="n">desc</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="n">put_to_cache</span> <span class="o">=</span> <span class="n">load_from_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms_cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">load_from_cache</span><span class="p">:</span>
+            <span class="n">desc</span><span class="p">:</span> <span class="n">Hashable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptor</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="n">inp_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms_cache</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+            <span class="n">put_to_cache</span> <span class="o">=</span> <span class="n">inp_target</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">inp_target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inp_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getitem</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">inp_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_tupled</span><span class="p">(</span><span class="n">inp_target</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">put_to_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transforms_cache</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">inp_target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_cache_transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inp_target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_cache_transforms</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_tupled</span><span class="p">(</span><span class="n">inp_target</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">inp_target</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Settings of the instance.</span>
 <span class="sd">         :py:attr:`transforms` info is skipped if set to default.&quot;&quot;&quot;</span>
         <span class="n">trafo_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;transforms&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">}</span> \
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span> <span class="k">else</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span> \
+            <span class="k">else</span> <span class="p">{}</span>  <span class="c1"># pylint: disable=comparison-with-callable</span>
         <span class="n">split_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">cache_info</span> <span class="o">=</span> <span class="p">({</span><span class="s1">&#39;transforms_cache&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms_cache</span><span class="p">}</span>
+                      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms_cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{})</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">split_info</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">trafo_info</span>
-                    <span class="p">)</span>
+                    <span class="o">**</span><span class="n">trafo_info</span><span class="p">,</span>
+                    <span class="n">after_cache_transforms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">after_cache_transforms</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">cache_info</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseDataset.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Nice printing function.&quot;&quot;&quot;</span>
@@ -766,18 +773,12 @@
                                                   <span class="n">other</span><span class="o">=</span><span class="n">other_info</span><span class="p">)</span></div>
 
     <span class="c1"># The default function does not use self, but overriding functions may</span>
-    <span class="c1"># pylint: disable=no-self-use</span>
-<div class="viewcode-block" id="BaseDataset._default_transforms"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset._default_transforms">[docs]</a>    <span class="k">def</span> <span class="nf">_default_transforms</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">inp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
-            <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Default transformation method (identity).</span>
+    <span class="n">_default_transforms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TupleTransforms</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;The default transformation to apply if no other is given.</span>
+<span class="sd">    Set to ``None`` to apply no transforms by default.</span>
 
-<span class="sd">        :meta public:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">inp</span><span class="p">,</span> <span class="n">ground_truth</span></div></div>
-    <span class="c1"># pylint: enable=no-self-use</span>
+<span class="sd">    :meta public:</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <span class="c1"># DATASET INDEX MANIPULATION</span>
@@ -816,6 +817,46 @@
         <span class="n">splits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">splits</span></div>
+
+
+<div class="viewcode-block" id="add_gaussian_peak"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.base.add_gaussian_peak.html#hybrid_learning.datasets.base.add_gaussian_peak">[docs]</a><span class="k">def</span> <span class="nf">add_gaussian_peak</span><span class="p">(</span><span class="n">mask_np</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                      <span class="n">centroid</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                      <span class="n">binary_radius</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                      <span class="n">radius_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Add a peak to the heatmap ``mask_np`` as a non-normalized gaussian</span>
+<span class="sd">    at ``centroid``. The standard deviation is calculated such that the</span>
+<span class="sd">    value of the gaussian is ``radius_value`` at L2 distance of``binary_radius``</span>
+<span class="sd">    from the centroid.</span>
+<span class="sd">    The gaussian is non-normalized, i.e. has maximum 1.</span>
+<span class="sd">    For adding, each pixel is set to the maximum of the original value or the</span>
+<span class="sd">    new gaussian.</span>
+<span class="sd">    The value of a pixel is set to that of its center point, e.g. the pixel</span>
+<span class="sd">    at index ``[0,0]`` in the image gets the value of the point ``(0.5, 0.5)``.</span>
+
+<span class="sd">    :param mask_np: numpy mask of shape ``(width, height)``</span>
+<span class="sd">    :param centroid: the center point of the peak in ``(x, y)`` in pixels</span>
+<span class="sd">    :param binary_radius: the radius of the peak if binarized with a threshold</span>
+<span class="sd">        of ``radius_value``; is related to the standard deviation of the non-normalized</span>
+<span class="sd">        gaussian via :math:`\sigma=\frac{r}{\sqrt{-2 \ln(\text{radius\_value})}}`</span>
+<span class="sd">    :param radius_value: the value the point at L2 distance of ``binary_radius``</span>
+<span class="sd">        from the peak ``centroid`` should have</span>
+<span class="sd">    :return: copy of ``mask_np`` with new peak added</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_np</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="n">radius_value</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;radius_value must be positive float in (0, 1), but was </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">radius_value</span><span class="p">))</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">mask_np</span><span class="o">.</span><span class="n">shape</span>
+    <span class="c1"># Pixel centers</span>
+    <span class="n">x_coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">width</span><span class="p">)]</span> <span class="o">*</span> <span class="n">height</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span>
+    <span class="n">y_coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">height</span><span class="p">)]</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span>
+    <span class="c1"># Distance of pixel centers to centroid</span>
+    <span class="n">square_dists</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_coords</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_coords</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">std_dev</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">binary_radius</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">radius_value</span><span class="p">))</span>
+    <span class="c1"># Non-normalized gaussian:</span>
+    <span class="n">gaussian</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="n">square_dists</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">std_dev</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">mask_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">gaussian</span><span class="p">,</span> <span class="n">mask_np</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask_np</span></div>
 
 <span class="c1"># HASHING METHODS</span>
 <span class="c1"># ---------------</span>
@@ -867,49 +908,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

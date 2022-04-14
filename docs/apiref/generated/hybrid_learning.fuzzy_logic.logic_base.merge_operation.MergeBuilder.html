@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MergeBuilder &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="TorchOperation" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html" />
+    <link rel="prev" title="Merge" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.connectives.html">connectives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.logic.html">logic</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.html">merge_operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.parsing.html">parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html">quantifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html">logic_by_name</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.html">merge_operation</a> &raquo;</li>
+      <li>MergeBuilder</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="mergebuilder">
+<h1>MergeBuilder<a class="headerlink" href="#mergebuilder" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.fuzzy_logic.logic_base.merge_operation.</span></span><span class="sig-name descname"><span class="pre">MergeBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">merge_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Return a <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> operation of specified class with additional settings upon call.
+Common additional init arguments can be specified and a new <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.SYMB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SYMB</span></code></a>,
+overwriting the <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Merge.SYMB</span></code></a> (or attaching a <code class="docutils literal notranslate"><span class="pre">SYMB</span></code> attribute to another builder).
+Attribute access is passed over to the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.merge_class" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.merge_class"><code class="xref py py-attr docutils literal notranslate"><span class="pre">merge_class</span></code></a> specified.
+For easy instantiation see also <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Merge.with_()</span></code></a>.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.additional_args" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.additional_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">additional_args</span></code></a></p></td>
+<td><p>The additional arguments to and over to the <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> class on each call.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.symb_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.symb_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symb_</span></code></a>(symb)</p></td>
+<td><p>Set SYMB and return self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.with_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.with_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">with_</span></code></a>(**additional_args)</p></td>
+<td><p>Update the additional arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.variadic_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.variadic_"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variadic_</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Return a variadic instance of the wrapped <code class="docutils literal notranslate"><span class="pre">merge_class</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__init__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(merge_class[, symb, additional_args])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__call__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Build an instance of the specified Merge class with the additional args.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__getattr__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__getattr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getattr__</span></code></a>(k)</p></td>
+<td><p>Pass attribute requests over to Merge class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__repr__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>merge_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Type" title="(in Python v3.6)"><em>Type</em></a><em>[</em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>additional_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Build an instance of the specified Merge class with the additional args.
+The given <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> will overwrite arguments from <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.additional_args" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.additional_args"><code class="xref py py-attr docutils literal notranslate"><span class="pre">additional_args</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__getattr__">
+<span class="sig-name descname"><span class="pre">__getattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.__getattr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__getattr__" title="Permalink to this definition"></a></dt>
+<dd><p>Pass attribute requests over to Merge class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">merge_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>merge_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Type" title="(in Python v3.6)"><em>Type</em></a><em>[</em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><em>...</em><em>]</em><em>, </em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>additional_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.symb_">
+<span class="sig-name descname"><span class="pre">symb_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.symb_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.symb_" title="Permalink to this definition"></a></dt>
+<dd><p>Set SYMB and return self.
+Can be used in chain assignments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><em>MergeBuilder</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.variadic_">
+<span class="sig-name descname"><span class="pre">variadic_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.variadic_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.variadic_" title="Permalink to this definition"></a></dt>
+<dd><p>Return a variadic instance of the wrapped <code class="docutils literal notranslate"><span class="pre">merge_class</span></code>.
+Calls the <code class="docutils literal notranslate"><span class="pre">variadic_</span></code> function of <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.merge_class" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.merge_class"><code class="xref py py-attr docutils literal notranslate"><span class="pre">merge_class</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.with_">
+<span class="sig-name descname"><span class="pre">with_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">additional_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#MergeBuilder.with_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.with_" title="Permalink to this definition"></a></dt>
+<dd><p>Update the additional arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>additional_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.SYMB">
+<span class="sig-name descname"><span class="pre">SYMB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.SYMB" title="Permalink to this definition"></a></dt>
+<dd><p>The symbol representing the wrapped class.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.additional_args">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">additional_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.additional_args" title="Permalink to this definition"></a></dt>
+<dd><p>The additional arguments to and over to the <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> class on each call.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.merge_class">
+<span class="sig-name descname"><span class="pre">merge_class</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><span class="pre">Merge</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><span class="pre">Merge</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.merge_class" title="Permalink to this definition"></a></dt>
+<dd><p>The class or builder to use upon call.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html" class="btn btn-neutral float-left" title="Merge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html" class="btn btn-neutral float-right" title="TorchOperation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

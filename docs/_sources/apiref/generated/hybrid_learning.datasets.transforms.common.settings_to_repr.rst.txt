@@ -1,0 +1,6 @@
+settings\_to\_repr
+==================
+
+.. currentmodule:: hybrid_learning.datasets.transforms.common
+
+.. autofunction:: settings_to_repr

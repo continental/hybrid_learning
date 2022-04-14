@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ca_exp_eval &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS" href="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS.html" />
+    <link rel="prev" title="experimentation" href="hybrid_learning.experimentation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ca_exp_eval</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS.html">hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS.html">hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS.html">hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.analysis_root.html">analysis_root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.display_overview.html">display_overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.gather_stats.html">gather_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats.html">get_all_best_emb_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_all_stats.html">get_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_best_emb.html">get_best_emb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats.html">get_best_emb_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_common_concepts.html">get_common_concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_concepts.html">get_concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_embs.html">get_embs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_layers.html">get_layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_stats.html">get_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding.html">get_vis_best_embedding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue.html">highlight_max_blue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.merge_to_overview.html">merge_to_overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison.html">plot_best_iou_comparison</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std.html">plot_best_ious_wt_std</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview.html">plot_overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html">plot_overview_for_concept</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+      <li>ca_exp_eval</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.ca_exp_eval.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="ca-exp-eval">
+<h1>ca_exp_eval<a class="headerlink" href="#ca-exp-eval" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.experimentation.ca_exp_eval"></span><p>Helper functions for evaluation of standard concept embedding analysis experiments.
+Experiment results are assumed to have a folder structure of
+<code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/layers/&lt;layer_id&gt;/&lt;timestamp&gt;/&lt;concept_name&gt;</span></code>.
+For details see the respective sample Sacred experiment scripts.</p>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS.html#hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS" title="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALEXNET_LAYERS</span></code></a></p></td>
+<td><p>Layer IDs of pytorch AlexNet model in correct order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS.html#hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS" title="hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VGG16_LAYERS</span></code></a></p></td>
+<td><p>Layer IDs of pytorch VGG16 model in correct order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS.html#hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS" title="hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MASK_RCNN_LAYERS</span></code></a></p></td>
+<td><p>Layer IDs of pytorch Mask R-CNN model in correct order.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.analysis_root.html#hybrid_learning.experimentation.ca_exp_eval.analysis_root" title="hybrid_learning.experimentation.ca_exp_eval.analysis_root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analysis_root</span></code></a>(layer_id, concept_name, root)</p></td>
+<td><p>Get the analysis root folder path for given <code class="docutils literal notranslate"><span class="pre">root</span></code>, <code class="docutils literal notranslate"><span class="pre">layer_id</span></code>, and <code class="docutils literal notranslate"><span class="pre">concept_name</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.display_overview.html#hybrid_learning.experimentation.ca_exp_eval.display_overview" title="hybrid_learning.experimentation.ca_exp_eval.display_overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">display_overview</span></code></a>(best_set_iou_display)</p></td>
+<td><p>Provide a nice display style of <code class="docutils literal notranslate"><span class="pre">best_set_iou_display</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.gather_stats.html#hybrid_learning.experimentation.ca_exp_eval.gather_stats" title="hybrid_learning.experimentation.ca_exp_eval.gather_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gather_stats</span></code></a>([roots, root_templ, ...])</p></td>
+<td><p>Gather dicts with all_stats, best_emb_stats, and merged_stats for different roots.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats" title="hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_best_emb_stats</span></code></a>(root, layers[, concepts])</p></td>
+<td><p>Gather a DataFrame with the stats of all best embeddings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_all_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_all_stats" title="hybrid_learning.experimentation.ca_exp_eval.get_all_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_stats</span></code></a>(root, layers[, concepts])</p></td>
+<td><p>Gather a DataFrame with the stats of all embedding runs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_best_emb.html#hybrid_learning.experimentation.ca_exp_eval.get_best_emb" title="hybrid_learning.experimentation.ca_exp_eval.get_best_emb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_best_emb</span></code></a>(layer_id, root)</p></td>
+<td><p>Best embedding for given layer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats" title="hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_best_emb_stats</span></code></a>(root)</p></td>
+<td><p>Stats of the best embeddings of an analysis as DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_common_concepts.html#hybrid_learning.experimentation.ca_exp_eval.get_common_concepts" title="hybrid_learning.experimentation.ca_exp_eval.get_common_concepts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_common_concepts</span></code></a>(root[, layers])</p></td>
+<td><p>Get all the concept names available for ALL layers in the given experiment <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_concepts.html#hybrid_learning.experimentation.ca_exp_eval.get_concepts" title="hybrid_learning.experimentation.ca_exp_eval.get_concepts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_concepts</span></code></a>(root[, layers])</p></td>
+<td><p>Get all the concept names available for the given experiment root.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_embs.html#hybrid_learning.experimentation.ca_exp_eval.get_embs" title="hybrid_learning.experimentation.ca_exp_eval.get_embs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_embs</span></code></a>(root)</p></td>
+<td><p>Embeddings of an analysis as series indexed by <code class="docutils literal notranslate"><span class="pre">layer_id</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_layers.html#hybrid_learning.experimentation.ca_exp_eval.get_layers" title="hybrid_learning.experimentation.ca_exp_eval.get_layers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_layers</span></code></a>(root[, model_layers, verbose])</p></td>
+<td><p>Return all available layers for the given analysis root.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_stats" title="hybrid_learning.experimentation.ca_exp_eval.get_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_stats</span></code></a>(root)</p></td>
+<td><p>Stats of an analysis run as DataFrame.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding.html#hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding" title="hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vis_best_embedding</span></code></a>(root)</p></td>
+<td><p>Get the saved visualization of the best embedding.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue.html#hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue" title="hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">highlight_max_blue</span></code></a>(series)</p></td>
+<td><p>Highlight the maximum in a Series with red font color.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.merge_to_overview.html#hybrid_learning.experimentation.ca_exp_eval.merge_to_overview" title="hybrid_learning.experimentation.ca_exp_eval.merge_to_overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_to_overview</span></code></a>(best_ious, all_stats[, ...])</p></td>
+<td><p>Merge the stats from all runs and from the best embeddings to an overview over the test values of <code class="docutils literal notranslate"><span class="pre">metric</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison.html#hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison" title="hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_best_iou_comparison</span></code></a>(metric_mean_map, ...)</p></td>
+<td><p>Provide a plot of metric values against layers for one concept and all settings in <code class="docutils literal notranslate"><span class="pre">best_emb_ious</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std.html#hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std" title="hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_best_ious_wt_std</span></code></a>(best_emb_ious, iou_stds)</p></td>
+<td><p>Provide a plot of metric values against layers for all concepts in <code class="docutils literal notranslate"><span class="pre">best_emb_ious</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview.html#hybrid_learning.experimentation.ca_exp_eval.plot_overview" title="hybrid_learning.experimentation.ca_exp_eval.plot_overview"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_overview</span></code></a>(best_set_iou_display[, ...])</p></td>
+<td><p>Plot and save the output of <code class="docutils literal notranslate"><span class="pre">merge_to_overview</span></code> using <code class="docutils literal notranslate"><span class="pre">plot_best_ious_wt_std</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html#hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept" title="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_overview_for_concept</span></code></a>(merged_stats_map, ...)</p></td>
+<td><p>Plot and save the output of <code class="docutils literal notranslate"><span class="pre">merge_to_overview</span></code> using <code class="docutils literal notranslate"><span class="pre">plot_best_ious_wt_std</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.html" class="btn btn-neutral float-left" title="experimentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS.html" class="btn btn-neutral float-right" title="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

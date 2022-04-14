@@ -1,0 +1,64 @@
+boolean
+=======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.boolean
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.boolean
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Attributes
+
+    .. autosummary::
+        :toctree:
+        
+        ~Logic
+
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AND
+        
+        ~BoolTorchOrNumpyOperation
+        
+        ~BooleanLogic
+        
+        ~IMPLIEDBY
+        
+        ~IMPLIES
+        
+        ~Logic
+        
+        ~NOT
+        
+        ~OR
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

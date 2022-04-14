@@ -1,0 +1,6 @@
+to\_formula\_attrs
+==================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval
+
+.. autofunction:: to_formula_attrs

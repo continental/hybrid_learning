@@ -1,0 +1,6 @@
+constrain\_pd
+=============
+
+.. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+.. autofunction:: constrain_pd

@@ -1,0 +1,45 @@
+model\_registry
+===============
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.experimentation.model_registry.model_registry
+
+    .. currentmodule:: hybrid_learning.experimentation.model_registry.model_registry
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~get_model
+        
+        ~register_model_builder
+        
+        ~registered_model_keys
+        
+
+    
+    

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.datasets.custom.coco.mask_dataset &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.datasets.custom.coco.mask_dataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.datasets.custom.coco.mask_dataset</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handle that derives concept masks from MS COCO keypoint annotations.&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> \
+    <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">PIL.ImageDraw</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">keypoints_processing</span> <span class="k">as</span> <span class="n">kpt_proc</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">COCODataset</span>
+<span class="kn">from</span> <span class="nn">.body_parts</span> <span class="kn">import</span> <span class="n">BodyParts</span>
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">trafos</span><span class="p">,</span> <span class="n">DatasetSplit</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ConceptDataset"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset">[docs]</a><span class="k">class</span> <span class="nc">ConceptDataset</span><span class="p">(</span><span class="n">COCODataset</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Data handle for ground truth segmentations of visual concepts</span>
+<span class="sd">    (body parts) generated from COCO keypoints. The concepts that can be</span>
+<span class="sd">    handled are combinations of objects (body parts) marked by keypoints.</span>
+
+<span class="sd">    The input images the dataset contains are the original COCO images.</span>
+<span class="sd">    The annotations are segmentation masks masking the desired concept which are</span>
+<span class="sd">    generated from the keypoint annotations. The translation of keypoint</span>
+<span class="sd">    annotations to masks can be found in :py:meth:`annotations_to_mask`.</span>
+
+<span class="sd">    The ground truth masks are generated and stored in a sub-directory</span>
+<span class="sd">    :py:attr:`masks_root`:</span>
+
+<span class="sd">    .. parsed-literal::</span>
+
+<span class="sd">        ``&lt;root root&gt;``</span>
+<span class="sd">        |</span>
+<span class="sd">        +---annotations</span>
+<span class="sd">        |   +---``&lt;annotations file&gt;.json``</span>
+<span class="sd">        |</span>
+<span class="sd">        +---images</span>
+<span class="sd">        |   +---:py:attr:`~hybrid_learning.datasets.base.BaseDataset.dataset_root`</span>
+<span class="sd">        |</span>
+<span class="sd">        +---masks</span>
+<span class="sd">            +---:py:attr:`masks_root`</span>
+<span class="sd">                (default: ``&lt;dataset_root&gt;_&lt;concept desc&gt;``)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: enable=line-too-long</span>
+    <span class="n">MASKS_ROOT_ROOT</span> <span class="o">=</span> <span class="s2">&quot;masks&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Usual parent to all masks folders for all body parts; sibling to</span>
+<span class="sd">    ``images`` folder&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConceptDataset.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">body_parts</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">BodyParts</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span>
+                 <span class="n">force_rebuild</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">pt_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">masks_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">masks_root_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">lazy_mask_generation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mask_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param body_parts: see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts`</span>
+<span class="sd">        :param force_rebuild: Whether to regenerate all masks during init,</span>
+<span class="sd">            or to skip existing ones.</span>
+<span class="sd">        :param pt_radius: see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius`</span>
+<span class="sd">        :param masks_root: set the root directory under which to generate the</span>
+<span class="sd">            masks; note that one should prefer setting ``masks_root_root``</span>
+<span class="sd">            instead</span>
+<span class="sd">        :param masks_root_root: the path to the root under which the masks</span>
+<span class="sd">            folder is created; the masks folder&#39;s name is uniquely determined</span>
+<span class="sd">            by the mask generation settings;</span>
+<span class="sd">            defaults to ``coco_root/MASKS_ROOT_ROOT``</span>
+<span class="sd">            where :py:attr:`MASKS_ROOT_ROOT` is the class default</span>
+<span class="sd">        :param lazy_mask_generation: whether to generate the masks lazily or</span>
+<span class="sd">            directly during init;</span>
+<span class="sd">            overwritten by ``force_rebuild``: if this is true,</span>
+<span class="sd">            masks are directly regenerated.</span>
+<span class="sd">        :param img_size: see super class</span>
+<span class="sd">        :param mask_size: if given, the size of the generated masks</span>
+<span class="sd">            (annotations are scaled and padded to this size before mask</span>
+<span class="sd">            generation)</span>
+<span class="sd">        :param kwargs: Any other arguments for the super class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">mask_size</span>
+        <span class="sd">&quot;&quot;&quot;If given, annotations are scaled and padded to this size before</span>
+<span class="sd">        generating the masks (of this size).</span>
+<span class="sd">        If left ``None``, the generated masks have the same size as the</span>
+<span class="sd">        original image.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Application of general spec</span>
+        <span class="c1"># Apply custom default transforms:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span>
+                                           <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> \
+            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_transforms</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">,</span>
+                                          <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pt_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pt_radius</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;pt_radius to generate masks must be &gt; 0 &quot;</span>
+                              <span class="s2">&quot;but was </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pt_radius</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">pt_radius</span> <span class="ow">or</span> <span class="mi">10</span> <span class="o">/</span> <span class="mi">400</span>
+        <span class="sd">&quot;&quot;&quot;Radius of white circles to draw centered at the keypoint coordinates</span>
+<span class="sd">        in the masks. Also used as half of the width of link lines between</span>
+<span class="sd">        keypoints in the masks.</span>
+<span class="sd">        Unit: proportion of height of annotated person in the image</span>
+<span class="sd">        (defaults to the image height if person height cannot be estimated).&quot;&quot;&quot;</span>
+
+        <span class="c1"># Concepts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body_parts</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">BodyParts</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">body_parts</span>
+        <span class="sd">&quot;&quot;&quot;List of concepts to mask in selected images.</span>
+<span class="sd">        See :py:meth:`annotations_to_mask` for details.&quot;&quot;&quot;</span>
+
+        <span class="c1"># The masks root folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">masks_root</span> <span class="o">=</span> <span class="n">masks_root</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_masks_root</span><span class="p">(</span>
+            <span class="n">dataset_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">masks_root_root</span><span class="o">=</span><span class="n">masks_root_root</span><span class="p">,</span>
+            <span class="n">body_parts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body_parts</span><span class="p">,</span> <span class="n">pt_radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pt_radius</span><span class="p">,</span>
+            <span class="n">mask_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Folder name of the directory in which all generated masks are</span>
+<span class="sd">        stored.&quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masks_root</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Generate and save masks to root folder</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lazy_mask_generation</span> <span class="ow">or</span> <span class="n">force_rebuild</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_masks</span><span class="p">(</span><span class="n">force_rebuild</span><span class="o">=</span><span class="n">force_rebuild</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce the instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">body_parts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">body_parts</span><span class="p">,</span>
+                    <span class="n">pt_radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pt_radius</span><span class="p">,</span>
+                    <span class="n">masks_root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">masks_root</span><span class="p">,</span>
+                    <span class="o">**</span><span class="p">({</span><span class="s1">&#39;mask_size&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span> <span class="k">else</span> <span class="p">{}),</span>
+                    <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConceptDataset.settings_to_str"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings_to_str">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">settings_to_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                        <span class="n">body_parts</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">pt_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">person_rel_size_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span>
+                            <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">mask_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">split</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DatasetSplit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a string representation of the given mask</span>
+<span class="sd">        generation settings.</span>
+<span class="sd">        Intended to serve as unique folder name.</span>
+<span class="sd">        If optional specifiers are not given, they are omitted.</span>
+
+<span class="sd">        :param body_parts: see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts`</span>
+<span class="sd">        :param pt_radius: see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius`</span>
+<span class="sd">        :param person_rel_size_range: the minimum and maximum height of persons</span>
+<span class="sd">            included, relative to the image height;</span>
+<span class="sd">            provide as tuple ``(min, max)`` and set ``None`` to unset values</span>
+<span class="sd">        :param mask_size: the size of the created masks as ``(height, width)``;</span>
+<span class="sd">            defaults to ``img_size``</span>
+<span class="sd">        :param img_size: the image size for which the mask is created;</span>
+<span class="sd">            should be given if one cannot assume the mask fits the original</span>
+<span class="sd">            image size, or if e.g. ``person_rel_size_range`` is dependent on the</span>
+<span class="sd">            image size; should be given as ``(height, width)``</span>
+<span class="sd">        :param dataset_root: if given, used instead of split</span>
+<span class="sd">        :param split: the dataset split</span>
+<span class="sd">        :return: string that is unique for the given settings and can be used</span>
+<span class="sd">            as folder name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># concepts</span>
+        <span class="n">body_parts</span> <span class="o">=</span> <span class="n">body_parts</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">concept_hash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">kpt</span> <span class="k">for</span> <span class="n">body_part</span> <span class="ow">in</span> <span class="n">body_parts</span>
+                                             <span class="k">for</span> <span class="n">kpt</span> <span class="ow">in</span> <span class="n">body_part</span><span class="p">}))</span>
+        <span class="c1"># radii</span>
+        <span class="n">min_size</span><span class="p">,</span> <span class="n">max_size</span> <span class="o">=</span> <span class="n">person_rel_size_range</span> <span class="ow">or</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">radius_info</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_rad</span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pt_radius</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="n">pt_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">rel_height_info</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_relsize</span><span class="si">{fromv}</span><span class="s2">to</span><span class="si">{tov}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">fromv</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_size</span> <span class="k">if</span> <span class="n">min_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">tov</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">max_size</span><span class="p">)</span> <span class="k">if</span> <span class="n">max_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;+inf&quot;</span>
+        <span class="p">)</span> <span class="k">if</span> <span class="n">max_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">min_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># size</span>
+        <span class="n">mask_size</span> <span class="o">=</span> <span class="n">mask_size</span> <span class="k">if</span> <span class="n">mask_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">img_size</span>
+        <span class="n">mask_size_info</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">mask_size</span><span class="p">)</span> <span class="k">if</span> <span class="n">mask_size</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># split</span>
+        <span class="n">split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">split</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="n">DatasetSplit</span><span class="p">)</span> \
+            <span class="k">else</span> <span class="n">split</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">img_base</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="n">dataset_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">split</span>
+        <span class="n">img_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">img_base</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="k">if</span> <span class="n">img_base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{img_base}{concept_hash}{rad}{height}{size}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">img_base</span><span class="o">=</span><span class="n">img_base</span><span class="p">,</span>
+            <span class="n">concept_hash</span><span class="o">=</span><span class="n">concept_hash</span><span class="p">,</span>
+            <span class="n">rad</span><span class="o">=</span><span class="n">radius_info</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">rel_height_info</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">mask_size_info</span>
+        <span class="p">)</span></div>
+
+    <span class="c1"># noinspection PyIncorrectDocstring</span>
+<div class="viewcode-block" id="ConceptDataset.default_masks_root"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.default_masks_root">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">default_masks_root</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                           <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">body_parts</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">pt_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">person_rel_size_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span>
+                               <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">mask_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">masks_root_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">split</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return default mask root directory for given settings.</span>
+<span class="sd">        By default, a directory structure as follows is assumed:</span>
+
+<span class="sd">        .. parsed-literal::</span>
+
+<span class="sd">            coco_root</span>
+<span class="sd">             |</span>
+<span class="sd">             +-images_root_root</span>
+<span class="sd">             |  +-os.path.basename(dataset_root)</span>
+<span class="sd">             |</span>
+<span class="sd">             +-masks_root_root</span>
+<span class="sd">               +-os.path.basename(dataset_root)+spec_specifier</span>
+
+<span class="sd">        If optional specifiers are not given, they are omitted.</span>
+<span class="sd">        For the details on the parameters, see</span>
+<span class="sd">        :py:meth:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings_to_str`.</span>
+
+<span class="sd">        :param dataset_root: the root directory of the coco images;</span>
+<span class="sd">            basename is used to prefix the mask folder;</span>
+<span class="sd">            the folder is used to determine the default for ``masks_root_root``</span>
+<span class="sd">        :param masks_root_root: the root folder under which to put the masks;</span>
+<span class="sd">            defaults to ``dataset_root/../../``:py:attr:`MASKS_ROOT_ROOT`;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">masks_root_root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dataset_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No root directory given.&quot;</span><span class="p">)</span>
+        <span class="n">masks_dirname</span> <span class="o">=</span> <span class="n">masks_root_root</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">)),</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">MASKS_ROOT_ROOT</span>
+        <span class="p">)</span>
+        <span class="n">masks_basename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">settings_to_str</span><span class="p">(</span>
+            <span class="n">body_parts</span><span class="o">=</span><span class="n">body_parts</span><span class="p">,</span>
+            <span class="n">pt_radius</span><span class="o">=</span><span class="n">pt_radius</span><span class="p">,</span>
+            <span class="n">person_rel_size_range</span><span class="o">=</span><span class="n">person_rel_size_range</span><span class="p">,</span>
+            <span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span>
+            <span class="n">mask_size</span><span class="o">=</span><span class="n">mask_size</span><span class="p">,</span>
+            <span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span>
+            <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">masks_dirname</span><span class="p">,</span> <span class="n">masks_basename</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptDataset.getitem"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem">[docs]</a>    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get image and mask by index ``i`` in dataset.</span>
+<span class="sd">        Used for</span>
+<span class="sd">        :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`.&quot;&quot;&quot;</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_orig_image</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="c1"># generate and save mask if it does not exist</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_exists</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="c1"># obtain image keypoint annotations</span>
+            <span class="n">anns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_anns</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations_to_mask</span><span class="p">(</span><span class="n">orig_img_wh</span><span class="o">=</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                                            <span class="n">annotations</span><span class="o">=</span><span class="n">anns</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_mask</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+        <span class="n">mask</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_orig_mask</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span></div>
+
+<div class="viewcode-block" id="ConceptDataset.load_orig_mask"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.load_orig_mask">[docs]</a>    <span class="k">def</span> <span class="nf">load_orig_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load and return unmodified mask as image by index in dataset.</span>
+<span class="sd">        Image mode of returned masks is &#39;L&#39;.</span>
+<span class="sd">        Note that the mask has</span>
+<span class="sd">        :py:attr:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size`</span>
+<span class="sd">        if this is set, not the original image&#39;s size (which is only changed</span>
+<span class="sd">        to ``img_size`` during transformation).&quot;&quot;&quot;</span>
+        <span class="n">mask_fp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mask_fp</span><span class="p">)</span>
+
+        <span class="c1"># Check mask size</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                <span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Mask cached at </span><span class="si">{</span><span class="n">mask_fp</span><span class="si">}</span><span class="s2"> does not match mask_size &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2"> (HxW), but was of size &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="si">}</span><span class="s2">. Is masks_root correct?&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Possibly fix mask mode:</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mask</span></div>
+
+<div class="viewcode-block" id="ConceptDataset.get_default_transforms"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.get_default_transforms">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_default_transforms</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">img_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">mask_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span>
+                                             <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Default transformation that pads and resizes both images and masks,</span>
+<span class="sd">        and binarizes the masks.</span>
+<span class="sd">        If ``mask_size`` is ``None``, the masks are scaled and</span>
+<span class="sd">        padded to the original image, otherwise to ``mask_size``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask_size</span> <span class="o">=</span> <span class="n">mask_size</span> <span class="ow">or</span> <span class="n">img_size</span>
+        <span class="k">if</span> <span class="n">img_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">size_trafos</span> <span class="o">=</span> <span class="p">[</span><span class="n">trafos</span><span class="o">.</span><span class="n">OnInput</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">PadAndResize</span><span class="p">(</span><span class="n">img_size</span><span class="p">)),</span>
+                           <span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">PadAndResize</span><span class="p">(</span><span class="n">mask_size</span><span class="p">))]</span>
+        <span class="k">elif</span> <span class="n">mask_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">size_trafos</span> <span class="o">=</span> <span class="p">[</span><span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">PadAndResize</span><span class="p">(</span><span class="n">mask_size</span><span class="p">))]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size_trafos</span> <span class="o">=</span> <span class="p">[</span><span class="n">trafos</span><span class="o">.</span><span class="n">SameSize</span><span class="p">()]</span>
+
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="k">return</span> <span class="n">trafos</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">trafos</span><span class="o">.</span><span class="n">OnBothSides</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)),</span>
+             <span class="c1"># pad an resize both img and mask:</span>
+             <span class="o">*</span><span class="n">size_trafos</span><span class="p">,</span>
+             <span class="c1"># binarize the mask:</span>
+             <span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">Binarize</span><span class="p">())]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptDataset.mask_exists"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_exists">[docs]</a>    <span class="k">def</span> <span class="nf">mask_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check whether a mask for the specified index already exists.&quot;&quot;&quot;</span>
+        <span class="c1"># Is it a valid ID?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">m_exists</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Does the mask already exist?</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask_fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">m_exists</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">mask_fp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">m_exists</span></div>
+
+<div class="viewcode-block" id="ConceptDataset.mask_filepath"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">mask_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide the path under which the mask for the given image ID</span>
+<span class="sd">        should lie.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masks_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span></div>
+
+    <span class="n">ANNOTATION_TRANSFORM</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">kpt_proc</span><span class="o">.</span><span class="n">annotations_to_mask</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Callable used to transform a list of annotations into a mask.</span>
+<span class="sd">    All keypoints belonging to any of the :py:attr:`body_parts` are</span>
+<span class="sd">    marked, and keypoints belonging to a common body part are linked</span>
+<span class="sd">    according to the person skeleton.</span>
+<span class="sd">    For details see</span>
+<span class="sd">    :py:func:`~hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask`.&quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: enable=line-too-long</span>
+
+<div class="viewcode-block" id="ConceptDataset.annotations_to_mask"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask">[docs]</a>    <span class="k">def</span> <span class="nf">annotations_to_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orig_img_wh</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                            <span class="n">annotations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>
+                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create mask of all configured keypoints from ``annotations``.</span>
+<span class="sd">        It is assumed that the original image considered in ``annotations``</span>
+<span class="sd">        has ``orig_img_wh``.</span>
+<span class="sd">        If :py:attr:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size`</span>
+<span class="sd">        is ``None``, the mask size will be ``orig_img_wh``.</span>
+<span class="sd">        For details see :py:attr:`ANNOTATION_TRANSFORM`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get skeleton; see also pycocotools</span>
+        <span class="n">skeleton</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_skeleton</span><span class="p">(</span><span class="n">annotations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">kpt_proc</span><span class="o">.</span><span class="n">to_keypoint_idxs</span><span class="p">(</span><span class="n">body_part</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="p">))</span>
+             <span class="k">for</span> <span class="n">body_part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">body_parts</span><span class="p">]</span>
+        <span class="n">annotation_wh</span> <span class="o">=</span> <span class="n">orig_img_wh</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">annotations</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">kpt_proc</span><span class="o">.</span><span class="n">pad_and_scale_annotation</span><span class="p">(</span>
+                    <span class="n">ann</span><span class="p">,</span> <span class="n">from_size</span><span class="o">=</span><span class="p">(</span><span class="n">orig_img_wh</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">orig_img_wh</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="n">to_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ann</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">]</span>
+            <span class="n">annotation_wh</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">ANNOTATION_TRANSFORM</span><span class="p">(</span>
+            <span class="n">annotation_wh</span><span class="o">=</span><span class="n">annotation_wh</span><span class="p">,</span>
+            <span class="n">annotations</span><span class="o">=</span><span class="n">annotations</span><span class="p">,</span>
+            <span class="n">pt_radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pt_radius</span><span class="p">,</span>
+            <span class="n">keypoint_idxs</span><span class="o">=</span><span class="n">keypoint_idxs</span><span class="p">,</span>
+            <span class="n">skeleton</span><span class="o">=</span><span class="n">skeleton</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Obtain the coco skeleton information.</span>
+<span class="sd">        The skeleton is returned as a list of lists of the form</span>
+<span class="sd">        ``[[link1_start, link2_end], [link2_start, link2_end], ...]``</span>
+<span class="sd">        where link starting and end points are the indices of keypoints in the</span>
+<span class="sd">        ``keypoints`` list of an annotation.</span>
+
+<span class="sd">        :param annotation: a COCO annotation for the category of which the</span>
+<span class="sd">            skeleton should be loaded; if not given, the ``&#39;person&#39;``</span>
+<span class="sd">            category is used</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cat_id</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">annotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">getCatIds</span><span class="p">(</span><span class="n">catNms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;person&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">skeleton</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">loadCats</span><span class="p">(</span><span class="n">cat_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;skeleton&#39;</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">skeleton</span>
+
+<div class="viewcode-block" id="ConceptDataset.generate_masks"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.generate_masks">[docs]</a>    <span class="k">def</span> <span class="nf">generate_masks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_rebuild</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                       <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate and save the masks for the images in this dataset.</span>
+
+<span class="sd">        :param force_rebuild: whether to overwrite masks that already exist.</span>
+<span class="sd">        :param show_progress_bar: whether to show the progress using</span>
+<span class="sd">            :py:class:`tqdm.tqdm`</span>
+<span class="sd">        :param kwargs: further arguments to the progress bar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">masks_to_process</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+                            <span class="k">if</span> <span class="n">force_rebuild</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_exists</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_to_process</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+            <span class="n">masks_to_process</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">iterable</span><span class="o">=</span><span class="n">masks_to_process</span><span class="p">,</span>
+                                              <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span>
+                                              <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Masks newly generated: &quot;</span><span class="p">),</span>
+                                       <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">masks_to_process</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_exists</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_rebuild</span><span class="p">:</span>
+                <span class="n">mask_fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overwriting file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mask_fp</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">mask_fp</span><span class="p">)</span>
+
+            <span class="c1"># obtain image keypoint annotations</span>
+            <span class="n">anns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_anns</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="c1"># obtain original image&#39;s size</span>
+            <span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_orig_image</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">img_size</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span>
+
+            <span class="c1"># generate and save mask</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations_to_mask</span><span class="p">(</span><span class="n">orig_img_wh</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span>
+                                            <span class="n">annotations</span><span class="o">=</span><span class="n">anns</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_mask</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptDataset.save_mask"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.save_mask">[docs]</a>    <span class="k">def</span> <span class="nf">save_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Save the given mask according to the given index in the dataset.</span>
+
+<span class="sd">        :param i: ID of the image the mask belongs to.</span>
+<span class="sd">        :param mask: mask image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">mask</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

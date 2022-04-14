@@ -1,0 +1,9 @@
+BestEmbeddingResult
+===================
+
+.. currentmodule:: hybrid_learning.concepts.analysis.results
+
+.. autoclass:: BestEmbeddingResult
+    :members:
+
+    .. autoclasstoc::

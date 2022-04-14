@@ -1,0 +1,9 @@
+Transform
+=========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.common
+
+.. autoclass:: Transform
+    :members:
+
+    .. autoclasstoc::

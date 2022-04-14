@@ -1,0 +1,9 @@
+IsPartOfA
+=========
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.predicates.custom_ops
+
+.. autoclass:: IsPartOfA
+    :members:
+
+    .. autoclasstoc::

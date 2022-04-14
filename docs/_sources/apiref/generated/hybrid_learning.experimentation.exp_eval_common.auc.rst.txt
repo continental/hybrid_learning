@@ -1,0 +1,6 @@
+auc
+===
+
+.. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+.. autofunction:: auc

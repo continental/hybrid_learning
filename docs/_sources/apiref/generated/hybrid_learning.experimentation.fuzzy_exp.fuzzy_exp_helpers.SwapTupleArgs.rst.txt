@@ -1,0 +1,9 @@
+SwapTupleArgs
+=============
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers
+
+.. autoclass:: SwapTupleArgs
+    :members:
+
+    .. autoclasstoc::

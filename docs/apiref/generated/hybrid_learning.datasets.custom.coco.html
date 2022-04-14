@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>coco &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="BodyParts" href="hybrid_learning.datasets.custom.coco.BodyParts.html" />
+    <link rel="next" title="base" href="hybrid_learning.datasets.custom.coco.base.html" />
     <link rel="prev" title="BrodenLabel" href="hybrid_learning.datasets.custom.broden.BrodenLabel.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,124 +47,92 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">coco</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
-        
       <li>coco</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.coco.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="coco">
-<h1>coco<a class="headerlink" href="#coco" title="Permalink to this headline">¶</a></h1>
+<h1>coco<a class="headerlink" href="#coco" title="Permalink to this headline"></a></h1>
 <p class="rubric">Description</p>
 <span class="target" id="module-hybrid_learning.datasets.custom.coco"></span><p>Standard and concept datasets derived from <a class="reference external" href="coco">MS COCO dataset</a>.</p>
 <p>There are the following dataset handles, both derived from
-<a class="reference internal" href="hybrid_learning.datasets.custom.coco.COCODataset.html#hybrid_learning.datasets.custom.coco.COCODataset" title="hybrid_learning.datasets.custom.coco.COCODataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">COCODataset</span></code></a>:</p>
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset" title="hybrid_learning.datasets.custom.coco.base.COCODataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">COCODataset</span></code></a>:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.KeypointsDataset.html#hybrid_learning.datasets.custom.coco.KeypointsDataset" title="hybrid_learning.datasets.custom.coco.KeypointsDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeypointsDataset</span></code></a>:
+<li><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_dataset.KeypointsDataset.html#hybrid_learning.datasets.custom.coco.keypoints_dataset.KeypointsDataset" title="hybrid_learning.datasets.custom.coco.keypoints_dataset.KeypointsDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeypointsDataset</span></code></a>:
 <em>In:</em> COCO images, <em>GT:</em> COCO annotations</p></li>
-<li><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.ConceptDataset.html#hybrid_learning.datasets.custom.coco.ConceptDataset" title="hybrid_learning.datasets.custom.coco.ConceptDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDataset</span></code></a>:
+<li><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDataset</span></code></a>:
 <em>In:</em> COCO images, <em>GT:</em> masks for the given body parts</p></li>
 </ul>
 <p>Masks are generated and saved in COCO style folder structure if they do not
 exist. For the documentation of the coco handle used under the hood, see the
 short <a class="reference external" href="coco-api">COCO API documentation</a> and the
 <a class="reference external" href="coco-format-doc">COCO dataset format doc</a>.</p>
-<p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
+<p class="rubric">Sub-modules</p>
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.BodyParts.html#hybrid_learning.datasets.custom.coco.BodyParts" title="hybrid_learning.datasets.custom.coco.BodyParts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BodyParts</span></code></a></p></td>
-<td><p>Mapping of a visual concept description (body part) to COCO keypoint ID collections approximating it.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.base.html#module-hybrid_learning.datasets.custom.coco.base" title="hybrid_learning.datasets.custom.coco.base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base</span></code></a></p></td>
+<td><p>Base classes for handling MS COCO like datasets.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.COCODataset.html#hybrid_learning.datasets.custom.coco.COCODataset" title="hybrid_learning.datasets.custom.coco.COCODataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COCODataset</span></code></a></p></td>
-<td><p>Attributes and functions common for keypoint based datasets derived from MS COCO.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.body_parts.html#module-hybrid_learning.datasets.custom.coco.body_parts" title="hybrid_learning.datasets.custom.coco.body_parts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">body_parts</span></code></a></p></td>
+<td><p>Enum with definitions of standard body parts from MS COCO keypoint names.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.ConceptDataset.html#hybrid_learning.datasets.custom.coco.ConceptDataset" title="hybrid_learning.datasets.custom.coco.ConceptDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConceptDataset</span></code></a></p></td>
-<td><p>Data handle for ground truth segmentations of visual concepts (body parts) generated from COCO keypoints.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.heatmap_dataset.html#module-hybrid_learning.datasets.custom.coco.heatmap_dataset" title="hybrid_learning.datasets.custom.coco.heatmap_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heatmap_dataset</span></code></a></p></td>
+<td><p>Handle that derives keypoint heatmaps from MS COCO keypoint annotations.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.KeypointsDataset.html#hybrid_learning.datasets.custom.coco.KeypointsDataset" title="hybrid_learning.datasets.custom.coco.KeypointsDataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KeypointsDataset</span></code></a></p></td>
-<td><p>Handler for (a subset of) a COCO keypoints dataset.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_dataset.html#module-hybrid_learning.datasets.custom.coco.keypoints_dataset" title="hybrid_learning.datasets.custom.coco.keypoints_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keypoints_dataset</span></code></a></p></td>
+<td><p>MS COCO Keypoints dataset handle with subsetting functionality and annotation transformations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.html#module-hybrid_learning.datasets.custom.coco.keypoints_processing" title="hybrid_learning.datasets.custom.coco.keypoints_processing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keypoints_processing</span></code></a></p></td>
+<td><p>Util functions to process, transform, and evaluate MS COCO keypoint information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.mask_dataset.html#module-hybrid_learning.datasets.custom.coco.mask_dataset" title="hybrid_learning.datasets.custom.coco.mask_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_dataset</span></code></a></p></td>
+<td><p>Handle that derives concept masks from MS COCO keypoint annotations.</p></td>
 </tr>
 </tbody>
 </table>
@@ -219,58 +140,33 @@ short <a class="reference external" href="coco-api">COCO API documentation</a> a
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.custom.coco.BodyParts.html" class="btn btn-neutral float-right" title="BodyParts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.custom.broden.BrodenLabel.html" class="btn btn-neutral float-left" title="BrodenLabel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.custom.broden.BrodenLabel.html" class="btn btn-neutral float-left" title="BrodenLabel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.custom.coco.base.html" class="btn btn-neutral float-right" title="base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

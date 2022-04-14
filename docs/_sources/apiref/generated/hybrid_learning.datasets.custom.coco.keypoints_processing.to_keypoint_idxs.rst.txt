@@ -1,0 +1,6 @@
+to\_keypoint\_idxs
+==================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autofunction:: to_keypoint_idxs

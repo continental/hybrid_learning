@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.train_eval.callbacks &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.train_eval.callbacks</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.train_eval.callbacks</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Callback functionality and typical callbacks for training.</span>
+<span class="sd">A callback simply is a mapping from a :py:class:`CallbackEvents` instance</span>
+<span class="sd">to a callable that accepts the callback context.</span>
+<span class="sd">The :py:func:`run_callbacks` method can be used to run those callables</span>
+<span class="sd">associated with a given event from a list of callbacks.</span>
+<span class="sd">See :py:class:`~hybrid_learning.concepts.train_eval.callbacks.Callback` for details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> \
+    <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.lines</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch.utils.data</span>
+<span class="kn">import</span> <span class="nn">torch.utils.tensorboard</span> <span class="k">as</span> <span class="nn">tb</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="sd">&quot;&quot;&quot;The default logger in this module.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="CallbackEvents"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.html#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents">[docs]</a><span class="k">class</span> <span class="nc">CallbackEvents</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Supported callback events for training and evaluation.</span>
+<span class="sd">    Events can be:</span>
+
+<span class="sd">        - ``before_epoch_train``: right before iterating one epoch of the</span>
+<span class="sd">            training set</span>
+<span class="sd">        - ``after_batch_train``, ``after_epoch_eval``:</span>
+<span class="sd">            after every batch of an epoch of training</span>
+<span class="sd">        - ``after_epoch_train``: right after iterating one epoch of the</span>
+<span class="sd">            training set; provides kpis of the training set of current epoch,</span>
+<span class="sd">            and the ``train_loader``</span>
+<span class="sd">        - ``after_epoch_eval``: right after iterating one epoch of evaluation</span>
+<span class="sd">            (validation or test set);</span>
+<span class="sd">            provides evaluation kpis of the current epoch and the ``val_loader``</span>
+<span class="sd">        - ``after_epoch``: after an epoch of training: provides kpis of</span>
+<span class="sd">            current epoch</span>
+<span class="sd">        - ``between_epochs``: after an epoch of a training run with several</span>
+<span class="sd">            epochs: provides epoch context (total KPI history, current and</span>
+<span class="sd">            total epoch number)</span>
+<span class="sd">        - ``after_train``: after the training of several epochs;</span>
+<span class="sd">            provides full training and validation history as well as total</span>
+<span class="sd">            epoch number</span>
+<span class="sd">        - ``after_second_stage_train``: like ``after_train`` only after the</span>
+<span class="sd">            second stage training</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">BEFORE_EPOCH_TRAIN</span> <span class="o">=</span> <span class="s2">&quot;before_epoch_train&quot;</span>
+    <span class="n">AFTER_BATCH_TRAIN</span> <span class="o">=</span> <span class="s2">&quot;after_batch_train&quot;</span>
+    <span class="n">AFTER_EPOCH_TRAIN</span> <span class="o">=</span> <span class="s2">&quot;after_epoch_train&quot;</span>
+    <span class="n">AFTER_BATCH_EVAL</span> <span class="o">=</span> <span class="s2">&quot;after_batch_eval&quot;</span>
+    <span class="n">AFTER_EPOCH_EVAL</span> <span class="o">=</span> <span class="s2">&quot;after_epoch_eval&quot;</span>
+    <span class="n">AFTER_EPOCH</span> <span class="o">=</span> <span class="s2">&quot;after_epoch&quot;</span>
+    <span class="n">BETWEEN_EPOCHS</span> <span class="o">=</span> <span class="s2">&quot;between_epochs&quot;</span>
+    <span class="n">AFTER_TRAIN</span> <span class="o">=</span> <span class="s2">&quot;after_train&quot;</span>
+    <span class="n">AFTER_SECOND_STAGE_TRAIN</span> <span class="o">=</span> <span class="s2">&quot;after_second_stage_train&quot;</span></div>
+
+
+<div class="viewcode-block" id="run_callbacks"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.run_callbacks.html#hybrid_learning.concepts.train_eval.callbacks.run_callbacks">[docs]</a><span class="k">def</span> <span class="nf">run_callbacks</span><span class="p">(</span><span class="n">callbacks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="n">CallbackEvents</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]],</span>
+                  <span class="n">event</span><span class="p">:</span> <span class="n">CallbackEvents</span><span class="p">,</span>
+                  <span class="n">callback_context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run the given callback collection in order.&quot;&quot;&quot;</span>
+    <span class="n">callback_context</span> <span class="o">=</span> <span class="n">callback_context</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">callbacks</span><span class="p">:</span>
+        <span class="n">cb_fun</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cb_fun</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Passing callback event </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">event</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">callback</span><span class="p">))</span>
+            <span class="n">cb_fun</span><span class="p">(</span><span class="o">**</span><span class="n">callback_context</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_validate_templ</span><span class="p">(</span><span class="n">templ</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raise if the template is missing a variable name.&quot;&quot;&quot;</span>
+    <span class="n">format_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">Formatter</span><span class="p">()</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">templ</span><span class="p">)</span>
+                   <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;only&#39;</span><span class="p">,</span> <span class="s1">&#39;exact&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown validation mode </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;exact&#39;</span><span class="p">]</span> <span class="ow">and</span> \
+            <span class="nb">any</span><span class="p">([</span><span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">format_keys</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;string template must contain all formatting strings &quot;</span>
+                          <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> but was </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_keys</span><span class="p">,</span> <span class="n">templ</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;only&#39;</span><span class="p">,</span> <span class="s1">&#39;exact&#39;</span><span class="p">]:</span>
+        <span class="n">unknown_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">format_keys</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">var_names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknown_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;string template </span><span class="si">{}</span><span class="s2"> contained unknown format &quot;</span>
+                              <span class="s2">&quot;keys </span><span class="si">{}</span><span class="s2">; allowed: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">templ</span><span class="p">,</span> <span class="n">unknown_keys</span><span class="p">,</span> <span class="n">format_keys</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Callback"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback">[docs]</a><span class="k">class</span> <span class="nc">Callback</span><span class="p">(</span><span class="n">Mapping</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-ancestors</span>
+    <span class="sd">&quot;&quot;&quot;A callback base class that eases implementing a custom callback handle.</span>
+
+<span class="sd">    A callback handle simply is a mapping of :py:class:`CallbackEvents` to</span>
+<span class="sd">    callback functions.</span>
+<span class="sd">    One callback can define several pairs of event and callback function.</span>
+<span class="sd">    A callback function is any function that can be called via</span>
+<span class="sd">    ``callback_fun(**callback_context)``, where ``callback_context``</span>
+<span class="sd">    is a mapping of key-value pairs.</span>
+<span class="sd">    The correct callback function for a given event and callback context</span>
+<span class="sd">    can be called using :py:func:`run_callbacks`.</span>
+
+<span class="sd">    To add a callback function to an implementation of this class,</span>
+<span class="sd">    just implement it as method with the same name as the callback</span>
+<span class="sd">    event&#39;s value.</span>
+<span class="sd">    Make sure to add a `**_` catch-all argument to each defined</span>
+<span class="sd">    callback function to allow ignoring unused key-value pairs from</span>
+<span class="sd">    the callback context.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Callback.keys"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CallbackEvents</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Collect a list of all supported callback events.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">event</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">CallbackEvents</span> <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="Callback.__getitem__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">CallbackEvents</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the method for the specified event or a pass lambda.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">**</span><span class="n">cb_context</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Callback.__len__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of mapped events.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Callback.__iter__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate over mapped events.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Callback.to_descriptor"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback.to_descriptor">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_descriptor</span><span class="p">(</span><span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Merge logging information into file name descriptor.</span>
+<span class="sd">        ``log_dir`` is prepended as path, the rest is merged with ``_``.&quot;&quot;&quot;</span>
+        <span class="n">components_groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">log_prefix</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="n">run</span><span class="p">)],</span>
+            <span class="p">[(</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)],</span> <span class="p">[(</span><span class="s1">&#39;batch&#39;</span><span class="p">,</span> <span class="n">batch</span><span class="p">)]]</span>
+        <span class="n">sub_descs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">components</span> <span class="ow">in</span> <span class="n">components_groups</span><span class="p">:</span>
+            <span class="n">substrings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pref</span><span class="si">}{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">pref</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">components</span>
+                                     <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">substrings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">sub_descs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">substrings</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">sub_descs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_descs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="Callback.from_descriptor"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback.from_descriptor">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_descriptor</span><span class="p">(</span><span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Given a descriptor, extract contained information.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">desc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">component_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;batch&#39;</span><span class="p">,</span> <span class="s1">&#39;run&#39;</span><span class="p">)</span>
+        <span class="n">substrings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+        <span class="n">log_prefix_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">substr</span> <span class="ow">in</span> <span class="n">substrings</span><span class="p">:</span>
+            <span class="c1"># Collect substrings with component key:</span>
+            <span class="n">key_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">component_keys</span> <span class="k">if</span> <span class="n">substr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">info</span><span class="p">[</span><span class="n">key_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">substr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">continue</span>
+            <span class="c1"># After first substring with component key, all must have one:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid descriptor </span><span class="si">{}</span><span class="s2">: Found undefined substring </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">substr</span><span class="p">))</span>
+            <span class="c1"># First substrings belong to log_prefix:</span>
+            <span class="n">log_prefix_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">substr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">log_prefix_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;log_prefix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">log_prefix_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">info</span></div></div>
+
+
+<div class="viewcode-block" id="LoggingCallback"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback">[docs]</a><span class="k">class</span> <span class="nc">LoggingCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-ancestors</span>
+    <span class="sd">&quot;&quot;&quot;Log batch and epoch KPI results.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LoggingCallback.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">log_per_batch</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="sd">&quot;&quot;&quot;The default logger to use.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">log_level</span>
+        <span class="sd">&quot;&quot;&quot;The logging level to use. Defaults to :py:const:`logging.INFO`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_per_batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">log_per_batch</span><span class="p">))</span>
+        <span class="sd">&quot;&quot;&quot;Log after each ith batch.</span>
+<span class="sd">        If set to ``False`` or 0 don&#39;t log batches at all, if ``True`` or 1 log each batch.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batches_until_next_log</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="sd">&quot;&quot;&quot;Number of batches until the next logging of a batch.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_default_batch_info_templ_for</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">batches</span><span class="p">,</span>
+                                      <span class="n">epoch</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">runs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the default ``batch_info_templ`` for the given params.&quot;&quot;&quot;</span>
+        <span class="n">batch_info_templ</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">part</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;Run </span><span class="si">{run}</span><span class="s2">/</span><span class="si">{runs}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">run</span><span class="p">,</span> <span class="n">runs</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Epoch </span><span class="si">{epoch}</span><span class="s2">/</span><span class="si">{epochs}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">epoch</span><span class="p">,</span> <span class="n">epochs</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;Batch </span><span class="si">{batch}</span><span class="s2">/</span><span class="si">{batches}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">batch</span><span class="p">,</span> <span class="n">batches</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">]</span> <span class="k">if</span> <span class="n">part</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">batch_info_templ</span>
+
+<div class="viewcode-block" id="LoggingCallback.after_batch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_batch_train">[docs]</a>    <span class="k">def</span> <span class="nf">after_batch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="c1"># pylint: disable=unused-argument,too-many-arguments</span>
+                          <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">batches</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">batch_info_templ</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                          <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">_unused_args</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logging of training KPI values after one batch.</span>
+
+<span class="sd">        :param batch: the current batch index</span>
+<span class="sd">        :param epoch: the current epoch index</span>
+<span class="sd">        :param run: the current cross-validation run index</span>
+<span class="sd">        :param batches: the total number of batches</span>
+<span class="sd">        :param epochs: the total number of epochs</span>
+<span class="sd">        :param runs: the total number of cross-validation runs</span>
+<span class="sd">        :param log_prefix: text to prepend to log messages</span>
+<span class="sd">        :param batch_info_templ: string template for logging epoch and batch,</span>
+<span class="sd">            which may include as substring</span>
+
+<span class="sd">            - ``{run}``/``{epoch}``/``{batch}``: the current</span>
+<span class="sd">              cross-validation run/epoch/batch number</span>
+<span class="sd">            - ``{runs}``/``{epochs}``/``{batches}``: the total number of</span>
+<span class="sd">              cross-validation runs/epochs/batches</span>
+
+<span class="sd">        :param kpi_train: :py:class:`pandas.Series` indexed by the</span>
+<span class="sd">            KPI names for training with the KPI values over the last training</span>
+<span class="sd">            batch</span>
+<span class="sd">        :param logger: do not use this instances logger but a different one</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
+        <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">logger</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span> <span class="ow">or</span> \
+                <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_per_batch</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batches_until_next_log</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batches_until_next_log</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batches_until_next_log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_per_batch</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">batch_kpi_vals</span> <span class="o">=</span> <span class="n">kpi_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">batch</span><span class="p">]</span>
+
+        <span class="c1"># log message content</span>
+        <span class="k">if</span> <span class="n">batch_info_templ</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_info_templ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_batch_info_templ_for</span><span class="p">(</span>
+                <span class="n">batch</span><span class="p">,</span> <span class="n">batches</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">runs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_validate_templ</span><span class="p">(</span><span class="n">batch_info_templ</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;epochs&#39;</span><span class="p">,</span> <span class="s1">&#39;batch&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;batches&#39;</span><span class="p">,</span> <span class="s1">&#39;runs&#39;</span><span class="p">,</span> <span class="s1">&#39;runs&#39;</span><span class="p">),</span>
+                            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;only&#39;</span><span class="p">)</span>
+        <span class="n">log_msg_vals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">run</span><span class="o">=</span><span class="n">run</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;??&quot;</span><span class="p">,</span>
+            <span class="n">runs</span><span class="o">=</span><span class="n">runs</span> <span class="k">if</span> <span class="n">runs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;??&quot;</span><span class="p">,</span>
+            <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;??&quot;</span><span class="p">,</span>
+            <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span> <span class="k">if</span> <span class="n">epochs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;??&quot;</span><span class="p">,</span>
+            <span class="n">batch</span><span class="o">=</span><span class="n">batch</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;??&quot;</span><span class="p">,</span>
+            <span class="n">batches</span><span class="o">=</span><span class="n">batches</span> <span class="k">if</span> <span class="n">batches</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;??&quot;</span><span class="p">)</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{batch_info}</span><span class="s1">: </span><span class="se">\t</span><span class="si">{kpi_info}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">batch_info</span><span class="o">=</span><span class="p">(</span><span class="n">batch_info_templ</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">log_msg_vals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">batch_info_templ</span><span class="p">})),</span>
+            <span class="n">kpi_info</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch_kpi_vals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)]))</span>
+        <span class="c1"># actual logging</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">log_prefix</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LoggingCallback.after_epoch"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
+                    <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                    <span class="n">kpi_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span>
+                    <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">_unused_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logging of mean training and validation KPI values after one epoch.</span>
+
+<span class="sd">        :param kpi_train: :py:class:`pandas.Series` indexed by the KPI</span>
+<span class="sd">            names for training with the mean KPI values over the last</span>
+<span class="sd">            training epoch</span>
+<span class="sd">        :param kpi_val: :py:class:`pandas.Series` indexed by the KPI</span>
+<span class="sd">            names for testing with the KPI values over the validation set</span>
+<span class="sd">            after the epoch</span>
+<span class="sd">        :param log_prefix: text to prepend to log messages</span>
+<span class="sd">        :param logger: do not use this instances logger but a different one</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batches_until_next_log</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Logging of evaluation results</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Mean train results: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">log_prefix</span><span class="p">,</span>
+                   <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span>
+                              <span class="n">kpi_train</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                              <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)]))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Test eval results:  </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">log_prefix</span><span class="p">,</span>
+                   <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span>
+                              <span class="n">kpi_val</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                              <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)]))</span></div></div>
+
+
+<div class="viewcode-block" id="ProgressBarUpdater"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater">[docs]</a><span class="k">class</span> <span class="nc">ProgressBarUpdater</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-ancestors</span>
+    <span class="sd">&quot;&quot;&quot;Update the progress bar postfix after each batch and epoch.</span>
+<span class="sd">    For batch-wise updates, only :py:attr:`train_kpis` are considered.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ProgressBarUpdater.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_kpis</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">,)):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_kpis</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_kpis</span>
+        <span class="sd">&quot;&quot;&quot;The list of KPI-names to include into the training logging.</span>
+<span class="sd">        A KPI is included if it includes one of the ``train_kpis`` strings.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="ProgressBarUpdater.after_batch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.after_batch_train">[docs]</a>    <span class="k">def</span> <span class="nf">after_batch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">pbar</span><span class="p">:</span> <span class="n">tqdm</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">_unused_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the progress bar with the training KPI values after a</span>
+<span class="sd">        batch.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pbar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">to_print</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="n">scalar</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kpi_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">batch</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">n</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_kpis</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">scalar</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">scalar</span><span class="p">)}</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">(</span><span class="o">**</span><span class="n">to_print</span><span class="p">)</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ProgressBarUpdater.after_batch_eval"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.after_batch_eval">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">after_batch_eval</span><span class="p">(</span><span class="n">pbar_eval</span><span class="p">:</span> <span class="n">tqdm</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">_unused_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the progress bar with the evaluation KPI values</span>
+<span class="sd">        after a batch.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pbar_eval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">pbar_eval</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ProgressBarUpdater.after_epoch"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.after_epoch">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">after_epoch</span><span class="p">(</span>
+            <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">kpi_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">pbar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">_unused_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the progress bar with the train and validation KPI values</span>
+<span class="sd">        after an epoch.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pbar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">kpi_train_mean</span> <span class="o">=</span> <span class="n">kpi_train</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="k">if</span> <span class="n">kpi_train</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">kpi_val</span> <span class="o">=</span> <span class="n">kpi_val</span> <span class="k">if</span> <span class="n">kpi_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">(</span>
+            <span class="o">**</span><span class="p">{</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span>
+               <span class="p">[</span><span class="o">*</span><span class="n">kpi_train_mean</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="o">*</span><span class="n">kpi_val</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+               <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)})</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ProgressBarUpdater.after_epoch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.after_epoch_train">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">pbar</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">_unused_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the evaluation progress bar with the final validation KPI values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">kpi_train</span><span class="o">=</span><span class="n">kpi_train</span><span class="p">,</span> <span class="n">pbar</span><span class="o">=</span><span class="n">pbar</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProgressBarUpdater.after_epoch_eval"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html#hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.after_epoch_eval">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">pbar_eval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">tqdm</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">_unused_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the evaluation progress bar with the final validation KPI values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_epoch</span><span class="p">(</span><span class="n">kpi_val</span><span class="o">=</span><span class="n">kpi_val</span><span class="p">,</span> <span class="n">pbar</span><span class="o">=</span><span class="n">pbar_eval</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TensorboardLogger"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger">[docs]</a><span class="k">class</span> <span class="nc">TensorboardLogger</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-ancestors</span>
+    <span class="sd">&quot;&quot;&quot;Write batch and epoch KPI results to a tensorboard log directory.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TensorboardLogger.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;runs&quot;</span><span class="p">,</span>
+                 <span class="n">log_sample_inputs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">log_sample_targets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">log_dir</span>
+        <span class="sd">&quot;&quot;&quot;The root logging directory.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_sample_inputs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">log_sample_inputs</span>
+        <span class="sd">&quot;&quot;&quot;Whether to interpret the model inputs as image and log some.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_sample_targets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">log_sample_targets</span>
+        <span class="sd">&quot;&quot;&quot;Whether to interpret the model targets as image and log some.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">tb</span><span class="o">.</span><span class="n">SummaryWriter</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;A mapping of logdir subdirectory to cached writers.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="TensorboardLogger.flush_writers"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.flush_writers">[docs]</a>    <span class="k">def</span> <span class="nf">flush_writers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close all writers to free their threads.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">writer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">writers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_train: Flushed writers.&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_writer_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tb</span><span class="o">.</span><span class="n">SummaryWriter</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Collect writer for the (sub)folder determined by prefix and run.&quot;&quot;&quot;</span>
+        <span class="n">logdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span>
+        <span class="n">super_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_descriptor</span><span class="p">(</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+
+        <span class="c1"># Collect writer</span>
+        <span class="k">if</span> <span class="n">super_group</span><span class="p">:</span>
+            <span class="n">logdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">logdir</span><span class="p">,</span> <span class="n">super_group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">super_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">writers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writers</span><span class="p">[</span><span class="n">super_group</span><span class="p">]</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">SummaryWriter</span><span class="p">(</span><span class="n">logdir</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">writers</span><span class="p">[</span><span class="n">super_group</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TensorboardLogger.before_epoch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.before_epoch_train">[docs]</a>    <span class="k">def</span> <span class="nf">before_epoch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                           <span class="n">train_loader</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">,</span>
+                           <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log the model graph and optionally some example training images.&quot;&quot;&quot;</span>
+        <span class="c1"># Only before first epoch</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="ow">and</span> <span class="n">epoch</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="s1">&#39;cpu&#39;</span>
+        <span class="n">writer</span><span class="p">:</span> <span class="n">tb</span><span class="o">.</span><span class="n">SummaryWriter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_writer_for</span><span class="p">(</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+        <span class="n">imgs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_loader</span><span class="p">))</span>
+        <span class="c1"># Graph</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">add_graph</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">imgs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, before_epoch_train: Added model graph.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="c1"># Images</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_sample_inputs</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s1">&#39;inputs/train&#39;</span><span class="p">,</span>
+                             <span class="n">tv</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">pad_value</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, before_epoch_train: Added input samples.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_sample_targets</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s1">&#39;targets/train&#39;</span><span class="p">,</span>
+                             <span class="n">tv</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">pad_value</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, before_epoch_train: Added target samples.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TensorboardLogger.after_batch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.after_batch_train">[docs]</a>    <span class="k">def</span> <span class="nf">after_batch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                          <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">batches</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Record the training KPIs in the tensorboard log directory.&quot;&quot;&quot;</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_writer_for</span><span class="p">(</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+
+        <span class="n">scalars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kpi_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">batch</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">scalar_name</span><span class="p">,</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">scalars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">group</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">scalar_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">scalar</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scalar</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">):</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">_batchwise&quot;</span><span class="p">,</span>
+                                  <span class="n">scalar_value</span><span class="o">=</span><span class="n">scalar</span><span class="p">,</span>
+                                  <span class="n">global_step</span><span class="o">=</span><span class="n">batch</span> <span class="o">+</span> <span class="n">epoch</span> <span class="o">*</span> <span class="n">batches</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TensorboardLogger.after_epoch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.after_epoch_train">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">aggregating_kpis</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+                          <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;After each training epoch, close all writers to free threads.&quot;&quot;&quot;</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_writer_for</span><span class="p">(</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+
+        <span class="c1"># Aggregation: mean (normal), or last value (self-aggregating metrics)</span>
+        <span class="n">scalars</span> <span class="o">=</span> <span class="p">{</span><span class="n">scalar_name</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">kpi_train</span><span class="p">[</span><span class="n">scalar_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="n">scalar_name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">aggregating_kpis</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">kpi_train</span><span class="p">[</span><span class="n">scalar_name</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">scalar_name</span> <span class="ow">in</span> <span class="n">kpi_train</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">scalar_name</span><span class="p">,</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">scalars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">group</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">scalar_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scalar</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">):</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">add_figure</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">scalar</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_train: Added figure </span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2"> for epoch </span><span class="si">%d</span><span class="s2">.&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                  <span class="n">scalar_value</span><span class="o">=</span><span class="n">scalar</span><span class="p">,</span>
+                                  <span class="n">global_step</span><span class="o">=</span><span class="n">epoch</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_train: Added scalar </span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2"> for epoch </span><span class="si">%d</span><span class="s2">.&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush_writers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TensorboardLogger.after_epoch_eval"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.html#hybrid_learning.concepts.train_eval.callbacks.TensorboardLogger.after_epoch_eval">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Record the validation and test KPIs in the tensorboard log</span>
+<span class="sd">        directory.&quot;&quot;&quot;</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_writer_for</span><span class="p">(</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+        <span class="n">scalars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kpi_val</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">scalar_name</span><span class="p">,</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">scalars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">group</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">scalar_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scalar</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">):</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">add_figure</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">scalar</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_eval: Added figure </span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2"> for epoch </span><span class="si">%d</span><span class="s2">.&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                  <span class="n">scalar_value</span><span class="o">=</span><span class="n">scalar</span><span class="p">,</span>
+                                  <span class="n">global_step</span><span class="o">=</span><span class="n">epoch</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_eval: Added scalar </span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2"> for epoch </span><span class="si">%d</span><span class="s2">.&quot;</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush_writers</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="CsvLoggingCallback"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback">[docs]</a><span class="k">class</span> <span class="nc">CsvLoggingCallback</span><span class="p">(</span><span class="n">Callback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract the values stored in matplotlib figures and store them as CSV.</span>
+<span class="sd">    Only figures with one axis and one line in the plot are supported.</span>
+<span class="sd">    Figure data is saved into a CSV file under :py:attr:`log_dir` with the</span>
+<span class="sd">    name given by :py:meth:`~Callback.to_descriptor` with one column for x-data,</span>
+<span class="sd">    one for y-data.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        For the file path format see :py:meth:`file_path_for`</span>
+<span class="sd">        and :py:meth:`file_paths_in`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">OTHER_KPI_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;other&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The default KPI name for CSV files collecting non-image metric data.&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_DESC</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A default description to use if no other folder identifier can be determined.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CsvLoggingCallback.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;warn&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">log_dir</span>
+        <span class="sd">&quot;&quot;&quot;The root directory under which to store figure data.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">overwrite</span>
+        <span class="sd">&quot;&quot;&quot;Whether to overwrite existing files.</span>
+<span class="sd">        The following values are treated special:</span>
+
+<span class="sd">        - ``&#39;warn&#39;``: overwrite but log a warning if exists</span>
+<span class="sd">        - ``&#39;raise&#39;``: do not overwrite and raise a ``FileExistsError`` if exists  </span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="CsvLoggingCallback.file_path_for"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.file_path_for">[docs]</a>    <span class="k">def</span> <span class="nf">file_path_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">run_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">default_desc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Given logging specs provide the file path these should be located at.</span>
+
+<span class="sd">        :param default_desc: in case no descriptor can be determined use this value</span>
+<span class="sd">            (see :py:meth:`~Callback.to_descriptor`); if not given, instead raise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_descriptor</span><span class="p">(</span><span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">desc</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">default_desc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;file_path not given and could not determine file name info &quot;</span>
+                                  <span class="s2">&quot;from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)))</span>
+            <span class="n">desc</span> <span class="o">=</span> <span class="n">default_desc</span>
+        <span class="n">dir_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_dir</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
+        <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">kpi_name</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+        <span class="k">if</span> <span class="n">run_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">run_type</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_path</span></div>
+
+    <span class="k">def</span> <span class="nf">_save_to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                     <span class="n">kpi_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">OTHER_KPI_NAME</span><span class="p">,</span> <span class="n">run_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save number value columns of pandas Frame or Series to CSV with unique file name.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="o">*</span><span class="n">data</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+                            <span class="o">*</span><span class="p">([</span><span class="s1">&#39;line&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;line&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="p">[])]]</span>  <span class="c1"># include line identifier col</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path_for</span><span class="p">(</span><span class="n">kpi_name</span><span class="o">=</span><span class="n">kpi_name</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run_type</span><span class="o">=</span><span class="n">run_type</span><span class="p">,</span>
+                                            <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">,</span>
+                                            <span class="n">default_desc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_DESC</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">==</span> <span class="s1">&#39;warn&#39;</span><span class="p">:</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Overwriting for CSV logging: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">((</span><span class="s2">&quot;Log CSV file </span><span class="si">{}</span><span class="s2"> already exists! Safely remove or &quot;</span>
+                                       <span class="s2">&quot;set overwrite=&#39;warn&#39;.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: Saving DataFrame at </span><span class="si">%s</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: Saved DataFrame at </span><span class="si">%s</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fig_to_pd</span><span class="p">(</span><span class="n">fig</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Extract x and y values from ``fig`` and save to ``file_path``.</span>
+
+<span class="sd">        :return: the data frame that is stored to ``file_path``;</span>
+<span class="sd">            will be ``None`` if parsing is unsuccessful</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Retrieve data</span>
+        <span class="n">axes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">]</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+        <span class="n">line_datas</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s1">&#39;get_label&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s1">&#39;get_data&#39;</span><span class="p">):</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skipping non-line object in figure.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">line_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span>
+            <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+            <span class="n">x_label</span><span class="p">,</span> <span class="n">y_label</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlabel</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylabel</span><span class="p">()</span> <span class="ow">or</span> <span class="s1">&#39;y&#39;</span>
+            <span class="n">line_datas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">x_label</span><span class="p">:</span> <span class="n">x_vals</span><span class="p">,</span> <span class="n">y_label</span><span class="p">:</span> <span class="n">y_vals</span><span class="p">,</span>
+                                            <span class="s1">&#39;line&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">line_label</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)}))</span>
+        <span class="n">fig_data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">line_datas</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig_data</span>
+
+    <span class="k">def</span> <span class="nf">_save_figs_as_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_values</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                          <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter out figures and save them.&quot;&quot;&quot;</span>
+        <span class="n">figs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kpi_values</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kpi_values</span><span class="o">.</span><span class="n">index</span>
+                                       <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kpi_values</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">kpi_name</span><span class="p">,</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">figs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">fig_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig_to_pd</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: Turned figure for KPI </span><span class="si">%s</span><span class="s2"> into DataFrame.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">kpi_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_to_csv</span><span class="p">(</span><span class="n">fig_data</span><span class="p">,</span> <span class="n">kpi_name</span><span class="o">=</span><span class="n">kpi_name</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span>
+                              <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CsvLoggingCallback.after_epoch_train"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.after_epoch_train">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch_train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_train</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save figures in the final batch results.&quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_train: Starting figure saving.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_figs_as_csv</span><span class="p">(</span><span class="n">kpi_train</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_train: Starting other scalar saving.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_to_csv</span><span class="p">(</span><span class="n">kpi_train</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">run_type</span><span class="o">=</span><span class="n">run_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CsvLoggingCallback.after_epoch_eval"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.after_epoch_eval">[docs]</a>    <span class="k">def</span> <span class="nf">after_epoch_eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kpi_val</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;eval&#39;</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save figures in the eval epoch results.&quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_eval: Starting figure saving.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_figs_as_csv</span><span class="p">(</span><span class="n">kpi_val</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">)</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">, after_epoch_eval: Starting other scalar saving.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_to_csv</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">kpi_val</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">run_type</span><span class="o">=</span><span class="n">run_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CsvLoggingCallback.from_csv"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.from_csv">[docs]</a>    <span class="k">def</span> <span class="nf">from_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kpi_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">OTHER_KPI_NAME</span><span class="p">,</span> <span class="n">run_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">run</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Read a previously saved :py:class:`pandas.DataFrame`.</span>
+<span class="sd">        Either give ``file_path`` or a combination of the other infos.&quot;&quot;&quot;</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">file_path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path_for</span><span class="p">(</span>
+            <span class="n">kpi_name</span><span class="o">=</span><span class="n">kpi_name</span><span class="p">,</span> <span class="n">log_prefix</span><span class="o">=</span><span class="n">log_prefix</span><span class="p">,</span> <span class="n">run_type</span><span class="o">=</span><span class="n">run_type</span><span class="p">,</span>
+            <span class="n">run</span><span class="o">=</span><span class="n">run</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="n">batch</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;CSV file </span><span class="si">{}</span><span class="s2"> does not exist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CsvLoggingCallback.file_paths_in"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html#hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.file_paths_in">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">file_paths_in</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_abs_paths</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Given a ``log_dir`` return information on saved metrics.</span>
+
+<span class="sd">        :param log_dir: the root logging directory under which metrics were saved</span>
+<span class="sd">        :param use_abs_paths: whether to specify paths relative to ``log_dir`` or absolute</span>
+<span class="sd">        :return: a DataFrame containing in each row meta information and</span>
+<span class="sd">            the relative file path to a saved metric.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">abs_desc</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">file_names</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">log_dir</span><span class="p">):</span>
+            <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">abs_desc</span><span class="p">,</span> <span class="n">log_dir</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">file_names</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">)]:</span>
+                <span class="n">kpi_name</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">abs_desc</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_abs_paths</span> <span class="k">else</span> <span class="n">desc</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;kpi_name&#39;</span><span class="p">:</span> <span class="n">kpi_name</span><span class="p">,</span>
+                             <span class="o">**</span><span class="bp">cls</span><span class="o">.</span><span class="n">from_descriptor</span><span class="p">(</span><span class="n">desc</span><span class="p">),</span>
+                             <span class="s1">&#39;file_path&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)})</span>
+        <span class="k">return</span> <span class="n">data</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

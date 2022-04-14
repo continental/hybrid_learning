@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.experimentation.model_registry.fuzzy_exp_models &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.experimentation.model_registry.fuzzy_exp_models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.experimentation.model_registry.fuzzy_exp_models</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Helper function to register standard models suitable for fuzzy logic experiments.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">hybrid_learning.experimentation.model_registry</span> <span class="kn">import</span> <span class="n">custom_model_postproc</span>
+<span class="kn">from</span> <span class="nn">.model_registry</span> <span class="kn">import</span> <span class="n">register_model_builder</span>
+<span class="kn">from</span> <span class="nn">..fuzzy_exp.fuzzy_exp_helpers</span> <span class="kn">import</span> <span class="n">get_logic</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+
+<div class="viewcode-block" id="get_maskrcnn_box_trafo"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_maskrcnn_box_trafo.html#hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_maskrcnn_box_trafo">[docs]</a><span class="k">def</span> <span class="nf">get_maskrcnn_box_trafo</span><span class="p">(</span><span class="o">**</span><span class="n">conf</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">custom_model_postproc</span><span class="o">.</span><span class="n">MaskRCNNBoxToSegMask</span><span class="p">(</span>
+        <span class="n">image_size</span><span class="o">=</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;img_size&quot;</span><span class="p">],</span>
+        <span class="n">fuzzy_logic</span><span class="o">=</span><span class="p">(</span><span class="n">get_logic</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;fuzzy_logic_key&quot;</span><span class="p">],</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;predicate_setts&quot;</span><span class="p">],</span> <span class="n">warn_about_unused_setts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                     <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;predicate_setts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reduce_pred_masks&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                     <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_efficientdet_trafo"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_efficientdet_trafo.html#hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_efficientdet_trafo">[docs]</a><span class="k">def</span> <span class="nf">get_efficientdet_trafo</span><span class="p">(</span><span class="o">**</span><span class="n">conf</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">custom_model_postproc</span><span class="o">.</span><span class="n">EfficientDetToSegMask</span><span class="p">(</span>
+        <span class="n">image_size</span><span class="o">=</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;img_size&quot;</span><span class="p">],</span>
+        <span class="n">fuzzy_logic</span><span class="o">=</span><span class="p">(</span><span class="n">get_logic</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;fuzzy_logic_key&quot;</span><span class="p">],</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;predicate_setts&quot;</span><span class="p">],</span> <span class="n">warn_about_unused_setts</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                     <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;predicate_setts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reduce_pred_masks&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                     <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_efficientdet"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_efficientdet.html#hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_efficientdet">[docs]</a><span class="k">def</span> <span class="nf">get_efficientdet</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">model_key</span><span class="o">=</span><span class="s1">&#39;tf_efficientdet_d1&#39;</span><span class="p">,</span>
+                     <span class="n">effdet_wrapper</span><span class="o">=</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Obtain a standard EfficientDet model.</span>
+
+<span class="sd">    :param img_size: image size in (height, width); each dimension must be divisible by</span>
+<span class="sd">        ``2**max_level`` (usually 128)</span>
+<span class="sd">    :param model_key: the EfficientDet variant specifier; for options see</span>
+<span class="sd">        https://github.com/rwightman/efficientdet-pytorch/blob/75e16c2f/effdet/config/model_config.py#L82</span>
+<span class="sd">    :param effdet_wrapper: whether to wrap the EfficientDet model</span>
+<span class="sd">        for prediction (``&#39;prediction&#39;``, add NMS), for training (``&#39;train&#39;``), or not at all (``&#39;&#39;``)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">effdet_config</span> <span class="o">=</span> <span class="n">get_efficientdet_config</span><span class="p">(</span><span class="n">model_key</span><span class="p">)</span>
+    <span class="n">effdet_config</span><span class="p">[</span><span class="s2">&quot;image_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">img_size</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">effdet</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">effdet</span><span class="o">.</span><span class="n">create_model_from_config</span><span class="p">(</span>
+        <span class="n">effdet_config</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bench_task</span><span class="o">=</span><span class="n">effdet_wrapper</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="get_efficientdet_config"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_efficientdet_config.html#hybrid_learning.experimentation.model_registry.fuzzy_exp_models.get_efficientdet_config">[docs]</a><span class="k">def</span> <span class="nf">get_efficientdet_config</span><span class="p">(</span><span class="n">model_key</span><span class="o">=</span><span class="s1">&#39;tf_efficientdet_d1&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Obtain a standard EfficientDet config.</span>
+
+<span class="sd">    :param model_key: the efficientdet type; for options see</span>
+<span class="sd">        https://github.com/rwightman/efficientdet-pytorch/blob/75e16c2f/effdet/config/model_config.py#L82&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">effdet.config</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
+            <span class="s2">&quot;Could not find module effdet. This is required to run experiments with EfficientDet variants. &quot;</span>
+            <span class="s2">&quot;Please make sure to install it from github.com/rwightman/efficientdet-pytorch via</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">pip install -e </span><span class="se">\&quot;</span><span class="s2">git+https://github.com/rwightman/efficientdet-pytorch.git@75e16c2f#egg=effdet</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">effdet_config</span> <span class="o">=</span> <span class="n">effdet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_efficientdet_config</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">model_key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">effdet_config</span></div>
+
+
+<span class="c1"># ========================</span>
+<span class="c1"># FILL MODEL REGISTRY</span>
+<span class="c1"># ========================</span>
+
+<div class="viewcode-block" id="register_all_model_builders"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.experimentation.model_registry.fuzzy_exp_models.register_all_model_builders.html#hybrid_learning.experimentation.model_registry.fuzzy_exp_models.register_all_model_builders">[docs]</a><span class="k">def</span> <span class="nf">register_all_model_builders</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Register all model builders that may be used during fuzzy logic experiment.&quot;&quot;&quot;</span>
+    <span class="n">register_model_builder</span><span class="p">(</span>
+        <span class="s1">&#39;maskrcnn_box&#39;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="o">**</span><span class="n">_</span><span class="p">:</span> <span class="n">tv</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+    <span class="n">register_model_builder</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;maskrcnn_box_trafo&#39;</span><span class="p">,</span>
+        <span class="n">get_maskrcnn_box_trafo</span><span class="p">)</span>
+    <span class="n">register_model_builder</span><span class="p">(</span>
+        <span class="s1">&#39;maskrcnn&#39;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="o">**</span><span class="n">_</span><span class="p">:</span> <span class="n">tv</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+    <span class="n">register_model_builder</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;maskrcnn_trafo&#39;</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="o">**</span><span class="n">conf</span><span class="p">:</span> <span class="n">custom_model_postproc</span><span class="o">.</span><span class="n">MaskRCNNToSegMask</span><span class="p">(</span>
+            <span class="n">fuzzy_logic</span><span class="o">=</span><span class="p">(</span><span class="n">get_logic</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;fuzzy_logic_key&quot;</span><span class="p">],</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;predicate_setts&quot;</span><span class="p">])</span>
+                            <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;predicate_setts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reduce_pred_masks&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                            <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+    <span class="n">register_model_builder</span><span class="p">(</span>
+        <span class="s1">&#39;tf_efficientdet_d1&#39;</span><span class="p">,</span>
+        <span class="n">get_efficientdet</span><span class="p">)</span>
+    <span class="n">register_model_builder</span><span class="p">(</span>
+        <span class="s1">&#39;tf_efficientdet_d1_trafo&#39;</span><span class="p">,</span>
+        <span class="n">get_efficientdet_trafo</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

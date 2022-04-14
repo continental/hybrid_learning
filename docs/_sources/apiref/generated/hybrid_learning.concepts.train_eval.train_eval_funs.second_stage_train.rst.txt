@@ -1,0 +1,6 @@
+second\_stage\_train
+====================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.train_eval_funs
+
+.. autofunction:: second_stage_train

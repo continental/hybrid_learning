@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.models.embeddings &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.models.embeddings</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.models.embeddings</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Unified representation of concept embeddings with standard processing.</span>
+<span class="sd">Processing options include comparison, transformations, storing to disk,</span>
+<span class="sd">loading from disk.</span>
+<span class="sd">See :py:class:`~hybrid_learning.concepts.models.embeddings.ConceptEmbedding` for details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> \
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.utils.data</span>
+
+<span class="kn">from</span> <span class="nn">..concepts</span> <span class="kn">import</span> <span class="n">Concept</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="c1"># avoid cyclic import for the typing stuff</span>
+    <span class="kn">from</span> <span class="nn">.model_extension</span> <span class="kn">import</span> <span class="n">ModelStump</span>
+
+
+<span class="c1"># noinspection PyArgumentEqualDefault</span>
+<div class="viewcode-block" id="ConceptEmbedding"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding">[docs]</a><span class="k">class</span> <span class="nc">ConceptEmbedding</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Representation of an embedding of a concept within a DNN.</span>
+<span class="sd">    The representation aims to be technology independent.</span>
+
+<span class="sd">    Main aspects:</span>
+
+<span class="sd">    - the parameters:</span>
+<span class="sd">      :math:`\text{concept vector} = \text{weight}`,</span>
+<span class="sd">      :math:`\text{bias} = -\text{threshold}`</span>
+<span class="sd">    - the layer it is attached to given by the model up to that layer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConceptEmbedding.scale"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a new equivalent embedding with ``scaling_factor == 1``.&quot;&quot;&quot;</span>
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">scaled_normal_vec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaled_normal_vec</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scaled_support_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_factor</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span>
+            <span class="n">scaled_bias</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">scaled_support_factor</span> <span class="o">*</span>
+                            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">scaled_normal_vec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scaled_bias</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ConceptEmbedding</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="n">state_dict</span><span class="p">,</span>
+                                <span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                                <span class="n">normal_vec_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+                                <span class="n">bias_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+                                <span class="n">scaling_factor</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+                                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.save"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save the embedding parameters and some description as torch pt file.</span>
+<span class="sd">        Load the embedding using :py:meth:`load`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">((</span><span class="s2">&quot;Refusing to save embedding to existing &quot;</span>
+                                   <span class="s2">&quot;file </span><span class="si">{}</span><span class="s2"> with overwrite set to False&quot;</span>
+                                   <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+        <span class="n">skip_types</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">Concept</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">to_skip</span> <span class="ow">in</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span>
+                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">skip_t</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">skip_t</span> <span class="ow">in</span> <span class="n">skip_types</span><span class="p">)]:</span>
+            <span class="k">del</span> <span class="n">settings</span><span class="p">[</span><span class="n">to_skip</span><span class="p">]</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_legacy_load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load an embedding from an NPZ file.&quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Loading embeddings from .npz files is &quot;</span>
+                                    <span class="s2">&quot;deprecated. Please migrate file </span><span class="si">%s</span><span class="s2"> to the &quot;</span>
+                                    <span class="s2">&quot;new .pt format.&quot;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+        <span class="n">setts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="nb">dict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">weight</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">setts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;normal_vec&#39;</span><span class="p">)</span>
+        <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span>
+            <span class="n">bias</span><span class="o">=-</span><span class="p">(</span><span class="n">setts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;support_factor&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="n">scaling_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">setts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scaling_factor&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="n">state_dict</span><span class="p">,</span>
+                   <span class="n">kernel_size</span><span class="o">=</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span>
+                   <span class="n">normal_vec_name</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span>
+                   <span class="n">bias_name</span><span class="o">=</span><span class="s1">&#39;bias&#39;</span><span class="p">,</span>
+                   <span class="n">scaling_factor</span><span class="o">=</span><span class="n">scaling_factor</span><span class="p">,</span>
+                   <span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">setts</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+
+<div class="viewcode-block" id="ConceptEmbedding.load"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load an embedding using :py:func:`torch.load`.</span>
+<span class="sd">        The format should be as used by :py:meth:`save`.</span>
+<span class="sd">        For .npz files, a legacy loading mechanism based on</span>
+<span class="sd">        :py:func:`numpy.load` is used.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Be aware that unpickling is used for loading.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.npz&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_legacy_load</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Dictionary to reproduce the instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                    <span class="n">normal_vec_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+                    <span class="n">bias_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+                    <span class="n">scaling_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normal_vec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;A normal vector to the represented hyperplane.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bias</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The bias :math:`B` of the represented hyperplane.</span>
+<span class="sd">        A vector :math:`v` is on the hyperplane defined by the normal vector</span>
+<span class="sd">        :math:`n` and the bias :math:`B` iff</span>
+
+<span class="sd">        .. math:: 0 = d(v) = v \circ n + B</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A factor :math:`b` to obtain the orthogonal support vector</span>
+<span class="sd">        :math:`b\cdot n` from the normal vector :math:`n`.</span>
+<span class="sd">        A vector :math:`v` is on the hyperplane iff</span>
+
+<span class="sd">        .. math:: 0 = d(v) = (v - b\cdot n) \circ n = v \circ n - b\cdot |n|^2</span>
+
+<span class="sd">        Here, :math:`d(v)` denotes the signed orthogonal distance of :math:`v`</span>
+<span class="sd">        from the hyperplane (cf. :py:attr:`bias`).</span>
+<span class="sd">        If given, it is calculated from the bias :math:`B` and the normal vector</span>
+<span class="sd">        :math:`n` as :math:`-\frac{B}{\|n\|^2}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">normal_vec_length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">normal_vec_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>  <span class="c1"># pylint: disable=invalid-unary-operand-type</span>
+        <span class="n">support_factor</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>  <span class="c1"># pylint: disable=invalid-unary-operand-type</span>
+            <span class="o">/</span> <span class="p">(</span><span class="n">normal_vec_length</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">support_factor</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Got bias which has more than one entry (shape: </span><span class="si">{}</span><span class="s2">): </span><span class="si">{}</span><span class="s2">&quot;</span>
+                 <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">support_factor</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">support_factor</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">support_factor</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConceptEmbedding.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                 <span class="c1"># TODO: make kernel_size optional / auto-derive it?</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                 <span class="n">normal_vec_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bias_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scaling_factor</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">meta_info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param state_dict: numpy representations of a</span>
+<span class="sd">            :py:class:`torch.nn.Module` state dict describing</span>
+<span class="sd">            the concept model of this embedding</span>
+<span class="sd">        :param kernel_size: see :py:attr:`kernel_size`</span>
+<span class="sd">        :param normal_vec_name: the key of the concept vector within</span>
+<span class="sd">            ``state_dict``</span>
+<span class="sd">        :param bias_name: the key of the bias within ``state_dict``</span>
+<span class="sd">        :param support_factor: the negative concept threshold;</span>
+<span class="sd">            calculates as ``-bias`` over squared normal vec length</span>
+<span class="sd">        :param scaling_factor: see :py:attr:`scaling_factor`</span>
+<span class="sd">        :param concept: the concept that is embedded;</span>
+<span class="sd">        :param model_stump: the model up to the layer of the embedding;</span>
+<span class="sd">            part of :py:attr:`meta_info`</span>
+<span class="sd">        :param layer_id: if ``model_stump`` is not given, optional</span>
+<span class="sd">            specification of the ``layer_id``;</span>
+<span class="sd">            part of :py:attr:`meta_info`</span>
+<span class="sd">        :param concept_name: if ``concept`` is not given,</span>
+<span class="sd">            optional specification of the name;</span>
+<span class="sd">            part of :py:attr:`meta_info`</span>
+<span class="sd">        :param meta_info: any other meta information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_dict</span>
+        <span class="sd">&quot;&quot;&quot;The concept model&#39;s state dict. Assumed to be the result of a call to</span>
+<span class="sd">        :py:meth`torch.nn.Module.state_dict`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_size</span>
+        <span class="sd">&quot;&quot;&quot;The kernel size used by the concept model convolution.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">normal_vec_name</span>
+        <span class="sd">&quot;&quot;&quot;The key of the concept vector parameter within the state_dict.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">((</span><span class="s2">&quot;normal_vec_name &#39;</span><span class="si">{}</span><span class="s2">&#39; not in keys of state_dict </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">normal_vec_name</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">bias_name</span>
+        <span class="sd">&quot;&quot;&quot;The key of the concept model bias within the state_dict.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Set some meta_info defaults:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_info</span>
+        <span class="sd">&quot;&quot;&quot;Any further meta information.&quot;&quot;&quot;</span>
+        <span class="n">concept</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Concept</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;concept&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+            <span class="s1">&#39;concept_name&#39;</span><span class="p">,</span> <span class="n">concept</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">concept</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">model_stump</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ModelStump&#39;</span><span class="p">]</span> \
+            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;model_stump&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+            <span class="s1">&#39;layer_id&#39;</span><span class="p">,</span>
+            <span class="n">model_stump</span><span class="o">.</span><span class="n">stump_head</span> <span class="k">if</span> <span class="n">model_stump</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+            <span class="s1">&#39;main_model&#39;</span><span class="p">,</span>
+            <span class="n">model_stump</span><span class="o">.</span><span class="n">wrapped_model</span> <span class="k">if</span> <span class="n">model_stump</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">scaling_factor</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The factor to obtain the original normal vector.</span>
+<span class="sd">        Only applies if a normal vector is given</span>
+<span class="sd">        (see :py:attr:`normal_vec_name`).</span>
+<span class="sd">        Any two embeddings with normal vectors :math:`n_1, n_2` and support</span>
+<span class="sd">        factors :math:`b_1, b_2` fulfilling the following represent the same</span>
+<span class="sd">        hyperplane:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            :nowrap:</span>
+
+<span class="sd">            \begin{align*}</span>
+<span class="sd">            \frac{|n_1 \circ n_2|} {(|n_1| \cdot |n_2|)} &amp;= 1 &amp;\text{and} &amp;&amp;</span>
+<span class="sd">            \frac{|n_1|} {|n_2|} &amp;= \frac{b_2} {b_1}</span>
+<span class="sd">            \end{align*}</span>
+
+<span class="sd">        However, the signed orthogonal distance measure of an embedding</span>
+<span class="sd">        :math:`(n, b)` for a vector :math:`v`</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d(v)</span>
+<span class="sd">            = (v - b \cdot n) \circ n</span>
+<span class="sd">            = |n| \cdot \left(v \circ \frac{n}{|n|}\right) - b\cdot|n|^2</span>
+
+<span class="sd">        which is used e.g. in concept layers, depends quadratic on the normal</span>
+<span class="sd">        vector length. If the hyperplane representation is changed,</span>
+<span class="sd">        the original normal vector and support factor</span>
+<span class="sd">        providing the original distance measure can be obtained via</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \left(n \cdot \text{scaling_factor} ,</span>
+<span class="sd">            \frac{b}{\text{scaling_factor}})\right.</span>
+
+<span class="sd">        *Examples:*</span>
+<span class="sd">        The scaling_factor is 1 if the original weight was not changed,</span>
+<span class="sd">        and :math:`|weight|` if it was normalized.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.__getattr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.__getattr__">[docs]</a>    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hand over attribute access to meta_infos if necessary.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;meta_info&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.distance"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calc the scaled distance of point from the embedding hyperplane.</span>
+<span class="sd">        The distance from a point pt is given by</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d(pt) =</span>
+<span class="sd">            \text{scaling_factor} \cdot \left((n \circ pt)</span>
+<span class="sd">            - b (n \circ n)\right)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Cannot calculate distance for point of different&quot;</span>
+                              <span class="s2">&quot; shape than normal vec; expected </span><span class="si">{}</span><span class="s2"> but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">point</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="c1"># d(pt) = scaling_factor * [(n \circ pt) - b * (n \circ n)]</span>
+        <span class="n">dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="o">*</span>
+                       <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">point</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">)</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_factor</span>
+                        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.normalize"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.normalize">[docs]</a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Yield a new, equivalent embedding with normalized normal vec.</span>
+<span class="sd">        The sign of the scaling factor is not changed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No normal_vec_name given, cannot access &#39;</span>
+                                      <span class="s1">&#39;normal vector for normalization.&#39;</span><span class="p">)</span>
+        <span class="n">normal_vec_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">normal_vec_norm</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tried to normalize zero vector.&quot;</span><span class="p">)</span>
+        <span class="n">normed_normal_vec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="o">/</span> <span class="n">normal_vec_norm</span>
+        <span class="n">normed_scaling_factor</span> <span class="o">=</span> <span class="n">normal_vec_norm</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span>
+
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">normed_normal_vec</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">normed_support_factor</span> <span class="o">=</span> <span class="n">normal_vec_norm</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_factor</span>
+            <span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">-</span><span class="n">normed_support_factor</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ConceptEmbedding</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="n">state_dict</span><span class="p">,</span>
+                                <span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                                <span class="n">normal_vec_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+                                <span class="n">bias_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+                                <span class="n">scaling_factor</span><span class="o">=</span><span class="n">normed_scaling_factor</span><span class="p">,</span>
+                                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.unique"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.unique">[docs]</a>    <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Yield new, equivalent, unique embedding with normalized normal vec</span>
+<span class="sd">        and pos scaling.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">to_pos_scaling</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.unique_upper_sphere"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.unique_upper_sphere">[docs]</a>    <span class="k">def</span> <span class="nf">unique_upper_sphere</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Yield new equivalent, unique embedding with normal vec normalized</span>
+<span class="sd">        in upper hemisphere.</span>
+
+<span class="sd">        An embedding defines a hyperplane as follows:</span>
+
+<span class="sd">        - the :math:`weight` is a (not necessarily normalized) normal vector</span>
+<span class="sd">          of the hyperplane</span>
+<span class="sd">        - :math:`bias \cdot weight` is a support vector orthogonal to the plane</span>
+
+<span class="sd">        This representation is not unique.</span>
+<span class="sd">        In many cases it is desirable to consider the representation where</span>
+<span class="sd">        the normal vector is normalized, and lies on the upper half of a</span>
+<span class="sd">        given sphere (including the equator). To also obtain unique results</span>
+<span class="sd">        for the equator cases, the rule is that, when flattened, the first</span>
+<span class="sd">        non-zero entry is positive.</span>
+<span class="sd">        The representation obtained then as follows is unique</span>
+<span class="sd">        (sign(weight) is the sign of the first non-zero entry when flattened):</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            weight_{new} &amp;= sign(weight) \cdot \frac{weight} {|weight|} \\</span>
+<span class="sd">            bias_{new}   &amp;= sign(weight) \cdot (bias \cdot |weight|)</span>
+
+<span class="sd">        Then the weight is normalized and</span>
+
+<span class="sd">        .. math:: weight_{new} \cdot bias_{new} = weight \cdot bias</span>
+
+<span class="sd">        is still an orthogonal support vector.</span>
+<span class="sd">        Two equivalent representations will yield the same such</span>
+<span class="sd">        normalized embedding.</span>
+
+<span class="sd">        :returns: Equivalent embedding where the weight of the output embedding</span>
+<span class="sd">            is normalized and, when flattened, the weight&#39;s first non-zero</span>
+<span class="sd">            entry is positive</span>
+<span class="sd">        :raises: :py:exc:`ValueError`, if the weight of the embedding is zero</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Normalize the weight and the bias</span>
+        <span class="n">normed_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+
+        <span class="c1"># Now reflect weight if it is on the wrong side of the hemisphere</span>
+        <span class="c1"># Sign of first non-zero entry</span>
+        <span class="n">first_weight_sign</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">normed_emb</span><span class="o">.</span><span class="n">normal_vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+             <span class="k">if</span> <span class="n">entry</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">first_weight_sign</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">normed_emb</span><span class="o">.</span><span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">]</span> <span class="o">*=</span> <span class="n">first_weight_sign</span>
+            <span class="n">normed_emb</span><span class="o">.</span><span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">]</span> <span class="o">*=</span> <span class="n">first_weight_sign</span>
+            <span class="n">normed_emb</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="o">*=</span> <span class="n">first_weight_sign</span>
+
+        <span class="k">return</span> <span class="n">normed_emb</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.to_pos_scaling"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.to_pos_scaling">[docs]</a>    <span class="k">def</span> <span class="nf">to_pos_scaling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the representation of this embedding with positive scaling.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No normal_vec_name given, cannot access &#39;</span>
+                                      <span class="s1">&#39;normal vector for normalization.&#39;</span><span class="p">)</span>
+
+        <span class="n">sign</span> <span class="o">=</span> <span class="mf">1.</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.</span>
+
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">state_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>
+
+        <span class="k">return</span> <span class="n">ConceptEmbedding</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="n">state_dict</span><span class="p">,</span>
+                                <span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                                <span class="n">normal_vec_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+                                <span class="n">bias_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+                                <span class="n">scaling_factor</span><span class="o">=</span><span class="n">sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">,</span>
+                                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.forget_scaling"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.forget_scaling">[docs]</a>    <span class="k">def</span> <span class="nf">forget_scaling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the embedding with the same normal vec and support but</span>
+<span class="sd">        scaling factor 1.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ConceptEmbedding</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state_dict</span><span class="p">,</span>
+                                <span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                                <span class="n">normal_vec_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+                                <span class="n">bias_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+                                <span class="n">scaling_factor</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+                                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.mean"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.mean">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+             <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                               <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]]):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the normalized embedding with distance fctn mean of the</span>
+<span class="sd">        normalized distance fctns.</span>
+<span class="sd">        Consider the non-scaled distance functions of the normalized versions</span>
+<span class="sd">        of the given embeddings. Then the condition for the normalized mean</span>
+<span class="sd">        embedding is that at any point the distance from the embedding</span>
+<span class="sd">        hyperplane to the point is the mean distance of these normalized</span>
+<span class="sd">        distances:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_{\frac{n}{|n|}, b\cdot |n|}</span>
+<span class="sd">            = mean\left( d_{\frac{n_j}{|n_j|}, |n_j|\cdot b_j} \right)</span>
+
+<span class="sd">        The scaling factor in the end is the mean of the scaling factors of</span>
+<span class="sd">        the normalized representations of the given embeddings.</span>
+
+<span class="sd">        :returns: normalized</span>
+<span class="sd">        :raises: :py:exc:`ValueError` if</span>
+<span class="sd">            :math:`mean\left(\frac{n_j}{|n_j|}\right)` of the scaled</span>
+<span class="sd">            normal vectors :math:`n_j` is 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeddings</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_flatten_emb_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="c1"># Value checks:</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_embedding_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+
+        <span class="c1"># Get normalized versions of embeddings with positive scaling factor</span>
+        <span class="n">normed_embs</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">to_pos_scaling</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+        <span class="n">scaling_factors</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embs</span><span class="p">]</span>
+        <span class="c1"># Set scaling factors to 1. to make .scale() have no effect</span>
+        <span class="n">normed_unscaled_embs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">forget_scaling</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span>
+                                                        <span class="ow">in</span> <span class="n">normed_embs</span><span class="p">]</span>
+
+        <span class="c1"># Now calculate distance mean and normalize normal vector</span>
+        <span class="n">mean_embedding</span><span class="p">:</span> <span class="n">ConceptEmbedding</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mean_by_distance</span><span class="p">(</span>
+            <span class="n">normed_unscaled_embs</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+        <span class="c1"># The scaling_factor should be the mean of the given scaling factors:</span>
+        <span class="n">mean_embedding</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scaling_factors</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mean_embedding</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_flatten_emb_list</span><span class="p">(</span>
+            <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                              <span class="n">Sequence</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Flatten the given embeddings list if it is a list of lists.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> \
+                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ConceptEmbedding</span><span class="p">):</span>
+            <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">ens_emb</span> <span class="ow">in</span> <span class="n">embeddings</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ens_emb</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">embeddings</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_validate_embedding_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]</span>
+                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Check whether given embeddings list is suitable for calculating a</span>
+<span class="sd">        mean.</span>
+
+<span class="sd">        :raises: :py:exc:`ValueError` if any condition is not fulfilled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check embeddings length</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Got empty list of embeddings for calculating &quot;</span>
+                             <span class="s2">&quot;mean.&quot;</span><span class="p">)</span>
+        <span class="c1"># Check that all use the same concept</span>
+        <span class="n">concept</span><span class="p">:</span> <span class="n">Concept</span> <span class="o">=</span> <span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">concept</span>
+        <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">concept</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">emb</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Called mean on embeddings of different &quot;</span>
+                                  <span class="s2">&quot;concepts (</span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2">)&quot;</span>
+                                  <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">emb</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="p">[</span><span class="n">emb</span> <span class="k">for</span> <span class="n">emb</span> <span class="ow">in</span> <span class="n">embeddings</span>
+                    <span class="k">if</span> <span class="n">emb</span><span class="o">.</span><span class="n">normal_vec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">((</span><span class="s1">&#39;No normal_vec given in embedding </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                                  <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">emb</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ConceptEmbedding.first"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.first">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+              <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                                <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]]</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Select a copy of the first element of the list.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.mean_by_distance"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.mean_by_distance">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">mean_by_distance</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                              <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get embedding with distance measure being the mean of given embs.</span>
+<span class="sd">        This routine only works if the mean of the scaled embeddings normal</span>
+<span class="sd">        vectors is non-zero.</span>
+
+<span class="sd">        The distance of a point :math:`x` from a hyperplane :math:`(n, b)`</span>
+<span class="sd">        with normal vector :math:`n` and support vector :math:`b\cdot n` is</span>
+<span class="sd">        defined as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_{n,b}(x)</span>
+<span class="sd">            = \left((x - b\cdot n) \circ n\right)</span>
+<span class="sd">            = x \circ n - b \cdot |n|^2</span>
+
+<span class="sd">        For an embedding :math:`(n, b, s)` with scaling factor s the distance</span>
+<span class="sd">        measure is the one of its scaled version :math:`(s n, \frac{b}{s}, 1)`,</span>
+<span class="sd">        which turns out to be</span>
+
+<span class="sd">        .. math:: d_{s n, \frac{b}{s}} = s \cdot d_{n,b}</span>
+
+<span class="sd">        This routine determines the &quot;average&quot; hyperplane for the given</span>
+<span class="sd">        embeddings, where here average hyperplane :math:`(n, b)` means the</span>
+<span class="sd">        one with the following property:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_{n,b}</span>
+<span class="sd">            = mean(d_{n_j,b_j})</span>
+<span class="sd">            = \frac 1 N \sum_{j=1}^{N} d_{n_j,b_j}</span>
+
+<span class="sd">        i.e. at any point :math:`x` in space the distance of the average</span>
+<span class="sd">        hyperplane to :math:`x` is the mean of the distances of all N given</span>
+<span class="sd">        hyperplanes :math:`(n_j,b_j)` to :math:`x`. It is unique (the points</span>
+<span class="sd">        on the plane are those with distance 0 and thus all the same),</span>
+<span class="sd">        and given by the following combination (with scaling factor 1):</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            n &amp;= mean(n_j) \\</span>
+<span class="sd">            b &amp;= \frac{1}{|n|^2} mean(b_j \cdot |n_j|^2)</span>
+
+<span class="sd">        Possible problems: This will weight the contribution of the given</span>
+<span class="sd">        embeddings by their confidence, i.e. their scaling factor.</span>
+<span class="sd">        To avoid this, the mean can be taken over the normalized versions</span>
+<span class="sd">        with scaling factor set to one and the scaling factor of the mean can</span>
+<span class="sd">        be determined by confidence calibration.</span>
+
+<span class="sd">        :returns: embedding describing the hyperplane with above properties</span>
+<span class="sd">        :raises: ValueError if the mean of the scaled normal vectors of the</span>
+<span class="sd">            given embeddings is 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeddings</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_flatten_emb_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="c1"># Value checks:</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_embedding_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+
+        <span class="c1"># First apply the scaling to all embeddings</span>
+        <span class="n">scaled_embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">scale</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+        <span class="n">normal_vecs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">normal_vec</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">scaled_embeddings</span><span class="p">]</span>
+        <span class="n">support_factors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">support_factor</span> <span class="ow">or</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">scaled_embeddings</span><span class="p">]</span>
+
+        <span class="c1"># Normal vector: mean(n_j) with n_j scaled normal vectors</span>
+        <span class="n">mean_normal_vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">normal_vecs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Get normal vector norm; must not be zero!</span>
+        <span class="n">squared_mean_normal_vec_norm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_normal_vec</span> <span class="o">*</span> <span class="n">mean_normal_vec</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">squared_mean_normal_vec_norm</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mean of scaled embedding normal vectors is zero; &quot;</span>
+                             <span class="s2">&quot;cannot calculate mean embedding&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Support factor: - b = mean(b_j * |n_j|**2) / (|n|**2)</span>
+        <span class="c1"># with b_j scaled support factor, n mean normal vector</span>
+        <span class="n">mean_support_factor</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n_j</span> <span class="o">*</span> <span class="n">n_j</span><span class="p">)</span>
+                      <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">n_j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">support_factors</span><span class="p">,</span> <span class="n">normal_vecs</span><span class="p">)])</span>
+             <span class="o">/</span> <span class="n">squared_mean_normal_vec_norm</span><span class="p">)</span>
+
+        <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_normal_vec</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias_name</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="o">-</span> <span class="n">mean_support_factor</span> <span class="o">*</span> <span class="n">squared_mean_normal_vec_norm</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">state_dict</span><span class="o">=</span><span class="n">state_dict</span><span class="p">,</span>
+                   <span class="n">kernel_size</span><span class="o">=</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                   <span class="n">normal_vec_name</span><span class="o">=</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+                   <span class="n">bias_name</span><span class="o">=</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+                   <span class="n">scaling_factor</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">meta_info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.variance"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.variance">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">variance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                 <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                                   <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]],</span>
+                 <span class="n">ddof</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the variance of a list of embeddings (by default unbiased).</span>
+<span class="sd">        The variances are calculated on the unique normalized representations</span>
+<span class="sd">        of the embeddings, and encompass variance of:</span>
+
+<span class="sd">        - the normal vector</span>
+<span class="sd">        - the support vector factor (= distance to 0)</span>
+<span class="sd">        - the scaling factor (= length of the normal vector).</span>
+
+<span class="sd">        :param embeddings: sequence of embeddings to take variance of</span>
+<span class="sd">        :param ddof: delta degrees of freedom: the divisor used in calculations</span>
+<span class="sd">            is :math:`\text{num_embeddings} - \text{ddof}`;</span>
+<span class="sd">            if ``ddof=1`` (default), the unbiased variance is obtained</span>
+<span class="sd">        :returns: Tuple of variance of</span>
+<span class="sd">            ``(normal vecs, support factors, scaling factors)`` for</span>
+<span class="sd">            normalized representations of given embeddings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeddings</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_flatten_emb_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_embedding_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="c1"># First norm all embeddings and bring them to the same hemisphere to</span>
+        <span class="c1"># compare them</span>
+        <span class="n">normed_embs</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">to_pos_scaling</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+
+        <span class="c1"># Now calculate the variances of the embedding specifiers</span>
+        <span class="n">var_normal_vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">normal_vec</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embs</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="n">ddof</span><span class="p">)</span>
+        <span class="n">var_supp_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">normed_embs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">support_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">var_supp_factor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">support_factor</span> <span class="ow">or</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embs</span><span class="p">],</span>
+                       <span class="n">ddof</span><span class="o">=</span><span class="n">ddof</span><span class="p">))</span>
+        <span class="n">var_scale_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embs</span><span class="p">],</span> <span class="n">ddof</span><span class="o">=</span><span class="n">ddof</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">var_normal_vec</span><span class="p">,</span> <span class="n">var_supp_factor</span><span class="p">,</span> <span class="n">var_scale_factor</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.std_deviation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.std_deviation">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">std_deviation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                      <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                                        <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]],</span>
+                      <span class="n">ddof</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the (by default unbiased) standard deviation of a list of embs.</span>
+<span class="sd">        The standard deviations are calculated on the unique normalized</span>
+<span class="sd">        representations of the embeddings, and encompass standard deviation of:</span>
+
+<span class="sd">        - the normal vector</span>
+<span class="sd">        - the support vector factor (= distance to 0)</span>
+<span class="sd">        - the scaling factor (= length of the normal vector).</span>
+
+<span class="sd">        The deviations are calculated as the square root of the variances</span>
+<span class="sd">        (see :py:meth:`variance`).</span>
+
+<span class="sd">        :param embeddings: sequence of embeddings</span>
+<span class="sd">        :param ddof: delta degrees of freedom: the divisor used in calculations</span>
+<span class="sd">            is :math:`\text{num_embeddings} - \text{ddof}`;</span>
+<span class="sd">            if ``ddof=1`` (default), the unbiased standard  deviation is</span>
+<span class="sd">            obtained</span>
+<span class="sd">        :returns: Tuple of standard deviation of</span>
+<span class="sd">            ``(normal vecs, support factors, scaling factors)`` for</span>
+<span class="sd">            normalized representations of given embeddings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">var_normal_vec</span><span class="p">,</span> <span class="n">var_supp_factor</span><span class="p">,</span> <span class="n">var_scale_factor</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">variance</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="n">ddof</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var_normal_vec</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var_supp_factor</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var_scale_factor</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.mean_by_angle"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.mean_by_angle">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">mean_by_angle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                      <span class="n">embeddings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">],</span>
+                                        <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]]]</span>
+                      <span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get embedding where distance to the given hyperplanes at each</span>
+<span class="sd">        point sums up to 0.</span>
+
+<span class="sd">        **The Math Behind**</span>
+
+<span class="sd">        This routine approximates an &quot;average&quot; hyperplane from the given</span>
+<span class="sd">        embeddings where here average hyperplane means the one for which the</span>
+<span class="sd">        following holds:</span>
+<span class="sd">        Given a point :math:`x` on the average hyperplane, the signed</span>
+<span class="sd">        distances to all hyperplanes along the average hyperplane&#39;s normal</span>
+<span class="sd">        vector sum up to zero.</span>
+<span class="sd">        The signed distance from :math:`x` to a hyperplane H non-orthogonal</span>
+<span class="sd">        to the average hyperplane is</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \left(\left( (R\cdot n + x) \cap H \right) - x \right) \circ n,</span>
+
+<span class="sd">        where</span>
+
+<span class="sd">         - :math:`n` is the normalized normal vector of the average hyperplane,</span>
+<span class="sd">         - :math:`(R \cdot n + x)` is the 1-dim affine sub-space through</span>
+<span class="sd">           :math:`x` in the direction of :math:`n`, and</span>
+<span class="sd">         - :math:`((R \cdot n + x) \cap H)` is the unique intersection of</span>
+<span class="sd">           above line with :math:`H`.</span>
+
+<span class="sd">        The average hyperplane has the following properties:</span>
+
+<span class="sd">        - The average hyperplane is unique.</span>
+<span class="sd">        - The average normal vector only depends on the normal vectors of the</span>
+<span class="sd">          hyperplanes, not their supports/biases.</span>
+<span class="sd">        - Given the normalized normal vector n of the average hyperplane,</span>
+<span class="sd">          a support vector is given by:</span>
+
+<span class="sd">          .. math::</span>
+<span class="sd">            \frac{1}{N} \sum_{j=1}^{N} \frac{|b_j|^2}{n \circ b_j} \cdot n</span>
+
+<span class="sd">          where the sum goes over the N hyperplanes, :math:`n` is a normalized</span>
+<span class="sd">          normal vector of the average hyperplane and :math:`b_j` is the</span>
+<span class="sd">          orthogonal support vector of the jth hyperplane</span>
+<span class="sd">          (i.e. a support vector which is a multiple of the normal vector).</span>
+<span class="sd">        - Assume normalized normal vectors of the hyperplanes which all lie in</span>
+<span class="sd">          the same hypersphere and are given in angle coordinates of the</span>
+<span class="sd">          1-hypersphere. An entry in the average normal vector in angle</span>
+<span class="sd">          coordinates is the mean of the entries in the other hyperplane&#39;s</span>
+<span class="sd">          normal vectors.</span>
+
+<span class="sd">        **Implementation Notes**</span>
+
+<span class="sd">        Normal vector:</span>
+<span class="sd">          The normal vector is computationally expensive to calculate</span>
+<span class="sd">          (should be the spherical barycenter of the normed normal vectors</span>
+<span class="sd">          in one hemisphere)</span>
+<span class="sd">          and can be approximated by the normalized barycenter of the</span>
+<span class="sd">          normalized normal vectors which lie in the same hemisphere.</span>
+
+<span class="sd">        Support:</span>
+<span class="sd">          If the normal vectors do not differ too much, the support can also</span>
+<span class="sd">          be approximated by the mean of the orthogonal support vectors</span>
+<span class="sd">          (or be considered as an optimisation problem</span>
+<span class="sd">          and be learned from the concept data).</span>
+
+<span class="sd">        :param embeddings: list of embeddings or list of list of embeddings</span>
+<span class="sd">        :returns: The embedding representing the average hyperplane of the</span>
+<span class="sd">            hyperplanes represented by the given embeddings</span>
+<span class="sd">        :raises: :py:exc:`ValueError` if the mean of the normalized normal</span>
+<span class="sd">            vectors :math:`\frac{n_j}{|n_j|}` of the given embeddings is 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embeddings</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_flatten_emb_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="c1"># Value checks:</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_embedding_list</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+        <span class="c1"># First norm all embeddings and bring them to the same hemisphere</span>
+        <span class="n">normed_embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">to_pos_scaling</span><span class="p">()</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embeddings</span><span class="p">]</span>
+        <span class="n">normed_normal_vecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">normal_vec</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embeddings</span><span class="p">]</span>
+        <span class="n">normed_support_factors</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">support_factor</span> <span class="ow">or</span> <span class="mf">0.0</span>
+                                  <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embeddings</span><span class="p">]</span>
+        <span class="n">normed_scaling_factors</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">scaling_factor</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">normed_embeddings</span><span class="p">]</span>
+
+        <span class="c1"># Approximate normal vector: Take normalized mean of the concept vectors</span>
+        <span class="n">mean_normal_vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">normed_normal_vecs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">mean_normal_vec_length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">mean_normal_vec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">mean_normal_vec_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Mean of normalized embedding normal vectors is &quot;</span>
+                             <span class="s2">&quot;zero (all positive scaling); &quot;</span>
+                             <span class="s2">&quot;cannot calculate mean embedding&quot;</span><span class="p">)</span>
+        <span class="n">mean_normal_vec</span> <span class="o">/=</span> <span class="n">mean_normal_vec_length</span>
+        <span class="n">mean_scaling_factor</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">normed_scaling_factors</span><span class="p">,</span>
+                                                  <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Support bias:</span>
+        <span class="c1"># 1/N \sum_{j=1}^{N} bias_j^2 / (mean_weight \circ (bias_j * weight_j))</span>
+        <span class="n">cos_distances</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_normal_vec</span> <span class="o">*</span> <span class="p">(</span><span class="n">bias</span> <span class="o">*</span> <span class="n">weight</span><span class="p">))</span>
+                         <span class="k">for</span> <span class="n">bias</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span>
+                         <span class="nb">zip</span><span class="p">(</span><span class="n">normed_support_factors</span><span class="p">,</span> <span class="n">normed_normal_vecs</span><span class="p">)]</span>
+        <span class="n">mean_support_factor</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">))</span> <span class="o">*</span>
+                               <span class="c1"># supp / cos(supp to norm_weight)</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span>
+                                   <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">bias</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">cos_dist</span>
+                                   <span class="k">if</span> <span class="n">cos_dist</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+                                   <span class="c1"># no or orthogonal support</span>
+                                   <span class="k">for</span> <span class="n">bias</span><span class="p">,</span> <span class="n">cos_dist</span> <span class="ow">in</span>
+                                   <span class="nb">zip</span><span class="p">(</span><span class="n">normed_support_factors</span><span class="p">,</span> <span class="n">cos_distances</span><span class="p">)</span>
+                               <span class="p">]))</span>
+
+        <span class="n">state_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_normal_vec</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias_name</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span> <span class="n">mean_support_factor</span>
+
+        <span class="n">mean_embedding</span><span class="p">:</span> <span class="n">ConceptEmbedding</span> <span class="o">=</span> <span class="n">ConceptEmbedding</span><span class="p">(</span>
+            <span class="n">state_dict</span><span class="o">=</span><span class="n">state_dict</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="o">=</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+            <span class="n">normal_vec_name</span><span class="o">=</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">normal_vec_name</span><span class="p">,</span>
+            <span class="n">bias_name</span><span class="o">=</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bias_name</span><span class="p">,</span>
+            <span class="n">scaling_factor</span><span class="o">=</span><span class="n">mean_scaling_factor</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">meta_info</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">mean_embedding</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.__eq__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert both embeddings to unique representation and compare values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_vec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">normal_vec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">norm_other</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">to_pos_scaling</span><span class="p">()</span>
+            <span class="n">norm_self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span><span class="o">.</span><span class="n">to_pos_scaling</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">norm_other</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">,</span>
+                                <span class="n">norm_self</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">))</span> <span class="ow">and</span> \
+                   <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">norm_other</span><span class="o">.</span><span class="n">support_factor</span><span class="p">,</span>
+                                <span class="n">norm_self</span><span class="o">.</span><span class="n">support_factor</span><span class="p">))</span> <span class="ow">and</span> \
+                   <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">norm_other</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">,</span> <span class="n">norm_self</span><span class="o">.</span><span class="n">normal_vec</span><span class="p">))</span>
+        <span class="n">other_settings</span><span class="p">,</span> <span class="n">my_settings</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+        <span class="k">if</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">other_settings</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">my_settings</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">other_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">my_settings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                   <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">my_settings</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Information about concept, model, layer, concept vector and thresh.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
+                               <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;=&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)])</span>
+                                          <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.__copy__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.__copy__">[docs]</a>    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ConceptEmbedding&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of this embedding.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">})</span></div>
+
+<div class="viewcode-block" id="ConceptEmbedding.__deepcopy__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.__deepcopy__">[docs]</a>    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a deep copy of this embedding.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">})</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

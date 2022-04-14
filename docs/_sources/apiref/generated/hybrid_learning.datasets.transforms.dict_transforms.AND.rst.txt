@@ -1,9 +1,0 @@
-AND
-===
-
-.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
-
-.. autoclass:: AND
-    :members:
-
-    .. autoclasstoc::

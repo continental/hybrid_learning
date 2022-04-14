@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>plot_curve &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="plot_metric" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.plot_metric.html" />
+    <link rel="prev" title="conf_to_fn" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.conf_to_fn.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval.html">fuzzy_exp_eval</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.html">fuzzy_exp_helpers</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.html">fuzzy_exp_vis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.html">fuzzy_exp_vis</a> &raquo;</li>
+      <li>plot_curve</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.plot_curve.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="plot-curve">
+<h1>plot_curve<a class="headerlink" href="#plot-curve" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.plot_curve">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.</span></span><span class="sig-name descname"><span class="pre">plot_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics_pd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'recall'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'precision'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'maskrcnn_box'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logic_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('boolean',</span> <span class="pre">'lukasiewicz',</span> <span class="pre">'product',</span> <span class="pre">'goedel')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formulas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_diagonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_value_hints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_outer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ROC</span> <span class="pre">{model_key}</span> <span class="pre">({variable})'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formula_name_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'formula_attrs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_pretty_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">((0,</span> <span class="pre">1.0),</span> <span class="pre">(0,</span> <span class="pre">1.0))</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/experimentation/fuzzy_exp/fuzzy_exp_vis.html#plot_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.plot_curve" title="Permalink to this definition"></a></dt>
+<dd><p>Plot a curve of <code class="docutils literal notranslate"><span class="pre">y</span></code> against <code class="docutils literal notranslate"><span class="pre">x</span></code> varying the value of <code class="docutils literal notranslate"><span class="pre">variables[0]</span></code> given <code class="docutils literal notranslate"><span class="pre">constraints</span></code>.
+For each entry in <code class="docutils literal notranslate"><span class="pre">logic_types</span></code> and <code class="docutils literal notranslate"><span class="pre">formulas</span></code>, and for each value of entries in <code class="docutils literal notranslate"><span class="pre">variables[1:]</span></code>,
+produce a new line.</p>
+<p>To just get a normal plot, call
+<code class="docutils literal notranslate"><span class="pre">plot_curve(x='x',</span> <span class="pre">y='y',</span> <span class="pre">variables=['x'],</span> <span class="pre">add_value_hints=False,</span> <span class="pre">add_diagonal=False,</span> <span class="pre">...)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – column name of the x-values</p></li>
+<li><p><strong>y</strong> – column name of the y-values</p></li>
+<li><p><strong>variables</strong> – keys of variables in the DataFrame to vary over;
+different values for the first one are plotted into one curve,
+further variables will create new curves for different values</p></li>
+<li><p><strong>constraints</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em>) – mapping of keys of variables in the dataframe to a fixed value; used to filter the DataFrame</p></li>
+<li><p><strong>model_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – shorthand for <code class="docutils literal notranslate"><span class="pre">constraints={'model_key':</span> <span class="pre">model_key}</span></code></p></li>
+<li><p><strong>logic_types</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – filter the DataFrame for any of these values of the <code class="docutils literal notranslate"><span class="pre">&quot;logic_type&quot;</span></code> column</p></li>
+<li><p><strong>formulas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – if given, filter the DataFrame for any of these values of the <code class="docutils literal notranslate"><span class="pre">formula_name_col</span></code> column</p></li>
+<li><p><strong>formula_name_col</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – see formulas</p></li>
+<li><p><strong>add_value_hints</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to add small text fields with the values of <code class="docutils literal notranslate"><span class="pre">variable</span></code> at each sample point</p></li>
+<li><p><strong>add_diagonal</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>]</em>) – add a diagonal; set to <code class="docutils literal notranslate"><span class="pre">False</span></code> to disable; else set to
+<code class="docutils literal notranslate"><span class="pre">'start_at_one'</span></code> (default for PR-curves) or <code class="docutils literal notranslate"><span class="pre">'start_at_zero'</span></code> (default else)</p></li>
+<li><p><strong>legend_outer</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to put the legend of plots outside of the plot</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – figure or axis title; may contain formatting placeholders <code class="docutils literal notranslate"><span class="pre">{model_key}</span></code>, and <code class="docutils literal notranslate"><span class="pre">{variable}</span></code> (for <code class="docutils literal notranslate"><span class="pre">variables[0]</span></code>)</p></li>
+<li><p><strong>to_pretty_names</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – dictionary mapping values of <code class="docutils literal notranslate"><span class="pre">model_key</span></code> and <code class="docutils literal notranslate"><span class="pre">metrics</span></code> to pretty names</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to also prettily display all values of the relevant columns of the DataFrame</p></li>
+<li><p><strong>lims</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em>) – tuple of <code class="docutils literal notranslate"><span class="pre">((xmin,</span> <span class="pre">xmax),</span> <span class="pre">(ymin,</span> <span class="pre">ymax))</span></code> to set the xlim and ylim of the axes</p></li>
+<li><p><strong>save_as</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – if given, either directory or file path where to save this plot</p></li>
+<li><p><strong>metrics_pd</strong> (<em>DataFrame</em>) – </p></li>
+<li><p><strong>add_markers</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>all plotted rows of the DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.conf_to_fn.html" class="btn btn-neutral float-left" title="conf_to_fn" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.plot_metric.html" class="btn btn-neutral float-right" title="plot_metric" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

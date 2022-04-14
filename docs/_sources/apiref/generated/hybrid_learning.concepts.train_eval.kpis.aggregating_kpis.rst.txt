@@ -1,0 +1,97 @@
+aggregating\_kpis
+=================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Accuracy
+        
+        ~AggregatingKpi
+        
+        ~ApproximateMean
+        
+        ~ApproximateStdDev
+        
+        ~ApproximateVariance
+        
+        ~CalibrationCurve
+        
+        ~ConfusionMatrix
+        
+        ~ECE
+        
+        ~Extremum
+        
+        ~F1Score
+        
+        ~Histogram
+        
+        ~Maximum
+        
+        ~Mean
+        
+        ~Minimum
+        
+        ~NegativePredictiveValue
+        
+        ~Precision
+        
+        ~PrecisionRecallCurve
+        
+        ~Recall
+        
+        ~SetIoU
+        
+        ~SetIoUThresholdCurve
+        
+        ~Specificity
+        
+        ~StandardDev
+        
+        ~Variance
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~filter_aggregating_kpi_keys
+        
+        ~save_division
+        
+
+    
+    

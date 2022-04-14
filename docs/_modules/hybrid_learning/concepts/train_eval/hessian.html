@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.train_eval.hessian &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.train_eval.hessian</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.train_eval.hessian</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="c1">##########################################################################</span>
+<span class="c1">#</span>
+<span class="c1">#  Courtesy of Felix Dangel: https://github.com/f-dangel/backpack</span>
+<span class="c1">#</span>
+<span class="c1">##########################################################################</span>
+<span class="sd">&quot;&quot;&quot;Exact computation of full Hessian using autodiff for calibration.&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=invalid-name</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">grad</span>
+
+
+<div class="viewcode-block" id="grad_2nd"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.hessian.grad_2nd.html#hybrid_learning.concepts.train_eval.hessian.grad_2nd">[docs]</a><span class="k">def</span> <span class="nf">grad_2nd</span><span class="p">(</span><span class="n">dtheta</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the contiguous gradients of ``params`` wrt ``dtheta``</span>
+<span class="sd">    as 2D matrix.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+    <span class="n">fn_grads2</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">dtheta</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span>
+                                               <span class="n">create_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fn_thetas2</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">fn_grad2</span> <span class="ow">in</span> <span class="n">fn_grads2</span><span class="p">:</span>
+        <span class="n">fn_thetas2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">fn_grad2</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fn_thetas2</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">fn_thetas2</span><span class="p">,</span> <span class="n">fn_grad2</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">fn_thetas2</span></div>
+
+
+<div class="viewcode-block" id="exact_hessian"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.train_eval.hessian.exact_hessian.html#hybrid_learning.concepts.train_eval.hessian.exact_hessian">[docs]</a><span class="k">def</span> <span class="nf">exact_hessian</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                  <span class="n">params</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                  <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute all second derivatives of a scalar w.r.t. `parameters`.</span>
+
+<span class="sd">    The order of parameters corresponds to a one-dimensional</span>
+<span class="sd">    vectorization followed by a concatenation of all tensors in</span>
+<span class="sd">    `parameters`.</span>
+
+<span class="sd">    :param fn: Scalar PyTorch function/tensor.</span>
+<span class="sd">    :param params: iterable object containing all tensors acting as</span>
+<span class="sd">        variables of ``f``</span>
+<span class="sd">    :param device: the torch device to use for the hessian</span>
+<span class="sd">    :return: Hessian of ``f`` with respect to the concatenated version</span>
+<span class="sd">        of all flattened quantities in ``parameters``</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The parameters in the list are all flattened and concatenated</span>
+<span class="sd">        into one large vector ``theta``.</span>
+<span class="sd">        Return the matrix :math:`d^2 E / d \theta^2` with</span>
+
+<span class="sd">        .. math::(d^2E / d \theta^2)[i, j] = (d^2E / d \theta[i] d \theta[j]).</span>
+
+<span class="sd">    Related work::</span>
+<span class="sd">    The code is a modified version of</span>
+<span class="sd">    https://discuss.pytorch.org/t/compute-the-hessian-matrix-of-a-network/15270/3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ensure all parameters have grad!&quot;</span><span class="p">)</span>
+    <span class="n">fn_grads</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">create_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># flatten all parameter gradients and concatenate into a vector</span>
+    <span class="n">fn_thetas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">fn_grad</span> <span class="ow">in</span> <span class="n">fn_grads</span><span class="p">:</span>  <span class="c1"># TODO: use grad_2nd routine here</span>
+        <span class="n">fn_thetas</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">fn_grad</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fn_thetas</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">fn_thetas</span><span class="p">,</span> <span class="n">fn_grad</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+        <span class="p">)</span>
+    <span class="c1"># compute second derivatives</span>
+    <span class="n">hessian_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">fn_thetas</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">hessian</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">hessian_dim</span><span class="p">,</span> <span class="n">hessian_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hessian_dim</span><span class="p">):</span>
+        <span class="n">hessian</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">grad_2nd</span><span class="p">(</span><span class="n">fn_thetas</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hessian</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

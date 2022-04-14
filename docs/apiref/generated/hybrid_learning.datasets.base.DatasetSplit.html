@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DatasetSplit &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="hybrid_learning.datasets.base.cross_validation_splits" href="hybrid_learning.datasets.base.cross_validation_splits.html" />
+    <link rel="next" title="add_gaussian_peak" href="hybrid_learning.datasets.base.add_gaussian_peak.html" />
     <link rel="prev" title="DataTriple" href="hybrid_learning.datasets.base.DataTriple.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -97,98 +50,60 @@
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html">BaseDataset</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html">DataTriple</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">DatasetSplit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.base.cross_validation_splits.html">hybrid_learning.datasets.base.cross_validation_splits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.base.add_gaussian_peak.html">add_gaussian_peak</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.base.cross_validation_splits.html">cross_validation_splits</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.base.html">base</a> &raquo;</li>
-        
       <li>DatasetSplit</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.base.DatasetSplit.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="datasetsplit">
-<h1>DatasetSplit<a class="headerlink" href="#datasetsplit" title="Permalink to this headline">¶</a></h1>
+<h1>DatasetSplit<a class="headerlink" href="#datasetsplit" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt id="hybrid_learning.datasets.base.DatasetSplit">
-<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.datasets.base.</code><code class="sig-name descname">DatasetSplit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/base.html#DatasetSplit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.base.DatasetSplit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.base.</span></span><span class="sig-name descname"><span class="pre">DatasetSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/base.html#DatasetSplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
 <p>Types of dataset splits.</p>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Data Attributes:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -211,7 +126,7 @@
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>Enum</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -222,7 +137,7 @@
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Special Methods:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -232,11 +147,11 @@
 <td><p>Nice representation.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code>(value)</p></td>
-<td><p>Create and return a new object.</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>Enum</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -249,48 +164,48 @@
 <td><p>Return str(self).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code>()</p></td>
-<td><p>default dir() implementation</p></td>
+<td><p>Returns all members and all public methods</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code>(format_spec)</p></td>
-<td><p>default object formatter</p></td>
+<td><p>Returns format using actual value type unless __str__ has been overridden.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code>()</p></td>
 <td><p>Return hash(self).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code>(proto)</p></td>
-<td><p>helper for pickle</p></td>
+<td><p>Helper for pickle.</p></td>
 </tr>
 </tbody>
 </table>
 </details></div>
 <hr class="docutils" />
 <dl class="py attribute">
-<dt id="hybrid_learning.datasets.base.DatasetSplit.ALL">
-<code class="sig-name descname">ALL</code><em class="property"> = 'all'</em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.ALL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.base.DatasetSplit.ALL">
+<span class="sig-name descname"><span class="pre">ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.ALL" title="Permalink to this definition"></a></dt>
 <dd><p>Combination of all training, validation, and test set.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.datasets.base.DatasetSplit.TEST">
-<code class="sig-name descname">TEST</code><em class="property"> = 'test'</em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.TEST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.base.DatasetSplit.TEST">
+<span class="sig-name descname"><span class="pre">TEST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'test'</span></em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.TEST" title="Permalink to this definition"></a></dt>
 <dd><p>The test set for testing after finished training.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.datasets.base.DatasetSplit.TRAIN">
-<code class="sig-name descname">TRAIN</code><em class="property"> = 'train'</em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.TRAIN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.base.DatasetSplit.TRAIN">
+<span class="sig-name descname"><span class="pre">TRAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'train'</span></em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.TRAIN" title="Permalink to this definition"></a></dt>
 <dd><p>The training set (not for testing or validation).</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.datasets.base.DatasetSplit.TRAIN_VAL">
-<code class="sig-name descname">TRAIN_VAL</code><em class="property"> = 'train_val'</em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.TRAIN_VAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.base.DatasetSplit.TRAIN_VAL">
+<span class="sig-name descname"><span class="pre">TRAIN_VAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'trainval'</span></em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.TRAIN_VAL" title="Permalink to this definition"></a></dt>
 <dd><p>The combined training and validation set.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.datasets.base.DatasetSplit.VAL">
-<code class="sig-name descname">VAL</code><em class="property"> = 'val'</em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.VAL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.base.DatasetSplit.VAL">
+<span class="sig-name descname"><span class="pre">VAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'val'</span></em><a class="headerlink" href="#hybrid_learning.datasets.base.DatasetSplit.VAL" title="Permalink to this definition"></a></dt>
 <dd><p>The validation set for quality checks/early stopping during training.</p>
 </dd></dl>
 
@@ -300,58 +215,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.base.cross_validation_splits.html" class="btn btn-neutral float-right" title="hybrid_learning.datasets.base.cross_validation_splits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.base.DataTriple.html" class="btn btn-neutral float-left" title="DataTriple" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.base.DataTriple.html" class="btn btn-neutral float-left" title="DataTriple" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.base.add_gaussian_peak.html" class="btn btn-neutral float-right" title="add_gaussian_peak" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

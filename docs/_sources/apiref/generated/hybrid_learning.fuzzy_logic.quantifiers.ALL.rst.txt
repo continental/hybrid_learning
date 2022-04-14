@@ -1,0 +1,9 @@
+ALL
+===
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.quantifiers
+
+.. autoclass:: ALL
+    :members:
+
+    .. autoclasstoc::

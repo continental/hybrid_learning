@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Wrapper around pytorch optimizer to make them resettable.&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="c1"># pylint: disable=no-name-in-module</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span>
+<span class="kn">import</span> <span class="nn">torch.utils</span>
+<span class="kn">from</span> <span class="nn">torch.optim.optimizer</span> <span class="kn">import</span> <span class="n">Optimizer</span>
+
+<span class="c1"># pylint: enable=no-name-in-module</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ResettableOptimizer"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer">[docs]</a><span class="k">class</span> <span class="nc">ResettableOptimizer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper around torch optimizers to enable reset and automatic learning</span>
+<span class="sd">    rate handling.</span>
+<span class="sd">    Saves the optimizer/learning rate scheduler initialization arguments</span>
+<span class="sd">    other than the parameters/optimizer.</span>
+<span class="sd">    Replace</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        opt = OptimizerType(params, **opt_init_args)</span>
+<span class="sd">        # optionally lr_scheduler:</span>
+<span class="sd">        lr_scheduler = LRSchedulerType(opt, **lr_init_args)</span>
+<span class="sd">        for epoch in epochs:</span>
+<span class="sd">            for batch in dataset:</span>
+<span class="sd">                opt.zero_grad()</span>
+<span class="sd">                ...</span>
+<span class="sd">                opt.step()</span>
+<span class="sd">                lr_scheduler.step()  # if batch-wise update</span>
+<span class="sd">            lr_scheduler.step() # if epoch-wise update</span>
+
+<span class="sd">    with</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        opt_handle = ResetOptimizer(OptimizerType,</span>
+<span class="sd">                                    LRSchedulerType, lr_init_args,</span>
+<span class="sd">                                    # if batch-wise lr updates:</span>
+<span class="sd">                                    batch_update_lr=True)</span>
+<span class="sd">        ...</span>
+<span class="sd">        opt = opt_handle(params)</span>
+<span class="sd">        for epoch in epochs:</span>
+<span class="sd">            for batch in dataset:</span>
+<span class="sd">                opt.zero_grad()</span>
+<span class="sd">                ...</span>
+<span class="sd">                opt.step()</span>
+<span class="sd">            opt.epoch_end()</span>
+
+<span class="sd">    A cast as in :py:meth:`torch.optim.Optimizer.cast` is currently</span>
+<span class="sd">    not supported.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_check_after_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check whether the optimizer is initialized, otherwise raise.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Wrapped optimizer is not yet initialized. Call init().&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ResettableOptimizer.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">optim_type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">],</span>
+                 <span class="n">lr_scheduler_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">lr_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">batch_update_lr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">optim_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param optim_type: a callable that yields an optimizer when called with</span>
+<span class="sd">            model parameters and the ``optim_kwargs``</span>
+<span class="sd">        :param optim_kwargs: keyword arguments for creating the optimizer</span>
+<span class="sd">        :param lr_scheduler_type: Optional; if given, a callable that yields</span>
+<span class="sd">            a learning rate scheduler at which to register the optimizer</span>
+<span class="sd">        :param lr_kwargs: arguments for the optional learning rate scheduler</span>
+<span class="sd">        :param batch_update_lr: whether to step the learning rate scheduler</span>
+<span class="sd">            after each batch, so on :py:meth:`step` call, or only on</span>
+<span class="sd">            :py:meth:`epoch_end` call;</span>
+<span class="sd">            set this e.g. for :py:class:`torch.optim.lr_scheduler.CyclicLR`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># actual optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optim_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">optim_kwargs</span>
+        <span class="sd">&quot;&quot;&quot;The arguments (besides the ``parameters`` key) to</span>
+<span class="sd">        ``_optim_type`` to get new optimizer.</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optim_type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optimizer</span><span class="p">]</span> <span class="o">=</span> <span class="n">optim_type</span>
+        <span class="sd">&quot;&quot;&quot;Type/builder for optimizer. Used in :py:meth:`init` to get new</span>
+<span class="sd">        optimizer.</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Optimizer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Reference to the current optimizer.</span>
+<span class="sd">        ``None`` after :py:meth:`reset` and before :py:meth:`init`&quot;&quot;&quot;</span>
+
+        <span class="c1"># learning rate scheduler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lr_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">lr_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;The arguments to ``_lr_scheduler_type`` besides the</span>
+<span class="sd">        optimizer. Only used if ``_lr_scheduler_type`` is set.</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> \
+            <span class="o">=</span> <span class="n">lr_scheduler_type</span>
+        <span class="sd">&quot;&quot;&quot;Optional learning rate scheduler builder.</span>
+<span class="sd">        Used in :py:meth:`init` to get new scheduler.</span>
+
+<span class="sd">        :meta public:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_update_lr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">batch_update_lr</span>
+        <span class="sd">&quot;&quot;&quot;Whether to call step on the learning rate scheduler after each batch</span>
+<span class="sd">        or only after each epoch.</span>
+<span class="sd">        Batch-wise updates are handled in :py:meth:`step`, epoch-wise ones in</span>
+<span class="sd">        :py:meth:`epoch_end`,</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="p">:</span> <span class="n">Optional</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Reference to the optional current learning rate scheduler.</span>
+<span class="sd">        ``None`` if ``_lr_scheduler_type`` is ``None``,</span>
+<span class="sd">        after :py:meth:`reset` and before :py:meth:`init`.&quot;&quot;&quot;</span></div>
+
+    <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The used learning rate default of the optimizer</span>
+<span class="sd">        (starting value for lr scheduler)&quot;&quot;&quot;</span>
+        <span class="n">reset_after</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># do a dummy init to read out defaults</span>
+            <span class="c1"># pylint: disable=no-member</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">)])</span>
+            <span class="c1"># pylint: enable=no-member</span>
+            <span class="n">reset_after</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">defaults</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">reset_after</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">lr</span>
+
+    <span class="nd">@lr</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Setter for the optimizer default learning rate.</span>
+<span class="sd">        Re-initializes optimizer if it is set.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_optim_kwargs</span><span class="p">[</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lr</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span><span class="p">)</span>
+
+    <span class="c1"># pylint: enable=invalid-name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return nice dict representation of init args and optimizer type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">optim_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_type</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_kwargs</span><span class="p">,</span>
+                    <span class="n">lr_scheduler_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span><span class="p">,</span>
+                    <span class="n">lr_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr_kwargs</span><span class="p">,</span>
+                    <span class="n">batch_update_lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_update_lr</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ResettableOptimizer.reset"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset optimizer (and lr scheduler); requires init before next use</span>
+<span class="sd">        of optimizer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.init"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+             <span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                           <span class="n">Iterable</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize optimizer and learning rate scheduler</span>
+<span class="sd">        with given parameters.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optim_type</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
+                                                        <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.__call__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                               <span class="n">Iterable</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ResettableOptimizer&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a fresh instance of the optimizer with the saved settings.</span>
+<span class="sd">        Intends to wrap call to ``_optim_type``, such that an instance</span>
+<span class="sd">        of a resettable optimizer can replace the type of its target optimizer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.zero_grad"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.zero_grad">[docs]</a>    <span class="k">def</span> <span class="nf">zero_grad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper around :py:meth:`torch.optim.Optimizer.zero_grad`.</span>
+<span class="sd">        Only call after :py:meth:`init` or :py:meth:`__call__`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_after_init</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.add_param_group"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.add_param_group">[docs]</a>    <span class="k">def</span> <span class="nf">add_param_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper around :py:meth:`torch.optim.Optimizer.add_param_group`.</span>
+<span class="sd">        Only call after :py:meth:`init` or :py:meth:`__call__`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_after_init</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">add_param_group</span><span class="p">(</span><span class="n">param_group</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.step"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">closure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Step the optimizer and the learning rate scheduler if set.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_after_init</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">closure</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_update_lr</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.epoch_end"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.epoch_end">[docs]</a>    <span class="k">def</span> <span class="nf">epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update of learning rate scheduler after an epoch.</span>
+<span class="sd">        Only specific learning rate scheduler require updating after the</span>
+<span class="sd">        epoch.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_after_init</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_update_lr</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.__repr__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">repr_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">optimizer_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                         <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_optim_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">repr_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">lr_scheduler_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr_scheduler_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                     <span class="n">lr_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr_kwargs</span><span class="p">,</span>
+                     <span class="n">batch_update_lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_update_lr</span><span class="p">))</span>
+        <span class="n">repr_dict_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">repr_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="s2">&quot;ResettableOptimizer(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">repr_dict_str</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ResettableOptimizer.__str__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.html#hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer.ResettableOptimizer.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+ConceptSegmentationModel2D
+==========================
+
+.. currentmodule:: hybrid_learning.concepts.models.concept_models.concept_segmentation
+
+.. autoclass:: ConceptSegmentationModel2D
+    :members:
+
+    .. autoclasstoc::

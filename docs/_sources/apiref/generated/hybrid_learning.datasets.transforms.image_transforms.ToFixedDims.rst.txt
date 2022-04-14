@@ -1,0 +1,9 @@
+ToFixedDims
+===========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autoclass:: ToFixedDims
+    :members:
+
+    .. autoclasstoc::

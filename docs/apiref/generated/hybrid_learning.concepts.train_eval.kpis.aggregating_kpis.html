@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aggregating_kpis &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Accuracy" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Accuracy.html" />
+    <link rel="prev" title="kpis" href="hybrid_learning.concepts.train_eval.kpis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.base_handles.html">base_handles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.callbacks.html">callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.hessian.html">hessian</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.html">kpis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.train_eval_funs.html">train_eval_funs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.html">train_eval</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.kpis.html">kpis</a> &raquo;</li>
+      <li>aggregating_kpis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="aggregating-kpis">
+<h1>aggregating_kpis<a class="headerlink" href="#aggregating-kpis" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.concepts.train_eval.kpis.aggregating_kpis"></span><p>Implementation of KPIs that cannot be computed on a batch level.
+They aggregate the result over all batches and can return an aggregated result,
+if requested.</p>
+<p>&#64;author: Christian Wirth</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Accuracy.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Accuracy" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Accuracy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Accuracy</span></code></a></p></td>
+<td><p>Binary accuracy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.AggregatingKpi.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.AggregatingKpi" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.AggregatingKpi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AggregatingKpi</span></code></a></p></td>
+<td><p>Abstract base class for all aggregating kpis, meaning they can not be computed on batch level, but need to be aggregated over batches.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateMean.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateMean" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateMean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApproximateMean</span></code></a></p></td>
+<td><p>Approximate the mean in the data by binning the values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateStdDev.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateStdDev" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateStdDev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApproximateStdDev</span></code></a></p></td>
+<td><p>Approximate the standard deviation in the data by binning the values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateVariance.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateVariance" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ApproximateVariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApproximateVariance</span></code></a></p></td>
+<td><p>Approximate the variance in the data by binning the values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.CalibrationCurve.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.CalibrationCurve" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.CalibrationCurve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalibrationCurve</span></code></a></p></td>
+<td><p>Calibration Curve: Shows the difference between true positive rate and the average predicted confidence over n_bins.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ConfusionMatrix.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ConfusionMatrix" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ConfusionMatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfusionMatrix</span></code></a></p></td>
+<td><p>Abstract base class for all confusion matrix based metrics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ECE.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ECE" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.ECE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ECE</span></code></a></p></td>
+<td><p>Expected calibration error.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Extremum.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Extremum" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Extremum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Extremum</span></code></a></p></td>
+<td><p>Find the extreme value of all output tensor entries over all batches (ignoring labels).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.F1Score.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.F1Score" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.F1Score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">F1Score</span></code></a></p></td>
+<td><p>Binary F1-score.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Histogram.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Histogram" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Histogram</span></code></a></p></td>
+<td><p>Collect a histogram of the model output values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Maximum.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Maximum" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Maximum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Maximum</span></code></a></p></td>
+<td><p>Find the max value within all batches.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Mean.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Mean" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Mean</span></code></a></p></td>
+<td><p>Calculate the mean of all output tensor entries (ignoring labels).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Minimum.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Minimum" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Minimum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Minimum</span></code></a></p></td>
+<td><p>Find the max value within all batches.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.NegativePredictiveValue.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.NegativePredictiveValue" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.NegativePredictiveValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NegativePredictiveValue</span></code></a></p></td>
+<td><p>Binary negative predictive value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Precision.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Precision" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Precision</span></code></a></p></td>
+<td><p>Binary precision.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.PrecisionRecallCurve.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.PrecisionRecallCurve" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.PrecisionRecallCurve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrecisionRecallCurve</span></code></a></p></td>
+<td><p>Approximated precision / recall curve.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Recall.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Recall" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Recall"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Recall</span></code></a></p></td>
+<td><p>Binary recall (resp.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.SetIoU.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.SetIoU" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.SetIoU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetIoU</span></code></a></p></td>
+<td><p>Calc set intersection over union (IoU) value for a batch of outputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.SetIoUThresholdCurve.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.SetIoUThresholdCurve" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.SetIoUThresholdCurve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SetIoUThresholdCurve</span></code></a></p></td>
+<td><p>Create a curve showing the setIoU value for multiple thresholds.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Specificity.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Specificity" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Specificity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Specificity</span></code></a></p></td>
+<td><p>Binary specificity (resp.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.StandardDev.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.StandardDev" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.StandardDev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StandardDev</span></code></a></p></td>
+<td><p>Calculate the standard deviation of all output tensor entries (ignoring labels).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Variance.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Variance" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variance</span></code></a></p></td>
+<td><p>Calculate the variance of all output tensor entries (ignoring labels).</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.filter_aggregating_kpi_keys.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.filter_aggregating_kpi_keys" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.filter_aggregating_kpi_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_aggregating_kpi_keys</span></code></a>(metric_fns)</p></td>
+<td><p>Given named metric functions return the keys of such behaving like an AggregatingKpi.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.save_division.html#hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.save_division" title="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.save_division"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_division</span></code></a>(numer, denom[, div_by_zero_val])</p></td>
+<td><p>Yield sensible values in case of division by zero.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.train_eval.kpis.html" class="btn btn-neutral float-left" title="kpis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.Accuracy.html" class="btn btn-neutral float-right" title="Accuracy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

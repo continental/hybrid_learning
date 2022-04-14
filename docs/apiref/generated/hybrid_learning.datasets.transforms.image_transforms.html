@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>image_transforms &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Binarize" href="hybrid_learning.datasets.transforms.image_transforms.Binarize.html" />
-    <link rel="prev" title="hybrid_learning.datasets.transforms.encoder.same_padding" href="hybrid_learning.datasets.transforms.encoder.same_padding.html" /> 
+    <link rel="next" title="AsBatch" href="hybrid_learning.datasets.transforms.image_transforms.AsBatch.html" />
+    <link rel="prev" title="same_padding" href="hybrid_learning.datasets.transforms.encoder.same_padding.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,136 +47,145 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.common.html">common</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.html">dict_transforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.html">encoder</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">image_transforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.html">tuple_transforms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.transforms.html">transforms</a> &raquo;</li>
-        
       <li>image_transforms</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.transforms.image_transforms.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="image-transforms">
-<h1>image_transforms<a class="headerlink" href="#image-transforms" title="Permalink to this headline">¶</a></h1>
+<h1>image_transforms<a class="headerlink" href="#image-transforms" title="Permalink to this headline"></a></h1>
 <p class="rubric">Description</p>
 <span class="target" id="module-hybrid_learning.datasets.transforms.image_transforms"></span><p>Transformations to images.
-The images are assumed to be a <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> of a
-<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code></a>.
-Use <a class="reference external" href="https://pytorch.org/docs/stable/torchvision/transforms.html#torchvision.transforms.ToTensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.transforms.ToTensor</span></code></a> to transform
-<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code></a> instances appropriately.</p>
+The images are assumed to be a <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> of a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code>.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.transforms.ToTensor</span></code> to transform
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code> instances appropriately.</p>
 <p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.AsBatch.html#hybrid_learning.datasets.transforms.image_transforms.AsBatch" title="hybrid_learning.datasets.transforms.image_transforms.AsBatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AsBatch</span></code></a></p></td>
+<td><p>Ensure that the given transformation is fed with a batch of inputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.BatchWiseImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.BatchWiseImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.BatchWiseImageTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchWiseImageTransform</span></code></a></p></td>
+<td><p>Wrap a transformation operating on a batch of masks to also work on single masks.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.Binarize.html#hybrid_learning.datasets.transforms.image_transforms.Binarize" title="hybrid_learning.datasets.transforms.image_transforms.Binarize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Binarize</span></code></a></p></td>
 <td><p>Simple class for binarizing tensors into high and low class values.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile.html#hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile" title="hybrid_learning.datasets.transforms.image_transforms.BinarizeByQuantile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BinarizeByQuantile</span></code></a></p></td>
 <td><p>Set all but the given highest number of pixels / q-th quantile in an image to zero, rest to 1.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageTransform</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ConvOpWrapper.html#hybrid_learning.datasets.transforms.image_transforms.ConvOpWrapper" title="hybrid_learning.datasets.transforms.image_transforms.ConvOpWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConvOpWrapper</span></code></a></p></td>
+<td><p>Base wrapper class to turn convolutional batch operations into single mask operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageTransform</span></code></a></p></td>
 <td><p>Transformations that can be applied to images.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.PadAndResize.html#hybrid_learning.datasets.transforms.image_transforms.PadAndResize" title="hybrid_learning.datasets.transforms.image_transforms.PadAndResize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PadAndResize</span></code></a></p></td>
-<td><p>Transformation that pads an image to square dimensions and then resizes it to fixed size.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.IntersectDecode.html#hybrid_learning.datasets.transforms.image_transforms.IntersectDecode" title="hybrid_learning.datasets.transforms.image_transforms.IntersectDecode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntersectDecode</span></code></a></p></td>
+<td><p>IoU encode a single mask.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ToDevice.html#hybrid_learning.datasets.transforms.image_transforms.ToDevice" title="hybrid_learning.datasets.transforms.image_transforms.ToDevice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToDevice</span></code></a></p></td>
-<td><p>Move tensors to given device.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.IntersectEncode.html#hybrid_learning.datasets.transforms.image_transforms.IntersectEncode" title="hybrid_learning.datasets.transforms.image_transforms.IntersectEncode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IntersectEncode</span></code></a></p></td>
+<td><p>Intersection encode a single mask.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.WithThresh.html#hybrid_learning.datasets.transforms.image_transforms.WithThresh" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WithThresh</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.IoUEncode.html#hybrid_learning.datasets.transforms.image_transforms.IoUEncode" title="hybrid_learning.datasets.transforms.image_transforms.IoUEncode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IoUEncode</span></code></a></p></td>
+<td><p>IoU encode a single mask.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.NoGrad.html#hybrid_learning.datasets.transforms.image_transforms.NoGrad" title="hybrid_learning.datasets.transforms.image_transforms.NoGrad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoGrad</span></code></a></p></td>
+<td><p>Disable <code class="docutils literal notranslate"><span class="pre">requires_grad</span></code> for the given tensors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.PadAndResize.html#hybrid_learning.datasets.transforms.image_transforms.PadAndResize" title="hybrid_learning.datasets.transforms.image_transforms.PadAndResize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PadAndResize</span></code></a></p></td>
+<td><p>Transformation that pads an image to a given ratio and then resizes it to fixed size.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.RecursiveLambda.html#hybrid_learning.datasets.transforms.image_transforms.RecursiveLambda" title="hybrid_learning.datasets.transforms.image_transforms.RecursiveLambda"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RecursiveLambda</span></code></a></p></td>
+<td><p>Generic lambda transformation that applies the given function with the standard <a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ImageTransform.html#hybrid_learning.datasets.transforms.image_transforms.ImageTransform" title="hybrid_learning.datasets.transforms.image_transforms.ImageTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageTransform</span></code></a> recursion.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Resize</span></code></p></td>
+<td><p>Simple resize.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.Threshold.html#hybrid_learning.datasets.transforms.image_transforms.Threshold" title="hybrid_learning.datasets.transforms.image_transforms.Threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Threshold</span></code></a></p></td>
+<td><p>Threshold tensors and set new values below and/or above the threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ToActMap.html#hybrid_learning.datasets.transforms.image_transforms.ToActMap" title="hybrid_learning.datasets.transforms.image_transforms.ToActMap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToActMap</span></code></a></p></td>
+<td><p>Evaluate a given image by a torch model on the correct device.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ToBBoxes.html#hybrid_learning.datasets.transforms.image_transforms.ToBBoxes" title="hybrid_learning.datasets.transforms.image_transforms.ToBBoxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToBBoxes</span></code></a></p></td>
+<td><p>Treat pixels of given mask as scores of constant-size bounding boxes, and return a mask with the non-max-suppressed bounding boxes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ToFixedDims.html#hybrid_learning.datasets.transforms.image_transforms.ToFixedDims" title="hybrid_learning.datasets.transforms.image_transforms.ToFixedDims"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToFixedDims</span></code></a></p></td>
+<td><p>Squeeze or unsqueeze a tensor to obtain specified number of dimensions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ToTensor.html#hybrid_learning.datasets.transforms.image_transforms.ToTensor" title="hybrid_learning.datasets.transforms.image_transforms.ToTensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ToTensor</span></code></a></p></td>
+<td><p>Turn objects into tensors or move tensors to given device or dtype.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.WithThresh.html#hybrid_learning.datasets.transforms.image_transforms.WithThresh" title="hybrid_learning.datasets.transforms.image_transforms.WithThresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WithThresh</span></code></a></p></td>
 <td><p>Wrap a batch transformation with binarizing (and unsqueezing) before and after.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Functions</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html#hybrid_learning.datasets.transforms.image_transforms.pad_to_square" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_square"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad_to_square</span></code></a>(img_t[, pad_value])</p></td>
-<td><p>Symmetrically pad image with constant <code class="docutils literal notranslate"><span class="pre">pad_value</span></code> to obtain square image.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.pad_and_resize.html#hybrid_learning.datasets.transforms.image_transforms.pad_and_resize" title="hybrid_learning.datasets.transforms.image_transforms.pad_and_resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad_and_resize</span></code></a>(img, img_size[, interpolation])</p></td>
+<td><p>Pad and resize an image.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.pad_to_ratio.html#hybrid_learning.datasets.transforms.image_transforms.pad_to_ratio" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad_to_ratio</span></code></a>(img_t[, ratio, pad_value])</p></td>
+<td><p>Pad image with constant <code class="docutils literal notranslate"><span class="pre">pad_value</span></code> to obtain given image size <code class="docutils literal notranslate"><span class="pre">ratio</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.padding_for_ratio.html#hybrid_learning.datasets.transforms.image_transforms.padding_for_ratio" title="hybrid_learning.datasets.transforms.image_transforms.padding_for_ratio"><code class="xref py py-obj docutils literal notranslate"><span class="pre">padding_for_ratio</span></code></a>(from_size, to_ratio)</p></td>
+<td><p>Return the int padding for an image of size <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width)</span></code> to get a <code class="docutils literal notranslate"><span class="pre">(width</span> <span class="pre">/</span> <span class="pre">height)</span></code> ratio of <code class="docutils literal notranslate"><span class="pre">ratio</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.Resize.html#hybrid_learning.datasets.transforms.image_transforms.resize" title="hybrid_learning.datasets.transforms.image_transforms.resize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resize</span></code></a>(tens, size[, mode])</p></td>
+<td><p>Resize the given tensor assuming it to be a 2D image or batch thereof.</p></td>
 </tr>
 </tbody>
 </table>
@@ -231,58 +193,33 @@ Use <a class="reference external" href="https://pytorch.org/docs/stable/torchvis
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.transforms.image_transforms.Binarize.html" class="btn btn-neutral float-right" title="Binarize" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.transforms.encoder.same_padding.html" class="btn btn-neutral float-left" title="hybrid_learning.datasets.transforms.encoder.same_padding" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.transforms.encoder.same_padding.html" class="btn btn-neutral float-left" title="same_padding" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.transforms.image_transforms.AsBatch.html" class="btn btn-neutral float-right" title="AsBatch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,0 +1,48 @@
+﻿experimentation
+===============
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.experimentation
+
+    .. currentmodule:: hybrid_learning.experimentation
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.experimentation.ca_exp_eval
+        
+        ~hybrid_learning.experimentation.exp_eval_common
+        
+        ~hybrid_learning.experimentation.fuzzy_exp
+        
+        ~hybrid_learning.experimentation.model_registry
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using a concept model to find an embedding &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Conducting a concept analysis" href="concept_analysis.html" />
-    <link rel="prev" title="Dataset tooling" href="overview/datasets.html" /> 
+    <link rel="next" title="Conducting a Concept Analysis" href="concept_analysis.html" />
+    <link rel="prev" title="Experimentation Utils" href="overview/experimentation.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
@@ -103,104 +56,65 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="concept_analysis.html">Conducting a concept analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concept_analysis.html">Conducting a Concept Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model_extension.html">Extending DNN model outputs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="custom_dataset_handles/index.html">Custom dataset handles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fuzzy_logic.html">Fuzzy Logic Operations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apiref/index.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">User Guide</a> &raquo;</li>
-        
       <li>Using a concept model to find an embedding</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/userguide/concept_model.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="using-a-concept-model-to-find-an-embedding">
-<h1>Using a concept model to find an embedding<a class="headerlink" href="#using-a-concept-model-to-find-an-embedding" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.embeddings.ConceptEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span> <span class="pre">embeddings</span></code></a>
+<h1>Using a concept model to find an embedding<a class="headerlink" href="#using-a-concept-model-to-find-an-embedding" title="Permalink to this headline"></a></h1>
+<p><a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span> <span class="pre">embeddings</span></code></a>
 in a DNN latent space can serve as the parameters for a linear classifier
 that predicts the concept (resp. a segmentation mask of the concept) from
 the latent space.
 Models can e.g. be linear models or clustering.</p>
 <p>The linear model classes
-<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D.html#hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D" title="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptSegmentationModel2D</span></code></a> and
-<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDetectionModel2D</span></code></a>
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDetectionModel2D</span></code></a> and
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_segmentation.ConceptSegmentationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_segmentation.ConceptSegmentationModel2D" title="hybrid_learning.concepts.models.concept_models.concept_segmentation.ConceptSegmentationModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptSegmentationModel2D</span></code></a>
 can be used to predict segmentation masks of a
 <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">concept</span></code></a>
 respectively its estimated center.
 They can be</p>
 <ul class="simple">
 <li><p><em>initialized from an embedding</em> using
-<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.from_embedding" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.from_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_embedding()</span></code></a>, and</p></li>
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.from_embedding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.from_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_embedding()</span></code></a>, and</p></li>
 <li><p>used to <em>find an embedding by training</em> them on a set of samples
 associated to the <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">concept</span></code></a>, and
 then extracting the embedding using
-<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.to_embedding" title="hybrid_learning.concepts.models.concept_detection.ConceptDetectionModel2D.to_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_embedding()</span></code></a>.</p></li>
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.to_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_embedding()</span></code></a>.</p></li>
 </ul>
 <p>The training is done using their custom
-<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle.html#hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle" title="hybrid_learning.concepts.models.base_handles.train_test_handle.TrainEvalHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainEvalHandle</span></code></a>.</p>
+<a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.train_eval.base_handles.train_test_handle.TrainEvalHandle.html#hybrid_learning.concepts.train_eval.base_handles.train_test_handle.TrainEvalHandle" title="hybrid_learning.concepts.train_eval.base_handles.train_test_handle.TrainEvalHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrainEvalHandle</span></code></a>.</p>
 <p>In the following we consider an exemplary concept model for the concept
 <em>“face”</em>.</p>
 <div class="contents local topic" id="contents">
@@ -220,9 +134,9 @@ then extracting the embedding using
 </ul>
 </div>
 <div class="section" id="defining-a-concept-model">
-<h2><a class="toc-backref" href="#id1">Defining a concept model</a><a class="headerlink" href="#defining-a-concept-model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Defining a concept model</a><a class="headerlink" href="#defining-a-concept-model" title="Permalink to this headline"></a></h2>
 <div class="section" id="preparation-getting-concept-and-main-model">
-<h3><a class="toc-backref" href="#id2">Preparation: Getting concept and main model</a><a class="headerlink" href="#preparation-getting-concept-and-main-model" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id2">Preparation: Getting concept and main model</a><a class="headerlink" href="#preparation-getting-concept-and-main-model" title="Permalink to this headline"></a></h3>
 <p>First prepare the concept with its data.
 Note the relative size input to the concept that is later used
 to determine the convolution kernel size of the concept model.</p>
@@ -232,19 +146,23 @@ to determine the convolution kernel size of the concept model.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">2017&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataTriple</span><span class="p">(</span>
 <span class="gp">... </span>  <span class="n">train_val</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
-<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">)</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">),</span>
+<span class="gp">... </span>      <span class="n">img_size</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
 <span class="gp">... </span>      <span class="p">)</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
 <span class="gp">... </span>  <span class="n">test</span><span class="o">=</span><span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">([</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
-<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">)</span>
+<span class="gp">... </span>      <span class="n">split</span><span class="o">=</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span> <span class="n">dataset_root</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;val&quot;</span><span class="p">),</span>
+<span class="gp">... </span>      <span class="n">img_size</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
 <span class="gp">... </span>      <span class="p">)</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.concepts</span> <span class="kn">import</span> <span class="n">SegmentationConcept2D</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span> <span class="o">=</span> <span class="n">SegmentationConcept2D</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;face&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
 <span class="gp">... </span>                                <span class="n">rel_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">concept</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept</span>
 <span class="go">SegmentationConcept2D(</span>
 <span class="go">    name=&#39;face&#39;,</span>
-<span class="go">    data=DataTriple(...))</span>
+<span class="go">    data=DataTriple(...),</span>
+<span class="go">    rel_size=(0.05, 0.05)</span>
+<span class="go">)</span>
 </pre></div>
 </div>
 <p>For a concept model the main model and the layer to obtain concepts from
@@ -258,76 +176,82 @@ is needed, here a standard Mask R-CNN model.</p>
 to determine the convolution kernel size of the concept model.</p>
 </div>
 <div class="section" id="init-a-concept-model">
-<h3><a class="toc-backref" href="#id3">Init a concept model</a><a class="headerlink" href="#init-a-concept-model" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id3">Init a concept model</a><a class="headerlink" href="#init-a-concept-model" title="Permalink to this headline"></a></h3>
 <p>Now the concept model can be defined (since this is exchangeable with
 the segmentation equivalent, an alias for the class name is used).
 By default, the kernel size is determined from the layer output size and the
 concept <a class="reference internal" href="../apiref/generated/hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size" title="hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rel_size</span></code></a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models.concept_detection</span> <span class="kn">import</span> \
-<span class="gp">... </span>    <span class="n">ConceptDetectionModel2D</span> <span class="k">as</span> <span class="n">ConceptModel</span> <span class="c1"># same for segmentation</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models</span> <span class="kn">import</span> <span class="n">ConceptDetectionModel2D</span> <span class="k">as</span> <span class="n">ConceptModel</span> <span class="c1"># same for segmentation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">concept_model</span> <span class="o">=</span> <span class="n">ConceptModel</span><span class="p">(</span>
 <span class="gp">... </span>   <span class="n">concept</span><span class="o">=</span><span class="n">concept</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">main_model</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">,</span>
 <span class="gp">... </span>   <span class="c1"># kernel_size=(3,3)</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">concept_model</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept_model</span>
 <span class="go">ConceptDetectionModel2D(</span>
 <span class="go">  (padding): ZeroPad2d(padding=(0, 1, 0, 1), value=0.0)</span>
-<span class="go">  (concept_layer): Conv2d(1024, 1, kernel_size=(2, 2), stride=(1, 1))</span>
+<span class="go">  (concept_layer_0): Conv2d(1024, 1, kernel_size=(2, 2), stride=(1, 1))</span>
 <span class="go">  (activation): Sigmoid()</span>
 <span class="go">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">concept_model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{param}</span><span class="s2">: </span><span class="si">{size}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
-<span class="go">concept_layer.weight: torch.Size([1, 1024, 2, 2])</span>
-<span class="go">concept_layer.bias: torch.Size([1])</span>
+<span class="go">concept_layer_0.weight: torch.Size([1, 1024, 2, 2])</span>
+<span class="go">concept_layer_0.bias: torch.Size([1])</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="training-a-concept-model">
-<h2><a class="toc-backref" href="#id4">Training a concept model</a><a class="headerlink" href="#training-a-concept-model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Training a concept model</a><a class="headerlink" href="#training-a-concept-model" title="Permalink to this headline"></a></h2>
 <p>Given the concept model (including its concept) the training handle
 can be defined. The data is available from the concept of the concept
 model instance.</p>
 <div class="section" id="defining-the-training-handle">
-<h3><a class="toc-backref" href="#id5">Defining the training handle</a><a class="headerlink" href="#defining-the-training-handle" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Defining the training handle</a><a class="headerlink" href="#defining-the-training-handle" title="Permalink to this headline"></a></h3>
 <p>When training or testing, the concept model must be fed with activation
-maps derived from this data. Thus, the data splits are automatically wrapped
+maps derived from this data. Thus, the data splits need to be wrapped
 by a <a class="reference internal" href="../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActivationDatasetWrapper</span></code></a>.
 The wrapper datasets are accessible via the data triple of the
 training handle.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models.concept_detection</span> <span class="kn">import</span> \
-<span class="gp">... </span>    <span class="n">ConceptDetection2DTrainTestHandle</span> <span class="k">as</span> <span class="n">CMHandle</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">concept_model_handle</span> <span class="o">=</span> <span class="n">CMHandle</span><span class="p">(</span><span class="n">concept_model</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models</span> <span class="kn">import</span> <span class="n">ConceptDetection2DTrainTestHandle</span> <span class="k">as</span> <span class="n">CMHandle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts</span> <span class="kn">import</span> <span class="n">kpis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.analysis</span> <span class="kn">import</span> <span class="n">data_for_concept_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concept_model_handle</span> <span class="o">=</span> <span class="n">CMHandle</span><span class="p">(</span><span class="n">concept_model</span><span class="p">,</span>
+<span class="gp">... </span>                                <span class="n">data</span><span class="o">=</span><span class="n">data_for_concept_model</span><span class="p">(</span><span class="n">concept_model</span><span class="p">),</span>
+<span class="gp">... </span>                                <span class="n">loss_fn</span><span class="o">=</span><span class="n">kpis</span><span class="o">.</span><span class="n">TverskyLoss</span><span class="p">(),</span>
+<span class="gp">... </span>                                <span class="n">metric_fns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;set_iou&#39;</span><span class="p">:</span> <span class="n">kpis</span><span class="o">.</span><span class="n">SetIoU</span><span class="p">(),</span> <span class="s1">&#39;acc&#39;</span><span class="p">:</span> <span class="n">kpis</span><span class="o">.</span><span class="n">Accuracy</span><span class="p">()})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Filled default values:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">concept_model_handle</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 <span class="go">batch_size : 8</span>
+<span class="go">batch_size_hessian : 8</span>
+<span class="go">batch_size_val : 16</span>
+<span class="go">callback_context : {}</span>
+<span class="go">callbacks : [...LoggingCallback..., ...ProgressBarUpdater...]</span>
 <span class="go">data : DataTriple(</span>
 <span class="go">    train=ActivationDatasetWrapper(...),</span>
 <span class="go">    val=ActivationDatasetWrapper(...),</span>
 <span class="go">    test=ActivationDatasetWrapper(...)</span>
 <span class="go">)</span>
-<span class="go">device : device(type=&#39;cpu&#39;)</span>
-<span class="go">early_stopping_handle : EarlyStoppingHandle(min_delta=0.001, patience=1,...)</span>
+<span class="go">device : device(...)</span>
 <span class="go">loss_fn : ReduceTuple(</span>
-<span class="go">    trafo=SameSize(interpolation=&#39;bilinear&#39;, resize_target=False),</span>
-<span class="go">    reduction=BalancedBCELoss(factor_pos_class=0.99, reduction=mean)</span>
-<span class="go">)</span>
+<span class="go">    trafo=Compose(transforms=[SameSize(...), OnInput(trafo=Lambda(...))]),</span>
+<span class="go">    reduction=TverskyLoss(...)</span>
+<span class="go">early_stopping_handle : None</span>
 <span class="go">max_epochs : 5</span>
 <span class="go">metric_fns : {&#39;set_iou&#39;: ReduceTuple(</span>
-<span class="go">    trafo=SameSize(interpolation=&#39;bilinear&#39;, resize_target=False),</span>
+<span class="go">    trafo=Compose(transforms=[SameSize(...), OnInput(trafo=Lambda(...))]),</span>
 <span class="go">    reduction=SetIoU(output_thresh=0.5,...)</span>
-<span class="go">), &#39;mean_iou&#39;: ReduceTuple(</span>
-<span class="go">    trafo=SameSize(interpolation=&#39;bilinear&#39;, resize_target=False),</span>
-<span class="go">    reduction=IoU(output_thresh=0.5,...)</span>
-<span class="go">)}</span>
+<span class="go">), &#39;acc&#39;: ReduceTuple(...)}</span>
 <span class="go">model : ConceptDetectionModel2D(...)</span>
-<span class="go">optimizer_creator : ResettableOptimizer(optimizer_type=Adam, lr=0.01,...)</span>
+<span class="go">nll_fn : ReduceTuple(...),</span>
+<span class="go">num_workers : 0</span>
+<span class="go">optimizer : ResettableOptimizer(optimizer_type=Adam, lr=0.01, ...)</span>
+<span class="go">show_progress_bars : True</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="training-and-evaluation">
-<h3><a class="toc-backref" href="#id6">Training and evaluation</a><a class="headerlink" href="#training-and-evaluation" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Training and evaluation</a><a class="headerlink" href="#training-and-evaluation" title="Permalink to this headline"></a></h3>
 <p>Training and evaluation then is as simple as</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_results</span><span class="p">,</span> <span class="n">val_results</span> <span class="o">=</span> <span class="n">concept_model_handle</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">train_results</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
@@ -345,10 +269,10 @@ training handle.</p>
 <p>Note that</p>
 <ul class="simple">
 <li><p>the training results are batch-wise
-(<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with multi-index of <code class="docutils literal notranslate"><span class="pre">(epoch,</span> <span class="pre">batch</span></code>)),</p></li>
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with multi-index of <code class="docutils literal notranslate"><span class="pre">(epoch,</span> <span class="pre">batch</span></code>)),</p></li>
 <li><p>the validation results are epoch-wise
-(<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with index of epochs), and</p></li>
-<li><p>the test results are for the complete run (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.1.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code></a>).</p></li>
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with index of epochs), and</p></li>
+<li><p>the test results are for the complete run (<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>).</p></li>
 </ul>
 <p>The views can be merged using</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tot_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)),</span> <span class="p">:])</span>
@@ -360,7 +284,7 @@ training handle.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">split</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="n">split</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">split</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
 <span class="go">              test       val     train</span>
 <span class="go">loss      ...</span>
 <span class="go">set_iou   ...</span>
@@ -373,58 +297,33 @@ training handle.</p>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="concept_analysis.html" class="btn btn-neutral float-right" title="Conducting a concept analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="overview/datasets.html" class="btn btn-neutral float-left" title="Dataset tooling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview/experimentation.html" class="btn btn-neutral float-left" title="Experimentation Utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="concept_analysis.html" class="btn btn-neutral float-right" title="Conducting a Concept Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

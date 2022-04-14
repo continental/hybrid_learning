@@ -1,0 +1,6 @@
+resize
+======
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autofunction:: resize

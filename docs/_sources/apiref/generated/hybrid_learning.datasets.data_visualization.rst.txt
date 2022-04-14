@@ -36,6 +36,8 @@ data\_visualization
         
         ~apply_mask
         
+        ~apply_masks
+        
         ~compare_masks
         
         ~mean_proportion_pos_px

@@ -1,0 +1,9 @@
+ResettableOptimizer
+===================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer
+
+.. autoclass:: ResettableOptimizer
+    :members:
+
+    .. autoclasstoc::

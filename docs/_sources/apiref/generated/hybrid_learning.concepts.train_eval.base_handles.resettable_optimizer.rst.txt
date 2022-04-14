@@ -1,0 +1,42 @@
+resettable\_optimizer
+=====================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.base_handles.resettable_optimizer
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ResettableOptimizer
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

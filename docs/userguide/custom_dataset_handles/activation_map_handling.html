@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Activation Map Storage and Handling &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="API Reference" href="../../apiref/index.html" />
+    <link rel="next" title="Dataset Caching" href="caching.html" />
     <link rel="prev" title="Broden" href="broden.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,25 +37,14 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../overview/index.html">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../concept_model.html">Using a concept model to find an embedding</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a concept analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a Concept Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../model_extension.html">Extending DNN model outputs</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Custom dataset handles</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="coco.html">MS COCO</a></li>
@@ -102,89 +55,50 @@
 <li class="toctree-l4"><a class="reference internal" href="#force-activation-map-rebuild">Force activation map rebuild</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="caching.html">Dataset Caching</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzy_logic.html">Fuzzy Logic Operations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">User Guide</a> &raquo;</li>
-        
           <li><a href="index.html">Custom dataset handles</a> &raquo;</li>
-        
       <li>Activation Map Storage and Handling</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/userguide/custom_dataset_handles/activation_map_handling.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="activation-map-storage-and-handling">
-<h1>Activation Map Storage and Handling<a class="headerlink" href="#activation-map-storage-and-handling" title="Permalink to this headline">¶</a></h1>
+<h1>Activation Map Storage and Handling<a class="headerlink" href="#activation-map-storage-and-handling" title="Permalink to this headline"></a></h1>
 <p>The following shows exemplary usage of the wrapper
 <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActivationDatasetWrapper</span></code></a>.
 It can be used to automatically (lazily) retrieve outputs of DNNs, and store them
 for repeated use using the pytorch pickling mechanism.
-More precisely, the DNN should be a <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a> that produces
-<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> outputs.
+More precisely, the DNN should be a <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a> that produces
+<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> outputs.
 If all activation maps are already generated, the model need not be handed over again,
 only the model description for identifying the activation maps.</p>
 <p>The dataset then will yield tuples of the original input and the model output.</p>
@@ -196,26 +110,22 @@ only the model description for identifying the activation maps.</p>
 </ul>
 </div>
 <p>The following example shows how a COCO
-<a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.coco.ConceptDataset.html#hybrid_learning.datasets.custom.coco.ConceptDataset" title="hybrid_learning.datasets.custom.coco.ConceptDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDataset</span></code></a> is wrapped
-to produce activation maps of layer 4 of a Mask R-CNN model.
+<a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDataset</span></code></a> is wrapped
+to produce activation maps of the layer <code class="docutils literal notranslate"><span class="pre">features.5</span></code> of an AlexNet model.
 It then yields tuples of</p>
 <ul class="simple">
 <li><p>the activation map tensor obtained from a (transformed) COCO image,</p></li>
 <li><p>the original concept annotation.</p></li>
 </ul>
 <div class="section" id="preparation-model-and-original-dataset">
-<h2><a class="toc-backref" href="#id1">Preparation: Model and original dataset</a><a class="headerlink" href="#preparation-model-and-original-dataset" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Preparation: Model and original dataset</a><a class="headerlink" href="#preparation-model-and-original-dataset" title="Permalink to this headline"></a></h2>
 <p>To retrieve the activation maps, a
 <a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelStump</span></code></a>
-can be used. The attribute
-<a class="reference internal" href="../../apiref/generated/hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump.stump_head" title="hybrid_learning.concepts.models.model_extension.ModelStump.stump_head"><code class="xref py py-attr docutils literal notranslate"><span class="pre">stump_head</span></code></a>
-is by default used to provide the <code class="docutils literal notranslate"><span class="pre">layer_key</span></code> during init
-of the wrapper, and the model class name is used for the
-<code class="docutils literal notranslate"><span class="pre">model_description</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models.detection</span> <span class="kn">import</span> <span class="n">maskrcnn_resnet50_fpn</span>
+can be used.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">torchvision.models</span> <span class="kn">import</span> <span class="n">alexnet</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models.model_extension</span> <span class="kn">import</span> <span class="n">ModelStump</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelStump</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">maskrcnn_resnet50_fpn</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-<span class="gp">... </span>                   <span class="n">stump_head</span><span class="o">=</span><span class="s1">&#39;backbone.body.layer4&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">ModelStump</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">alexnet</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="gp">... </span>                   <span class="n">stump_head</span><span class="o">=</span><span class="s1">&#39;features.5&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Obtain the dataset to wrap. Note that the
@@ -229,19 +139,24 @@ input is used.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;coco_test&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">concept_data</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">ConceptDataset</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">body_parts</span><span class="o">=</span><span class="p">[</span><span class="n">coco</span><span class="o">.</span><span class="n">BodyParts</span><span class="o">.</span><span class="n">FACE</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="n">dataset_root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;train2017&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">dataset_root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span> <span class="s2">&quot;train2017&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">img_size</span><span class="o">=</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="wrapper-init">
-<h2><a class="toc-backref" href="#id2">Wrapper init</a><a class="headerlink" href="#wrapper-init" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Wrapper init</a><a class="headerlink" href="#wrapper-init" title="Permalink to this headline"></a></h2>
 <p>Now instantiate an
 <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActivationDatasetWrapper</span></code></a>
-to handle activation map retrieval and saving:</p>
+to handle activation map retrieval. To automatically enable activation map
+file caching, also hand over a cache root:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.datasets</span> <span class="kn">import</span> <span class="n">ActivationDatasetWrapper</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">act_dataset</span> <span class="o">=</span> <span class="n">ActivationDatasetWrapper</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">concept_data</span><span class="p">,</span>
-<span class="gp">... </span>                                       <span class="n">act_map_gen</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">act_dataset</span> <span class="o">=</span> <span class="n">ActivationDatasetWrapper</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">dataset</span><span class="o">=</span><span class="n">concept_data</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">act_map_gen</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">activations_root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;activations&quot;</span><span class="p">,</span> <span class="s2">&quot;train2017_alexnet_features.5&quot;</span><span class="p">)</span>
+<span class="gp">... </span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">act_map</span><span class="p">,</span> <span class="n">mask_t</span> <span class="o">=</span> <span class="n">act_dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img_t</span> <span class="o">=</span> <span class="n">act_dataset</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># access the original input image</span>
 </pre></div>
@@ -249,25 +164,26 @@ to handle activation map retrieval and saving:</p>
 <p>The activation maps in this case are usual conv layer outputs, i.e.
 one activation map per filter:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">act_map</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>  <span class="c1"># shape: (filters, width, height)</span>
-<span class="go">[2048, 25, 25]</span>
+<span class="go">[192, 24, 24]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Show the activation map of the first filter:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">PIL.Image</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToPILImage</span><span class="p">()(</span><span class="n">act_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span><span class="mi">400</span><span class="p">),</span> <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">),</span> <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">))</span>
 <span class="go">&lt;matplotlib.image.AxesImage object...&gt;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="force-activation-map-rebuild">
-<h2><a class="toc-backref" href="#id3">Force activation map rebuild</a><a class="headerlink" href="#force-activation-map-rebuild" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Force activation map rebuild</a><a class="headerlink" href="#force-activation-map-rebuild" title="Permalink to this headline"></a></h2>
 <p>By default, activation maps are lazily generated and saved.
 To force (re)build of all activation maps after init, one can directly
-call <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_act_maps()</span></code></a>
+call <a class="reference internal" href="../../apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fill_cache()</span></code></a>
 (here we drastically reduce the amount of images before doing this):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">act_dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">num</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">act_dataset</span><span class="o">.</span><span class="n">generate_act_maps</span><span class="p">(</span><span class="n">force_rebuild</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">act_dataset</span><span class="o">.</span><span class="n">fill_cache</span><span class="p">(</span><span class="n">force_rebuild</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">ActivationDatasetWrapper(...)</span>
 </pre></div>
 </div>
 </div>
@@ -275,58 +191,33 @@ call <a class="reference internal" href="../../apiref/generated/hybrid_learning.
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../apiref/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="broden.html" class="btn btn-neutral float-left" title="Broden" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="broden.html" class="btn btn-neutral float-left" title="Broden" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="caching.html" class="btn btn-neutral float-right" title="Dataset Caching" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

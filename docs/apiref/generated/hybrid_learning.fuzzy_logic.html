@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzy_logic &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="logic_base" href="hybrid_learning.fuzzy_logic.logic_base.html" />
+    <link rel="prev" title="UnpackMask" href="hybrid_learning.datasets.transforms.tuple_transforms.UnpackMask.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fuzzy_logic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html">quantifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html">logic_by_name</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+      <li>fuzzy_logic</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.fuzzy_logic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="fuzzy-logic">
+<h1>fuzzy_logic<a class="headerlink" href="#fuzzy-logic" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.fuzzy_logic"></span><p>Parse fuzzy logic rules to truth functions in the form of dictionary transformations.
+This module implements a general framework and DSL to specify and parse (fuzzy)
+logical rules into a computational tree of
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> operations.
+Besides the base classes to define rules, logical theories, and parse rules in a logic
+to/from string, several standard operations are provided.</p>
+<p>Logical formulas and theories are modelled
+using the base classes
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> and
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Logic</span></code></a>
+as follows:</p>
+<ul class="simple">
+<li><p>(Logical) merge operations: These are instances of <code class="docutils literal notranslate"><span class="pre">Merge</span></code> operations,
+i.e. callables that accept a dictionary
+(the grounding = a map assigning values to variable names)
+and return the dictionary with the operation outputs added.</p></li>
+<li><p>Variables and constants: Variables are represented by string keys.
+They may be grounded (have a value assigned) by adding the key-value pair
+to the grounding dictionary.
+Constants are treated like grounded variables.</p></li>
+<li><p>Formula = tree of operations: Merge operations may depend directly on
+values given by keys (names of variables or constants) in the grounding dictionary,
+or they may have children operations on the output of which they depend.
+An example would be the operation <code class="docutils literal notranslate"><span class="pre">AND(&quot;a&quot;,</span> <span class="pre">OR(&quot;b&quot;,</span> <span class="pre">&quot;c&quot;))`</span> <span class="pre">depending</span>
+<span class="pre">on</span> <span class="pre">the</span> <span class="pre">variable</span> <span class="pre">``&quot;a&quot;</span></code> and the child operation <code class="docutils literal notranslate"><span class="pre">OR(&quot;b&quot;,</span> <span class="pre">&quot;c&quot;)</span></code>.
+The children operations are applied to the grounding dictionary
+before the parent operation, adding their outputs.
+Such a computational tree of operations constitutes a logical formula.</p></li>
+<li><p>Typical logical operations are:</p>
+<ul>
+<li><p>(Fuzzy) logical connectives: AND, OR, NOT, IMPLIES;
+These receive truth values (either Boolean or fuzzy) and return a truth value.
+Standard ones are those defined by the standard t-norm fuzzy logics.</p></li>
+<li><p>Predicates: e.g. IsPartOfA, GreaterThan;
+These receive an arbitrary domain value, e.g. a pixel position, and return a truth value.</p></li>
+<li><p>Quantifiers: EXISTS, FORALL;
+These reduce a domain of values, e.g. a set of image samples,
+to a single truth value, using a child predicate (the body formula)
+and a truth value reduction.</p></li>
+</ul>
+</li>
+<li><p>Logic: A <code class="docutils literal notranslate"><span class="pre">Logic</span></code> is here defined by a collection of operation types (operation builders)
+for building formulas.
+To allow parsing of infix notation, these are associated with an operator precedence
+(their order in the collection).</p></li>
+<li><p>Parsing: A logic allows parsing of infix notation string representations of formulas using a
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser" title="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">FormulaParser</span></code></a>.
+Calling <code class="docutils literal notranslate"><span class="pre">str</span></code> on the resulting formula returns an equivalent parsable string
+representation of the formula.</p></li>
+</ul>
+<p>Note that naming is adopted from the case of Boolean mask operations
+on segmentation mask annotations
+(hence <code class="docutils literal notranslate"><span class="pre">Merge</span></code> operations accepting <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dictionaries).</p>
+<p class="rubric">Sub-modules</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html#module-hybrid_learning.fuzzy_logic.logic_base" title="hybrid_learning.fuzzy_logic.logic_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logic_base</span></code></a></p></td>
+<td><p>Base classes for defining and operating on logics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html#module-hybrid_learning.fuzzy_logic.predicates" title="hybrid_learning.fuzzy_logic.predicates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predicates</span></code></a></p></td>
+<td><p>Implementations of logical predicates as merge operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html#module-hybrid_learning.fuzzy_logic.quantifiers" title="hybrid_learning.fuzzy_logic.quantifiers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantifiers</span></code></a></p></td>
+<td><p>Base classes and simple implementations for standard quantifiers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html#module-hybrid_learning.fuzzy_logic.tnorm_connectives" title="hybrid_learning.fuzzy_logic.tnorm_connectives"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tnorm_connectives</span></code></a></p></td>
+<td><p>Implementations of standard Boolean and t-norm fuzzy logic connectives with base logics.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html#hybrid_learning.fuzzy_logic.logic_by_name" title="hybrid_learning.fuzzy_logic.logic_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logic_by_name</span></code></a>(fuzzy_logic_key)</p></td>
+<td><p>Select a fuzzy logic handle by string identifier.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.transforms.tuple_transforms.UnpackMask.html" class="btn btn-neutral float-left" title="UnpackMask" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.fuzzy_logic.logic_base.html" class="btn btn-neutral float-right" title="logic_base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

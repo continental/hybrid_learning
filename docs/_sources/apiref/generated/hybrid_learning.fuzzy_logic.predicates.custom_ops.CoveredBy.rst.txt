@@ -1,0 +1,9 @@
+CoveredBy
+=========
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.predicates.custom_ops
+
+.. autoclass:: CoveredBy
+    :members:
+
+    .. autoclasstoc::

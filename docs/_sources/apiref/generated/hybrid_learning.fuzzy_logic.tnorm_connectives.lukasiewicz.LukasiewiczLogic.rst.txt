@@ -1,0 +1,9 @@
+LukasiewiczLogic
+================
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz
+
+.. autoclass:: LukasiewiczLogic
+    :members:
+
+    .. autoclasstoc::

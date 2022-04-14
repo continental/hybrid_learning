@@ -1,0 +1,9 @@
+GoedelLogic
+===========
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.goedel
+
+.. autoclass:: GoedelLogic
+    :members:
+
+    .. autoclasstoc::

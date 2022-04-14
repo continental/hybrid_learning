@@ -1,0 +1,6 @@
+person\_has\_rel\_size
+======================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autofunction:: person_has_rel_size

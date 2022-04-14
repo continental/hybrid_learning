@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JPGCache &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="NPYCache" href="hybrid_learning.datasets.caching.NPYCache.html" />
+    <link rel="prev" title="FileCache" href="hybrid_learning.datasets.caching.FileCache.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.Cache.html">Cache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheCascade.html">CacheCascade</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheDict.html">CacheDict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheTuple.html">CacheTuple</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.DictCache.html">DictCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.FileCache.html">FileCache</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">JPGCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NPYCache.html">NPYCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NPZCache.html">NPZCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NoCache.html">NoCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.PTCache.html">PTCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.TensorDictCache.html">TensorDictCache</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.caching.html">caching</a> &raquo;</li>
+      <li>JPGCache</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.caching.JPGCache.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="jpgcache">
+<h1>JPGCache<a class="headerlink" href="#jpgcache" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.caching.</span></span><span class="sig-name descname"><span class="pre">JPGCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RGB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before_put</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#JPGCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache" title="hybrid_learning.datasets.caching.FileCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileCache</span></code></a></p>
+<p>Cache for JPEG images using <code class="xref py py-mod docutils literal notranslate"><span class="pre">PIL</span></code>.
+Non-image tensor or array objects are converted to images and must
+have the shape <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width,</span> <span class="pre">channels)</span></code>.
+For mode auto-inference see <code class="xref py py-class docutils literal notranslate"><span class="pre">torchvision.transforms.ToPILImage</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Will by default return tensors of type <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.float</span></code>
+with a value range in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>.
+Set <a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.after_load" title="hybrid_learning.datasets.caching.JPGCache.after_load"><code class="xref py py-attr docutils literal notranslate"><span class="pre">after_load</span></code></a> accordingly, if a different type and value
+range is desired.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If <a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.mode" title="hybrid_learning.datasets.caching.JPGCache.mode"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mode</span></code></a> is set to <code class="docutils literal notranslate"><span class="pre">RGB</span></code>, make sure that the dtype of the
+tensors either is</p>
+</div>
+<p>The pixel value ranges of the JPG images are always in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">255]</span></code>.
+For modes ‘L’ and ‘RGB’ with float dtype (not mode ‘F’ and not for int
+or bool types!), the value range of the tensor is automatically scaled
+from [0, 1] to [0, 255] during put.
+During load, modes ‘L’ and ‘RGB’ are automatically downscaled again from
+range [0, 255] to [0, 1].
+This means, the following pixel value ranges of the tensors (after the
+<a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.before_put" title="hybrid_learning.datasets.caching.JPGCache.before_put"><code class="xref py py-attr docutils literal notranslate"><span class="pre">before_put</span></code></a> transformation) are assumed:</p>
+<ul class="simple">
+<li><p>mode ‘F’: [0, 255]</p></li>
+<li><p>mode ‘L’, dtype int: [0, 255]</p></li>
+<li><p>mode ‘L’, dtype float: [0, 1] -&gt; automatically scaled to [0, 255]</p></li>
+<li><p>mode ‘RGB’, dtype int: [0, 255]</p></li>
+<li><p>mode ‘RGB’, dtype float: [0, 1] -&gt; automatically scaled to [0, 255]</p></li>
+</ul>
+<p>Note that only integer values can be saved in JPG images, so values of
+mode ‘F’ get rounded to obtain valid mode ‘L’ values.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.FILE_ENDING" title="hybrid_learning.datasets.caching.JPGCache.FILE_ENDING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILE_ENDING</span></code></a></p></td>
+<td><p>JPEG file ending.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>FileCache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.FILE_ENDING" title="hybrid_learning.datasets.caching.JPGCache.FILE_ENDING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILE_ENDING</span></code></a></p></td>
+<td><p>JPEG file ending.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.put_file" title="hybrid_learning.datasets.caching.JPGCache.put_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put_file</span></code></a>(filepath, obj)</p></td>
+<td><p>Convert <code class="docutils literal notranslate"><span class="pre">obj</span></code> to a py:mod:<cite>PIL</cite> image and save to <code class="docutils literal notranslate"><span class="pre">filepath</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.load_file" title="hybrid_learning.datasets.caching.JPGCache.load_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_file</span></code></a>(filepath)</p></td>
+<td><p>Load image and convert to correct mode.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>FileCache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code>(descriptor, obj)</p></td>
+<td><p>Store <code class="docutils literal notranslate"><span class="pre">obj</span></code> under the cache root using <a class="reference internal" href="hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.put_file" title="hybrid_learning.datasets.caching.FileCache.put_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">put_file()</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(descriptor)</p></td>
+<td><p>Load object from file <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> + <a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.FILE_ENDING" title="hybrid_learning.datasets.caching.JPGCache.FILE_ENDING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">FILE_ENDING</span></code></a> under cache root.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p>Remove all files from cache root.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptors</span></code>()</p></td>
+<td><p>Provide paths of all cached files with ending stripped and relative to cache root.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor_to_fp</span></code>(descriptor)</p></td>
+<td><p>Return the file path of the cache file for a given <code class="docutils literal notranslate"><span class="pre">descriptor</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.put_file" title="hybrid_learning.datasets.caching.JPGCache.put_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put_file</span></code></a>(filepath, obj)</p></td>
+<td><p>Convert <code class="docutils literal notranslate"><span class="pre">obj</span></code> to a py:mod:<cite>PIL</cite> image and save to <code class="docutils literal notranslate"><span class="pre">filepath</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.load_file" title="hybrid_learning.datasets.caching.JPGCache.load_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_file</span></code></a>(filepath)</p></td>
+<td><p>Load image and convert to correct mode.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Cache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code>(descriptor, obj)</p></td>
+<td><p>Store <code class="docutils literal notranslate"><span class="pre">obj</span></code> under the cache root using <a class="reference internal" href="hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.put_file" title="hybrid_learning.datasets.caching.FileCache.put_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">put_file()</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(descriptor)</p></td>
+<td><p>Load object from file <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> + <a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.FILE_ENDING" title="hybrid_learning.datasets.caching.JPGCache.FILE_ENDING"><code class="xref py py-attr docutils literal notranslate"><span class="pre">FILE_ENDING</span></code></a> under cache root.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">put_batch</span></code>(descriptors, objs)</p></td>
+<td><p>Store a batch of <code class="docutils literal notranslate"><span class="pre">objs</span></code> in this cache using according <code class="docutils literal notranslate"><span class="pre">descriptors</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_batch</span></code>(descriptors[, return_none_if])</p></td>
+<td><p>Load a batch of objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p>Remove all files from cache root.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptors</span></code>()</p></td>
+<td><p>Provide paths of all cached files with ending stripped and relative to cache root.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_dict</span></code>()</p></td>
+<td><p>Return a dict with all cached descriptors and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap</span></code>(getitem[, descriptor_map])</p></td>
+<td><p>Add this cache to the deterministic function <code class="docutils literal notranslate"><span class="pre">getitem</span></code> (which should have no side effects).</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.__init__" title="hybrid_learning.datasets.caching.JPGCache.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(cache_root[, mode, before_put, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>FileCache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.__init__" title="hybrid_learning.datasets.caching.JPGCache.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(cache_root[, mode, before_put, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Cache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">self</span></code> then <code class="docutils literal notranslate"><span class="pre">other</span></code> with default sync mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__radd__</span></code>(other)</p></td>
+<td><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">other</span></code> then <code class="docutils literal notranslate"><span class="pre">self</span></code> with default sync mode.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cache_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>before_put</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em>) – </p></li>
+<li><p><strong>after_load</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'RGB'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before_put</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#JPGCache.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cache_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – the cache root directory</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – see <a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.mode" title="hybrid_learning.datasets.caching.JPGCache.mode"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mode</span></code></a></p></li>
+<li><p><strong>before_put</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>after_load</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.load_file">
+<span class="sig-name descname"><span class="pre">load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#JPGCache.load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.load_file" title="Permalink to this definition"></a></dt>
+<dd><p>Load image and convert to correct mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.put_file">
+<span class="sig-name descname"><span class="pre">put_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#JPGCache.put_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.put_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert <code class="docutils literal notranslate"><span class="pre">obj</span></code> to a py:mod:<cite>PIL</cite> image and save to <code class="docutils literal notranslate"><span class="pre">filepath</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>obj</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.save_image">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#JPGCache.save_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.save_image" title="Permalink to this definition"></a></dt>
+<dd><p>Save an image as JPG and take care of necessary conversion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>Image</em>) – </p></li>
+<li><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.FILE_ENDING">
+<span class="sig-name descname"><span class="pre">FILE_ENDING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.jpg'</span></em><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.FILE_ENDING" title="Permalink to this definition"></a></dt>
+<dd><p>JPEG file ending. Appended to the descriptors to get the file path
+(may lead to a double ending, this is intentional).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.after_load">
+<span class="sig-name descname"><span class="pre">after_load</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.after_load" title="Permalink to this definition"></a></dt>
+<dd><p>The transformation applied to loaded tensors.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.before_put">
+<span class="sig-name descname"><span class="pre">before_put</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.before_put" title="Permalink to this definition"></a></dt>
+<dd><p>The transformation applied to tensors before turning them into
+images for putting. By default only densifies them.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.JPGCache.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.datasets.caching.JPGCache.mode" title="Permalink to this definition"></a></dt>
+<dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code> mode to be represented by the put
+and loaded tensors (after the :py:attr`before_put` resp. before the
+<a class="reference internal" href="#hybrid_learning.datasets.caching.JPGCache.after_load" title="hybrid_learning.datasets.caching.JPGCache.after_load"><code class="xref py py-attr docutils literal notranslate"><span class="pre">after_load</span></code></a> transformation).
+Note that the images are converted to mode <code class="docutils literal notranslate"><span class="pre">'RGB'</span></code> (for 3 to 4
+channels) or mode <code class="docutils literal notranslate"><span class="pre">'L'</span></code> (for 1 to 2 channels) before saving to JPG.
+Not all dtypes are supported for <code class="docutils literal notranslate"><span class="pre">mode==None</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.caching.FileCache.html" class="btn btn-neutral float-left" title="FileCache" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.caching.NPYCache.html" class="btn btn-neutral float-right" title="NPYCache" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

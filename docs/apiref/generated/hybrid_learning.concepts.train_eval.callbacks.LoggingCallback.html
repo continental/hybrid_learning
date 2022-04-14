@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LoggingCallback &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ProgressBarUpdater" href="hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html" />
+    <link rel="prev" title="CsvLoggingCallback" href="hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.base_handles.html">base_handles</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.callbacks.html">callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.hessian.html">hessian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.html">kpis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.train_eval_funs.html">train_eval_funs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.html">train_eval</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.callbacks.html">callbacks</a> &raquo;</li>
+      <li>LoggingCallback</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="loggingcallback">
+<h1>LoggingCallback<a class="headerlink" href="#loggingcallback" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.train_eval.callbacks.</span></span><span class="sig-name descname"><span class="pre">LoggingCallback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_per_batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/train_eval/callbacks.html#LoggingCallback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.train_eval.callbacks.Callback.html#hybrid_learning.concepts.train_eval.callbacks.Callback" title="hybrid_learning.concepts.train_eval.callbacks.Callback"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callback</span></code></a></p>
+<p>Log batch and epoch KPI results.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_batch_train" title="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_batch_train"><code class="xref py py-obj docutils literal notranslate"><span class="pre">after_batch_train</span></code></a>(kpi_train, batch, batches)</p></td>
+<td><p>Logging of training KPI values after one batch.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_epoch" title="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_epoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">after_epoch</span></code></a>(kpi_train, kpi_val[, logger, ...])</p></td>
+<td><p>Logging of mean training and validation KPI values after one epoch.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Callback</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
+<td><p>Collect a list of all supported callback events.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Mapping</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code>(k[,d])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">keys</span></code>()</p></td>
+<td><p>Collect a list of all supported callback events.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">values</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__init__" title="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([logger, log_level, log_per_batch])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Callback</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(event)</p></td>
+<td><p>Get the method for the specified event or a pass lambda.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
+<td><p>Number of mapped events.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__iter__</span></code>()</p></td>
+<td><p>Iterate over mapped events.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Mapping</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(event)</p></td>
+<td><p>Get the method for the specified event or a pass lambda.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__contains__</span></code>(key)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
+<td><p>Return self==value.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Sized</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
+<td><p>Number of mapped events.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Iterable</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__iter__</span></code>()</p></td>
+<td><p>Iterate over mapped events.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Container</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__contains__</span></code>(key)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_per_batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/train_eval/callbacks.html#LoggingCallback.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/logging.html#logging.Logger" title="(in Python v3.6)"><em>Logger</em></a><em>]</em>) – </p></li>
+<li><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>log_per_batch</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_batch_train">
+<span class="sig-name descname"><span class="pre">after_batch_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kpi_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_info_templ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">_unused_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/train_eval/callbacks.html#LoggingCallback.after_batch_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_batch_train" title="Permalink to this definition"></a></dt>
+<dd><p>Logging of training KPI values after one batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – the current batch index</p></li>
+<li><p><strong>epoch</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – the current epoch index</p></li>
+<li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – the current cross-validation run index</p></li>
+<li><p><strong>batches</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – the total number of batches</p></li>
+<li><p><strong>epochs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – the total number of epochs</p></li>
+<li><p><strong>runs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – the total number of cross-validation runs</p></li>
+<li><p><strong>log_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – text to prepend to log messages</p></li>
+<li><p><strong>batch_info_templ</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – <p>string template for logging epoch and batch,
+which may include as substring</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">{run}</span></code>/<code class="docutils literal notranslate"><span class="pre">{epoch}</span></code>/<code class="docutils literal notranslate"><span class="pre">{batch}</span></code>: the current
+cross-validation run/epoch/batch number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{runs}</span></code>/<code class="docutils literal notranslate"><span class="pre">{epochs}</span></code>/<code class="docutils literal notranslate"><span class="pre">{batches}</span></code>: the total number of
+cross-validation runs/epochs/batches</p></li>
+</ul>
+</p></li>
+<li><p><strong>kpi_train</strong> (<em>DataFrame</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> indexed by the
+KPI names for training with the KPI values over the last training
+batch</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/logging.html#logging.Logger" title="(in Python v3.6)"><em>Logger</em></a><em>]</em>) – do not use this instances logger but a different one</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_epoch">
+<span class="sig-name descname"><span class="pre">after_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kpi_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kpi_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">_unused_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/train_eval/callbacks.html#LoggingCallback.after_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.after_epoch" title="Permalink to this definition"></a></dt>
+<dd><p>Logging of mean training and validation KPI values after one epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kpi_train</strong> (<em>DataFrame</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> indexed by the KPI
+names for training with the mean KPI values over the last
+training epoch</p></li>
+<li><p><strong>kpi_val</strong> (<em>Series</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> indexed by the KPI
+names for testing with the KPI values over the validation set
+after the epoch</p></li>
+<li><p><strong>log_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – text to prepend to log messages</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/logging.html#logging.Logger" title="(in Python v3.6)"><em>Logger</em></a><em>]</em>) – do not use this instances logger but a different one</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__parameters__">
+<span class="sig-name descname"><span class="pre">__parameters__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.__parameters__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.log_level">
+<span class="sig-name descname"><span class="pre">log_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.log_level" title="Permalink to this definition"></a></dt>
+<dd><p>The logging level to use. Defaults to <code class="xref py py-const docutils literal notranslate"><span class="pre">logging.INFO</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.log_per_batch">
+<span class="sig-name descname"><span class="pre">log_per_batch</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.log_per_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Log after each ith batch.
+If set to <code class="docutils literal notranslate"><span class="pre">False</span></code> or 0 don’t log batches at all, if <code class="docutils literal notranslate"><span class="pre">True</span></code> or 1 log each batch.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/logging.html#logging.Logger" title="(in Python v3.6)"><span class="pre">Logger</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.LoggingCallback.logger" title="Permalink to this definition"></a></dt>
+<dd><p>The default logger to use.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html" class="btn btn-neutral float-left" title="CsvLoggingCallback" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.train_eval.callbacks.ProgressBarUpdater.html" class="btn btn-neutral float-right" title="ProgressBarUpdater" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

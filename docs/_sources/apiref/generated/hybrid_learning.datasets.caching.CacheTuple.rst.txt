@@ -1,0 +1,9 @@
+CacheTuple
+==========
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: CacheTuple
+    :members:
+
+    .. autoclasstoc::

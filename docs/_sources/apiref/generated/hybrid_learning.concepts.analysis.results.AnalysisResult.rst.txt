@@ -1,0 +1,9 @@
+AnalysisResult
+==============
+
+.. currentmodule:: hybrid_learning.concepts.analysis.results
+
+.. autoclass:: AnalysisResult
+    :members:
+
+    .. autoclasstoc::

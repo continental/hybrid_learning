@@ -1,9 +1,0 @@
-ConceptSegmentation2DTrainTestHandle
-====================================
-
-.. currentmodule:: hybrid_learning.concepts.models.concept_segmentation
-
-.. autoclass:: ConceptSegmentation2DTrainTestHandle
-    :members:
-
-    .. autoclasstoc::

@@ -1,0 +1,9 @@
+CallbackEvents
+==============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.callbacks
+
+.. autoclass:: CallbackEvents
+    :members:
+
+    .. autoclasstoc::

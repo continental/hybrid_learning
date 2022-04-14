@@ -1,0 +1,6 @@
+visualize\_random\_samples
+==========================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis
+
+.. autofunction:: visualize_random_samples

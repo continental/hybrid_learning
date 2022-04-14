@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>exp_eval_common &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="auc" href="hybrid_learning.experimentation.exp_eval_common.auc.html" />
+    <link rel="prev" title="plot_overview_for_concept" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">exp_eval_common</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.auc.html">auc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.cache_at.html">cache_at</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.constrain_pd.html">constrain_pd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.do_for.html">do_for</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.f_beta.html">f_beta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.flatten_cols.html">flatten_cols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.show_and_save_plot.html">show_and_save_plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.to_fig_for.html">to_fig_for</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.update_dict.html">update_dict</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+      <li>exp_eval_common</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.exp_eval_common.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="exp-eval-common">
+<h1>exp_eval_common<a class="headerlink" href="#exp-eval-common" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.experimentation.exp_eval_common"></span><p>Common utility functions for modifying experiment data.</p>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.auc.html#hybrid_learning.experimentation.exp_eval_common.auc" title="hybrid_learning.experimentation.exp_eval_common.auc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auc</span></code></a>(x, y[, add_boundaries, skip_na])</p></td>
+<td><p>Calculate the area under curve for the given x and y values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.cache_at.html#hybrid_learning.experimentation.exp_eval_common.cache_at" title="hybrid_learning.experimentation.exp_eval_common.cache_at"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cache_at</span></code></a>(save_as[, common_settings])</p></td>
+<td><p>Return decorator that will cache the returned list of dicts in the JSON file <code class="docutils literal notranslate"><span class="pre">save_as</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.constrain_pd.html#hybrid_learning.experimentation.exp_eval_common.constrain_pd" title="hybrid_learning.experimentation.exp_eval_common.constrain_pd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constrain_pd</span></code></a>(df, constraints)</p></td>
+<td><p>Given a dict of <code class="docutils literal notranslate"><span class="pre">{col_name:</span> <span class="pre">constraint_value}</span></code> return the dataframe row subset fulfilling all constraints.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.do_for.html#hybrid_learning.experimentation.exp_eval_common.do_for" title="hybrid_learning.experimentation.exp_eval_common.do_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">do_for</span></code></a>(func[, allow_looping, verbose_looping])</p></td>
+<td><p>Apply <code class="docutils literal notranslate"><span class="pre">func</span></code> to all combinations of elements in the <code class="docutils literal notranslate"><span class="pre">allow_looping</span></code> list of <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>-keys.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.f_beta.html#hybrid_learning.experimentation.exp_eval_common.f_beta" title="hybrid_learning.experimentation.exp_eval_common.f_beta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">f_beta</span></code></a>(precision, recall[, beta])</p></td>
+<td><p>Calculate F1_beta score (cf.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.flatten_cols.html#hybrid_learning.experimentation.exp_eval_common.flatten_cols" title="hybrid_learning.experimentation.exp_eval_common.flatten_cols"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_cols</span></code></a>(df, columns[, keep_columns])</p></td>
+<td><p>If items in an dataframe are iterables, flatten these.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.show_and_save_plot.html#hybrid_learning.experimentation.exp_eval_common.show_and_save_plot" title="hybrid_learning.experimentation.exp_eval_common.show_and_save_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_and_save_plot</span></code></a>([fig, save_as, show_fig, ...])</p></td>
+<td><p>Save a plot with proper default timestamped filename.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.to_fig_for.html#hybrid_learning.experimentation.exp_eval_common.to_fig_for" title="hybrid_learning.experimentation.exp_eval_common.to_fig_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_fig_for</span></code></a>(func[, allow_looping, fig_args, ...])</p></td>
+<td><p>Apply <code class="docutils literal notranslate"><span class="pre">func</span></code> to all combinations of elements in the <code class="docutils literal notranslate"><span class="pre">allow_looping</span></code> list of <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>-keys and gather results into image.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.update_dict.html#hybrid_learning.experimentation.exp_eval_common.update_dict" title="hybrid_learning.experimentation.exp_eval_common.update_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_dict</span></code></a>(d, update)</p></td>
+<td><p>Return a dict that is a recursive update of <code class="docutils literal notranslate"><span class="pre">d</span></code> with values in <code class="docutils literal notranslate"><span class="pre">update</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html" class="btn btn-neutral float-left" title="plot_overview_for_concept" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.exp_eval_common.auc.html" class="btn btn-neutral float-right" title="auc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

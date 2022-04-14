@@ -1,0 +1,44 @@
+predicates
+==========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.predicates
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.predicates
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.fuzzy_logic.predicates.arithmetic
+        
+        ~hybrid_learning.fuzzy_logic.predicates.custom_ops
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

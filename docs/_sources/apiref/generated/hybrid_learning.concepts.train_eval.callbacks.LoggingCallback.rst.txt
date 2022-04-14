@@ -1,0 +1,9 @@
+LoggingCallback
+===============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.callbacks
+
+.. autoclass:: LoggingCallback
+    :members:
+
+    .. autoclasstoc::

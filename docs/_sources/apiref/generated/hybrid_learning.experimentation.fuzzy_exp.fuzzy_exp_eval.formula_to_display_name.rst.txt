@@ -1,0 +1,6 @@
+formula\_to\_display\_name
+==========================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval
+
+.. autofunction:: formula_to_display_name

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.analysis.analysis_handle &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.analysis.analysis_handle</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.analysis.analysis_handle</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handle for conducting a concept embedding analysis.</span>
+
+<span class="sd">For details on the workflow of a concept analysis see</span>
+<span class="sd">:py:meth:`ConceptAnalysis.analysis`.</span>
+<span class="sd">In short:</span>
+
+<span class="sd">:Input: All of</span>
+
+<span class="sd">    - The *concept* (defined via concept data)</span>
+<span class="sd">    - The *main model*</span>
+<span class="sd">    - The *layers* to analyse and compare</span>
+
+<span class="sd">:Output: All of</span>
+
+<span class="sd">    - The *layer* hosting the best embedding,</span>
+<span class="sd">    - The *best embedding*,</span>
+<span class="sd">    - The *quality metric values* for the best embedding</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">enum</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> \
+    <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Subset</span>
+
+<span class="kn">from</span> <span class="nn">.results</span> <span class="kn">import</span> <span class="n">AnalysisResult</span><span class="p">,</span> <span class="n">BestEmbeddingResult</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">visualization</span> <span class="k">as</span> <span class="n">vis</span>
+<span class="kn">from</span> <span class="nn">..train_eval.kpis</span> <span class="kn">import</span> <span class="n">aggregating_kpis</span><span class="p">,</span> <span class="n">batch_kpis</span> <span class="k">as</span> <span class="n">losses</span>
+<span class="kn">from</span> <span class="nn">..concepts</span> <span class="kn">import</span> <span class="n">ConceptTypes</span><span class="p">,</span> <span class="n">Concept</span><span class="p">,</span> <span class="n">SegmentationConcept2D</span>
+<span class="c1"># For type hints:</span>
+<span class="kn">from</span> <span class="nn">..models</span> <span class="kn">import</span> <span class="n">ConceptDetectionModel2D</span><span class="p">,</span> <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">,</span> <span class="n">ConceptEmbedding</span>
+<span class="kn">from</span> <span class="nn">..models.model_extension</span> <span class="kn">import</span> <span class="n">ModelStump</span>
+<span class="kn">from</span> <span class="nn">...datasets</span> <span class="kn">import</span> <span class="n">data_visualization</span> <span class="k">as</span> <span class="n">datavis</span><span class="p">,</span> \
+    <span class="n">ActivationDatasetWrapper</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">,</span> <span class="n">DataTriple</span><span class="p">,</span> <span class="n">DatasetSplit</span><span class="p">,</span> <span class="n">caching</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="data_for_concept_model"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model.html#hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model">[docs]</a><span class="k">def</span> <span class="nf">data_for_concept_model</span><span class="p">(</span>
+        <span class="n">concept_model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">main_model_stump</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">concept</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Concept</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">in_channels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transforms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Callable</span><span class="p">[[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                     <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cache_builder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">BaseDataset</span><span class="p">,</span>
+                                          <span class="n">ConceptDetectionModel2D</span><span class="p">],</span>
+                                         <span class="n">caching</span><span class="o">.</span><span class="n">Cache</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cache_in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTriple</span><span class="p">:</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Data handles with activation maps for and ground truth from</span>
+<span class="sd">    :py:attr:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.concept`.</span>
+<span class="sd">    The data from the concept model&#39;s concept is wrapped by an</span>
+<span class="sd">    :py:class:`~hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper`.</span>
+<span class="sd">    Its input and ground truth are:</span>
+
+<span class="sd">    :input: the required activation maps of the main model</span>
+<span class="sd">    :ground truth:</span>
+<span class="sd">      the segmentation masks scaled to the activation map size</span>
+<span class="sd">      (currently scaling is done on ``__getitem__``-call of</span>
+<span class="sd">      :py:class:`~hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper`)</span>
+
+<span class="sd">    :param concept_model: the concept model (with concept and main model)</span>
+<span class="sd">        to generate the wrapped dataset from; if not set,</span>
+<span class="sd">        ``main_model_stump``, ``concept``, and ``in_channels`` are used</span>
+<span class="sd">    :param main_model_stump: the model stump that generates the activations</span>
+<span class="sd">    :param concept: the concept the data of which is to be wrapped</span>
+<span class="sd">    :param in_channels: (optional for validation purposes) the input</span>
+<span class="sd">        channels for the concept model</span>
+<span class="sd">    :param transforms: the transformations to add to each wrapper instance</span>
+<span class="sd">    :param cache_builder: a builder that accepts the dataset to be wrapped</span>
+<span class="sd">        and the concept model for which to wrap it, and returns a cache to</span>
+<span class="sd">        be registered to the dataset wrapper; should have no side effects;</span>
+<span class="sd">        defaults to a cache tuple of each a cache cascade for the activations</span>
+<span class="sd">        and the masks</span>
+<span class="sd">    :param cache_root: in case ``cache_root`` is given instead of</span>
+<span class="sd">        ``cache_builder``, a default cache builder is defined using</span>
+<span class="sd">        ``cache_root`` and ``default_cache_roots``.</span>
+<span class="sd">    :param cache_in_memory: apply in-memory caches as default cache;</span>
+<span class="sd">        if cache_root is also set, use as default a cache cascades of in-memory</span>
+<span class="sd">        then file cache</span>
+<span class="sd">    :param device: the device to move all dataset items to after loading</span>
+<span class="sd">    :raises: :py:exc:`ValueError` if the data dimensions do not fit the</span>
+<span class="sd">        :py:attr:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.in_channels`</span>
+<span class="sd">        of the concept model&#39;s concept layers</span>
+<span class="sd">    :return: tuple of train data, test data, validation data, all with</span>
+<span class="sd">        activation maps as outputs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: enable=line-too-long</span>
+    <span class="c1"># region default values and value checks</span>
+    <span class="k">if</span> <span class="n">concept_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">main_model_stump</span><span class="p">:</span> <span class="n">ModelStump</span> <span class="o">=</span> <span class="n">concept_model</span><span class="o">.</span><span class="n">main_model_stump</span>
+        <span class="n">concept</span><span class="p">:</span> <span class="n">Concept</span> <span class="o">=</span> <span class="n">concept_model</span><span class="o">.</span><span class="n">concept</span>
+        <span class="c1"># validation</span>
+        <span class="n">in_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">concept_model</span><span class="o">.</span><span class="n">in_channels</span>
+    <span class="k">elif</span> <span class="n">main_model_stump</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">concept</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;concept_model not given but concept or main_model_stump &quot;</span>
+             <span class="s2">&quot;None;</span><span class="se">\n</span><span class="s2">concept: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">main_model_stump: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">concept</span><span class="p">,</span> <span class="n">main_model_stump</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">cache_builder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cache_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">default_cache_builder</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">caching</span><span class="o">.</span><span class="n">Cache</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Return cache to register given dataset and concept model.&quot;&quot;&quot;</span>
+            <span class="n">caches</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">caching</span><span class="o">.</span><span class="n">Cache</span><span class="p">,</span> <span class="n">caching</span><span class="o">.</span><span class="n">Cache</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">cache_in_memory</span><span class="p">:</span>
+                <span class="n">caches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">caching</span><span class="o">.</span><span class="n">TensorDictCache</span><span class="p">(),</span>
+                               <span class="n">caching</span><span class="o">.</span><span class="n">TensorDictCache</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="n">cache_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">act_root</span><span class="p">,</span> <span class="n">mask_root</span> <span class="o">=</span> <span class="n">default_cache_roots</span><span class="p">(</span>
+                    <span class="n">dat</span><span class="p">,</span> <span class="n">cache_root</span><span class="o">=</span><span class="n">cache_root</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">transforms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">mask_root</span> <span class="o">+=</span> <span class="s2">&quot;_for_act_maps&quot;</span>
+                <span class="n">caches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+                    <span class="n">caching</span><span class="o">.</span><span class="n">PTCache</span><span class="p">(</span><span class="n">cache_root</span><span class="o">=</span><span class="n">act_root</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">),</span>
+                    <span class="n">caching</span><span class="o">.</span><span class="n">PTCache</span><span class="p">(</span><span class="n">cache_root</span><span class="o">=</span><span class="n">mask_root</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">caching</span><span class="o">.</span><span class="n">CacheTuple</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">caches</span><span class="p">)])</span>
+
+        <span class="n">cache_builder</span> <span class="o">=</span> <span class="n">default_cache_builder</span>
+    <span class="c1"># endregion</span>
+
+    <span class="n">common_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">act_map_gen</span><span class="o">=</span><span class="n">main_model_stump</span><span class="p">,</span>
+        <span class="n">transforms</span><span class="o">=</span><span class="n">transforms</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+    <span class="p">)</span>
+
+    <span class="n">splits</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">DatasetSplit</span><span class="p">,</span> <span class="n">ActivationDatasetWrapper</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">,</span> <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span> <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">VAL</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">concept</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">split</span><span class="p">]</span>
+
+        <span class="c1"># Create wrapper</span>
+        <span class="n">splits</span><span class="p">[</span><span class="n">split</span><span class="p">]:</span> <span class="n">ActivationDatasetWrapper</span> <span class="o">=</span> \
+            <span class="n">ActivationDatasetWrapper</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">common_args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cache_builder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="n">cache_builder</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">main_model_stump</span><span class="o">=</span><span class="n">main_model_stump</span><span class="p">,</span>
+                                  <span class="n">concept</span><span class="o">=</span><span class="n">concept</span><span class="p">)</span>
+            <span class="n">splits</span><span class="p">[</span><span class="n">split</span><span class="p">]</span><span class="o">.</span><span class="n">transforms_cache</span> <span class="o">=</span> <span class="n">cache</span>
+            <span class="c1"># Independent act map and mask caches:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cache</span><span class="p">,</span> <span class="n">caching</span><span class="o">.</span><span class="n">CacheTuple</span><span class="p">)</span> <span class="ow">and</span> <span class="n">transforms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">splits</span><span class="p">[</span><span class="n">split</span><span class="p">]</span><span class="o">.</span><span class="n">act_maps_cache</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Validation: size checks</span>
+    <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">split</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">splits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">act_map</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">act_map</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">in_channels</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;in_channels value of </span><span class="si">{}</span><span class="s2"> for concept layer does not match &quot;</span>
+                     <span class="s2">&quot;number of filters in activation map of </span><span class="si">{}</span><span class="s2"> data sample&quot;</span>
+                     <span class="s2">&quot; 0 which has size </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">in_channels</span><span class="p">,</span> <span class="n">split</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">act_map</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
+
+    <span class="k">return</span> <span class="n">DataTriple</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="model_hash"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.model_hash.html#hybrid_learning.concepts.analysis.analysis_handle.model_hash">[docs]</a><span class="k">def</span> <span class="nf">model_hash</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">truncate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a hex md5-hash of the main model topology for comparison</span>
+<span class="sd">    purposes.</span>
+<span class="sd">    Truncate to the first truncate letters if ``truncate`` is given.&quot;&quot;&quot;</span>
+    <span class="n">hex_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">truncate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">truncate</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;truncate value must be &gt; 0, but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">truncate</span><span class="p">))</span>
+        <span class="n">hex_md5</span> <span class="o">=</span> <span class="n">hex_md5</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">truncate</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">hex_md5</span></div>
+
+
+<div class="viewcode-block" id="default_cache_roots"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.default_cache_roots.html#hybrid_learning.concepts.analysis.analysis_handle.default_cache_roots">[docs]</a><span class="k">def</span> <span class="nf">default_cache_roots</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">:</span> <span class="n">BaseDataset</span><span class="p">,</span>
+                        <span class="n">concept_model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">main_model_stump</span><span class="p">:</span> <span class="n">ModelStump</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">concept</span><span class="p">:</span> <span class="n">Concept</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given a dataset to be wrapped and a concept model, provide</span>
+<span class="sd">    standard cache roots paths.</span>
+<span class="sd">    Either give a ``concept_model`` or its defining parameters, namely</span>
+<span class="sd">    ``main_model_stump`` and the ``concept``.</span>
+<span class="sd">    See :py:func:`default_mask_cache_root` and</span>
+<span class="sd">    :py:func:`default_act_cache_root` for details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># region default values and value checks</span>
+    <span class="n">cache_root</span> <span class="o">=</span> <span class="n">cache_root</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">)</span>
+    <span class="n">concept</span> <span class="o">=</span> <span class="n">concept</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">concept_model</span><span class="p">,</span> <span class="s2">&quot;concept&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">main_model_stump</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">concept_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;concept_model not given but main_model_stump None&quot;</span><span class="p">)</span>
+    <span class="n">main_model_stump</span> <span class="o">=</span> <span class="n">main_model_stump</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">concept_model</span><span class="p">,</span>
+                                                   <span class="s2">&quot;main_model_stump&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># endregion</span>
+    <span class="n">act_root</span> <span class="o">=</span> <span class="n">default_act_cache_root</span><span class="p">(</span>
+        <span class="n">wrapped_data</span><span class="p">,</span> <span class="n">cache_root</span><span class="p">,</span> <span class="n">main_model_stump</span><span class="p">)</span>
+    <span class="n">masks_root</span> <span class="o">=</span> <span class="n">default_mask_cache_root</span><span class="p">(</span>
+        <span class="n">wrapped_data</span><span class="p">,</span> <span class="n">cache_root</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">concept</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">act_root</span><span class="p">,</span> <span class="n">masks_root</span></div>
+
+
+<div class="viewcode-block" id="default_act_cache_root"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.default_act_cache_root.html#hybrid_learning.concepts.analysis.analysis_handle.default_act_cache_root">[docs]</a><span class="k">def</span> <span class="nf">default_act_cache_root</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseDataset</span><span class="p">,</span> <span class="n">Subset</span><span class="p">],</span>
+                           <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">main_model_stump</span><span class="p">:</span> <span class="n">ModelStump</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Determine the default activation cache root as</span>
+<span class="sd">    ``&lt;cache_root&gt;/&lt;img_base&gt;_&lt;mainmodelclassname&gt;-&lt;layerid&gt;``.</span>
+<span class="sd">    ``&lt;img_base&gt;`` is the base name of the ``wrapped_data.dataset_root``.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">,</span> <span class="p">(</span><span class="n">Subset</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">((</span><span class="s2">&quot;Cannot handle datasets other than Subset or &quot;</span>
+                         <span class="s2">&quot;BaseDataset, but was of type </span><span class="si">{}</span><span class="s2"> (dataset: </span><span class="si">{}</span><span class="s2">)&quot;</span>
+                         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">),</span> <span class="n">wrapped_data</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">):</span>
+        <span class="n">img_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">wrapped_data</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># noinspection PyUnresolvedReferences</span>
+        <span class="n">img_base</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">wrapped_data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+    <span class="c1"># region Collect base names</span>
+    <span class="n">act_basename</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{img_base}</span><span class="s2">_</span><span class="si">{model_hash}</span><span class="s2">-</span><span class="si">{module_id}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">img_base</span><span class="o">=</span><span class="n">img_base</span><span class="p">,</span>
+        <span class="n">model_hash</span><span class="o">=</span><span class="p">(</span><span class="n">main_model_stump</span><span class="o">.</span><span class="n">wrapped_model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+                    <span class="o">+</span> <span class="n">model_hash</span><span class="p">(</span><span class="n">main_model_stump</span><span class="p">)),</span>
+        <span class="n">module_id</span><span class="o">=</span><span class="n">main_model_stump</span><span class="o">.</span><span class="n">stump_head</span>
+    <span class="p">)</span>
+    <span class="n">act_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span> <span class="s2">&quot;activations&quot;</span><span class="p">,</span> <span class="n">act_basename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">act_root</span></div>
+
+
+<div class="viewcode-block" id="default_mask_cache_root"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.default_mask_cache_root.html#hybrid_learning.concepts.analysis.analysis_handle.default_mask_cache_root">[docs]</a><span class="k">def</span> <span class="nf">default_mask_cache_root</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseDataset</span><span class="p">,</span> <span class="n">Subset</span><span class="p">],</span>
+                            <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">),</span>
+                            <span class="n">concept_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Determine the default activation data mask cache root.</span>
+<span class="sd">    It is ``&lt;cache_root&gt;/&lt;base&gt;`` with ``&lt;base&gt;`` being the base name of the</span>
+<span class="sd">    ``wrapped_data.masks_root`` if this is available,</span>
+<span class="sd">    else ``&lt;img_base&gt;_&lt;concept_name&gt;`` with ``&lt;img_base&gt;`` the base name of</span>
+<span class="sd">    the ``wrapped_data.dataset_root``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get mask_root property or set default:</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">,</span> <span class="s2">&quot;masks_root&quot;</span><span class="p">):</span>
+        <span class="n">masks_path</span> <span class="o">=</span> <span class="n">wrapped_data</span><span class="o">.</span><span class="n">masks_root</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">,</span> <span class="s2">&quot;dataset&quot;</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">wrapped_data</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;masks_root&quot;</span><span class="p">):</span>
+        <span class="n">masks_path</span> <span class="o">=</span> <span class="n">wrapped_data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">masks_root</span>
+    <span class="k">elif</span> <span class="n">concept_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Cannot determine mask_root of dataset </span><span class="si">{}</span><span class="s2"> of type </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                          <span class="s2">&quot;and no default concept or concept_model is given&quot;</span><span class="p">)</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapped_data</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">):</span>
+            <span class="n">img_base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">wrapped_data</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># noinspection PyUnresolvedReferences</span>
+            <span class="n">img_base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrapped_data</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+        <span class="n">masks_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s2">&quot;masks&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">spec</span> <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="p">(</span><span class="n">img_base</span><span class="p">,</span> <span class="n">concept_name</span><span class="p">)</span>
+                               <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]))</span>
+    <span class="n">masks_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">masks_path</span><span class="p">)</span>
+    <span class="n">masks_root_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">masks_path</span><span class="p">))</span>
+    <span class="n">masks_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_root</span><span class="p">,</span> <span class="n">masks_root_root</span><span class="p">,</span> <span class="n">masks_basename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">masks_root</span></div>
+
+
+<div class="viewcode-block" id="EmbeddingReduction"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingReduction</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Aggregator callables to get the mean from a list of embeddings.&quot;&quot;&quot;</span>
+
+    <span class="n">MEAN_NORMALIZED_DIST</span> <span class="o">=</span> <span class="p">(</span><span class="n">ConceptEmbedding</span><span class="o">.</span><span class="n">mean</span><span class="p">,)</span>
+    <span class="sd">&quot;&quot;&quot;Embedding with distance function the mean of those of the</span>
+<span class="sd">    normed representations&quot;&quot;&quot;</span>
+    <span class="n">MEAN_DIST</span> <span class="o">=</span> <span class="p">(</span><span class="n">ConceptEmbedding</span><span class="o">.</span><span class="n">mean_by_distance</span><span class="p">,)</span>
+    <span class="sd">&quot;&quot;&quot;Embedding with distance the mean of the distance functions&quot;&quot;&quot;</span>
+    <span class="n">MEAN_ANGLE</span> <span class="o">=</span> <span class="p">(</span><span class="n">ConceptEmbedding</span><span class="o">.</span><span class="n">mean_by_angle</span><span class="p">,)</span>
+    <span class="sd">&quot;&quot;&quot;Embedding with distance function the mean of the distance functions</span>
+<span class="sd">    weighted by cosine distance of the normal vectors&quot;&quot;&quot;</span>
+    <span class="n">FIRST</span> <span class="o">=</span> <span class="p">(</span><span class="n">ConceptEmbedding</span><span class="o">.</span><span class="n">first</span><span class="p">,)</span>
+    <span class="sd">&quot;&quot;&quot;First element of the result list&quot;&quot;&quot;</span>
+
+    <span class="n">DEFAULT</span> <span class="o">=</span> <span class="n">MEAN_NORMALIZED_DIST</span>
+    <span class="sd">&quot;&quot;&quot;The default instance to be used.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EmbeddingReduction.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]],</span>
+                                <span class="n">ConceptEmbedding</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;The init routine for enum members makes function available as</span>
+<span class="sd">        instance fields.</span>
+<span class="sd">        It is automatically called for all defined enum instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]],</span>
+                                <span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="sd">&quot;&quot;&quot;Actual function that reduces a list of embeddings to a new one.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            The function is manually saved as attribute during ``__init__``</span>
+<span class="sd">            due to the following issue:</span>
+<span class="sd">            Enums currently do not support functions as values, as explained in</span>
+<span class="sd">            `this</span>
+<span class="sd">            &lt;https://stackoverflow.com/questions/40338652&gt;`_ and</span>
+<span class="sd">            `this discussion</span>
+<span class="sd">            &lt;https://mail.python.org/pipermail/python-ideas/2017-April/045435.html&gt;`_.</span>
+<span class="sd">            The chosen workaround follows</span>
+<span class="sd">            `this suggestion &lt;https://stackoverflow.com/a/30311492&gt;`_</span>
+<span class="sd">            *(though the code is not used)*.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="EmbeddingReduction.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">embeddings</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ConceptEmbedding</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Call aggregation function behind the instance on the embeddings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConceptAnalysis"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis">[docs]</a><span class="k">class</span> <span class="nc">ConceptAnalysis</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Handle for conducting a concept embedding analysis.</span>
+<span class="sd">    Saves the analysis settings and can run a complete analysis.</span>
+
+<span class="sd">    The core methods are:</span>
+
+<span class="sd">    - :py:meth:`analysis`: plain analysis (collect</span>
+<span class="sd">      :math:`\text{cross_val_runs}\cdot\text{num_val_splits}`</span>
+<span class="sd">      embeddings for each layer in :py:attr`layer_infos`)</span>
+<span class="sd">    - :py:meth:`best_embedding`: aggregate embeddings of an analysis per layer,</span>
+<span class="sd">      then choose best one</span>
+<span class="sd">    - :py:meth:`best_embedding_with_logging`: combination of the latter two</span>
+<span class="sd">      with automatic logging and result saving</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The total number of runs that are conducted per layer.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span>
+
+<div class="viewcode-block" id="ConceptAnalysis.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">concept</span><span class="p">:</span> <span class="n">Concept</span><span class="p">,</span>
+                 <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+                 <span class="n">layer_infos</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+                                    <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cross_val_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">num_val_splits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                 <span class="n">emb_reduction</span><span class="p">:</span> <span class="n">EmbeddingReduction</span> <span class="o">=</span> <span class="n">EmbeddingReduction</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
+                 <span class="n">concept_model_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">train_val_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">after_layer_hook</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">AnalysisResult</span><span class="p">,</span>
+                                             <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">],</span>
+                                            <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param concept: concept to find the embedding of</span>
+<span class="sd">        :param model: the DNN</span>
+<span class="sd">        :param layer_infos: information about the layers in which to look for</span>
+<span class="sd">            the best concept embedding; it may be given either as sequence of</span>
+<span class="sd">            layer IDs or as dict where the indices are the layer keys in</span>
+<span class="sd">            the model&#39;s :py:meth:`torch.nn.Module.named_modules` dict;</span>
+<span class="sd">            used keys:</span>
+
+<span class="sd">            - kernel_size: fixed kernel size to use for this layer</span>
+<span class="sd">              (overrides value from ``concept_model_args``)</span>
+<span class="sd">            - lr: learning rate to use</span>
+
+<span class="sd">        :param num_val_splits: the number of validation splits to use for</span>
+<span class="sd">            each cross-validation run</span>
+<span class="sd">        :param cross_val_runs: for a layer, several concept models are</span>
+<span class="sd">            trained in different runs; the runs differ by model initialization,</span>
+<span class="sd">            and the validation data split;</span>
+<span class="sd">            ``cross_val_runs`` is the number of cross-validation runs,</span>
+<span class="sd">            i.e. collections of runs with num_val_splits distinct validation</span>
+<span class="sd">            sets each</span>
+<span class="sd">        :param emb_reduction: aggregation function to reduce list of</span>
+<span class="sd">            embeddings to one</span>
+<span class="sd">        :param concept_model_args: dict with arguments for the concept model</span>
+<span class="sd">            initialization</span>
+<span class="sd">        :param train_val_args: any further arguments to initialize the concept</span>
+<span class="sd">            model handle; a loss and a metric are added by default</span>
+<span class="sd">        :param data_args: any further arguments to initialize the training and</span>
+<span class="sd">            eval data tuple using :py:meth:`data_for_concept_model`</span>
+<span class="sd">        :param after_layer_hook: see :py:attr:`after_layer_hook`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># region Value checks</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">concept</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">ConceptTypes</span><span class="o">.</span><span class="n">SEGMENTATION</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Analysis only available for segmentation concepts,&quot;</span>
+                 <span class="s2">&quot;but concept was of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">num_val_splits</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;num_val_splits must be positive int but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_val_splits</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">cross_val_runs</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cross_val_runs must be positive int but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cross_val_runs</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">:</span> <span class="n">Concept</span> <span class="o">=</span> <span class="n">concept</span>
+        <span class="sd">&quot;&quot;&quot;The concept to find the embedding for.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="sd">&quot;&quot;&quot;The model in which to find the embedding.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">layer_infos</span> \
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> \
+            <span class="k">else</span> <span class="p">{</span><span class="n">l_id</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">l_id</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">}</span>
+        <span class="sd">&quot;&quot;&quot;Information about the layers in which to look for the best concept</span>
+<span class="sd">        embedding; the indices are the layer keys in the model&#39;s</span>
+<span class="sd">        :py:meth:`torch.nn.Module.named_modules` dict&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">cross_val_runs</span>
+        <span class="sd">&quot;&quot;&quot;The number of cross-validation runs to conduct for each layer.</span>
+<span class="sd">        A cross-validation run consists of :py:attr:`num_val_splits` training</span>
+<span class="sd">        runs with distinct validation sets. The resulting embeddings of all</span>
+<span class="sd">        runs of all cross-validation runs are then used to obtain the layer&#39;s</span>
+<span class="sd">        best concept embedding.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">num_val_splits</span>
+        <span class="sd">&quot;&quot;&quot;The number of validation splits per cross-validation run.</span>
+<span class="sd">        If set to 1, no cross-validation is conducted but simply a number of</span>
+<span class="sd">        :py:attr:`cross_val_runs` training runs.</span>
+<span class="sd">        See :py:meth:`analysis_for_layer`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb_reduction</span><span class="p">:</span> <span class="n">EmbeddingReduction</span> <span class="o">=</span> <span class="n">emb_reduction</span>
+        <span class="sd">&quot;&quot;&quot;Aggregation function to reduce a list of embeddings from several</span>
+<span class="sd">        runs to one.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">train_val_args</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="n">train_val_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;Any training and evaluation arguments for the concept model</span>
+<span class="sd">        initialization.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;loss_fn&#39;</span><span class="p">,</span> <span class="n">losses</span><span class="o">.</span><span class="n">TverskyLoss</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;metric_fns&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;set_iou&#39;</span><span class="p">:</span> <span class="n">aggregating_kpis</span><span class="o">.</span><span class="n">SetIoU</span><span class="p">()})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">concept_model_args</span> \
+            <span class="k">if</span> <span class="n">concept_model_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;Any arguments for initializing a new concept model.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_args</span> \
+            <span class="k">if</span> <span class="n">data_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;Any arguments except for the concept model specifiers to the</span>
+<span class="sd">        concept model data initializer.</span>
+<span class="sd">        See :py:meth:`data_for_concept_model` for details.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">after_layer_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">after_layer_hook</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;after_layer_hook given but not callable; was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">after_layer_hook</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_layer_hook</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
+            <span class="p">[</span><span class="n">AnalysisResult</span><span class="p">,</span> <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">after_layer_hook</span>
+        <span class="sd">&quot;&quot;&quot;Callable that is called after each layer analysis with the</span>
+<span class="sd">        analysis result and the used training handle as arguments.</span>
+<span class="sd">        Can e.g. be used to clear dataset caches or store the result.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings dict to reproduce instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">concept</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">layer_infos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">,</span>
+            <span class="n">cross_val_runs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span><span class="p">,</span>
+            <span class="n">num_val_splits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span><span class="p">,</span>
+            <span class="n">emb_reduction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">emb_reduction</span><span class="p">,</span>
+            <span class="n">train_val_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="p">,</span>
+            <span class="n">concept_model_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">concept_model_args</span><span class="p">,</span>
+            <span class="n">data_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_args</span><span class="p">,</span>
+            <span class="n">after_layer_hook</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">after_layer_hook</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="ConceptAnalysis.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">setts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+        <span class="c1"># handle dict attribute representation</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">setts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">setts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;{</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s2">&quot;</span><span class="se">\t</span><span class="si">{!s}</span><span class="s2">:</span><span class="se">\t</span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sub_k</span><span class="p">,</span> <span class="n">sub_v</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">sub_k</span><span class="p">,</span> <span class="n">sub_v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">}&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;(</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s2">&quot;</span><span class="si">{!s}</span><span class="s2"> =</span><span class="se">\t</span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">setts</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+                <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">)&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.best_embedding"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding">[docs]</a>    <span class="k">def</span> <span class="nf">best_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">analysis_results</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+                           <span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]]]</span>
+                       <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConceptEmbedding</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Conduct an analysis and from results derive the best embedding.</span>
+
+<span class="sd">        :param analysis_results: optionally the results of a previously run</span>
+<span class="sd">            analysis; defaults to running a new analysis via :py:meth:`analysis`</span>
+<span class="sd">        :return: the determined best embedding of all layers analysed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">analysis_results</span><span class="p">:</span> <span class="n">AnalysisResult</span> <span class="o">=</span> <span class="n">analysis_results</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>
+        <span class="n">best_embs_stds_stats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">results_per_run</span> <span class="ow">in</span> <span class="n">analysis_results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">best_embs_stds_stats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">embedding_reduction</span><span class="p">(</span><span class="n">results_per_run</span><span class="p">)</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">best_layer_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_layer_from_stats</span><span class="p">(</span>
+            <span class="n">BestEmbeddingResult</span><span class="p">(</span><span class="n">best_embs_stds_stats</span><span class="p">))</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Concept </span><span class="si">%s</span><span class="s2"> final layer: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">best_layer_id</span><span class="p">)</span>
+        <span class="n">best_embedding</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">best_embs_stds_stats</span><span class="p">[</span><span class="n">best_layer_id</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">best_embedding</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.analysis"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis">[docs]</a>    <span class="k">def</span> <span class="nf">analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnalysisResult</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Conduct a concept embedding analysis.</span>
+
+<span class="sd">        For each layer in :py:attr:`layer_infos`:</span>
+
+<span class="sd">        - train :py:attr:`cross_val_runs` x :py:attr:`num_val_splits`</span>
+<span class="sd">          concept models,</span>
+<span class="sd">        - collect their evaluation results,</span>
+<span class="sd">        - convert them to embeddings.</span>
+
+<span class="sd">        :return: a analysis result object holding a dictionary of</span>
+<span class="sd">            ``{layer_id: {run: (embedding,</span>
+<span class="sd">            pandas.Series with {pre_: metric_val}}}``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results_per_layer</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">:</span>
+            <span class="n">results_per_run</span><span class="p">:</span> <span class="n">AnalysisResult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_for_layer</span><span class="p">(</span><span class="n">layer_id</span><span class="p">)</span>
+            <span class="n">results_per_layer</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">results_per_run</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AnalysisResult</span><span class="p">(</span><span class="n">results_per_layer</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.analysis_for_layer"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer">[docs]</a>    <span class="k">def</span> <span class="nf">analysis_for_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnalysisResult</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get a concept embedding of the given concept in the given layer.</span>
+<span class="sd">        A number of :py:attr:`cross_val_runs` cross validation runs is conducted</span>
+<span class="sd">        with each :py:attr:`num_val_splits` non-intersecting splits for the</span>
+<span class="sd">        validation data.</span>
+<span class="sd">        In case :py:attr:`num_val_splits` is 1, just :py:attr:`cross_val_runs`</span>
+<span class="sd">        a normal training runs are conducted.</span>
+
+<span class="sd">        After the analysis is completed, :py:attr:`after_layer_hook` is called.</span>
+
+<span class="sd">        :param layer_id: ID of the layer to find embedding in; key in</span>
+<span class="sd">            :py:attr:`layer_infos`</span>
+<span class="sd">        :return: an analysis result object holding only information on</span>
+<span class="sd">            this layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_for_layer</span><span class="p">(</span><span class="n">layer_id</span><span class="p">)</span>
+        <span class="n">c_handle</span><span class="p">:</span> <span class="n">ConceptDetection2DTrainTestHandle</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">c_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;lr&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]:</span>
+            <span class="n">c_handle</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">][</span><span class="s1">&#39;lr&#39;</span><span class="p">]</span>
+
+        <span class="n">stats_per_run</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cross_val_run</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span><span class="p">):</span>
+            <span class="n">c_handle</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span>
+            <span class="n">callback_context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">c_handle</span><span class="o">.</span><span class="n">callback_context</span><span class="p">,</span>
+                <span class="s1">&#39;log_prefix&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c_handle</span><span class="o">.</span><span class="n">callback_context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/&quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;cv</span><span class="si">{</span><span class="n">cross_val_run</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">c_handle</span><span class="o">.</span><span class="n">callback_context</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">states</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">c_handle</span><span class="o">.</span><span class="n">cross_validate</span><span class="p">(</span>
+                    <span class="n">num_splits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span><span class="p">,</span>
+                    <span class="n">run_info_templ</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">, cv </span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">layer_id</span><span class="p">,</span> <span class="n">cross_val_run</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span><span class="p">)</span> <span class="o">+</span>
+                                    <span class="s2">&quot;run </span><span class="si">{run}</span><span class="s2">/</span><span class="si">{runs}</span><span class="s2">&quot;</span><span class="p">),</span>
+                    <span class="n">callback_context</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">callback_context</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c_handle</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+                <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_handle</span><span class="o">.</span><span class="n">detached_state_dict</span><span class="p">(</span><span class="n">c_model</span><span class="p">)]</span>
+
+            <span class="k">for</span> <span class="n">val_split</span><span class="p">,</span> <span class="n">state_dict</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
+                <span class="n">curr_cb_context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="o">**</span><span class="n">callback_context</span><span class="p">,</span>
+                    <span class="s1">&#39;run&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">val_split</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)}</span>
+
+                <span class="n">c_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">c_handle</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">use_laplace</span><span class="p">:</span>
+                    <span class="n">c_handle</span><span class="o">.</span><span class="n">second_stage_train</span><span class="p">(</span>
+                        <span class="n">callback_context</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">curr_cb_context</span><span class="p">))</span>
+
+                <span class="n">embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="n">c_model</span><span class="o">.</span><span class="n">to_embedding</span><span class="p">()</span>
+                <span class="n">run</span> <span class="o">=</span> <span class="n">val_split</span> <span class="o">+</span> <span class="n">cross_val_run</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span>
+                <span class="n">metrics</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="n">c_handle</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+                    <span class="n">callback_context</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">curr_cb_context</span><span class="p">))</span>
+                <span class="c1"># storing &amp; logging</span>
+                <span class="n">stats_per_run</span><span class="p">[</span><span class="n">run</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="s2">&quot;Concept </span><span class="si">{}</span><span class="s2">, layer </span><span class="si">{}</span><span class="s2">, run </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
+                <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                    <span class="n">AnalysisResult</span><span class="o">.</span><span class="n">emb_info_to_string</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
+
+        <span class="n">layer_result</span> <span class="o">=</span> <span class="n">AnalysisResult</span><span class="p">({</span><span class="n">layer_id</span><span class="p">:</span> <span class="n">stats_per_run</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_layer_hook</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">after_layer_hook</span><span class="p">(</span><span class="n">layer_result</span><span class="p">,</span> <span class="n">c_handle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layer_result</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.concept_model_handle"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_handle">[docs]</a>    <span class="k">def</span> <span class="nf">concept_model_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">c_model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">emb</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">,</span>
+                                        <span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Train and eval handle for the given concept model.</span>
+<span class="sd">        The concept model to handle can either be specified directly or is</span>
+<span class="sd">        created from an embedding or from a given ``layer_id``.</span>
+
+<span class="sd">        :param c_model: the concept model to provide a handle for</span>
+<span class="sd">        :param emb: if ``c_model`` is not given, it is initialized using</span>
+<span class="sd">            :py:meth:`concept_model_from_embedding` on ``emb``</span>
+<span class="sd">        :param layer_id: if c_model and emb is not given, it is initialized</span>
+<span class="sd">            using :py:meth:`concept_model_for_layer` on ``layer_id``</span>
+<span class="sd">        :return: a handle for the specified or created concept model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">c_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">emb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">c_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_from_embedding</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">layer_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">c_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_for_layer</span><span class="p">(</span><span class="n">layer_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either c_model, emb, or layer_id must &quot;</span>
+                                 <span class="s2">&quot;be given.&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_for_concept_model</span><span class="p">(</span><span class="n">c_model</span><span class="p">)</span>
+        <span class="n">callback_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;callback_context&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">callback_context</span><span class="p">[</span><span class="s1">&#39;log_prefix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{model}</span><span class="s2">/</span><span class="si">{layer}</span><span class="s2">/</span><span class="si">{concept}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">callback_context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_prefix&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">c_model</span><span class="o">.</span><span class="n">main_model</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="n">layer</span><span class="o">=</span><span class="n">c_model</span><span class="o">.</span><span class="n">layer_id</span><span class="p">,</span> <span class="n">concept</span><span class="o">=</span><span class="n">c_model</span><span class="o">.</span><span class="n">concept_name</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">(</span>
+            <span class="n">concept_model</span><span class="o">=</span><span class="n">c_model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="p">,</span>
+                <span class="s1">&#39;callback_context&#39;</span><span class="p">:</span> <span class="n">callback_context</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.concept_model_for_layer"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer">[docs]</a>    <span class="k">def</span> <span class="nf">concept_model_for_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a concept model for the given layer ID.</span>
+
+<span class="sd">        :param layer_id: ID of the layer the concept model should be attached</span>
+<span class="sd">            to; key in :py:attr:`layer_infos`</span>
+<span class="sd">        :returns: concept model for :py:attr:`concept` attached to given</span>
+<span class="sd">            layer in :py:attr:`model`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;kernel_size&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kernel_size&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;in_channels&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out_channels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">concept_model_args</span>
+        <span class="p">}</span>
+        <span class="n">c_model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span> <span class="o">=</span> <span class="n">ConceptDetectionModel2D</span><span class="p">(</span>
+            <span class="n">concept</span><span class="o">=</span><span class="n">SegmentationConcept2D</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">),</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">args</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">][</span><span class="s1">&#39;out_channels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c_model</span><span class="o">.</span><span class="n">in_channels</span>
+        <span class="k">return</span> <span class="n">c_model</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.concept_model_from_embedding"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding">[docs]</a>    <span class="k">def</span> <span class="nf">concept_model_from_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                     <span class="n">emb</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">,</span>
+                                                <span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]]</span>
+                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConceptDetectionModel2D</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get concept model from embedding for training and eval.&quot;&quot;&quot;</span>
+        <span class="n">embs</span> <span class="o">=</span> <span class="p">[</span><span class="n">emb</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">emb</span><span class="p">,</span> <span class="n">ConceptEmbedding</span><span class="p">)</span> <span class="k">else</span> <span class="n">emb</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">main_model</span><span class="o">=</span><span class="n">embs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">main_model</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                         <span class="n">concept</span><span class="o">=</span><span class="n">embs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">concept</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">),</span>
+                  <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">concept_model_args</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">ConceptDetectionModel2D</span><span class="o">.</span><span class="n">from_embedding</span><span class="p">(</span><span class="n">embs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.data_for_concept_model"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_for_concept_model">[docs]</a>    <span class="k">def</span> <span class="nf">data_for_concept_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_model</span><span class="p">:</span> <span class="n">ConceptDetectionModel2D</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTriple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the concept model data for this instance.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">c_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">layer_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="c1"># Choose default device for transformations to be the train device:</span>
+        <span class="n">data_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_val_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                     <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">data_args</span><span class="p">}</span>
+
+        <span class="c1"># Wrap the concept data:</span>
+        <span class="k">if</span> <span class="n">c_model</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="n">DataTriple</span> <span class="o">=</span> <span class="n">data_for_concept_model</span><span class="p">(</span>
+                <span class="n">concept_model</span><span class="o">=</span><span class="n">c_model</span><span class="p">,</span> <span class="o">**</span><span class="n">data_args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">:</span> <span class="n">DataTriple</span> <span class="o">=</span> <span class="n">data_for_concept_model</span><span class="p">(</span>
+                <span class="n">main_model_stump</span><span class="o">=</span><span class="n">ModelStump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">),</span>
+                <span class="n">concept</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="p">,</span> <span class="o">**</span><span class="n">data_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.evaluate_embedding"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.evaluate_embedding">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">,</span>
+                                                  <span class="n">Sequence</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]],</span>
+                           <span class="n">log_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the embedding on its concept test data.&quot;&quot;&quot;</span>
+        <span class="c1"># Evaluation:</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">eval_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_from_embedding</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+            <span class="n">c_handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">eval_model</span><span class="p">)</span>
+            <span class="n">callback_context</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">log_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">callback_context</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">log_prefix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c_handle</span><span class="o">.</span><span class="n">callback_context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/&quot;</span>
+                               <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">log_prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">stats</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> \
+                <span class="n">c_handle</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">callback_context</span><span class="o">=</span><span class="n">callback_context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">stats</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.embedding_reduction"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.embedding_reduction">[docs]</a>    <span class="k">def</span> <span class="nf">embedding_reduction</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">results_per_run</span><span class="p">:</span> <span class="n">AnalysisResult</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BestEmbeddingResult</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Aggregate the embeddings collected in ``results_per_run``</span>
+<span class="sd">        to a best one.</span>
+<span class="sd">        This is a wrapper with standard deviation and stats collection and</span>
+<span class="sd">        logging around a call to :py:func:`emb_reduction`.</span>
+
+<span class="sd">        :param results_per_run: analysis result object as returned by</span>
+<span class="sd">            :py:meth:`analysis`</span>
+<span class="sd">        :return: a best embedding result object holding one tuple entry of</span>
+
+<span class="sd">            - an aggregated (&quot;mean&quot;) embedding for the concept and the layer,</span>
+<span class="sd">            - the standard deviation values of the normal vectors,</span>
+<span class="sd">            - the stats for the chosen &quot;mean&quot; embedding</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results_per_run</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty results dict&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results_per_run</span><span class="o">.</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Results handle stores information on more than one layer, &quot;</span>
+                 <span class="s2">&quot;thus selection is ambiguous! Layer keys: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">results_per_run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+
+        <span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">results_per_run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">all_embeddings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">e</span> <span class="k">for</span> <span class="n">embs</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">results_per_run</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">embs</span><span class="p">]</span>
+        <span class="n">best_embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb_reduction</span><span class="p">(</span><span class="n">all_embeddings</span><span class="p">)</span>
+
+        <span class="c1"># Variance and stats collection:</span>
+        <span class="n">std_dev</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">ConceptEmbedding</span><span class="o">.</span><span class="n">std_deviation</span><span class="p">(</span><span class="n">all_embeddings</span><span class="p">)</span>
+        <span class="n">stats</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_embedding</span><span class="p">(</span><span class="n">best_embedding</span><span class="p">,</span>
+                                                   <span class="n">log_prefix</span><span class="o">=</span><span class="s1">&#39;reduced&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Some logging:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Concept </span><span class="si">%s</span><span class="s2">, layer </span><span class="si">%s</span><span class="s2">:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">,</span>
+                    <span class="n">AnalysisResult</span><span class="o">.</span><span class="n">emb_info_to_string</span><span class="p">(</span><span class="n">best_embedding</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span>
+                                                      <span class="n">std_dev</span><span class="o">=</span><span class="n">std_dev</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">BestEmbeddingResult</span><span class="p">({</span><span class="n">layer_id</span><span class="p">:</span> <span class="p">(</span><span class="n">best_embedding</span><span class="p">,</span>
+                                               <span class="n">std_dev</span><span class="p">,</span> <span class="n">stats</span><span class="p">)})</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.best_layer_from_stats"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_layer_from_stats">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">best_layer_from_stats</span><span class="p">(</span>
+            <span class="n">results_per_layer</span><span class="p">:</span> <span class="n">BestEmbeddingResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;From the embedding quality results per layer, select the best layer.</span>
+<span class="sd">        For segmentation concepts, select by set IoU.</span>
+
+<span class="sd">        :param results_per_layer: a best embedding result object</span>
+<span class="sd">        :return: layer ID with best stats</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># DataFrame with layer-wise metric results</span>
+        <span class="c1"># (col: layer_id, idx: metric_name)</span>
+        <span class="n">test_set_iou_key</span> <span class="o">=</span> <span class="n">ConceptDetection2DTrainTestHandle</span><span class="o">.</span><span class="n">test_</span><span class="p">(</span><span class="s2">&quot;set_iou&quot;</span><span class="p">)</span>
+        <span class="n">test_loss_key</span> <span class="o">=</span> <span class="n">ConceptDetection2DTrainTestHandle</span><span class="o">.</span><span class="n">test_</span><span class="p">(</span><span class="n">ConceptDetection2DTrainTestHandle</span><span class="o">.</span><span class="n">LOSS_KEY</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="n">l_id</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">l_id</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">results_per_layer</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stats</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">test_set_iou_key</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">best_layer_id</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">test_set_iou_key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">test_loss_key</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">best_layer_id</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">test_loss_key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;KPI key </span><span class="si">{}</span><span class="s2"> not in stats keys </span><span class="si">{}</span><span class="s2">; Wrong concept type used?&quot;</span>
+                 <span class="s2">&quot; (currently only segmentation concepts allowed)&quot;</span>
+                 <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_set_iou_key</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_layer_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.fill_train_data_infos"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.fill_train_data_infos">[docs]</a>    <span class="k">def</span> <span class="nf">fill_train_data_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Collect layer-wise information about the corresponding concept</span>
+<span class="sd">        model.</span>
+<span class="sd">        The results are stored into :py:attr:`layer_infos` and returned</span>
+<span class="sd">        as :py:class:`pandas.DataFrame`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layer_infos</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">:</span>
+            <span class="n">c_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_for_layer</span><span class="p">(</span><span class="n">layer_id</span><span class="p">)</span>
+            <span class="n">c_handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">c_model</span><span class="p">)</span>
+            <span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;kernel_size&#39;</span><span class="p">:</span> <span class="n">c_model</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                <span class="s1">&#39;prop_neg_px&#39;</span><span class="p">:</span> <span class="n">datavis</span><span class="o">.</span><span class="n">neg_pixel_prop</span><span class="p">(</span><span class="n">c_handle</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">train</span><span class="p">)}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">[</span><span class="n">layer_id</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ConceptAnalysis.best_embedding_with_logging"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging">[docs]</a>    <span class="k">def</span> <span class="nf">best_embedding_with_logging</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">concept_exp_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">logger</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">file_logging_formatter</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">log_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;log.txt&#39;</span><span class="p">,</span>
+            <span class="n">img_fp_templ</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.png&quot;</span><span class="p">,</span>
+            <span class="n">visualization_transform</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConceptEmbedding</span><span class="p">:</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Conduct an analysis, collect mean and best embeddings,</span>
+<span class="sd">        and save and log all results.</span>
+
+<span class="sd">        .. rubric:: Saved results</span>
+
+<span class="sd">        - the embedding of each layer and run as .pt file;</span>
+<span class="sd">          for format see</span>
+<span class="sd">          :py:meth:`hybrid_learning.concepts.models.embeddings.ConceptEmbedding.save`;</span>
+<span class="sd">          load with</span>
+<span class="sd">          :py:meth:`hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load`</span>
+<span class="sd">        - the aggregated (best) embedding for each layer (see above)</span>
+<span class="sd">        - the final best embedding amongst all layers</span>
+<span class="sd">          (chosen from above best embeddings; see above)</span>
+<span class="sd">        - statistics of the runs for each layer incl. evaluation results and</span>
+<span class="sd">          infos on final embedding obtained by each run;</span>
+<span class="sd">          for format see</span>
+<span class="sd">          :py:meth:`~hybrid_learning.concepts.analysis.results.AnalysisResult.save`;</span>
+<span class="sd">          load with</span>
+<span class="sd">          :py:meth:`~hybrid_learning.concepts.analysis.results.AnalysisResult.load`;</span>
+<span class="sd">        - statistics for the aggregated (best) embeddings;</span>
+<span class="sd">          for format see</span>
+<span class="sd">          :py:meth:`~hybrid_learning.concepts.analysis.results.BestEmbeddingResult.save`;</span>
+
+<span class="sd">        .. rubric:: Saved visualizations</span>
+
+<span class="sd">        - visualization of the training data</span>
+<span class="sd">        - visualization of the final best embedding on some test data samples</span>
+<span class="sd">        - visualization of the best embedding and each embedding in its layer</span>
+<span class="sd">          for comparison (the best embedding is a kind of mean of the embeddings</span>
+<span class="sd">          from its layer)</span>
+<span class="sd">        - visualization of the aggregated embeddings of each layer</span>
+<span class="sd">          for comparison</span>
+
+<span class="sd">        :param concept_exp_root: the root directory in which to save results</span>
+<span class="sd">            for this part</span>
+<span class="sd">        :param logger: the logger to use for file logging; defaults to the</span>
+<span class="sd">            module level logger; for the analysis, the logging level is set</span>
+<span class="sd">            to :py:const:`logging.INFO`</span>
+<span class="sd">        :param file_logging_formatter: if given, the formatter for the file</span>
+<span class="sd">            logging</span>
+<span class="sd">        :param log_file: the path to the logfile to use relative to</span>
+<span class="sd">            ``concept_exp_root``</span>
+<span class="sd">        :param img_fp_templ: template for the path of image files relative to</span>
+<span class="sd">            ``concept_exp_root``; must include one ``&#39;{}&#39;`` formatting variable</span>
+<span class="sd">        :param visualization_transform: a transformation applied to the tuple of</span>
+<span class="sd">            concept model output and ground truth mask before visualization as mask</span>
+<span class="sd">        :return: the found best embedding for that part</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">concept_exp_root</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">save_imgs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">img_fp_templ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">save_imgs</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">img_fp_templ</span>
+                          <span class="ow">or</span> <span class="n">img_fp_templ</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid img_fp_templ </span><span class="si">{}</span><span class="s2">; &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img_fp_templ</span><span class="p">)</span> <span class="o">+</span>
+                             <span class="s2">&quot;must contain exactly one occurrence of &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="n">save_as</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">desc</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">concept_exp_root</span><span class="p">,</span>
+            <span class="n">img_fp_templ</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">))</span>
+
+        <span class="c1"># region Logging setup</span>
+        <span class="k">if</span> <span class="n">logger</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">orig_logging_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">level</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="n">part_log_file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">concept_exp_root</span><span class="p">,</span> <span class="n">log_file</span><span class="p">))</span>
+        <span class="n">part_log_file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_logging_formatter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">part_log_file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">file_logging_formatter</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">part_log_file_handler</span><span class="p">)</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Some logging friendly settings of pandas</span>
+        <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">option_context</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="s1">&#39;display.expand_frame_repr&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="c1"># region Settings info</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting concept </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="c1"># Concept</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Concept data:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Mean proportion of negative pixels orig data: </span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">datavis</span><span class="o">.</span><span class="n">neg_pixel_prop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concept</span><span class="o">.</span><span class="n">test_data</span><span class="p">))</span>
+            <span class="c1"># Analysis settings</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analysis settings:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Layer-wise training data properties:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fill_train_data_infos</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">save_imgs</span><span class="p">:</span>
+                <span class="n">datavis</span><span class="o">.</span><span class="n">visualize_mask_transforms</span><span class="p">(</span>
+                    <span class="n">titled_datasets</span><span class="o">=</span><span class="p">{</span>
+                        <span class="n">layer_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_for_concept_model</span><span class="p">(</span>
+                            <span class="n">layer_id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">)</span><span class="o">.</span><span class="n">train</span>
+                        <span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">},</span>
+                    <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">(</span><span class="s2">&quot;vis_train_data_transforms&quot;</span><span class="p">))</span>
+            <span class="c1"># endregion</span>
+
+            <span class="c1"># Analysis:</span>
+            <span class="n">analysis_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis</span><span class="p">()</span>
+            <span class="n">analysis_results</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">concept_exp_root</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Embedding results per run:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">analysis_results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">))</span>
+
+            <span class="c1"># Best embedding selection:</span>
+            <span class="n">best_embs_results</span><span class="p">:</span> <span class="n">BestEmbeddingResult</span> <span class="o">=</span> \
+                <span class="n">BestEmbeddingResult</span><span class="p">({</span><span class="n">layer_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_reduction</span><span class="p">(</span>
+                    <span class="n">analysis_results</span><span class="o">.</span><span class="n">result_for</span><span class="p">(</span><span class="n">layer_id</span><span class="p">))</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">layer_id</span><span class="p">]</span>
+                                     <span class="k">for</span> <span class="n">layer_id</span> <span class="ow">in</span>
+                                     <span class="n">analysis_results</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">()})</span>
+            <span class="n">best_embs_results</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">concept_exp_root</span><span class="p">)</span>
+            <span class="n">best_emb_infos</span> <span class="o">=</span> <span class="n">best_embs_results</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Best embeddings per layer:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">best_emb_infos</span><span class="p">)</span>
+
+            <span class="c1"># The very best embedding:</span>
+            <span class="c1"># Save it twice to find it more easily and store in best_embs</span>
+            <span class="n">best_layer_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_layer_from_stats</span><span class="p">(</span><span class="n">best_embs_results</span><span class="p">)</span>
+            <span class="n">best_layer_embs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ConceptEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">e</span> <span class="k">for</span> <span class="n">ens_emb</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span>
+                <span class="n">analysis_results</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">best_layer_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ens_emb</span><span class="p">]</span>
+            <span class="n">best_embedding</span><span class="p">:</span> <span class="n">ConceptEmbedding</span> <span class="o">=</span> \
+                <span class="n">best_embs_results</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">best_layer_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">best_embedding</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">concept_exp_root</span><span class="p">,</span> <span class="s2">&quot;best.pt&quot;</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Best embedding:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">best_emb_infos</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">best_layer_id</span><span class="p">])</span>
+
+            <span class="c1"># pair-wise cosines with last row and column the best_embedding:</span>
+            <span class="n">pairwise_cos</span> <span class="o">=</span> <span class="n">vis</span><span class="o">.</span><span class="n">pairwise_cosines</span><span class="p">(</span>
+                <span class="n">embs</span><span class="o">=</span><span class="n">best_layer_embs</span> <span class="o">+</span> <span class="p">[</span><span class="n">best_embedding</span><span class="p">],</span>
+                <span class="n">keys</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">best_layer_embs</span><span class="p">)))</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;best_emb&#39;</span><span class="p">])</span>
+            <span class="n">pairwise_cos</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">concept_exp_root</span><span class="p">,</span> <span class="s1">&#39;pairwise_cosines.csv&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_val_splits</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cross_val_runs</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Mean cosine dist of best_embedding to other embeddings:&quot;</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pairwise_cos</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;Pair-wise cosine dist between normal vectors of runs in &#39;</span>
+                    <span class="s1">&#39;best layer:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">pairwise_cos</span><span class="p">)</span>
+
+        <span class="c1"># visualizations:</span>
+        <span class="k">if</span> <span class="n">save_imgs</span><span class="p">:</span>
+            <span class="n">vis</span><span class="o">.</span><span class="n">visualize_concept_model</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">emb</span><span class="o">=</span><span class="n">best_embedding</span><span class="p">),</span>
+                <span class="n">transform</span><span class="o">=</span><span class="n">visualization_transform</span><span class="p">,</span>
+                <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">(</span><span class="s2">&quot;vis_best_embedding&quot;</span><span class="p">))</span>
+            <span class="n">vis</span><span class="o">.</span><span class="n">visualize_concept_models</span><span class="p">(</span>
+                <span class="p">{</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;best&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">emb</span><span class="o">=</span><span class="n">best_embedding</span><span class="p">)},</span>
+                 <span class="o">**</span><span class="p">{</span><span class="s2">&quot;emb </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">emb</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">best_layer_embs</span><span class="p">)}},</span>
+                <span class="n">transform</span><span class="o">=</span><span class="n">visualization_transform</span><span class="p">,</span>
+                <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">(</span><span class="s2">&quot;vis_best_layer_embeddings&quot;</span><span class="p">))</span>
+            <span class="n">vis</span><span class="o">.</span><span class="n">visualize_concept_models</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">layer_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">concept_model_handle</span><span class="p">(</span><span class="n">emb</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">layer_id</span><span class="p">,</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">best_embs_results</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
+                <span class="n">transform</span><span class="o">=</span><span class="n">visualization_transform</span><span class="p">,</span>
+                <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">(</span><span class="s2">&quot;vis_best_embeddings&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Close part specific logging</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">part_log_file_handler</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">orig_logging_level</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">best_embedding</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

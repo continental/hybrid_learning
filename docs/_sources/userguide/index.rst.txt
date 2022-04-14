@@ -16,3 +16,4 @@ User Guide
     concept_analysis
     model_extension
     custom_dataset_handles/index
+    fuzzy_logic

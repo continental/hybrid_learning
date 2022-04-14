@@ -1,0 +1,6 @@
+data\_for\_concept\_model
+=========================
+
+.. currentmodule:: hybrid_learning.concepts.analysis.analysis_handle
+
+.. autofunction:: data_for_concept_model

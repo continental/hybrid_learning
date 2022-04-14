@@ -25,6 +25,8 @@ encoder
         :toctree:
         :nosignatures:
         
+        ~BatchBoxBloat
+        
         ~BatchConvOp
         
         ~BatchIntersectDecode2D
@@ -33,13 +35,9 @@ encoder
         
         ~BatchIoUEncode2D
         
-        ~ConvOpWrapper
+        ~BatchPeakDetection
         
-        ~IntersectDecode
-        
-        ~IntersectEncode
-        
-        ~IoUEncode
+        ~BatchWindowOp
         
 
     

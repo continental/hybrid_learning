@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConceptClassification2DTrainTestHandle &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ConceptClassificationModel2D" href="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html" />
+    <link rel="prev" title="concept_classification" href="hybrid_learning.concepts.models.concept_models.concept_classification.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.html">concept_models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.html">embeddings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.html">model_extension</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.models.html">models</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.models.concept_models.html">concept_models</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.models.concept_models.concept_classification.html">concept_classification</a> &raquo;</li>
+      <li>ConceptClassification2DTrainTestHandle</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="conceptclassification2dtraintesthandle">
+<h1>ConceptClassification2DTrainTestHandle<a class="headerlink" href="#conceptclassification2dtraintesthandle" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.models.concept_models.concept_classification.</span></span><span class="sig-name descname"><span class="pre">ConceptClassification2DTrainTestHandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_output_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_input_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_classification.html#ConceptClassification2DTrainTestHandle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDetection2DTrainTestHandle</span></code></a></p>
+<p>Train and test handle for concept classification providing loss and
+metric defaults.
+See <a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D" title="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptClassificationModel2D</span></code></a> for details on the model.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<details><summary>Inherited from    : py: class:<cite>ConceptDetection2DTrainTestHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_MASK_INTERPOLATION</span></code></p></td>
+<td><p>Interpolation method used in default transforms for resizing masks to activation map size.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>TrainEvalHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOSS_KEY</span></code></p></td>
+<td><p>Key for the loss evaluation results.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">NLL_KEY</span></code></p></td>
+<td><p>Key for the proper scoring evaluation function used for second stage training.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kpi_fns</span></code></p></td>
+<td><p>Metric <em>and</em> loss functions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>The current training settings as dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<details><summary>Inherited from    : py: class:<cite>TrainEvalHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_callbacks</span></code>(callbacks)</p></td>
+<td><p>Append the given callbacks.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code>(callback)</p></td>
+<td><p>Remove a single given callback.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">loader</span></code>([data, mode, batch_size, shuffle, ...])</p></td>
+<td><p>Prepare and return a torch data loader from the dataset according to settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_optimizer</span></code>([optimizer, device, model])</p></td>
+<td><p>Move model to correct device, init optimizer to parameters of model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_training_handles</span></code>([optimizer, device, ...])</p></td>
+<td><p>(Re)set all handles associated with training, and move to <code class="docutils literal notranslate"><span class="pre">device</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_kpis</span></code>([kpis])</p></td>
+<td><p>Resets aggregating kpis</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([train_loader, val_loader, ...])</p></td>
+<td><p>Train the model according to the specified training parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_validate</span></code>([num_splits, train_val_data, ...])</p></td>
+<td><p>Record training results for <code class="docutils literal notranslate"><span class="pre">num_splits</span></code> distinct val splits.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_val_one_epoch</span></code>([pbar_desc, ...])</p></td>
+<td><p>Train for one epoch, evaluate, and return history and test results.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_one_epoch</span></code>([train_loader, ...])</p></td>
+<td><p>Train for one epoch and return history results as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate</span></code>([mode, val_loader, prefix, ...])</p></td>
+<td><p>Evaluate the model wrt.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">second_stage_train</span></code>([callback_context])</p></td>
+<td><p>Do a second stage training for calibration using Laplace approximation.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__" title="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(concept_model, data, *[, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>ConceptDetection2DTrainTestHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__" title="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(concept_model, data, *[, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>TrainEvalHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__" title="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(concept_model, data, *[, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concept_model</strong> (<a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D" title="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D"><em>ConceptClassificationModel2D</em></a>) – </p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>DataTriple</em></a>) – </p></li>
+<li><p><strong>model_output_transform</strong> (<a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><em>TupleTransforms</em></a>) – </p></li>
+<li><p><strong>metric_input_transform</strong> (<a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><em>TupleTransforms</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_output_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_input_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/concept_models/concept_classification.html#ConceptClassification2DTrainTestHandle.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<p>For details on the init parameters see the init of the super class
+<a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDetection2DTrainTestHandle</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concept_model</strong> (<a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D" title="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D"><em>ConceptClassificationModel2D</em></a>) – </p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>DataTriple</em></a>) – </p></li>
+<li><p><strong>model_output_transform</strong> (<a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><em>TupleTransforms</em></a>) – </p></li>
+<li><p><strong>metric_input_transform</strong> (<a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><em>TupleTransforms</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.models.concept_models.concept_classification.html" class="btn btn-neutral float-left" title="concept_classification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html" class="btn btn-neutral float-right" title="ConceptClassificationModel2D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

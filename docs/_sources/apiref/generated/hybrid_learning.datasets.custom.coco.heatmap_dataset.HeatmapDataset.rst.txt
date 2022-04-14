@@ -1,0 +1,9 @@
+HeatmapDataset
+==============
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.heatmap_dataset
+
+.. autoclass:: HeatmapDataset
+    :members:
+
+    .. autoclasstoc::

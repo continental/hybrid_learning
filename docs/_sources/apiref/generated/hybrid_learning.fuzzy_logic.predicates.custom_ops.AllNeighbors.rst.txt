@@ -1,0 +1,9 @@
+AllNeighbors
+============
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.predicates.custom_ops
+
+.. autoclass:: AllNeighbors
+    :members:
+
+    .. autoclasstoc::

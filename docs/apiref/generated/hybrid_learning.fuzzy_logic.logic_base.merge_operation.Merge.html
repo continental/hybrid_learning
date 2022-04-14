@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merge &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="MergeBuilder" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html" />
+    <link rel="prev" title="merge_operation" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.connectives.html">connectives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.logic.html">logic</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.html">merge_operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.parsing.html">parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html">quantifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html">logic_by_name</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.html">merge_operation</a> &raquo;</li>
+      <li>Merge</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="merge">
+<h1>Merge<a class="headerlink" href="#merge" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.fuzzy_logic.logic_base.merge_operation.</span></span><span class="sig-name descname"><span class="pre">Merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">in_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_variadic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform" title="hybrid_learning.datasets.transforms.dict_transforms.DictTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictTransform</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/abc.html#abc.ABC" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Base class for operations and operation trees on dictionary inputs.
+Merge the masks or scalars values of the dict input according to the
+operation (tree) definition and store them under the specified output key.
+The merge operation may recursively have child merge operations as
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>, which are evaluated on the given dictionary before
+the parent is.</p>
+<p><strong>Operation</strong></p>
+<p>The actual operation is hidden in the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_to()</span></code></a> method:
+It is given a dictionary of annotations of the form <code class="docutils literal notranslate"><span class="pre">{ID:</span> <span class="pre">value}</span></code> and
+will return the dict with the merged mask added as <code class="docutils literal notranslate"><span class="pre">{out_key:</span> <span class="pre">value}</span></code>.
+The intermediate outputs of child operations are by default only used
+for caching (see <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cache_duplicates</span></code></a>) and then discarded.
+To include them into the final output, use the <code class="docutils literal notranslate"><span class="pre">keep_keys</span></code> argument
+to the operation call (see <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_to()</span></code></a>).
+The benefit of caching duplicates is that results may be reused
+amongst different operations.</p>
+<p><strong>Initialization</strong></p>
+<p>During init, all non-keyword arguments serve as <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.
+These are used when the merge operation is called on a dict:
+The dict must provide items with these <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>, and the values of
+these items are fed to the actual operation.
+Settings must be given as keyword arguments.
+To set default keyword arguments for the init call, use a <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a>.
+See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">with_()</span></code></a> for creating a <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a> from a <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a>
+class.</p>
+<p><strong>Example: Boolean Logic</strong></p>
+<p>To get all heads, noses, and mouths (binary masks)
+of real persons (binary masks)
+in bathrooms (boolean labels),
+call:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span><span class="p">,</span> <span class="n">OR</span><span class="p">,</span> <span class="n">NOT</span><span class="p">,</span> <span class="n">BooleanLogic</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">AND</span><span class="p">(</span><span class="s2">&quot;person&quot;</span><span class="p">,</span> <span class="n">OR</span><span class="p">(</span><span class="s2">&quot;head&quot;</span><span class="p">,</span> <span class="s2">&quot;nose&quot;</span><span class="p">,</span> <span class="s2">&quot;mouth&quot;</span><span class="p">),</span> <span class="n">NOT</span><span class="p">(</span><span class="s2">&quot;bathroom&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">==</span> <span class="n">BooleanLogic</span><span class="p">()</span><span class="o">.</span><span class="n">parser</span><span class="p">()(</span><span class="s2">&quot;person&amp;&amp;head||nose||mouth&amp;&amp;~bathroom&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Example with 1 pixel of a person mouth not in a bathroom:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">op</span><span class="p">({</span><span class="s2">&quot;person&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;nose&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;mouth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;bathroom&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">out_key</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span>
+<span class="go">{&#39;person&#39;: 1, &#39;head&#39;: 0, &#39;nose&#39;: 0, &#39;mouth&#39;: 1, &#39;bathroom&#39;: False,</span>
+<span class="go">&#39;(head||mouth||nose)&amp;&amp;(~bathroom)&amp;&amp;person&#39;: 1}</span>
+</pre></div>
+</div>
+<p>To also inspect the intermediate output, use the <code class="docutils literal notranslate"><span class="pre">keep_keys</span></code> option:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">op</span><span class="p">({</span><span class="s2">&quot;person&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;nose&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;mouth&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;bathroom&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+<span class="gp">... </span>   <span class="n">keep_keys</span><span class="o">=</span><span class="n">op</span><span class="o">.</span><span class="n">all_out_keys</span><span class="p">)</span>
+<span class="go">{&#39;person&#39;: 1, &#39;head&#39;: 0, &#39;nose&#39;: 0, &#39;mouth&#39;: 1, &#39;bathroom&#39;: False,</span>
+<span class="go">&#39;head||mouth||nose&#39;: True,</span>
+<span class="go">&#39;~bathroom&#39;: True,</span>
+<span class="go">&#39;(head||mouth||nose)&amp;&amp;(~bathroom)&amp;&amp;person&#39;: 1}</span>
+</pre></div>
+</div>
+<p>Note that the input dict must feature all <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> of operations in the formula.</p>
+<p><strong>Subclassing</strong></p>
+<p>To implement your own merge operation</p>
+<ul class="simple">
+<li><p>implement the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a></p></li>
+<li><p>specify your own <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SYMB</span></code></a> (this must be unique within the logic you are using)</p></li>
+<li><p>extend the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a> and <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults"><code class="xref py py-attr docutils literal notranslate"><span class="pre">setting_defaults</span></code></a> properties by new items if necessary</p></li>
+</ul>
+<p><strong>Format and String Parsing</strong></p>
+<p>The (recursive) merge operation best is specified in conjunctive normal
+form for uniqueness (thus comparability) and parsing compatibility.
+This is the form</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AND</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="n">NOT</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="o">...</span><span class="p">],</span> <span class="p">[</span><span class="n">OR</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="n">NOT</span><span class="p">(</span><span class="o">..</span><span class="p">),</span> <span class="o">...</span><span class="p">])])</span>
+</pre></div>
+</div>
+<p>(see <a class="reference external" href="https://en.wikipedia.org/wiki/Conjunctive_normal_form">https://en.wikipedia.org/wiki/Conjunctive_normal_form</a>).
+Exemplary available operations are the Boolean ones
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND"><code class="xref py py-class docutils literal notranslate"><span class="pre">AND</span></code></a> (intersection),
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR"><code class="xref py py-class docutils literal notranslate"><span class="pre">OR</span></code></a> (union), and
+<a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT"><code class="xref py py-class docutils literal notranslate"><span class="pre">NOT</span></code></a> (inversion)
+that all operate pixel-wise.
+Boolean classification labels are treated as all-one-masks.</p>
+<p>One can use a <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser" title="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">FormulaParser</span></code></a>
+implementation to parse a string representation of an operation tree.
+Check the corresponding implementation for the operator precedence and examples.
+For parsing, used connectors of the logic must be encoded by their <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SYMB</span></code></a>
+attribute, e.g. for the examples above:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AND</span></code>: a&amp;&amp;b</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OR</span></code>: a||b</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NOT</span></code> (unary operation): ~a</p></li>
+</ul>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></a></p></td>
+<td><p>The string symbol of this class (override for sub-classes).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ARITY</span></code></a></p></td>
+<td><p>The arity of the operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IS_COMMUTATIVE</span></code></a></p></td>
+<td><p>Whether instances are equivalent to ones with permuted <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.is_variadic" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.is_variadic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_variadic</span></code></a></p></td>
+<td><p>Whether the instance is variadic.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setting_defaults</span></code></a></p></td>
+<td><p>Defaults used for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.pretty_op_symb" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.pretty_op_symb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pretty_op_symb</span></code></a></p></td>
+<td><p>Name of the operation symbol suitable for filenames etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code></a></p></td>
+<td><p>The input keys which are child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_children" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_children</span></code></a></p></td>
+<td><p>All children operations in the flattened computational tree, sorted depth first.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.consts" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.consts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">consts</span></code></a></p></td>
+<td><p>The constant string keys in the input keys.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation_keys</span></code></a></p></td>
+<td><p>The list of keys used for this parent operation in original order (constants and children output keys).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_in_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_in_keys</span></code></a></p></td>
+<td><p>All string input keys both of self and of all child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_out_keys</span></code></a></p></td>
+<td><p>Output keys of self and all child operations.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_CLASS</span></code></p></td>
+<td><p>The identity class or classes for composition / addition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_infix_notation</span></code></a>([sort_key, ...])</p></td>
+<td><p>Return an infix str encoding equal for differently sorted operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str</span></code></a>(**infix_notation_kwargs)</p></td>
+<td><p>Alias for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_infix_notation()</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_pretty_str" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_pretty_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pretty_str</span></code></a>(**infix_notation_kwargs)</p></td>
+<td><p>Same as <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_str()</span></code></a> but using pretty operation names suitable for filenames etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_repr</span></code></a>([settings, defaults, sort_key, ...])</p></td>
+<td><p>Return str representation which can be used to reproduce and compare the instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse_replace_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse_replace_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">treerecurse_replace_keys</span></code></a>(**replace_map)</p></td>
+<td><p>Return a new formula with all occurences of variables in <code class="docutils literal notranslate"><span class="pre">replace_map</span></code> replaced and else identical settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">treerecurse</span></code></a>(fun)</p></td>
+<td><p>Apply the given function recursively to this and all children instances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code></a>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variadic_apply_to</span></code></a>(annotations)</p></td>
+<td><p>Return the result of operation on the values/items of a mapping or sequence of arbitrary length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code></a>(annotation_vals)</p></td>
+<td><p>Actual merge operation on values of the input keys in annotations.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code></a>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code></a>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__init__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(*in_keys[, out_key, overwrite, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__str__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__str__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code></a>()</p></td>
+<td><p>Return str(self).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<td><p>Call <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code></a> without sorting.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code></a>(other)</p></td>
+<td><p>Two merge operations are considered equal, if their normalized representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__copy__</span></code></a>()</p></td>
+<td><p>Return a deep copy of self using settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<td><p>Call <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code></a> without sorting.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code></a>(other)</p></td>
+<td><p>Two merge operations are considered equal, if their normalized representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__copy__</span></code></a>()</p></td>
+<td><p>Return a deep copy of self using settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p>Return a flat composition of <code class="docutils literal notranslate"><span class="pre">self</span></code> with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__radd__</span></code>(other)</p></td>
+<td><p>Return a flat composition of <code class="docutils literal notranslate"><span class="pre">other</span></code> and <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em>) – </p></li>
+<li><p><strong>out_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>skip_none</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>cache_duplicates</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>keep_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Collection" title="(in Python v3.6)"><em>Collection</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>_variadic</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Call method modifying a given dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>]</em>) – </p></li>
+<li><p><strong>keep_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Collection" title="(in Python v3.6)"><em>Collection</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><em>Mapping</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__">
+<span class="sig-name descname"><span class="pre">__copy__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.__copy__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a deep copy of self using settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__" title="Permalink to this definition"></a></dt>
+<dd><p>Two merge operations are considered equal, if their
+normalized representations coincide. (See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code></a>).
+This means, they recursively have the same children up to commutation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">in_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_variadic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<p>Hand over input keys either as str or as a Merge operation of str.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em>) – sequence of either
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> operation
+instances or strings with placeholders for the input keys</p></li>
+<li><p><strong>out_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – key for the output of this operation; used to
+init <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a></p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – on call, whether to overwrite the value at
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a>
+in the given dict if the key already exists;
+raise if key exists and <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> is true; saved in
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite"><code class="xref py py-attr docutils literal notranslate"><span class="pre">overwrite</span></code></a>.</p></li>
+<li><p><strong>replace_none</strong> – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the value to replace any
+<code class="docutils literal notranslate"><span class="pre">None</span></code> values with; see
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.replace_none" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.replace_none"><code class="xref py py-attr docutils literal notranslate"><span class="pre">replace_none</span></code></a></p></li>
+<li><p><strong>symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – override the
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SYMB</span></code></a>
+for this instance</p></li>
+<li><p><strong>keep_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Collection" title="(in Python v3.6)"><em>Collection</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – intermediate output keys to add to call output;
+see <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">keep_keys</span></code></a></p></li>
+<li><p><strong>cache_duplicates</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether outputs of children with identical
+keys should be cached and reused; see
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cache_duplicates</span></code></a></p></li>
+<li><p><strong>_variadic</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – the preferred way to specify this argument is
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_()</span></code></a>;
+see there for details</p></li>
+<li><p><strong>skip_none</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Call <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code></a> without sorting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__str__" title="Permalink to this definition"></a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to">
+<span class="sig-name descname"><span class="pre">apply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.apply_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to" title="Permalink to this definition"></a></dt>
+<dd><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.
+In case of a <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_()</span></code></a> instance, also a plain iterable may be given,
+see <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_apply_to()</span></code></a> which is called in that case.
+The operation of this instance is defined in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">operation</span></code></a>.
+First apply all child operations to the dict.
+Hereby try to overwrite a value of annotations if its key correspond
+to an <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> of a child operation, but do not create the
+value of a key twice. Then apply <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-attr docutils literal notranslate"><span class="pre">operation</span></code></a> on the
+originally given and generated values now stored in <code class="docutils literal notranslate"><span class="pre">annotations</span></code>
+and store the result also in <code class="docutils literal notranslate"><span class="pre">annotations</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Annotations is inline updated.
+Especially, the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> and <code class="docutils literal notranslate"><span class="pre">keep_keys</span></code> items are added,
+and children may apply inline operations to values!</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.MutableMapping" title="(in Python v3.6)"><em>MutableMapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>]</em>) – dict to modify by adding values for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> and <code class="docutils literal notranslate"><span class="pre">keep_keys</span></code></p></li>
+<li><p><strong>keep_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Collection" title="(in Python v3.6)"><em>Collection</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – the output keys in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">all_out_keys</span></code></a> for which
+values shall be added to <code class="docutils literal notranslate"><span class="pre">annotations</span></code> in addition to <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">keep_keys</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>modified <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict, extended by the keys from
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">all_out_keys</span></code></a> with the recursively generated values;
+variadic instances return the plain output of <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><em>Mapping</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation">
+<span class="sig-name descname"><span class="pre">operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotation_vals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="Permalink to this definition"></a></dt>
+<dd><p>Actual merge operation on values of the input keys
+in annotations. See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.
+The <code class="docutils literal notranslate"><span class="pre">annotation_vals</span></code> must not contain <code class="docutils literal notranslate"><span class="pre">None</span></code> values,
+and their length must match the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ARITY</span></code></a> of this operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>annotation_vals</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation">
+<span class="sig-name descname"><span class="pre">to_infix_notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_whitespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pretty_op_symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precedence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">brackets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('(',</span> <span class="pre">')')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.to_infix_notation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation" title="Permalink to this definition"></a></dt>
+<dd><p>Return an infix str encoding equal for differently sorted operations.
+To define a custom sorting for children of commutative operations, hand over
+the <code class="docutils literal notranslate"><span class="pre">sort_key</span></code> argument for the builtin <code class="docutils literal notranslate"><span class="pre">sorted</span></code>.
+If no <code class="docutils literal notranslate"><span class="pre">precedence</span></code> is given, brackets are set around all child operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sort_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>]</em>) – sort child operations by the given <code class="docutils literal notranslate"><span class="pre">sort_key</span></code>
+if the parent operation <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">IS_COMMUTATIVE</span></code></a>; defaults to alphabetical sorting</p></li>
+<li><p><strong>use_whitespace</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – separate infix operation symbols from their arguments by whitespace</p></li>
+<li><p><strong>use_pretty_op_symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – use the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.pretty_op_symb" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.pretty_op_symb"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pretty_op_symb</span></code></a> instead of <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SYMB</span></code></a> for
+representation of this operation instance</p></li>
+<li><p><strong>precedence</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em><em>]</em>) – apply brackets according to the given <code class="docutils literal notranslate"><span class="pre">precedence</span></code>;
+if not given, assume this operation is in normal form (no brackets)
+must be a list of <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> operation classes or instances in
+order of increasing precedence; their <code class="docutils literal notranslate"><span class="pre">SYMB</span></code> attribute is used to access
+the operation symbol</p></li>
+<li><p><strong>brackets</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – tuple of the left and right bracket symbols to use if needed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_pretty_str">
+<span class="sig-name descname"><span class="pre">to_pretty_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">infix_notation_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.to_pretty_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_pretty_str" title="Permalink to this definition"></a></dt>
+<dd><p>Same as <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_str()</span></code></a> but using pretty operation names suitable for
+filenames etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr">
+<span class="sig-name descname"><span class="pre">to_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_module_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span>&#160;&#160;&#160; <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent_first_child</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_prepend_indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.to_repr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr" title="Permalink to this definition"></a></dt>
+<dd><p>Return str representation which can be used to reproduce and compare the instance.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Tautologies in the form of duplicate children are not filtered for now, e.g.
+&gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND
+&gt;&gt;&gt; AND(“a”) == AND(“a”, “a”)
+False</p>
+</div>
+<p>Examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span><span class="p">,</span> <span class="n">OR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">OR</span><span class="p">(</span><span class="n">AND</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">symb</span><span class="o">=</span><span class="s2">&quot;CustomAND&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">to_repr</span><span class="p">())</span>
+<span class="go">OR(&#39;a&#39;, AND(&#39;b&#39;, &#39;c&#39;), overwrite=False, symb=&#39;CustomAND&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">to_repr</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">OR(&#39;a&#39;,</span>
+<span class="go">   AND(&#39;b&#39;,</span>
+<span class="go">       &#39;c&#39;),</span>
+<span class="go">   overwrite=False, symb=&#39;CustomAND&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">to_repr</span><span class="p">(</span><span class="n">indent_first_child</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">OR(</span>
+<span class="go">   &#39;a&#39;,</span>
+<span class="go">   AND(</span>
+<span class="go">       &#39;b&#39;,</span>
+<span class="go">       &#39;c&#39;),</span>
+<span class="go">   overwrite=False, symb=&#39;CustomAND&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">to_repr</span><span class="p">(</span><span class="n">indent_level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">indent_str</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">))</span>
+<span class="go">--OR(&#39;a&#39;,</span>
+<span class="go">----AND(&#39;b&#39;,</span>
+<span class="go">------&#39;c&#39;),</span>
+<span class="go">----overwrite=False, symb=&#39;CustomAND&#39;)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>settings</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – the settings dict to include as key-value pairs;
+defaults to <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a> (set e.g. to overwrite this method)</p></li>
+<li><p><strong>defaults</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – updates to <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults"><code class="xref py py-attr docutils literal notranslate"><span class="pre">setting_defaults</span></code></a>; if a default for a key is given and
+the value equals the default, it is excluded from printing</p></li>
+<li><p><strong>sort_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>]</em>) – sort child operations by the given <code class="docutils literal notranslate"><span class="pre">sort_key</span></code>
+if the parent operation <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE"><code class="xref py py-attr docutils literal notranslate"><span class="pre">IS_COMMUTATIVE</span></code></a>; defaults to alphabetical sorting</p></li>
+<li><p><strong>use_module_names</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to use both module plus class names or just the class names</p></li>
+<li><p><strong>indent</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, print a tree-like view by putting each <code class="docutils literal notranslate"><span class="pre">in_keys</span></code>
+item in a new line with indent matching the class name length;
+takes precedence over <code class="docutils literal notranslate"><span class="pre">indent_level</span></code> and <code class="docutils literal notranslate"><span class="pre">indent_str</span></code> arguments</p></li>
+<li><p><strong>indent_level</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – if not <code class="docutils literal notranslate"><span class="pre">None</span></code> and indent is <code class="docutils literal notranslate"><span class="pre">None</span></code>, print a tree-like view
+by putting each <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> item in a new line with indent of <code class="docutils literal notranslate"><span class="pre">indent_str</span></code>;
+if &gt;0, <code class="docutils literal notranslate"><span class="pre">indent_level*indent_str</span></code> is prepended to every printed line.</p></li>
+<li><p><strong>indent_str</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – the (whitespace) string representing one indentation level</p></li>
+<li><p><strong>indent_first_child</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>]</em>) – whether to already indent the first child or not</p></li>
+<li><p><strong>_prepend_indent</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to prepend the given indent to the output string (default: yes)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str">
+<span class="sig-name descname"><span class="pre">to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">infix_notation_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_infix_notation()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse">
+<span class="sig-name descname"><span class="pre">treerecurse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.treerecurse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse" title="Permalink to this definition"></a></dt>
+<dd><p>Apply the given function recursively to this and all children instances.
+If <code class="docutils literal notranslate"><span class="pre">fun</span></code> returns <code class="docutils literal notranslate"><span class="pre">None</span></code>, the operation is assumed to have been inline.
+A non-<code class="docutils literal notranslate"><span class="pre">None</span></code> return replaces the original root respectively <code class="docutils literal notranslate"><span class="pre">in_keys</span></code> item.
+Acting root before children and depth first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fun</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse_replace_keys">
+<span class="sig-name descname"><span class="pre">treerecurse_replace_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">replace_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.treerecurse_replace_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse_replace_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new formula with all occurences of variables in <code class="docutils literal notranslate"><span class="pre">replace_map</span></code> replaced
+and else identical settings.
+The children of the new formula instance are new instances as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>replace_map</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – mapping <code class="docutils literal notranslate"><span class="pre">{old_var_name:</span> <span class="pre">new_var_name}</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variadic_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.variadic_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_" title="Permalink to this definition"></a></dt>
+<dd><p>Return an instance with variadic __call__.
+It’s __call__ will accept maps or iterables of arbitrary length
+(for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ARITY</span></code></a> = -1) respectively of length matching <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ARITY</span></code></a>.
+All values/elements are passed through to the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a>,
+and the plain output of <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a> is returned
+(see also <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_apply_to()</span></code></a>).
+Use this e.g. to wrap the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a> into an object in a
+multiprocessing-safe manner.
+Example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">primitive_and</span> <span class="o">=</span> <span class="n">AND</span><span class="o">.</span><span class="n">variadic_</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">primitive_and</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">primitive_and</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>No <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a> may be given, and <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> is obsolete.
+The returned instance may not be used as child element of a formula.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to">
+<span class="sig-name descname"><span class="pre">variadic_apply_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.variadic_apply_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to" title="Permalink to this definition"></a></dt>
+<dd><p>Return the result of operation on the values/items of a mapping or sequence
+of arbitrary length. Performs <code class="docutils literal notranslate"><span class="pre">None</span></code> check/replacement and <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ARITY</span></code></a> check.
+In case of a <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ARITY</span></code></a> of -1 and empty annotations list, or an annotations
+list length not matching the arity, an <a class="reference external" href="https://docs.python.org/3.6/library/exceptions.html#IndexError" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IndexError</span></code></a> is raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">additional_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/logic_base/merge_operation.html#Merge.with_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_" title="Permalink to this definition"></a></dt>
+<dd><p>Return a <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a> with the same symbol but additional init args.
+Example usage (with changed symbol):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">AND</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">AND</span><span class="o">.</span><span class="n">with_</span><span class="p">(</span><span class="n">skip_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">replace_none</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">symb_</span><span class="p">(</span><span class="s1">&#39;&amp;n&amp;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">SYMB</span>
+<span class="go">&#39;&amp;n&amp;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="go">AND(&#39;a&#39;, &#39;b&#39;, replace_none=0, skip_none=False, symb=&#39;&amp;n&amp;&#39;)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><em>MergeBuilder</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY">
+<span class="sig-name descname"><span class="pre">ARITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.ARITY" title="Permalink to this definition"></a></dt>
+<dd><p>The arity of the operation. -1 means unlimited number of arguments possible.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE">
+<span class="sig-name descname"><span class="pre">IS_COMMUTATIVE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.IS_COMMUTATIVE" title="Permalink to this definition"></a></dt>
+<dd><p>Whether instances are equivalent to ones with permuted <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB">
+<span class="sig-name descname"><span class="pre">SYMB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB" title="Permalink to this definition"></a></dt>
+<dd><p>The string symbol of this class (override for sub-classes).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__hash__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_children">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><span class="pre">Merge</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_children" title="Permalink to this definition"></a></dt>
+<dd><p>All children operations in the flattened computational tree, sorted depth first.
+See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children"><code class="xref py py-attr docutils literal notranslate"><span class="pre">children</span></code></a> for getting only the direct children.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_in_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_in_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_in_keys" title="Permalink to this definition"></a></dt>
+<dd><p>All string input keys both of self and of all child operations.
+(See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.)
+These are the keys that must be present in an annotation when called
+on it. Should preserve the order in which keys and children occur in
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_out_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Output keys of self and all child operations.
+(See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children"><code class="xref py py-attr docutils literal notranslate"><span class="pre">children</span></code></a>).
+Should preserve the order in which children occur in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates">
+<span class="sig-name descname"><span class="pre">cache_duplicates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to cache duplicate child operation outputs with duplicate out_key.
+If set to false, all children and children children are evaluated and the
+values of duplicate <code class="docutils literal notranslate"><span class="pre">out_keys</span></code> are evaluated several times and overwritten,
+possibly leading to more computational time while using less memory.
+Note that the order of children execution is determined by their order in
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>, depth first for nested operations.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">children</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><span class="pre">Merge</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children" title="Permalink to this definition"></a></dt>
+<dd><p>The input keys which are child operations.
+Input keys are stored in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.consts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">consts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.consts" title="Permalink to this definition"></a></dt>
+<dd><p>The constant string keys in the input keys.
+The <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a> contains both the constant keys which are to be
+directly found in a given annotations dictionary, and child
+operations whose output is used. For getting the child operations
+stored in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a> refer to <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children"><code class="xref py py-attr docutils literal notranslate"><span class="pre">children</span></code></a>.
+Should preserve the order in which children occur in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys">
+<span class="sig-name descname"><span class="pre">in_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><span class="pre">Merge</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.in_keys" title="Permalink to this definition"></a></dt>
+<dd><p>The keys of segmentation masks to unite in given order.
+Keys are either constant strings or a merge operation.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.is_variadic">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_variadic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.is_variadic" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the instance is variadic.
+See <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">variadic_()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys">
+<span class="sig-name descname"><span class="pre">keep_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys" title="Permalink to this definition"></a></dt>
+<dd><p>The keys of intermediate outputs in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_out_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">all_out_keys</span></code></a> which should
+be added to the return of a call.
+Default (<code class="docutils literal notranslate"><span class="pre">None</span></code> or empty collection): duplicate children outputs are cached
+but not returned to save memory.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation_keys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">operation_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation_keys" title="Permalink to this definition"></a></dt>
+<dd><p>The list of keys used for this parent operation in original order
+(constants and children output keys).
+These are all <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.consts" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.consts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">consts</span></code></a> and the <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> of all
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.children"><code class="xref py py-attr docutils literal notranslate"><span class="pre">children</span></code></a> operations.
+Keys may be duplicate as e.g. in</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">hybrid_learning.fuzzy_logic.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">OR</span><span class="p">,</span> <span class="n">NOT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">OR</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">NOT</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">NOT</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">out_key</span><span class="o">=</span><span class="s2">&quot;not_c&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">operation_keys</span>
+<span class="go">[&#39;a&#39;, &#39;~b&#39;, &#39;a&#39;, &#39;not_c&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key">
+<span class="sig-name descname"><span class="pre">out_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="Permalink to this definition"></a></dt>
+<dd><p>The key to use to store the merge output in the annotations dict.
+Take care to not accidentally overwrite existing keys
+(cf. <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite"><code class="xref py py-attr docutils literal notranslate"><span class="pre">overwrite</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite">
+<span class="sig-name descname"><span class="pre">overwrite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'noop'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to overwrite a value in the input dictionary when
+applying this operation.
+The operation is defined in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code></a>.
+The key that may be overwritten is stored in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a>.
+An exception is raised if this is <code class="docutils literal notranslate"><span class="pre">False</span></code> and the key exists.
+If set to <code class="docutils literal notranslate"><span class="pre">'noop'</span></code> and <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> is in the given
+annotations dict, it is returned unchanged.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.pretty_op_symb">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pretty_op_symb</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.pretty_op_symb" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the operation symbol suitable for filenames etc.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.replace_none">
+<span class="sig-name descname"><span class="pre">replace_none</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.replace_none" title="Permalink to this definition"></a></dt>
+<dd><p>If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, any received <code class="docutils literal notranslate"><span class="pre">None</span></code> value is replaced by the
+given value. This is done only for computation, the <code class="docutils literal notranslate"><span class="pre">None</span></code> value in the
+received dict is left unchanged. Key-value pairs with <code class="docutils literal notranslate"><span class="pre">None</span></code> value may
+come from the input or from child operations.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setting_defaults</span></span><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.setting_defaults" title="Permalink to this definition"></a></dt>
+<dd><p>Defaults used for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.settings" title="Permalink to this definition"></a></dt>
+<dd><p>Settings to reproduce the instance.
+(Mind that in_keys must be expanded! For direct reproduction use copy.)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.skip_none">
+<span class="sig-name descname"><span class="pre">skip_none</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.skip_none" title="Permalink to this definition"></a></dt>
+<dd><p>If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, when a None input value is encountered simply
+<code class="docutils literal notranslate"><span class="pre">None</span></code> is returned. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, an error is raised.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.html" class="btn btn-neutral float-left" title="merge_operation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html" class="btn btn-neutral float-right" title="MergeBuilder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

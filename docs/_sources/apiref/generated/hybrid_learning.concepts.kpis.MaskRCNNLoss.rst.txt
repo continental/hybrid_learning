@@ -1,9 +1,0 @@
-MaskRCNNLoss
-============
-
-.. currentmodule:: hybrid_learning.concepts.kpis
-
-.. autoclass:: MaskRCNNLoss
-    :members:
-
-    .. autoclasstoc::

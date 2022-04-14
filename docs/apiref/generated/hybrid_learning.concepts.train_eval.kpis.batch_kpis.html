@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>batch_kpis &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="AbstractIoULike" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULike.html" />
+    <link rel="prev" title="save_division" href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.save_division.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.base_handles.html">base_handles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.callbacks.html">callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.hessian.html">hessian</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.html">kpis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.train_eval_funs.html">train_eval_funs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.html">train_eval</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.kpis.html">kpis</a> &raquo;</li>
+      <li>batch_kpis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.train_eval.kpis.batch_kpis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="batch-kpis">
+<h1>batch_kpis<a class="headerlink" href="#batch-kpis" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.concepts.train_eval.kpis.batch_kpis"></span><p>Loss and metric functions and classes that can be calculated per batch.</p>
+<p>A good overview and collection can be found e.g. here:
+<a class="reference external" href="https://lars76.github.io/neural-networks/object-detection/losses-for-segmentation/">https://lars76.github.io/neural-networks/object-detection/losses-for-segmentation/</a>
+<em>(the contained code samples are quite instructive but in tensorflow, thus not
+used here)</em>.</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULike.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULike" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULike"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractIoULike</span></code></a></p></td>
+<td><p>General functions for intersection over union like calculation on binarized in- and output.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULoss.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULoss" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractIoULoss</span></code></a></p></td>
+<td><p>Shared settings for intersection over union based losses.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoUMetric.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoUMetric" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoUMetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbstractIoUMetric</span></code></a></p></td>
+<td><p>Common properties of IoU calculation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.BalancedBCELoss.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.BalancedBCELoss" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.BalancedBCELoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BalancedBCELoss</span></code></a></p></td>
+<td><p>Balanced binary cross entropy loss.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.BalancedPenaltyReducedFocalLoss.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.BalancedPenaltyReducedFocalLoss" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.BalancedPenaltyReducedFocalLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BalancedPenaltyReducedFocalLoss</span></code></a></p></td>
+<td><p>Balanced version of the penalty reduced focal loss from CenterNet.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.BatchReduction.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.BatchReduction" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.BatchReduction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BatchReduction</span></code></a></p></td>
+<td><p>Aggregation types to reduce the 0th (meaning the batch) dimension of a tensor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.IoU.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.IoU" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.IoU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IoU</span></code></a></p></td>
+<td><p>Calc sample-wise intersection over union (IoU) values output batch.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.MaskRCNNLoss.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.MaskRCNNLoss" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.MaskRCNNLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MaskRCNNLoss</span></code></a></p></td>
+<td><p>Loss and associated data for a standard Mask R-CNN model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.Net2VecLoss.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.Net2VecLoss" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.Net2VecLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Net2VecLoss</span></code></a></p></td>
+<td><p>Simplified intersection over union as loss.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.TverskyLoss.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.TverskyLoss" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.TverskyLoss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TverskyLoss</span></code></a></p></td>
+<td><p>Calc Tversky loss (balanced Dice loss) for given outputs amd targets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.WeightedLossSum.html#hybrid_learning.concepts.train_eval.kpis.batch_kpis.WeightedLossSum" title="hybrid_learning.concepts.train_eval.kpis.batch_kpis.WeightedLossSum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WeightedLossSum</span></code></a></p></td>
+<td><p>Weighted sum of loss results.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.train_eval.kpis.aggregating_kpis.save_division.html" class="btn btn-neutral float-left" title="save_division" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.train_eval.kpis.batch_kpis.AbstractIoULike.html" class="btn btn-neutral float-right" title="AbstractIoULike" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+merge\_operation
+================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.logic_base.merge_operation
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.merge_operation
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Merge
+        
+        ~MergeBuilder
+        
+        ~TorchOperation
+        
+        ~TorchOrNumpyOperation
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~stack_tensors
+        
+
+    
+    

@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>hybrid_learning.datasets.data_visualization.to_monochrome_img &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>to_monochrome_img &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="hybrid_learning.datasets.data_visualization.visualize_classification_data" href="hybrid_learning.datasets.data_visualization.visualize_classification_data.html" />
-    <link rel="prev" title="hybrid_learning.datasets.data_visualization.to_img" href="hybrid_learning.datasets.data_visualization.to_img.html" /> 
+    <link rel="next" title="visualize_classification_data" href="hybrid_learning.datasets.data_visualization.visualize_classification_data.html" />
+    <link rel="prev" title="to_img" href="hybrid_learning.datasets.data_visualization.to_img.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,112 +47,74 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.apply_mask.html">hybrid_learning.datasets.data_visualization.apply_mask</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.compare_masks.html">hybrid_learning.datasets.data_visualization.compare_masks</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.mean_proportion_pos_px.html">hybrid_learning.datasets.data_visualization.mean_proportion_pos_px</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.neg_pixel_prop.html">hybrid_learning.datasets.data_visualization.neg_pixel_prop</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.to_img.html">hybrid_learning.datasets.data_visualization.to_img</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">hybrid_learning.datasets.data_visualization.to_monochrome_img</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.visualize_classification_data.html">hybrid_learning.datasets.data_visualization.visualize_classification_data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.visualize_mask_transforms.html">hybrid_learning.datasets.data_visualization.visualize_mask_transforms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.visualize_segmentation_data.html">hybrid_learning.datasets.data_visualization.visualize_segmentation_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.apply_mask.html">apply_mask</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.apply_masks.html">apply_masks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.compare_masks.html">compare_masks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.mean_proportion_pos_px.html">mean_proportion_pos_px</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.neg_pixel_prop.html">neg_pixel_prop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.to_img.html">to_img</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">to_monochrome_img</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.visualize_classification_data.html">visualize_classification_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.visualize_mask_transforms.html">visualize_mask_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.visualize_segmentation_data.html">visualize_segmentation_data</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.data_visualization.html">data_visualization</a> &raquo;</li>
-        
-      <li>hybrid_learning.datasets.data_visualization.to_monochrome_img</li>
-    
-    
+      <li>to_monochrome_img</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.data_visualization.to_monochrome_img.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="hybrid-learning-datasets-data-visualization-to-monochrome-img">
-<h1>hybrid_learning.datasets.data_visualization.to_monochrome_img<a class="headerlink" href="#hybrid-learning-datasets-data-visualization-to-monochrome-img" title="Permalink to this headline">¶</a></h1>
+             
+  <div class="section" id="to-monochrome-img">
+<h1>to_monochrome_img<a class="headerlink" href="#to-monochrome-img" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt id="hybrid_learning.datasets.data_visualization.to_monochrome_img">
-<code class="sig-prename descclassname">hybrid_learning.datasets.data_visualization.</code><code class="sig-name descname">to_monochrome_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img_t</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/data_visualization.html#to_monochrome_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.data_visualization.to_monochrome_img" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> to monochrome <a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code></a> in
+<dt class="sig sig-object py" id="hybrid_learning.datasets.data_visualization.to_monochrome_img">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.data_visualization.</span></span><span class="sig-name descname"><span class="pre">to_monochrome_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/data_visualization.html#to_monochrome_img"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.data_visualization.to_monochrome_img" title="Permalink to this definition"></a></dt>
+<dd><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> to monochrome <code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code> in
 <code class="docutils literal notranslate"><span class="pre">'L'</span></code> (=8-bit) mode.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>img_t</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a>) – monochrome image as tensor of size <code class="docutils literal notranslate"><span class="pre">[height,</span> <span class="pre">width]</span></code></p>
+<dd class="field-odd"><p><strong>img_t</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – monochrome image as tensor of size <code class="docutils literal notranslate"><span class="pre">[height,</span> <span class="pre">width]</span></code></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>resized and darkened image of <code class="docutils literal notranslate"><span class="pre">mode='L'</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image" title="(in Pillow (PIL Fork) v8.0.0)">PIL.Image.Image</a></p>
+<dd class="field-odd"><p><em>Image</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,58 +123,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.data_visualization.visualize_classification_data.html" class="btn btn-neutral float-right" title="hybrid_learning.datasets.data_visualization.visualize_classification_data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.data_visualization.to_img.html" class="btn btn-neutral float-left" title="hybrid_learning.datasets.data_visualization.to_img" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.data_visualization.to_img.html" class="btn btn-neutral float-left" title="to_img" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.data_visualization.visualize_classification_data.html" class="btn btn-neutral float-right" title="visualize_classification_data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

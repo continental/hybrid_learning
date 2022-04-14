@@ -1,0 +1,9 @@
+COCOBoxToSegMask
+================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_dataset
+
+.. autoclass:: COCOBoxToSegMask
+    :members:
+
+    .. autoclasstoc::

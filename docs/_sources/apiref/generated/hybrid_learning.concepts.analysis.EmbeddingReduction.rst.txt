@@ -1,9 +1,0 @@
-EmbeddingReduction
-==================
-
-.. currentmodule:: hybrid_learning.concepts.analysis
-
-.. autoclass:: EmbeddingReduction
-    :members:
-
-    .. autoclasstoc::

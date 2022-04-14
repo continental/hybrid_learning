@@ -1,0 +1,9 @@
+ConceptClassificationModel2D
+============================
+
+.. currentmodule:: hybrid_learning.concepts.models.concept_models.concept_classification
+
+.. autoclass:: ConceptClassificationModel2D
+    :members:
+
+    .. autoclasstoc::

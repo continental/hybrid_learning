@@ -1,0 +1,6 @@
+formula\_spec\_to\_dir
+======================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers
+
+.. autofunction:: formula_spec_to_dir

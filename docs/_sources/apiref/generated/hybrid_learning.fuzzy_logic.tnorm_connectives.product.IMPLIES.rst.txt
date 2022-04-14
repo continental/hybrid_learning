@@ -1,0 +1,9 @@
+IMPLIES
+=======
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.product
+
+.. autoclass:: IMPLIES
+    :members:
+
+    .. autoclasstoc::

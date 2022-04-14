@@ -25,21 +25,17 @@ dict\_transforms
         :toctree:
         :nosignatures:
         
-        ~AND
-        
         ~DictTransform
         
         ~DropAnn
         
         ~FlattenDict
         
-        ~Merge
-        
-        ~NOT
-        
-        ~OR
+        ~OnValues
         
         ~RestrictDict
+        
+        ~SameSizeTensorValues
         
 
     

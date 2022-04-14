@@ -1,0 +1,6 @@
+lengths\_to\_body\_size
+=======================
+
+.. currentmodule:: hybrid_learning.datasets.custom.person_size_estimation
+
+.. autofunction:: lengths_to_body_size

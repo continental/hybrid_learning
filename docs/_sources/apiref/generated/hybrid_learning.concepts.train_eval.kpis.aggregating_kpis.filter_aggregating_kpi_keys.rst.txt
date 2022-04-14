@@ -1,0 +1,6 @@
+filter\_aggregating\_kpi\_keys
+==============================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+.. autofunction:: filter_aggregating_kpi_keys

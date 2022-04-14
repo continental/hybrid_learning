@@ -1,0 +1,6 @@
+save\_division
+==============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+.. autofunction:: save_division

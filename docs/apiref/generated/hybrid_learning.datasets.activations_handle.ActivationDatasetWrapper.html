@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ActivationDatasetWrapper &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="base" href="hybrid_learning.datasets.base.html" />
+    <link rel="next" title="DatasetWrapper" href="hybrid_learning.datasets.activations_handle.DatasetWrapper.html" />
     <link rel="prev" title="activations_handle" href="hybrid_learning.datasets.activations_handle.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,166 +47,110 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">ActivationDatasetWrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.DatasetWrapper.html">DatasetWrapper</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.activations_handle.html">activations_handle</a> &raquo;</li>
-        
       <li>ActivationDatasetWrapper</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="activationdatasetwrapper">
-<h1>ActivationDatasetWrapper<a class="headerlink" href="#activationdatasetwrapper" title="Permalink to this headline">¶</a></h1>
+<h1>ActivationDatasetWrapper<a class="headerlink" href="#activationdatasetwrapper" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper">
-<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.datasets.activations_handle.</code><code class="sig-name descname">ActivationDatasetWrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">layer_key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">act_map_gen</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">act_map_filepath_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force_rebuild</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">activations_root</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lazy_generation</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">data_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.base.BaseDataset</span></code></a></p>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.activations_handle.</span></span><span class="sig-name descname"><span class="pre">ActivationDatasetWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">act_map_gen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activations_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.activations_handle.DatasetWrapper.html#hybrid_learning.datasets.activations_handle.DatasetWrapper" title="hybrid_learning.datasets.activations_handle.DatasetWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetWrapper</span></code></a></p>
 <p>Wrapper for image datasets that will generate and yield activation maps.
-Behaves like a sequence of tuples of:</p>
-<dl class="field-list simple">
-<dt class="field-odd">Activation map</dt>
-<dd class="field-odd"><p>Activation map tensor of the given model and the given layer for
-image at the corresponding index in the wrapped dataset</p>
-</dd>
-<dt class="field-even">Ground Truth</dt>
-<dd class="field-even"><p>Ground truth at the corresponding index in the wrapped dataset</p>
-</dd>
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a>) – </p></li>
-<li><p><strong>layer_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
-<li><p><strong>model_description</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
-<li><p><strong>act_map_gen</strong> (<em>torch.nn.modules.module.Module</em>) – </p></li>
-<li><p><strong>act_map_filepath_fn</strong> (<em>Callable</em><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
-<li><p><strong>force_rebuild</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
-<li><p><strong>activations_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
-<li><p><strong>lazy_generation</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
-</ul>
+Behaves like a sequence of tuples of</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>activation maps (original input transformed by</dt><dd><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map"><code class="xref py py-attr docutils literal notranslate"><span class="pre">generate_act_map</span></code></a>) and</p>
 </dd>
 </dl>
-<p>If the activation map generator is given during init with
-<code class="docutils literal notranslate"><span class="pre">lazy_generation</span></code> set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the data is lazily generated,
-i.e. any call to
-<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__getitem__" title="hybrid_learning.datasets.base.BaseDataset.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code></a>
-(resp. <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getitem()</span></code></a>) will generate the corresponding activation
-map if it does not yet exist.
-To generate all activation maps, call <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_act_maps()</span></code></a>,
-but be aware that this can be very time consuming depending on
-the generator.</p>
-<p>Init.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a>) – <p>Dataset to wrap; must be a sequence of tuples of</p>
-<p><code class="docutils literal notranslate"><span class="pre">(image</span> <span class="pre">as</span> <span class="pre">:py:class:`torch.Tensor`,</span>
-<span class="pre">ground</span> <span class="pre">truth</span> <span class="pre">as</span> <span class="pre">:py:class:`torch.Tensor`)</span></code></p>
-<p>the default transformation assumes that the ground truth are masks
-(same sized images)</p>
-</p></li>
-<li><p><strong>layer_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – optional description of the layer to obtain
-activation maps from;</p></li>
-<li><p><strong>act_map_gen</strong> (<em>torch.nn.modules.module.Module</em>) – function yielding from an image the activation
-map to save; intended to be a
-<a class="reference internal" href="hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelStump</span></code></a></p></li>
-<li><p><strong>model_description</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – description of the model parameters from which
-activation maps are generated;
-used to provide default for <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_root</span></code></a>;
-defaults to class name of <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code></p></li>
-<li><p><strong>activations_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – root directory under which to store and find
-the activation maps;
-defaults: <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_activations_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_activations_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_activations_root</span></code></a></p></li>
-<li><p><strong>transforms</strong> – see <code class="docutils literal notranslate"><span class="pre">__init__()</span></code> of
-<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p></li>
-<li><p><strong>lazy_generation</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – if the <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code> is given, whether to
-lazily generate missing activation or to initialize them all
-during init</p></li>
-<li><p><strong>dataset_root</strong> – dataset root directory;
-defaults to <code class="docutils literal notranslate"><span class="pre">dataset.dataset_root</span></code></p></li>
-<li><p><strong>split</strong> – dataset split identifier; defaults to
-<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.split" title="hybrid_learning.datasets.base.BaseDataset.split"><code class="xref py py-attr docutils literal notranslate"><span class="pre">split</span></code></a> of
-<code class="docutils literal notranslate"><span class="pre">dataset</span></code></p></li>
-<li><p><strong>act_map_filepath_fn</strong> (<em>Callable</em><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
-<li><p><strong>force_rebuild</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</li>
+<li><p>original ground truth (e.g. mask)</p></li>
 </ul>
-</dd>
-</dl>
+<p>The wrapper can handle <a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Subset" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.Subset</span></code></a> and
+<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.base.BaseDataset</span></code></a> instances.</p>
+<p>Features:</p>
+<ul class="simple">
+<li><p>Option to enable efficient file caching of the generated activation
+maps in order to avoid costly re-evaluations.
+See <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_cache" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_cache"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_cache</span></code></a>.</p></li>
+<li><p>Convenience functions for caching:
+<a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists"><code class="xref py py-meth docutils literal notranslate"><span class="pre">existence</span> <span class="pre">checks</span></code></a> and
+<a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cache</span> <span class="pre">filling</span></code></a> with progress bar.</p></li>
+<li><p>Replacement of the <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map"><code class="xref py py-attr docutils literal notranslate"><span class="pre">activation</span> <span class="pre">generator</span></code></a> by
+the cache, i.e. no <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code> must be provided if activation maps
+for all indices are cached (make sure to not clear the cache then though).</p></li>
+</ul>
+<p>Activation map caching is enabled by setting <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">activations_root</span></code></a>
+and disabled by setting <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">activations_root</span></code></a> to <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+To fill the cache i.e. generate all activation maps, call
+<a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fill_cache()</span></code></a>. But be aware that this can be very time
+consuming depending on the generator.</p>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Data Attributes:</p>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></summary><table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">activations_root</span></code></a></p></td>
+<td><p>The activations root of the file cache if caching is enable.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DatasetWrapper</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset</span></code></p></td>
+<td><p>The wrapped dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -267,7 +164,7 @@ defaults to <code class="docutils literal notranslate"><span class="pre">dataset
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Methods:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -277,26 +174,20 @@ defaults to <code class="docutils literal notranslate"><span class="pre">dataset
 <td><p>Get activation map and original ground truth for item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">act_map_filepath</span></code></a>(i)</p></td>
-<td><p>Return the path to the activation map file.</p></td>
+<td><p>Return the path to the activation map file in the cache.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">act_map_exists</span></code></a>(i)</p></td>
-<td><p>Check whether the activation map at index <code class="docutils literal notranslate"><span class="pre">i</span></code> was already created.</p></td>
+<td><p>Check whether the activation map at index <code class="docutils literal notranslate"><span class="pre">i</span></code> is cached.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_act_map" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_act_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_act_map</span></code></a>(i)</p></td>
-<td><p>Load act map as <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> for given index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_image</span></code></a>(i)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_image</span></code></a>(i)</p></td>
 <td><p>Load the image/original input for index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.save_act_map" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.save_act_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_act_map</span></code></a>(i, act_map)</p></td>
-<td><p>Save an activation map at index <code class="docutils literal notranslate"><span class="pre">i</span></code> via pytorch pickling.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_act_maps</span></code></a>([force_rebuild, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_cache</span></code></a>([force_rebuild, show_progress_bar])</p></td>
 <td><p>Generate activation maps for all images.</p></td>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>DatasetWrapper</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -305,35 +196,63 @@ defaults to <code class="docutils literal notranslate"><span class="pre">dataset
 <tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(i)</p></td>
 <td><p>Get activation map and original ground truth for item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code>(i)</p></td>
+<td><p>Wrap descriptor method of wrapped dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(i)</p></td>
+<td><p>Get activation map and original ground truth for item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code>(i)</p></td>
+<td><p>Wrap descriptor method of wrapped dataset.</p></td>
+</tr>
 </tbody>
 </table>
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Special Methods:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset[, layer_key, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset[, act_map_gen, ...])</p></td>
 <td><p>Init.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DatasetWrapper</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset[, act_map_gen, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
 <td><p>Length determined by the length of the wrapped dataset.</p></td>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset[, layer_key, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset[, act_map_gen, ...])</p></td>
 <td><p>Init.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
 <td><p>Length determined by the length of the wrapped dataset.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
@@ -344,7 +263,7 @@ defaults to <code class="docutils literal notranslate"><span class="pre">dataset
 </tr>
 </tbody>
 </table>
-</details><details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>Dataset</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -361,123 +280,52 @@ defaults to <code class="docutils literal notranslate"><span class="pre">dataset
 </details></div>
 <hr class="docutils" />
 <dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset</span></em>, <em class="sig-param"><span class="n">layer_key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_description</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">act_map_gen</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">act_map_filepath_fn</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force_rebuild</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">activations_root</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lazy_generation</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">data_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">act_map_gen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activations_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Init.</p>
+<p>The base settings (dataset root, split) default to those of the
+wrapped dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataset</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a>) – <p>Dataset to wrap; must be a sequence of tuples of</p>
-<p><code class="docutils literal notranslate"><span class="pre">(image</span> <span class="pre">as</span> <span class="pre">:py:class:`torch.Tensor`,</span>
-<span class="pre">ground</span> <span class="pre">truth</span> <span class="pre">as</span> <span class="pre">:py:class:`torch.Tensor`)</span></code></p>
-<p>the default transformation assumes that the ground truth are masks
-(same sized images)</p>
-</p></li>
-<li><p><strong>layer_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – optional description of the layer to obtain
-activation maps from;</p></li>
-<li><p><strong>act_map_gen</strong> (<em>torch.nn.modules.module.Module</em>) – function yielding from an image the activation
-map to save; intended to be a
-<a class="reference internal" href="hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelStump</span></code></a></p></li>
-<li><p><strong>model_description</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – description of the model parameters from which
-activation maps are generated;
-used to provide default for <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_root</span></code></a>;
-defaults to class name of <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code></p></li>
-<li><p><strong>activations_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – root directory under which to store and find
-the activation maps;
-defaults: <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_activations_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_activations_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_default_activations_root</span></code></a></p></li>
-<li><p><strong>transforms</strong> – see <code class="docutils literal notranslate"><span class="pre">__init__()</span></code> of
-<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p></li>
-<li><p><strong>lazy_generation</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – if the <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code> is given, whether to
-lazily generate missing activation or to initialize them all
-during init</p></li>
-<li><p><strong>dataset_root</strong> – dataset root directory;
-defaults to <code class="docutils literal notranslate"><span class="pre">dataset.dataset_root</span></code></p></li>
-<li><p><strong>split</strong> – dataset split identifier; defaults to
-<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.split" title="hybrid_learning.datasets.base.BaseDataset.split"><code class="xref py py-attr docutils literal notranslate"><span class="pre">split</span></code></a> of
-<code class="docutils literal notranslate"><span class="pre">dataset</span></code></p></li>
-<li><p><strong>act_map_filepath_fn</strong> (<em>Callable</em><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
-<li><p><strong>force_rebuild</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>BaseDataset</em></a>) – Dataset to wrap; must be a sequence of tuples of
+<code class="docutils literal notranslate"><span class="pre">(image,</span> <span class="pre">ground_truth)</span></code> with both image and ground-truth
+of type <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>;
+the default transformation assumes that the ground truth are masks
+(same sized images)</p></li>
+<li><p><strong>act_map_gen</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><em>Module</em><em>]</em>) – torch module that accepts as input a batch of
+images and returns the activation maps to yield</p></li>
+<li><p><strong>activations_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – root directory under which to store and find
+the activation maps if file caching shall be enabled</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>device</em><em>]</em><em>]</em>) – the device on which to run <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code>;
+see <a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.ToActMap.html#hybrid_learning.datasets.transforms.image_transforms.ToActMap" title="hybrid_learning.datasets.transforms.image_transforms.ToActMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.transforms.image_transforms.ToActMap</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__">
-<code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__len__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Length determined by the length of the wrapped dataset.
-See <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_act_map_filepath_fn">
-<em class="property">static </em><code class="sig-name descname">_default_act_map_filepath_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">dataset</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper._default_act_map_filepath_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_act_map_filepath_fn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Obtain the act map filepath relative to the
-activations root.
-As activations root, <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_root</span></code></a> is used.
-It is assumed that</p>
-<ul class="simple">
-<li><p>the images are saved as <code class="docutils literal notranslate"><span class="pre">unique_id.{png,jpg}</span></code>, that</p></li>
-<li><p>either <code class="docutils literal notranslate"><span class="pre">dataset</span></code> or <code class="docutils literal notranslate"><span class="pre">dataset.dataset</span></code> (e.g. in case of a
-<a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Subset" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.Subset</span></code></a> instance) provide a function
-<code class="docutils literal notranslate"><span class="pre">image_filepath(i:</span> <span class="pre">int)</span></code>, and that</p></li>
-<li><p>this <code class="docutils literal notranslate"><span class="pre">image_filepath</span></code> function yields
-<code class="docutils literal notranslate"><span class="pre">some/path/to/img/unique_id.{png,jpg}</span></code> for the image at position
-<code class="docutils literal notranslate"><span class="pre">i</span></code>, with <code class="docutils literal notranslate"><span class="pre">unique_id</span></code> being stable against shuffling of the
-indices <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></li>
-</ul>
-<p>Then the activation map filepath is given as <code class="docutils literal notranslate"><span class="pre">unique_id.pkl</span></code>
-(path relative to an activation map root).</p>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists">
+<span class="sig-name descname"><span class="pre">act_map_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.act_map_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether the activation map at index <code class="docutils literal notranslate"><span class="pre">i</span></code> is cached.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
-<li><p><strong>dataset</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>hybrid_learning.datasets.base.BaseDataset</em></a>) – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists">
-<code class="sig-name descname">act_map_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.act_map_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check whether the activation map at index <code class="docutils literal notranslate"><span class="pre">i</span></code> was already created.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – index in <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a> for which to check
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – index in <a class="reference internal" href="hybrid_learning.datasets.activations_handle.DatasetWrapper.html#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a> for which to check
 whether an activation map was created.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath">
-<code class="sig-name descname">act_map_filepath</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.act_map_filepath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to the activation map file.
-The base directory is <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_root</span></code></a>.
-The basename is:</p>
-<ul class="simple">
-<li><p><em>If :py:attr:`dataset` or its member ``dataset`` features a
-``image_filepath()`` method:</em>
-the same basename as the original input image, with .png resp. .jpg
-replaced by .pkl</p></li>
-<li><p><em>Else:</em>
-the zero-padded decimal index number ending with .pkl</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Make sure the used <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath_fn" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath_fn"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_map_filepath_fn</span></code></a> yields unique IDs
-for all elements of the <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a>. Otherwise, the wrong
-activation maps may be loaded and duplicates overwritten.</p>
-</div>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath">
+<span class="sig-name descname"><span class="pre">act_map_filepath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.act_map_filepath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath" title="Permalink to this definition"></a></dt>
+<dd><p>Return the path to the activation map file in the cache.
+The base directory is <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">activations_root</span></code></a>.
+The basename is determined by the <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_cache" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_cache"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_cache</span></code></a> from
+the <code class="docutils literal notranslate"><span class="pre">descriptor()</span></code> for the index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – index of the image to get activation map for.</p>
@@ -487,36 +335,14 @@ activation maps may be loaded and duplicates overwritten.</p>
 at index <code class="docutils literal notranslate"><span class="pre">i</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map">
-<em class="property">static </em><code class="sig-name descname">generate_act_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">act_map_gen</span></em>, <em class="sig-param"><span class="n">img_t</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.generate_act_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate activation map <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> of image.
-To generate it, use <code class="docutils literal notranslate"><span class="pre">act_map_gen</span></code> callable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>img_t</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a>) – image for which to obtain activation map;
-make sure all necessary transformations are applied</p></li>
-<li><p><strong>act_map_gen</strong> (<em>torch.nn.modules.module.Module</em>) – model generating the activation map from the image</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>activation map of layer as <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps">
-<code class="sig-name descname">generate_act_maps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_rebuild</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_progress_bar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.generate_act_maps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_maps" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache">
+<span class="sig-name descname"><span class="pre">fill_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.fill_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.fill_cache" title="Permalink to this definition"></a></dt>
 <dd><p>Generate activation maps for all images.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -528,19 +354,19 @@ make sure all necessary transformations are applied</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)">None</a></p>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper"><em>ActivationDatasetWrapper</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem">
-<code class="sig-name descname">getitem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.getitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem">
+<span class="sig-name descname"><span class="pre">getitem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.getitem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="Permalink to this definition"></a></dt>
 <dd><p>Get activation map and original ground truth for item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
 <p>Used for
 <a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__getitem__" title="hybrid_learning.datasets.base.BaseDataset.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code></a>.
 If the activation map does not exist and a generator is given in
-<a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_gen" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_gen"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_map_gen</span></code></a>, generate and save the activation map.</p>
+<a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map"><code class="xref py py-attr docutils literal notranslate"><span class="pre">generate_act_map</span></code></a>, generate and save the activation map.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>tuple of the loaded or generated activation map and the
@@ -550,121 +376,54 @@ target of the original dataset for that act map</p>
 <dd class="field-even"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Tuple[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a>, Any]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a>[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_act_map">
-<code class="sig-name descname">load_act_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.load_act_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_act_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load act map as <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> for given index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – index to load activation map for</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> representation of activation map</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image">
-<code class="sig-name descname">load_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.load_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.load_image" title="Permalink to this definition"></a></dt>
 <dd><p>Load the image/original input for index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.save_act_map">
-<code class="sig-name descname">save_act_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em>, <em class="sig-param"><span class="n">act_map</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#ActivationDatasetWrapper.save_act_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.save_act_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save an activation map at index <code class="docutils literal notranslate"><span class="pre">i</span></code> via pytorch pickling.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – index of the image to which the activation map corresponds</p></li>
-<li><p><strong>act_map</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a>) – activation map to save (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)">None</a></p>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__parameters__">
+<span class="sig-name descname"><span class="pre">__parameters__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.__parameters__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_cache">
+<span class="sig-name descname"><span class="pre">act_maps_cache</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache" title="hybrid_learning.datasets.caching.PTCache"><span class="pre">PTCache</span></a></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_cache" title="Permalink to this definition"></a></dt>
+<dd><p>File cache for caching activations.
+Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> in case the activations root is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>
+during init.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_activations_root">
-<em class="property">property </em><code class="sig-name descname">_default_activations_root</code><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_activations_root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Default root folder for storing activation map files.</p>
-<dl class="field-list simple">
-</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">activations_root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.activations_root" title="Permalink to this definition"></a></dt>
+<dd><p>The activations root of the file cache if caching is enable.
+Enable caching by setting this to a file path, disable caching
+by setting this attribute to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath_fn">
-<code class="sig-name descname">act_map_filepath_fn</code><em class="property">: Callable<span class="p">[</span><span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a><span class="p">, </span>BaseDataset<span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_filepath_fn" title="Permalink to this definition">¶</a></dt>
-<dd><p>The function to determine the activation map filepath relative to
-the given activations root at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.
-The activations root <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">act_maps_root</span></code></a> is used.
-It must accept the index and the original dataset.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>It should be stable against reindexing of the original dataset
-like shuffling or subsetting!</p>
-</div>
-<p>The default requires an <code class="docutils literal notranslate"><span class="pre">image_filepath</span></code> function in <code class="docutils literal notranslate"><span class="pre">dataset</span></code> or
-<code class="docutils literal notranslate"><span class="pre">dataset.dataset</span></code> that yields unique image file names. See
-<a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_act_map_filepath_fn" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper._default_act_map_filepath_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_default_act_map_filepath_fn()</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_gen">
-<code class="sig-name descname">act_map_gen</code><em class="property">: <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.nn.Module</a></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_map_gen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Callable that yields an activation map given a valid input datum.
-Input data is assumed to origin from the original <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a>.
-Used to generate missing activation maps in <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getitem()</span></code></a>.
-If <code class="docutils literal notranslate"><span class="pre">lazy_generation=False</span></code>, all missing activation maps are
-generated on <code class="docutils literal notranslate"><span class="pre">__init__</span></code> call. If additionally
-<code class="docutils literal notranslate"><span class="pre">force_rebuild=True</span></code>, also existing ones are replaced.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root">
-<code class="sig-name descname">act_maps_root</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.act_maps_root" title="Permalink to this definition">¶</a></dt>
-<dd><p>Root directory under which to store and locate activation maps.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset">
-<code class="sig-name descname">dataset</code><em class="property">: BaseDataset</em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>The dataset to wrap; activation maps are created from input;
-the ground truth is equal to the original one.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.layer_key">
-<code class="sig-name descname">layer_key</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.layer_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Optional description of the layer from which the activation maps
-were retrieved.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.model_description">
-<code class="sig-name descname">model_description</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.model_description" title="Permalink to this definition">¶</a></dt>
-<dd><p>Description of the model with which activation maps were generated.
-Used to create default activation map root name
-(by creating form of hash).</p>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map">
+<span class="sig-name descname"><span class="pre">generate_act_map</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.generate_act_map" title="Permalink to this definition"></a></dt>
+<dd><p>Transformation that returns an activation map given a valid input
+datum.
+Input data is assumed to origin from the original
+<a class="reference internal" href="hybrid_learning.datasets.activations_handle.DatasetWrapper.html#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a>.
+Used to generate missing activation maps in <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.getitem"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getitem()</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -673,58 +432,33 @@ Used to create default activation map root name
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.base.html" class="btn btn-neutral float-right" title="base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.activations_handle.html" class="btn btn-neutral float-left" title="activations_handle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.activations_handle.html" class="btn btn-neutral float-left" title="activations_handle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.activations_handle.DatasetWrapper.html" class="btn btn-neutral float-right" title="DatasetWrapper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,0 +1,9 @@
+OnIndex
+=======
+
+.. currentmodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+.. autoclass:: OnIndex
+    :members:
+
+    .. autoclasstoc::

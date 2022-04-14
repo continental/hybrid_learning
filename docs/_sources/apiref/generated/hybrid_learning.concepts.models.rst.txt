@@ -15,11 +15,9 @@ models
         :toctree:
         :recursive:
         
-        ~hybrid_learning.concepts.models.base_handles
+        ~hybrid_learning.concepts.models.concept_models
         
-        ~hybrid_learning.concepts.models.concept_detection
-        
-        ~hybrid_learning.concepts.models.concept_segmentation
+        ~hybrid_learning.concepts.models.embeddings
         
         ~hybrid_learning.concepts.models.model_extension
         

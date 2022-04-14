@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>dict_transforms &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="AND" href="hybrid_learning.datasets.transforms.dict_transforms.AND.html" />
-    <link rel="prev" title="transforms" href="hybrid_learning.datasets.transforms.html" /> 
+    <link rel="next" title="DictTransform" href="hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html" />
+    <link rel="prev" title="settings_to_repr" href="hybrid_learning.datasets.transforms.common.settings_to_repr.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,133 +47,83 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.common.html">common</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">dict_transforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.html">encoder</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.html">image_transforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.html">tuple_transforms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.transforms.html">transforms</a> &raquo;</li>
-        
       <li>dict_transforms</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.transforms.dict_transforms.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="dict-transforms">
-<h1>dict_transforms<a class="headerlink" href="#dict-transforms" title="Permalink to this headline">¶</a></h1>
+<h1>dict_transforms<a class="headerlink" href="#dict-transforms" title="Permalink to this headline"></a></h1>
 <p class="rubric">Description</p>
-<span class="target" id="module-hybrid_learning.datasets.transforms.dict_transforms"></span><p>Transformations on dict annotations containing scalars and same-sized masks.</p>
+<span class="target" id="module-hybrid_learning.datasets.transforms.dict_transforms"></span><p>Transformations on dict annotations containing scalars and masks.</p>
 <p>The annotations that can be processed are supposed to be a dict with string
-keys and values of floats or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (binary) masks.</p>
-<p>The logical merging operations derived from <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> allow for
-concatenation. Using them, any operation involving intersection, union,
-and inversion of masks can be modelled. Scalar values in this case are
-treated as all-same-valued masks when mixed with mask tensors.
-For further information have a look at the <a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> documentation.</p>
+keys and values of floats or <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> (binary) masks.</p>
 <p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.AND.html#hybrid_learning.datasets.transforms.dict_transforms.AND" title="hybrid_learning.datasets.transforms.dict_transforms.AND"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AND</span></code></a></p></td>
-<td><p>Intersection/AND operation on binary masks and scalars.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform" title="hybrid_learning.datasets.transforms.dict_transforms.DictTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DictTransform</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html#hybrid_learning.datasets.transforms.dict_transforms.DictTransform" title="hybrid_learning.datasets.transforms.dict_transforms.DictTransform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DictTransform</span></code></a></p></td>
 <td><p>Basic transformation for dicts.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.DropAnn.html#hybrid_learning.datasets.transforms.dict_transforms.DropAnn" title="hybrid_learning.datasets.transforms.dict_transforms.DropAnn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DropAnn</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.DropAnn.html#hybrid_learning.datasets.transforms.dict_transforms.DropAnn" title="hybrid_learning.datasets.transforms.dict_transforms.DropAnn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DropAnn</span></code></a></p></td>
 <td><p>Drop the annotation with given key from the annotations dict.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.html#hybrid_learning.datasets.transforms.dict_transforms.FlattenDict" title="hybrid_learning.datasets.transforms.dict_transforms.FlattenDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlattenDict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.FlattenDict.html#hybrid_learning.datasets.transforms.dict_transforms.FlattenDict" title="hybrid_learning.datasets.transforms.dict_transforms.FlattenDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlattenDict</span></code></a></p></td>
 <td><p>Return the value of the annotations dict at selected key.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.Merge.html#hybrid_learning.datasets.transforms.dict_transforms.Merge" title="hybrid_learning.datasets.transforms.dict_transforms.Merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Merge</span></code></a></p></td>
-<td><p>Merge the binary masks / scalars of the input keys and store them under the specified output key.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.OnValues.html#hybrid_learning.datasets.transforms.dict_transforms.OnValues" title="hybrid_learning.datasets.transforms.dict_transforms.OnValues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnValues</span></code></a></p></td>
+<td><p>Perform a transformation on all values of a dict.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.NOT.html#hybrid_learning.datasets.transforms.dict_transforms.NOT" title="hybrid_learning.datasets.transforms.dict_transforms.NOT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NOT</span></code></a></p></td>
-<td><p>Inversion/NOT operation on binary masks and scalars.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.OR.html#hybrid_learning.datasets.transforms.dict_transforms.OR" title="hybrid_learning.datasets.transforms.dict_transforms.OR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OR</span></code></a></p></td>
-<td><p>Union/OR operation on binary masks and scalars.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html#hybrid_learning.datasets.transforms.dict_transforms.RestrictDict" title="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RestrictDict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict.html#hybrid_learning.datasets.transforms.dict_transforms.RestrictDict" title="hybrid_learning.datasets.transforms.dict_transforms.RestrictDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RestrictDict</span></code></a></p></td>
 <td><p>Restrict the annotation dictionary to the annotation items with featuring one of the selected keys.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.SameSizeTensorValues.html#hybrid_learning.datasets.transforms.dict_transforms.SameSizeTensorValues" title="hybrid_learning.datasets.transforms.dict_transforms.SameSizeTensorValues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SameSizeTensorValues</span></code></a></p></td>
+<td><p>Up- or down-scale the tensor mask values of a dictionary to all have the same size.</p></td>
 </tr>
 </tbody>
 </table>
@@ -228,58 +131,33 @@ For further information have a look at the <a class="reference internal" href="h
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.transforms.dict_transforms.AND.html" class="btn btn-neutral float-right" title="AND" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.transforms.html" class="btn btn-neutral float-left" title="transforms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.transforms.common.settings_to_repr.html" class="btn btn-neutral float-left" title="settings_to_repr" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.transforms.dict_transforms.DictTransform.html" class="btn btn-neutral float-right" title="DictTransform" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

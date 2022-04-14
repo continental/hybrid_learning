@@ -1,0 +1,50 @@
+arithmetic
+==========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.predicates.arithmetic
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.predicates.arithmetic
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Equals
+        
+        ~GreaterEqualsThan
+        
+        ~GreaterThan
+        
+        ~LowerEqualsThan
+        
+        ~LowerThan
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

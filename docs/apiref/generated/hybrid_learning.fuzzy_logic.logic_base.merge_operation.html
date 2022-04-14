@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>merge_operation &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Merge" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html" />
+    <link rel="prev" title="Logic" href="hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.connectives.html">connectives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.logic.html">logic</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">merge_operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.parsing.html">parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html">quantifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html">logic_by_name</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a> &raquo;</li>
+      <li>merge_operation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="merge-operation">
+<h1>merge_operation<a class="headerlink" href="#merge-operation" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.fuzzy_logic.logic_base.merge_operation"></span><p>Base classes and helper functions for defining logical operations.
+Main base classes are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a>: Base class for operating on arrays/tensors and booleans,
+and for building computational trees of such operations</p></li>
+<li><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchOrNumpyOperation</span></code></a>: Base <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> class for operating
+on numpy or pytorch tensors</p></li>
+<li><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a>: A convenience builder class that allows to
+define custom constructors for a merge class;
+of interest for easily setting defaults</p></li>
+</ul>
+<p>The logical merging operations derived from <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> allow for
+concatenation of operations. Using them, any operation involving
+intersection (<code class="docutils literal notranslate"><span class="pre">AND</span></code>),
+union (<code class="docutils literal notranslate"><span class="pre">OR</span></code>), and
+inversion (<code class="docutils literal notranslate"><span class="pre">NOT</span></code>)
+of masks can be modelled. Scalar values in this case are
+treated as all-same-valued masks when mixed with mask tensors.
+For further information have a look at the <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> documentation.</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Merge</span></code></a></p></td>
+<td><p>Base class for operations and operation trees on dictionary inputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MergeBuilder</span></code></a></p></td>
+<td><p>Return a <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> operation of specified class with additional settings upon call.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TorchOperation</span></code></a></p></td>
+<td><p>Generic merge operation on torch tensors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TorchOrNumpyOperation</span></code></a></p></td>
+<td><p>Generic merge operation allowing to define both a torch and a numpy operation.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.stack_tensors.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.stack_tensors" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.stack_tensors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack_tensors</span></code></a>(*inputs)</p></td>
+<td><p>Broadcast and stack the inputs in dim 0 to enable pixel-wise operations.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html" class="btn btn-neutral float-left" title="Logic" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html" class="btn btn-neutral float-right" title="Merge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

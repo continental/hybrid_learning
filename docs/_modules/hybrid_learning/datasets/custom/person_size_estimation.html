@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.datasets.custom.person_size_estimation &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.datasets.custom.person_size_estimation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.datasets.custom.person_size_estimation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Util functions to estimate the size of a person in an image from</span>
+<span class="sd">keypoint information.</span>
+<span class="sd">The core function is :py:func:`keypoints_to_lengths`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">FACTORS</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;bbox_width&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;bbox_height&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># fallback</span>
+    <span class="s1">&#39;wrist_to_wrist&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># schooling material</span>
+    <span class="s1">&#39;hip_to_shoulder&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># estimate</span>
+    <span class="s1">&#39;body_height&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># estimate (to add missing forehead)</span>
+    <span class="s1">&#39;head_height&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># arts</span>
+    <span class="s1">&#39;upper_leg&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.77</span><span class="p">,</span> <span class="mf">0.4050</span><span class="p">),</span>  <span class="c1"># paper</span>
+    <span class="s1">&#39;lower_leg&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mf">3.13</span> <span class="o">+</span> <span class="mf">3.02</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5011</span> <span class="o">+</span> <span class="mf">0.5011</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># paper</span>
+    <span class="s1">&#39;leg&#39;</span><span class="p">:</span> <span class="p">((</span><span class="mf">1.49</span> <span class="o">+</span> <span class="mf">1.48</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.4353</span> <span class="o">+</span> <span class="mf">0.4300</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># paper</span>
+    <span class="s1">&#39;upper_arm&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">3.72</span><span class="p">,</span> <span class="mf">0.4486</span><span class="p">),</span>  <span class="c1"># paper</span>
+    <span class="s1">&#39;lower_arm&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">4.46</span><span class="p">,</span> <span class="mf">0.5694</span><span class="p">),</span>  <span class="c1"># paper</span>
+<span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;intersect&#39;</span><span class="p">])</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;A collection of parameters for linear relations each between an anatomic</span>
+<span class="sd">size and the full body size (both in meters).</span>
+<span class="sd">The formulas are of the form</span>
+<span class="sd">:math:`h(l) = l\cdot s + c` with</span>
+<span class="sd">slope :math:`s` and intersect :math:`c`,</span>
+<span class="sd">:math:`l` the value of an anatomic size, and</span>
+<span class="sd">:math:`h(l)` the full body size estimated from the value of :math:`l`</span>
+<span class="sd">(all values in meters).</span>
+<span class="sd">The format is a mapping of the form</span>
+<span class="sd">``{anatomic_size_id: {&#39;slope&#39;: float, &#39;intersect&#39;: float}``.</span>
+
+<span class="sd">Sources for the estimates:</span>
+
+<span class="sd">- ``bbox_width``, ``bbox_height``:</span>
+<span class="sd">  This is considered the fallback</span>
+<span class="sd">  (a person is at least as large as its 2D bounding box width or height)</span>
+<span class="sd">- ``wrist_to_wrist``:</span>
+<span class="sd">  This is an estimate of how to calculate the arm span (including hands)</span>
+<span class="sd">  from the wrist-to-wrist span.</span>
+<span class="sd">  `Schooling material &lt;https://www.scientificamerican.com/article/human-body-ratios/&gt;`_</span>
+<span class="sd">  suggests that a person at any age is about as tall as its arm span.</span>
+<span class="sd">- ``hip_to_shoulder``: this is an estimate</span>
+<span class="sd">- ``body_height``:</span>
+<span class="sd">  This value is assumed to cut off forehead and feet.</span>
+<span class="sd">  The formula estimates how to re-add these parts.</span>
+<span class="sd">- ``head_height``:</span>
+<span class="sd">  In `arts &lt;https://www.makingcomics.com/2014/01/19/standard-proportions-human-body/&gt;`_</span>
+<span class="sd">  a typical estimate of the full body size is about 7 to 8 times the head</span>
+<span class="sd">  height. To not drastically overestimate the size of children, the lower</span>
+<span class="sd">  bound is taken.</span>
+<span class="sd">- ``upper_leg``, ``lower_leg``, ``leg``, ``upper_arm``, ``lower_arm``:</span>
+<span class="sd">  These values are means over genders and populations taken from</span>
+<span class="sd">  the up-to-date measurements in the paper [Ruff2012]_</span>
+
+<span class="sd">See also `https://en.wikipedia.org/wiki/Estimation_of_stature`_.</span>
+
+<span class="sd">.. Ruff, Christopher B., Brigitte M. Holt, Markku Niskanen, Vladimir Sladék,</span>
+<span class="sd">    Margit Berner, Evan Garofalo, Heather M. Garvin, et al. 2012.</span>
+<span class="sd">    “Stature and Body Mass Estimation from Skeletal Remains in the</span>
+<span class="sd">    European Holocene.”</span>
+<span class="sd">    American Journal of Physical Anthropology 148 (4): 601–17.</span>
+<span class="sd">    https://doi.org/10.1002/ajpa.22087.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># pylint: enable=line-too-long</span>
+
+
+<span class="k">def</span> <span class="nf">_length_of_links</span><span class="p">(</span><span class="o">*</span><span class="n">joints</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kpts</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                     <span class="n">includes</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the maximum length of the path described by the list of joints.</span>
+<span class="sd">    The joints to consider and in which order is given by ``joints``,</span>
+<span class="sd">    the actual keypoint x-y-coordinates of each joint must be stored in</span>
+<span class="sd">    ``kpts``.</span>
+
+<span class="sd">    In case any of the joint names contains a ``{}``, two lengths are</span>
+<span class="sd">    calculated: One where all occurrences of ``{}`` are replaced by ``left``</span>
+<span class="sd">    and one where they are replaced by ``right``;</span>
+<span class="sd">    the maximum of both lengths is returned.</span>
+
+<span class="sd">    Before length evaluation, it is checked whether the coordinates of all</span>
+<span class="sd">    required joints are available from ``kpts`` and are marked as known</span>
+<span class="sd">    in ``includes``. If not, ``None`` is returned and the ``kpts`` are ignored.</span>
+
+<span class="sd">    *Usage example*</span>
+
+<span class="sd">    To estimate the length of an arm from skeleton information,</span>
+<span class="sd">    call:</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        _length_of_links(&#39;{}_elbow&#39;, &#39;{}_wrist&#39;, &#39;{}_shoulder&#39;,</span>
+<span class="sd">                      kpts=kpts, includes=includes)</span>
+
+<span class="sd">    Under the assumption that both arms are the same length and arms appear</span>
+<span class="sd">    shorter due to projection to 2D, we want the maximum length of left and</span>
+<span class="sd">    right arm from skeleton information.</span>
+<span class="sd">    Assume the wrist of the right arm is not in the image anymore, so its</span>
+<span class="sd">    keypoint information is unknown. The the path length of the left arm is</span>
+<span class="sd">    calculated and returned.</span>
+
+<span class="sd">    :meta: public</span>
+
+<span class="sd">    :param joints: the identifier names of the joints to consider,</span>
+<span class="sd">        their order describing the path to measure;</span>
+<span class="sd">        names may contain a ``{}``, which is then replaced by ``left``</span>
+<span class="sd">        respectively ``right`` during evaluation (see above)</span>
+<span class="sd">    :param kpts: a mapping of joint identifier to its x-y-coordinate</span>
+<span class="sd">    :param includes: a mapping of joint identifier to a truth value stating</span>
+<span class="sd">        whether the joint coordinate is known;</span>
+<span class="sd">        may be e.g. a mapping of identifier to MS COCO visibility value;</span>
+<span class="sd">        joints not mentioned are assumed to be known</span>
+<span class="sd">    :return: the maximum length of a path described by the list of ``joints``</span>
+<span class="sd">        and their ``kpts`` if all joints and their keypoints are known,</span>
+<span class="sd">        else ``None``</span>
+
+<span class="sd">    :meta public:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Instantiate &quot;left&quot; and &quot;right&quot; versions if necessary:</span>
+    <span class="n">joints_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">joints</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">joint</span> <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]):</span>
+        <span class="n">joints_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">joint</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lr</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">joint</span> <span class="k">else</span> <span class="n">joint</span>
+                        <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]</span>
+                       <span class="k">for</span> <span class="n">lr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">)]</span>
+
+    <span class="c1"># Extend includes information to all mentioned joints</span>
+    <span class="c1"># (joint is included if its keypoint is known and it is not explicitly</span>
+    <span class="c1"># marked as excluded)</span>
+    <span class="n">includes</span> <span class="o">=</span> <span class="n">includes</span> <span class="k">if</span> <span class="n">includes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">includes</span> <span class="o">=</span> <span class="p">{</span><span class="n">jnt</span><span class="p">:</span> <span class="p">(</span><span class="n">jnt</span> <span class="ow">in</span> <span class="n">kpts</span> <span class="ow">and</span> <span class="p">(</span><span class="n">jnt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">includes</span> <span class="ow">or</span> <span class="n">includes</span><span class="p">[</span><span class="n">jnt</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">joints</span> <span class="ow">in</span> <span class="n">joints_list</span> <span class="k">for</span> <span class="n">jnt</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">}</span>
+
+    <span class="c1"># Can any path length be calculated?</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="nb">all</span><span class="p">([</span><span class="n">includes</span><span class="p">[</span><span class="n">jnt</span><span class="p">]</span> <span class="k">for</span> <span class="n">jnt</span> <span class="ow">in</span> <span class="n">jnts</span><span class="p">])</span> <span class="k">for</span> <span class="n">jnts</span> <span class="ow">in</span> <span class="n">joints_list</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">tot_lens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">joints</span> <span class="ow">in</span> <span class="n">joints_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">includes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">joints</span><span class="p">]):</span>
+            <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">joints</span><span class="p">,</span> <span class="n">joints</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+            <span class="n">tot_lens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">kpts</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">kpts</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                                 <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">tot_lens</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_length_of_joint_part</span><span class="p">(</span><span class="n">given_part</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">missing_part</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                          <span class="n">factors</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+                          <span class="n">lengths</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the length of a joint part from the length of another joint part.</span>
+<span class="sd">    The assumption is that</span>
+
+<span class="sd">    - formulas are given for the total body height deduced from parts</span>
+<span class="sd">      ``given_part`` :math:`p_1` and</span>
+<span class="sd">      ``missing_part`` :math:`p_2`</span>
+<span class="sd">      (e.g. lower and upper leg), and</span>
+<span class="sd">    - the length of ``given_part`` is known.</span>
+
+<span class="sd">    The formulas are assumed to be of the form</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        s_1 \cdot len(p_1) + c_1</span>
+<span class="sd">        = \text{body\_height} =</span>
+<span class="sd">        s_2 \cdot len(p_2) + c_2 \\</span>
+
+<span class="sd">    for slope constants :math:`s_i \in R` (``factors[i].slope``) and</span>
+<span class="sd">    intersect constants :math:`c_i \in R` (``factors[i].intersect``).</span>
+
+<span class="sd">    So the formula is:</span>
+
+<span class="sd">    .. math:: len(p_2) = \frac{s_1}{s_2} \cdot len(p_1) + (c_1 - c_2)</span>
+
+<span class="sd">    :meta: public</span>
+
+<span class="sd">    :param given_part: identifier name of the part for which the length is</span>
+<span class="sd">        given</span>
+<span class="sd">    :param missing_part: identifier name of the part for which the length is</span>
+<span class="sd">        missing</span>
+<span class="sd">    :param factors: a mapping holding the formula parameters in the form</span>
+<span class="sd">        ``{part_id: {&#39;slope&#39;: float, &#39;intersect&#39;: float}}``</span>
+<span class="sd">    :param lengths: a mapping holding the given lengths in the form</span>
+<span class="sd">        ``{part_id: length}``</span>
+<span class="sd">    :return: the length of the ``missing_part`` if the length of ``given_part``</span>
+<span class="sd">        is known, else ``None``</span>
+<span class="sd">    :raises: if the length of ``given_part`` is known but one of the</span>
+<span class="sd">        formula parameter information for ``given_part`` or ``missing_part``</span>
+<span class="sd">        is missing from ``factors``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">given_part</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">lengths</span><span class="p">[</span><span class="n">given_part</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">(((</span><span class="n">factors</span><span class="p">[</span><span class="n">given_part</span><span class="p">][</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">factors</span><span class="p">[</span><span class="n">missing_part</span><span class="p">][</span><span class="s1">&#39;slope&#39;</span><span class="p">])</span>
+             <span class="o">*</span> <span class="n">lengths</span><span class="p">[</span><span class="n">given_part</span><span class="p">])</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">factors</span><span class="p">[</span><span class="n">given_part</span><span class="p">][</span><span class="s1">&#39;intersect&#39;</span><span class="p">]</span>
+               <span class="o">-</span> <span class="n">factors</span><span class="p">[</span><span class="n">missing_part</span><span class="p">][</span><span class="s1">&#39;intersect&#39;</span><span class="p">]))</span>
+
+
+<span class="k">def</span> <span class="nf">_lengths_of_long_bones</span><span class="p">(</span><span class="n">kpts</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                           <span class="n">includes</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Collect length estimates for the long bones of a skeleton.</span>
+<span class="sd">    The length of each bone is estimated using :py:func:`_length_of_links`.</span>
+<span class="sd">    So the length of bones for which joint information is missing from</span>
+<span class="sd">    ``kpts`` or marked as unknown in ``includes`` is set to ``None``.</span>
+
+<span class="sd">    Used keypoint names (prefixed by ``left_`` and ``right_``):</span>
+<span class="sd">    ankle, knee, hip, shoulder, elbow, wrist</span>
+
+<span class="sd">    Calculated long bones:</span>
+<span class="sd">    upper_leg, lower_leg, upper_arm, lower_arm</span>
+
+<span class="sd">    :meta: public</span>
+
+<span class="sd">    :param kpts: a mapping of joint identifier to its x-y-coordinate</span>
+<span class="sd">    :param includes: a mapping of joint identifier to a bool stating whether</span>
+<span class="sd">        keypoint information about this joint is known or the joint should be</span>
+<span class="sd">        excluded; see :py:func:`_length_of_links`</span>
+<span class="sd">    :return: a :py:class:`pandas.Series` with the long bone names as</span>
+<span class="sd">        index names and their estimated length as values (resp. ``None`` if</span>
+<span class="sd">        the length could not be estimated)</span>
+
+<span class="sd">    :meta public:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lens</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># SINGLE LONG BONES and BACK</span>
+    <span class="k">for</span> <span class="n">bone</span><span class="p">,</span> <span class="n">joints</span> <span class="ow">in</span> <span class="p">((</span><span class="s1">&#39;upper_leg&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_knee&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_hip&#39;</span><span class="p">)),</span>
+                         <span class="p">(</span><span class="s1">&#39;lower_leg&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_knee&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ankle&#39;</span><span class="p">)),</span>
+                         <span class="p">(</span><span class="s1">&#39;upper_arm&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_elbow&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_shoulder&#39;</span><span class="p">)),</span>
+                         <span class="p">(</span><span class="s1">&#39;lower_arm&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_elbow&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_wrist&#39;</span><span class="p">)),</span>
+                         <span class="p">):</span>
+        <span class="n">lens</span><span class="p">[</span><span class="n">bone</span><span class="p">]</span> <span class="o">=</span> <span class="n">_length_of_links</span><span class="p">(</span><span class="o">*</span><span class="n">joints</span><span class="p">,</span> <span class="n">kpts</span><span class="o">=</span><span class="n">kpts</span><span class="p">,</span> <span class="n">includes</span><span class="o">=</span><span class="n">includes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lens</span>
+
+
+<div class="viewcode-block" id="lengths_to_body_size"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.person_size_estimation.lengths_to_body_size.html#hybrid_learning.datasets.custom.person_size_estimation.lengths_to_body_size">[docs]</a><span class="k">def</span> <span class="nf">lengths_to_body_size</span><span class="p">(</span><span class="n">lengths</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                         <span class="n">factors</span><span class="o">=</span><span class="n">FACTORS</span><span class="p">,</span>
+                         <span class="n">assumed_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.7</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate the body size in pixels given anatomical ``lengths`` in pixels,</span>
+<span class="sd">    the ``assumed_height`` and formula ``factors`` in meters.</span>
+
+<span class="sd">    Assume a person of height :math:`h = \text{assumed\_height}` in meters</span>
+<span class="sd">    is scaled by a factor :math:`f` to a height of :math:`h&#39;` pixels.</span>
+<span class="sd">    The following is given:</span>
+
+<span class="sd">    - From ``factors``:</span>
+<span class="sd">      The formula :math:`h(l) = l \cdot s + c` to calculate the total body size</span>
+<span class="sd">      in meters of a person from an anatomical size :math:`l` in meters</span>
+<span class="sd">      with given slope :math:`s` and intersect :math:`c`.</span>
+<span class="sd">    - From ``lengths``:</span>
+<span class="sd">      The value :math:`l&#39; = f \cdot l` of the anatomical size :math:`l` scaled</span>
+<span class="sd">      by :math:`f`.</span>
+<span class="sd">    - The value of :math:`h(l)` (in meters) is assumed to be ``assumed_height``.</span>
+
+<span class="sd">    The goal is to find the scaled size :math:`f\cdot h(l)`.</span>
+<span class="sd">    This is given by the formula</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        f \cdot h(l)</span>
+<span class="sd">        = f\cdot (l \cdot s + c)</span>
+<span class="sd">        = l&#39;\cdot s + f \cdot c \\</span>
+<span class="sd">        \Rightarrow f = \frac{l&#39;}{h(l) - c} \\</span>
+<span class="sd">        \Rightarrow f \cdot h(l) = l&#39; \cdot \frac{h(l)}{h(l) - c}</span>
+
+
+<span class="sd">    :param lengths: mapping of anatomic length identifiers to floats</span>
+<span class="sd">    :param factors: mapping of anatomic length identifier to parameters for</span>
+<span class="sd">        linear formula to calculate the body size in meters</span>
+<span class="sd">    :param assumed_height: the assumed height of the person in meters</span>
+<span class="sd">    :return: a mapping of anatomic length to body height estimated from its</span>
+<span class="sd">        value and formula;</span>
+<span class="sd">        if an anatomic length is not given (missing from lengths or ``None``),</span>
+<span class="sd">        its total size return value is ``None``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">lengths</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">lengths</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">}</span>
+
+    <span class="c1"># region Value check: avoid division by 0 and negative results</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lengths</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                <span class="n">factors</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;intersect&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">assumed_height</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;assumed_height </span><span class="si">{}</span><span class="s2"> smaller than the intersect </span><span class="si">{}</span><span class="s2"> for anatomic &quot;</span>
+                 <span class="s2">&quot;length of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">assumed_height</span><span class="p">,</span>
+                                        <span class="n">factors</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;intersect&#39;</span><span class="p">],</span> <span class="n">key</span><span class="p">))</span>
+    <span class="c1"># endregion</span>
+
+    <span class="n">scaling_factors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">key</span><span class="p">:</span> <span class="p">((</span><span class="n">assumed_height</span> <span class="o">/</span> <span class="p">(</span><span class="n">assumed_height</span> <span class="o">-</span> <span class="n">factors</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;intersect&#39;</span><span class="p">]))</span>
+              <span class="o">*</span> <span class="n">factors</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;slope&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">lengths</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">(</span><span class="n">lengths</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">scaling_factors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">lengths</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">factors</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="keypoints_to_lengths"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.person_size_estimation.keypoints_to_lengths.html#hybrid_learning.datasets.custom.person_size_estimation.keypoints_to_lengths">[docs]</a><span class="k">def</span> <span class="nf">keypoints_to_lengths</span><span class="p">(</span><span class="n">kpts</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                         <span class="n">includes</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">factors</span><span class="o">=</span><span class="n">FACTORS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Estimate different skeletal lengths from given 2D joint coordinates.</span>
+<span class="sd">    Due to 2D projection, the maximum estimate is returned for any body part.</span>
+<span class="sd">    Joints may be marked as excluded from calculation by mapping their bool</span>
+<span class="sd">    value to ``False`` or 0 in ``includes`` (e.g. use to exclude keypoints</span>
+<span class="sd">    which are not in an image).</span>
+
+<span class="sd">    To infer the length of body parts for which information is missing,</span>
+<span class="sd">    the given ``factors`` and further relations listed below are used.</span>
+<span class="sd">    It is assumed that ``factors`` represents parameters to linearly estimate</span>
+<span class="sd">    the same size (not necessarily the body size) from different body part</span>
+<span class="sd">    sizes. Further used approximate relations from arts best-practice:</span>
+
+<span class="sd">    - head width</span>
+<span class="sd">      (see https://www.makingcomics.com/2014/01/19/standard-proportions-human-body/):</span>
+
+<span class="sd">      - head width ~ 5 eye widths</span>
+<span class="sd">      - the space between 2 eyes ~ 1 eye width</span>
+
+<span class="sd">    - head depth (including nose):</span>
+
+<span class="sd">      - head depth ~ :math:`2\times` ear-to-eye</span>
+<span class="sd">        (see https://www.artistsnetwork.com/art-mediums/drawing-human-head/)</span>
+<span class="sd">      - 4/7 head depth ~ ear-to-nose</span>
+<span class="sd">        (see https://www.artyfactory.com/portraits/pencil-portraits/proportions-of-a-head.html)</span>
+
+<span class="sd">    - head height</span>
+<span class="sd">      (see https://www.artyfactory.com/portraits/pencil-portraits/proportions-of-a-head.html):</span>
+
+<span class="sd">      - head height ~ :math:`\frac{3}{2}` head width</span>
+<span class="sd">        (however, height width is often overestimated due to the quality of ear</span>
+<span class="sd">        keypoints, therefore a factor of 1.1 is taken instead)</span>
+<span class="sd">      - head height ~ :math:`\frac{8}{7}` head depth (including nose)</span>
+
+<span class="sd">    *Estimated lengths* (index of returned :py:class:`pandas.Series`):</span>
+<span class="sd">    long bones (see :py:func:`_lengths_of_long_bones`),</span>
+<span class="sd">    hip_to_shoulder, arm, leg, shoulder_width, wrist_to_wrist, body_height,</span>
+<span class="sd">    head_width, head_height</span>
+
+<span class="sd">    *Assumed given joint names:*</span>
+<span class="sd">    left_ear, right_ear, left_eye, right_eye, nose, and</span>
+<span class="sd">    those needed by :py:func:`_lengths_of_long_bones`</span>
+
+<span class="sd">    :param kpts: mapping of joint identifier to x-y-coordinate</span>
+<span class="sd">    :param includes: mapping of joint identifier to bool stating whether to</span>
+<span class="sd">        assume the joint information as known and include the joint in</span>
+<span class="sd">        calculations; see :py:func:`_length_of_links`</span>
+<span class="sd">    :param factors: parameter information of the same form as</span>
+<span class="sd">        :py:data:`FACTORS`;</span>
+<span class="sd">        it is not required that the linear formulas represented there calculate</span>
+<span class="sd">        the body height, but they must all calculate the same size estimate</span>
+<span class="sd">    :return: a :py:class:`pandas.Series` with the length identifier as</span>
+<span class="sd">        index names and the float lengths as values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: enable=line-too-long</span>
+
+    <span class="k">def</span> <span class="nf">len_of</span><span class="p">(</span><span class="o">*</span><span class="n">jnts</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Estimate the length of a path described by the given joints from the</span>
+<span class="sd">        known keypoint and visibility information.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_length_of_links</span><span class="p">(</span><span class="o">*</span><span class="n">jnts</span><span class="p">,</span> <span class="n">kpts</span><span class="o">=</span><span class="n">kpts</span><span class="p">,</span> <span class="n">includes</span><span class="o">=</span><span class="n">includes</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">len_by_for</span><span class="p">(</span><span class="n">given_part</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">missing_part</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Estimate the unknown length of a path from the length of another</span>
+<span class="sd">        path and their formulas for estimating the total body height.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_length_of_joint_part</span><span class="p">(</span><span class="n">given_part</span><span class="p">,</span> <span class="n">missing_part</span><span class="p">,</span>
+                                     <span class="n">factors</span><span class="o">=</span><span class="n">factors</span><span class="p">,</span> <span class="n">lengths</span><span class="o">=</span><span class="n">lens</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>
+
+    <span class="c1"># PARTS DIRECTLY DERIVED FROM SKELETON</span>
+    <span class="c1"># ------------------------------------</span>
+
+    <span class="c1"># LONG BONES</span>
+    <span class="n">lens</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="n">_lengths_of_long_bones</span><span class="p">(</span><span class="n">kpts</span><span class="o">=</span><span class="n">kpts</span><span class="p">,</span> <span class="n">includes</span><span class="o">=</span><span class="n">includes</span><span class="p">)</span>
+    <span class="c1"># BACK</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;hip_to_shoulder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_hip&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_shoulder&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="c1"># ARM &amp; LEG</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;arm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;lower_arm&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;upper_arm&#39;</span><span class="p">]</span>
+                       <span class="k">if</span> <span class="p">(</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;lower_arm&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;upper_arm&#39;</span><span class="p">])</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+                       <span class="n">len_by_for</span><span class="p">(</span><span class="s1">&#39;upper_arm&#39;</span><span class="p">,</span> <span class="s1">&#39;lower_arm&#39;</span><span class="p">),</span>
+                       <span class="n">len_by_for</span><span class="p">(</span><span class="s1">&#39;lower_arm&#39;</span><span class="p">,</span> <span class="s1">&#39;upper_arm&#39;</span><span class="p">)])</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;leg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;upper_leg&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;lower_leg&#39;</span><span class="p">]</span>
+                       <span class="k">if</span> <span class="p">(</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;upper_leg&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;lower_leg&#39;</span><span class="p">])</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+                       <span class="n">len_by_for</span><span class="p">(</span><span class="s1">&#39;upper_leg&#39;</span><span class="p">,</span> <span class="s1">&#39;lower_leg&#39;</span><span class="p">),</span>
+                       <span class="n">len_by_for</span><span class="p">(</span><span class="s1">&#39;lower_leg&#39;</span><span class="p">,</span> <span class="s1">&#39;upper_leg&#39;</span><span class="p">)])</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="c1"># SHOULDER WIDTH &amp; ARM WIDTH</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;shoulder_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;left_shoulder&#39;</span><span class="p">,</span> <span class="s1">&#39;right_shoulder&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;wrist_to_wrist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;arm&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;shoulder_width&#39;</span><span class="p">]</span> \
+        <span class="k">if</span> <span class="p">(</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;arm&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;shoulder_width&#39;</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="c1"># BODY HEIGHT</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;body_height&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span>
+        <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ankle&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_knee&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_hip&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_shoulder&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ear&#39;</span><span class="p">),</span>
+        <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ankle&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_knee&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_hip&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_shoulder&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_eye&#39;</span><span class="p">),</span>
+        <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ankle&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_knee&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_hip&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_shoulder&#39;</span><span class="p">,</span> <span class="s1">&#39;nose&#39;</span><span class="p">)</span>
+    <span class="p">])</span> <span class="ow">or</span> <span class="kc">None</span>
+
+    <span class="c1"># PARTS DERIVED FROM OTHER SKELETON PARTS</span>
+    <span class="c1"># ---------------------------------------</span>
+    <span class="c1"># arts: head portrait</span>
+    <span class="c1"># - head width ~ 5 eyes; space between 2 eyes ~ 1 eye</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;head_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;left_ear&#39;</span><span class="p">,</span> <span class="s1">&#39;right_ear&#39;</span><span class="p">),</span>
+                              <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;left_ear&#39;</span><span class="p">,</span> <span class="s1">&#39;right_eye&#39;</span><span class="p">),</span>
+                              <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;right_ear&#39;</span><span class="p">,</span> <span class="s1">&#39;left_ear&#39;</span><span class="p">),</span>
+                              <span class="mf">2.5</span> <span class="o">*</span> <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;left_eye&#39;</span><span class="p">,</span> <span class="s1">&#39;right_eye&#39;</span><span class="p">)])</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="c1"># arts: head profile (head depth including nose)</span>
+    <span class="c1"># - head depth ~ 2*ear-to-eye</span>
+    <span class="c1"># - 4/7 head depth ~ ear-to-nose</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;head_depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="mi">2</span> <span class="o">*</span> <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ear&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_eye&#39;</span><span class="p">),</span>
+                              <span class="mf">1.75</span> <span class="o">*</span> <span class="n">len_of</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_ear&#39;</span><span class="p">,</span> <span class="s1">&#39;nose&#39;</span><span class="p">)])</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="c1"># arts:</span>
+    <span class="c1"># - head height ~ 3/2 head width</span>
+    <span class="c1">#   (however, width is often overestimated due to the quality of ear kpts)</span>
+    <span class="c1"># - head height ~ 8/7 head depth (including nose)</span>
+    <span class="n">lens</span><span class="p">[</span><span class="s1">&#39;head_height&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="mf">1.1</span> <span class="o">*</span> <span class="p">(</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;head_width&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
+                               <span class="mi">8</span> <span class="o">/</span> <span class="mi">7</span> <span class="o">*</span> <span class="p">(</span><span class="n">lens</span><span class="p">[</span><span class="s1">&#39;head_depth&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)])</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">lens</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

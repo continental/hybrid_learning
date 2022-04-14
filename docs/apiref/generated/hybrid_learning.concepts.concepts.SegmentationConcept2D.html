@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SegmentationConcept2D &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="embeddings" href="hybrid_learning.concepts.embeddings.html" />
+    <link rel="next" title="models" href="hybrid_learning.concepts.models.html" />
     <link rel="prev" title="ConceptTypes" href="hybrid_learning.concepts.concepts.ConceptTypes.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -98,112 +51,55 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">SegmentationConcept2D</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.embeddings.html">embeddings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.enforcement.html">enforcement</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.kpis.html">kpis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.visualization.html">visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.concepts.html">concepts</a> &raquo;</li>
-        
       <li>SegmentationConcept2D</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.concepts.concepts.SegmentationConcept2D.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="segmentationconcept2d">
-<h1>SegmentationConcept2D<a class="headerlink" href="#segmentationconcept2d" title="Permalink to this headline">¶</a></h1>
+<h1>SegmentationConcept2D<a class="headerlink" href="#segmentationconcept2d" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D">
-<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.concepts.concepts.</code><code class="sig-name descname">SegmentationConcept2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">rel_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/concepts.html#SegmentationConcept2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.concepts.concepts.Concept</span></code></a></p>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.concepts.</span></span><span class="sig-name descname"><span class="pre">SegmentationConcept2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/concepts.html#SegmentationConcept2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span></code></a></p>
 <p>Concept with segmentation data.</p>
-<p>Init.</p>
-<p>For arguments <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> see
-<a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>rel_size</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em>) – size of the concept relative to the image size;
-either one value if quadratic, or a tuple of
-<code class="docutils literal notranslate"><span class="pre">(relative</span> <span class="pre">width,</span> <span class="pre">relative</span> <span class="pre">height)</span></code>.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
-<li><p><strong>data</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>hybrid_learning.datasets.base.DataTriple</em></a>) – </p></li>
-</ul>
-</dd>
-</dl>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Data Attributes:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -217,7 +113,7 @@ either one value if quadratic, or a tuple of
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span></code></a></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>Concept</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -246,7 +142,7 @@ either one value if quadratic, or a tuple of
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Special Methods:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -260,7 +156,7 @@ either one value if quadratic, or a tuple of
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span></code></a></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>Concept</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -279,61 +175,82 @@ either one value if quadratic, or a tuple of
 </table>
 </details></div>
 <hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>DataTriple</em></a>) – </p></li>
+<li><p><strong>rel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D.__eq__">
-<code class="sig-name descname">__eq__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/concepts.html#SegmentationConcept2D.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.__eq__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/concepts.html#SegmentationConcept2D.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.__eq__" title="Permalink to this definition"></a></dt>
 <dd><p>In addition to
 <a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept.__eq__" title="hybrid_learning.concepts.concepts.Concept.__eq__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__eq__()</span></code></a>
 check <code class="docutils literal notranslate"><span class="pre">rel_size</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><em>hybrid_learning.concepts.concepts.SegmentationConcept2D</em></a>) – </p>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference internal" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D" title="hybrid_learning.concepts.concepts.SegmentationConcept2D"><em>SegmentationConcept2D</em></a>) – </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">rel_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/concepts.html#SegmentationConcept2D.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/concepts.html#SegmentationConcept2D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Init.</p>
 <p>For arguments <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code> see
 <a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><code class="xref py py-class docutils literal notranslate"><span class="pre">Concept</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rel_size</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em>) – size of the concept relative to the image size;
+<li><p><strong>rel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em><em>]</em>) – size of the concept relative to the image size;
 either one value if quadratic, or a tuple of
 <code class="docutils literal notranslate"><span class="pre">(relative</span> <span class="pre">width,</span> <span class="pre">relative</span> <span class="pre">height)</span></code>.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
-<li><p><strong>data</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>hybrid_learning.datasets.base.DataTriple</em></a>) – </p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>DataTriple</em></a>) – </p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D.__hash__">
-<code class="sig-name descname">__hash__</code><em class="property"> = None</em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.__hash__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.__hash__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size">
-<code class="sig-name descname">rel_size</code><em class="property">: Optional<span class="p">[</span>Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a><span class="p">]</span><span class="p">]</span></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><span class="pre">DataTriple</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.data" title="Permalink to this definition"></a></dt>
+<dd><p>The data defining the concept, split into train/val/test data.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.name" title="Permalink to this definition"></a></dt>
+<dd><p>The name, or ID, of the concept. Should be descriptive.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size">
+<span class="sig-name descname"><span class="pre">rel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.rel_size" title="Permalink to this definition"></a></dt>
 <dd><p>Size of the concept in <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code> relative to the
 image size. If set, used by detection and segmentation concept models
 to determine kernel size.
 May be None if not given (e.g. if variance too high).</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D.settings">
-<em class="property">property </em><code class="sig-name descname">settings</code><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.settings" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.settings" title="Permalink to this definition"></a></dt>
 <dd><p>Settings dict to reproduce instance. Use as kwargs for init.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="hybrid_learning.concepts.concepts.SegmentationConcept2D.type">
-<em class="property">property </em><code class="sig-name descname">type</code><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.type" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.concepts.SegmentationConcept2D.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.concepts.concepts.ConceptTypes.html#hybrid_learning.concepts.concepts.ConceptTypes" title="hybrid_learning.concepts.concepts.ConceptTypes"><span class="pre">ConceptTypes</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.concepts.SegmentationConcept2D.type" title="Permalink to this definition"></a></dt>
 <dd><p>Type of the concept, which is segmentation for this sub-class.</p>
 </dd></dl>
 
@@ -343,58 +260,33 @@ May be None if not given (e.g. if variance too high).</p>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.concepts.embeddings.html" class="btn btn-neutral float-right" title="embeddings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.concepts.concepts.ConceptTypes.html" class="btn btn-neutral float-left" title="ConceptTypes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.concepts.ConceptTypes.html" class="btn btn-neutral float-left" title="ConceptTypes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.models.html" class="btn btn-neutral float-right" title="models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

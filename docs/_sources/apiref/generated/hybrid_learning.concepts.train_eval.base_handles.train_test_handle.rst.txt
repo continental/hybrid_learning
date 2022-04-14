@@ -1,0 +1,42 @@
+train\_test\_handle
+===================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.base_handles.train_test_handle
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.base_handles.train_test_handle
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~TrainEvalHandle
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

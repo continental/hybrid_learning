@@ -1,0 +1,9 @@
+TorchOrNumpyOperation
+=====================
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.merge_operation
+
+.. autoclass:: TorchOrNumpyOperation
+    :members:
+
+    .. autoclasstoc::

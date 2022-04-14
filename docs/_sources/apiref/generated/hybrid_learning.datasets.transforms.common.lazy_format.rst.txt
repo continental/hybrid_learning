@@ -1,0 +1,6 @@
+lazy\_format
+============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.common
+
+.. autofunction:: lazy_format

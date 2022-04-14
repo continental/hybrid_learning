@@ -1,0 +1,9 @@
+ConvOpWrapper
+=============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autoclass:: ConvOpWrapper
+    :members:
+
+    .. autoclasstoc::

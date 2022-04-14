@@ -1,0 +1,9 @@
+WHERE
+=====
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.quantifiers
+
+.. autoclass:: WHERE
+    :members:
+
+    .. autoclasstoc::

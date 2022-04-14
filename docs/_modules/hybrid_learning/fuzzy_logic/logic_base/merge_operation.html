@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.logic_base.merge_operation &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.logic_base.merge_operation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.logic_base.merge_operation</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Base classes and helper functions for defining logical operations.</span>
+<span class="sd">Main base classes are:</span>
+
+<span class="sd">- :py:class:`Merge`: Base class for operating on arrays/tensors and booleans,</span>
+<span class="sd">  and for building computational trees of such operations</span>
+<span class="sd">- :py:class:`TorchOrNumpyOperation`: Base :py:class:`Merge` class for operating</span>
+<span class="sd">  on numpy or pytorch tensors</span>
+<span class="sd">- :py:class:`MergeBuilder`: A convenience builder class that allows to</span>
+<span class="sd">  define custom constructors for a merge class;</span>
+<span class="sd">  of interest for easily setting defaults</span>
+
+<span class="sd">The logical merging operations derived from :py:class:`Merge` allow for</span>
+<span class="sd">concatenation of operations. Using them, any operation involving</span>
+<span class="sd">intersection (``AND``),</span>
+<span class="sd">union (``OR``), and</span>
+<span class="sd">inversion (``NOT``)</span>
+<span class="sd">of masks can be modelled. Scalar values in this case are</span>
+<span class="sd">treated as all-same-valued masks when mixed with mask tensors.</span>
+<span class="sd">For further information have a look at the :py:class:`Merge` documentation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> \
+    <span class="n">Collection</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">...datasets.transforms.dict_transforms</span> <span class="kn">import</span> <span class="n">DictTransform</span>
+<span class="kn">from</span> <span class="nn">...datasets.transforms.image_transforms</span> <span class="kn">import</span> <span class="n">ToTensor</span>
+
+
+<div class="viewcode-block" id="stack_tensors"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.stack_tensors.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.stack_tensors">[docs]</a><span class="k">def</span> <span class="nf">stack_tensors</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Broadcast and stack the inputs in dim 0 to enable pixel-wise operations.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">broadcast_tensors</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+                       <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge">[docs]</a><span class="k">class</span> <span class="nc">Merge</span><span class="p">(</span><span class="n">DictTransform</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for operations and operation trees on dictionary inputs.</span>
+<span class="sd">    Merge the masks or scalars values of the dict input according to the</span>
+<span class="sd">    operation (tree) definition and store them under the specified output key.</span>
+<span class="sd">    The merge operation may recursively have child merge operations as</span>
+<span class="sd">    :py:attr:`in_keys`, which are evaluated on the given dictionary before</span>
+<span class="sd">    the parent is.</span>
+
+<span class="sd">    **Operation**</span>
+
+<span class="sd">    The actual operation is hidden in the :py:meth:`apply_to` method:</span>
+<span class="sd">    It is given a dictionary of annotations of the form ``{ID: value}`` and</span>
+<span class="sd">    will return the dict with the merged mask added as ``{out_key: value}``.</span>
+<span class="sd">    The intermediate outputs of child operations are by default only used</span>
+<span class="sd">    for caching (see :py:attr:`cache_duplicates`) and then discarded.</span>
+<span class="sd">    To include them into the final output, use the ``keep_keys`` argument</span>
+<span class="sd">    to the operation call (see :py:meth:`apply_to`).</span>
+<span class="sd">    The benefit of caching duplicates is that results may be reused</span>
+<span class="sd">    amongst different operations.</span>
+
+<span class="sd">    **Initialization**</span>
+
+<span class="sd">    During init, all non-keyword arguments serve as :py:attr:`in_keys`.</span>
+<span class="sd">    These are used when the merge operation is called on a dict:</span>
+<span class="sd">    The dict must provide items with these :py:attr:`in_keys`, and the values of</span>
+<span class="sd">    these items are fed to the actual operation.</span>
+<span class="sd">    Settings must be given as keyword arguments.</span>
+<span class="sd">    To set default keyword arguments for the init call, use a :py:class:`MergeBuilder`.</span>
+<span class="sd">    See :py:meth:`with_` for creating a :py:class:`MergeBuilder` from a :py:class:`Merge`</span>
+<span class="sd">    class.</span>
+
+<span class="sd">    **Example: Boolean Logic**</span>
+
+<span class="sd">    To get all heads, noses, and mouths (binary masks)</span>
+<span class="sd">    of real persons (binary masks)</span>
+<span class="sd">    in bathrooms (boolean labels),</span>
+<span class="sd">    call:</span>
+
+<span class="sd">    &gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND, OR, NOT, BooleanLogic</span>
+<span class="sd">    &gt;&gt;&gt; op = AND(&quot;person&quot;, OR(&quot;head&quot;, &quot;nose&quot;, &quot;mouth&quot;), NOT(&quot;bathroom&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; op == BooleanLogic().parser()(&quot;person&amp;&amp;head||nose||mouth&amp;&amp;~bathroom&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; # Example with 1 pixel of a person mouth not in a bathroom:</span>
+<span class="sd">    &gt;&gt;&gt; result = op({&quot;person&quot;: 1, &quot;head&quot;: 0, &quot;nose&quot;: 0, &quot;mouth&quot;: 1, &quot;bathroom&quot;: False})</span>
+<span class="sd">    &gt;&gt;&gt; result[op.out_key] == 1</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; result</span>
+<span class="sd">    {&#39;person&#39;: 1, &#39;head&#39;: 0, &#39;nose&#39;: 0, &#39;mouth&#39;: 1, &#39;bathroom&#39;: False,</span>
+<span class="sd">    &#39;(head||mouth||nose)&amp;&amp;(~bathroom)&amp;&amp;person&#39;: 1}</span>
+
+<span class="sd">    To also inspect the intermediate output, use the ``keep_keys`` option:</span>
+
+<span class="sd">    &gt;&gt;&gt; op({&quot;person&quot;: 1, &quot;head&quot;: 0, &quot;nose&quot;: 0, &quot;mouth&quot;: 1, &quot;bathroom&quot;: False},</span>
+<span class="sd">    ...    keep_keys=op.all_out_keys)</span>
+<span class="sd">    {&#39;person&#39;: 1, &#39;head&#39;: 0, &#39;nose&#39;: 0, &#39;mouth&#39;: 1, &#39;bathroom&#39;: False,</span>
+<span class="sd">    &#39;head||mouth||nose&#39;: True,</span>
+<span class="sd">    &#39;~bathroom&#39;: True,</span>
+<span class="sd">    &#39;(head||mouth||nose)&amp;&amp;(~bathroom)&amp;&amp;person&#39;: 1}</span>
+
+<span class="sd">    Note that the input dict must feature all ``in_keys`` of operations in the formula.</span>
+
+<span class="sd">    **Subclassing**</span>
+
+<span class="sd">    To implement your own merge operation</span>
+
+<span class="sd">    - implement the :py:meth:`operation`</span>
+<span class="sd">    - specify your own :py:attr:`SYMB` (this must be unique within the logic you are using)</span>
+<span class="sd">    - extend the :py:attr:`settings` and :py:attr:`setting_defaults` properties by new items if necessary</span>
+
+<span class="sd">    **Format and String Parsing**</span>
+
+<span class="sd">    The (recursive) merge operation best is specified in conjunctive normal</span>
+<span class="sd">    form for uniqueness (thus comparability) and parsing compatibility.</span>
+<span class="sd">    This is the form</span>
+
+<span class="sd">    .. code::</span>
+
+<span class="sd">        AND(..., [NOT(...), ...], [OR(..., [NOT(..), ...])])</span>
+
+<span class="sd">    (see https://en.wikipedia.org/wiki/Conjunctive_normal_form).</span>
+<span class="sd">    Exemplary available operations are the Boolean ones</span>
+<span class="sd">    :py:class:`~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND` (intersection),</span>
+<span class="sd">    :py:class:`~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR` (union), and</span>
+<span class="sd">    :py:class:`~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.NOT` (inversion)</span>
+<span class="sd">    that all operate pixel-wise.</span>
+<span class="sd">    Boolean classification labels are treated as all-one-masks.</span>
+
+<span class="sd">    One can use a :py:class:`~hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser`</span>
+<span class="sd">    implementation to parse a string representation of an operation tree.</span>
+<span class="sd">    Check the corresponding implementation for the operator precedence and examples.</span>
+<span class="sd">    For parsing, used connectors of the logic must be encoded by their :py:attr:`SYMB`</span>
+<span class="sd">    attribute, e.g. for the examples above:</span>
+
+<span class="sd">    - ``AND``: a&amp;&amp;b</span>
+<span class="sd">    - ``OR``: a||b</span>
+<span class="sd">    - ``NOT`` (unary operation): ~a</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;The string symbol of this class (override for sub-classes).&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="sd">&quot;&quot;&quot;The arity of the operation. -1 means unlimited number of arguments possible.&quot;&quot;&quot;</span>
+    <span class="n">IS_COMMUTATIVE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Whether instances are equivalent to ones with permuted :py:attr:`in_keys`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Merge.variadic_"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">variadic_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an instance with variadic __call__.</span>
+<span class="sd">        It&#39;s __call__ will accept maps or iterables of arbitrary length</span>
+<span class="sd">        (for :py:attr:`ARITY` = -1) respectively of length matching :py:attr:`ARITY`.</span>
+<span class="sd">        All values/elements are passed through to the :py:meth:`operation`,</span>
+<span class="sd">        and the plain output of :py:meth:`operation` is returned</span>
+<span class="sd">        (see also :py:meth:`variadic_apply_to`).</span>
+<span class="sd">        Use this e.g. to wrap the :py:meth:`operation` into an object in a</span>
+<span class="sd">        multiprocessing-safe manner.</span>
+<span class="sd">        Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND</span>
+<span class="sd">        &gt;&gt;&gt; primitive_and = AND.variadic_()</span>
+<span class="sd">        &gt;&gt;&gt; primitive_and({&quot;a&quot;: 1, &quot;b&quot;: True})</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; primitive_and([1, True, 1.])</span>
+<span class="sd">        1</span>
+
+<span class="sd">        No :py:attr:`in_keys` may be given, and :py:attr:`out_key` is obsolete.</span>
+<span class="sd">        The returned instance may not be used as child element of a formula.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">_variadic</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_variadic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether the instance is variadic.</span>
+<span class="sd">        See :py:meth:`variadic_`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variadic</span>
+
+<div class="viewcode-block" id="Merge.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">in_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">],</span> <span class="n">out_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">skip_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">replace_none</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cache_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">keep_keys</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">_variadic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        Hand over input keys either as str or as a Merge operation of str.</span>
+
+<span class="sd">        :param in_keys: sequence of either</span>
+<span class="sd">            :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` operation</span>
+<span class="sd">            instances or strings with placeholders for the input keys</span>
+<span class="sd">        :param out_key: key for the output of this operation; used to</span>
+<span class="sd">            init :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key`</span>
+<span class="sd">        :param overwrite: on call, whether to overwrite the value at</span>
+<span class="sd">            :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.out_key`</span>
+<span class="sd">            in the given dict if the key already exists;</span>
+<span class="sd">            raise if key exists and ``overwrite`` is true; saved in</span>
+<span class="sd">            :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.overwrite`.</span>
+<span class="sd">        :param replace_none: if not ``None``, the value to replace any</span>
+<span class="sd">            ``None`` values with; see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.replace_none`</span>
+<span class="sd">        :param symb: override the</span>
+<span class="sd">            :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.SYMB`</span>
+<span class="sd">            for this instance</span>
+<span class="sd">        :param keep_keys: intermediate output keys to add to call output;</span>
+<span class="sd">            see :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.keep_keys`</span>
+<span class="sd">        :param cache_duplicates: whether outputs of children with identical</span>
+<span class="sd">            keys should be cached and reused; see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.cache_duplicates`</span>
+<span class="sd">        :param _variadic: the preferred way to specify this argument is</span>
+<span class="sd">            :py:meth:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_`;</span>
+<span class="sd">            see there for details</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># region Value checks</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_variadic</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Got empty list of in_keys for non-variadic operator!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_variadic</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Got too few in_keys (</span><span class="si">{}</span><span class="s2">) for operation of class </span><span class="si">{}</span><span class="s2"> with arity </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">,</span> <span class="n">in_keys</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_variadic</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Got too many in_keys (</span><span class="si">{}</span><span class="s2">) for operation of class </span><span class="si">{}</span><span class="s2"> with arity </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">,</span> <span class="n">in_keys</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">_variadic</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_keys</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Variadic instances do not accept in_keys. Either set variadic=True or give in_keys.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">in_keys</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">is_variadic</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Children operations of a formula may not be variadic, &quot;</span>
+                             <span class="s2">&quot;but found variadic child operation </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">child</span><span class="p">)))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="k">if</span> <span class="n">symb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">=</span> <span class="n">symb</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;SYMB attribute is None for object of class </span><span class="si">{}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="o">+</span>
+                             <span class="s2">&quot; Either set class attribute or specify during init via symb parameter.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variadic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">_variadic</span>
+        <span class="sd">&quot;&quot;&quot;See :py:meth:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.is_variadic`.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">in_keys</span>
+        <span class="sd">&quot;&quot;&quot;The keys of segmentation masks to unite in given order.</span>
+<span class="sd">        Keys are either constant strings or a merge operation.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">out_key</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The key to use to store the merge output in the annotations dict.</span>
+<span class="sd">        Take care to not accidentally overwrite existing keys</span>
+<span class="sd">        (cf. :py:attr:`overwrite`).&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">keep_keys</span>
+        <span class="sd">&quot;&quot;&quot;The keys of intermediate outputs in :py:attr:`all_out_keys` which should</span>
+<span class="sd">        be added to the return of a call.</span>
+<span class="sd">        Default (``None`` or empty collection): duplicate children outputs are cached</span>
+<span class="sd">        but not returned to save memory.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;noop&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">overwrite</span>
+        <span class="sd">&quot;&quot;&quot;Whether to overwrite a value in the input dictionary when</span>
+<span class="sd">        applying this operation.</span>
+<span class="sd">        The operation is defined in :py:meth:`operation`.</span>
+<span class="sd">        The key that may be overwritten is stored in :py:attr:`out_key`.</span>
+<span class="sd">        An exception is raised if this is ``False`` and the key exists.</span>
+<span class="sd">        If set to ``&#39;noop&#39;`` and :py:attr:`out_key` is in the given</span>
+<span class="sd">        annotations dict, it is returned unchanged.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">skip_none</span>
+        <span class="sd">&quot;&quot;&quot;If set to ``True``, when a None input value is encountered simply</span>
+<span class="sd">        ``None`` is returned. If ``False``, an error is raised.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">replace_none</span>
+        <span class="sd">&quot;&quot;&quot;If not ``None``, any received ``None`` value is replaced by the</span>
+<span class="sd">        given value. This is done only for computation, the ``None`` value in the</span>
+<span class="sd">        received dict is left unchanged. Key-value pairs with ``None`` value may</span>
+<span class="sd">        come from the input or from child operations.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">cache_duplicates</span>
+        <span class="sd">&quot;&quot;&quot;Whether to cache duplicate child operation outputs with duplicate out_key.</span>
+<span class="sd">        If set to false, all children and children children are evaluated and the</span>
+<span class="sd">        values of duplicate ``out_keys`` are evaluated several times and overwritten,</span>
+<span class="sd">        possibly leading to more computational time while using less memory.</span>
+<span class="sd">        Note that the order of children execution is determined by their order in</span>
+<span class="sd">        :py:attr:`in_keys`, depth first for nested operations.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Settings to reproduce the instance.</span>
+<span class="sd">        (Mind that in_keys must be expanded! For direct reproduction use copy.)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">in_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">,</span>
+                    <span class="n">out_key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">,</span>
+                    <span class="n">overwrite</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">,</span>
+                    <span class="n">skip_none</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">skip_none</span><span class="p">,</span>
+                    <span class="n">replace_none</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span><span class="p">,</span>
+                    <span class="n">cache_duplicates</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_duplicates</span><span class="p">,</span>
+                    <span class="n">keep_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_keys</span><span class="p">,</span>
+                    <span class="n">_variadic</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">is_variadic</span><span class="p">,</span>
+                    <span class="n">symb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">setting_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Defaults used for :py:attr:`settings`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">out_key</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">replace_none</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">cache_duplicates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">keep_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span>
+                    <span class="n">_variadic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pretty_op_symb</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Name of the operation symbol suitable for filenames etc.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+<div class="viewcode-block" id="Merge.to_infix_notation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation">[docs]</a>    <span class="k">def</span> <span class="nf">to_infix_notation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort_key</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">use_whitespace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="n">use_pretty_op_symb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                          <span class="n">precedence</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return an infix str encoding equal for differently sorted operations.</span>
+<span class="sd">        To define a custom sorting for children of commutative operations, hand over</span>
+<span class="sd">        the ``sort_key`` argument for the builtin ``sorted``.</span>
+<span class="sd">        If no ``precedence`` is given, brackets are set around all child operations.</span>
+
+<span class="sd">        :param sort_key: sort child operations by the given ``sort_key``</span>
+<span class="sd">            if the parent operation :py:attr:`IS_COMMUTATIVE`; defaults to alphabetical sorting</span>
+<span class="sd">        :param use_whitespace: separate infix operation symbols from their arguments by whitespace</span>
+<span class="sd">        :param use_pretty_op_symb: use the :py:attr:`pretty_op_symb` instead of :py:attr:`SYMB` for</span>
+<span class="sd">            representation of this operation instance</span>
+<span class="sd">        :param precedence: apply brackets according to the given ``precedence``;</span>
+<span class="sd">            if not given, assume this operation is in normal form (no brackets)</span>
+<span class="sd">            must be a list of :py:class:`Merge` operation classes or instances in</span>
+<span class="sd">            order of increasing precedence; their ``SYMB`` attribute is used to access</span>
+<span class="sd">            the operation symbol</span>
+<span class="sd">        :param brackets: tuple of the left and right bracket symbols to use if needed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get pairs of (symbol, string_repr):</span>
+        <span class="n">symbs_and_reprs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">to_infix_notation</span><span class="p">(</span><span class="n">sort_key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">,</span> <span class="n">precedence</span><span class="o">=</span><span class="n">precedence</span><span class="p">,</span>
+                                             <span class="n">use_whitespace</span><span class="o">=</span><span class="n">use_whitespace</span><span class="p">,</span> <span class="n">use_pretty_op_symb</span><span class="o">=</span><span class="n">use_pretty_op_symb</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="n">normalized_in_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_brackets</span><span class="p">(</span><span class="n">symbs_and_reprs</span><span class="p">,</span>
+                                                <span class="n">reference_symb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">precedence</span><span class="o">=</span><span class="n">precedence</span><span class="p">,</span>
+                                                <span class="n">brackets</span><span class="o">=</span><span class="n">brackets</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">IS_COMMUTATIVE</span><span class="p">:</span>
+            <span class="n">normalized_in_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">normalized_in_keys</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">)</span>
+        <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pretty_op_symb</span> <span class="k">if</span> <span class="n">use_pretty_op_symb</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized_in_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">symb</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized_in_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">symb</span><span class="si">}{</span><span class="n">normalized_in_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">symb</span><span class="si">}</span><span class="s1"> &#39;</span> <span class="k">if</span> <span class="n">use_whitespace</span> <span class="k">else</span> <span class="n">symb</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">normalized_in_keys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.to_str"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">infix_notation_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Alias for :py:meth:`to_infix_notation`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_infix_notation</span><span class="p">(</span><span class="o">**</span><span class="n">infix_notation_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.to_pretty_str"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_pretty_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_pretty_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">infix_notation_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Same as :py:meth:`to_str` but using pretty operation names suitable for</span>
+<span class="sd">        filenames etc.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">infix_notation_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">use_pretty_op_symb</span><span class="o">=</span><span class="kc">True</span><span class="p">)})</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_brackets</span><span class="p">(</span><span class="n">symbs_and_str</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+                      <span class="n">reference_symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">precedence</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Join the strings from the symbol-string-tuples with brackets where needed wrt ``precedence``.</span>
+<span class="sd">        If no ``precedence`` is given or none is available for ``reference_symb``,</span>
+<span class="sd">        brackets are set around all strings with non-``None`` symbols (i.e. all but variables).</span>
+
+<span class="sd">        :param symbs_and_str: list tuples of the form ``(operation_symbol, operation_string_representation)``;</span>
+<span class="sd">            the string representations are to be joined, enclosing those in brackets that</span>
+<span class="sd">            have a lower precedence than ``reference_precedence``</span>
+<span class="sd">        :param reference_symb: set all operation strings in brackets that have a lower</span>
+<span class="sd">            precedence than that associated with the operation with ``reference_symb``;</span>
+<span class="sd">            should be set to the common parent operation symbol</span>
+<span class="sd">        :param precedence: list of Merge operation classes in order of increasing precedence;</span>
+<span class="sd">            their ``SYMB`` class or instance attribute is used to access the operation symbol</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">symb_to_prec</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">precedence</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+            <span class="nb">dict</span><span class="p">((</span><span class="n">precedence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">precedence</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">reference_symb</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">symb_to_prec</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">s</span> <span class="k">if</span> <span class="n">symb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">brackets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">s</span><span class="si">}{</span><span class="n">brackets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">symb</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">symbs_and_str</span><span class="p">]</span>
+        <span class="n">reference_prec</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">symb_to_prec</span><span class="p">[</span><span class="n">reference_symb</span><span class="p">]</span>
+        <span class="c1"># Apply brackets to string_repr for higher precedence symbols:</span>
+        <span class="n">bracketed_str</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">brackets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}{</span><span class="n">p_str</span><span class="si">}{</span><span class="n">brackets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                         <span class="k">if</span> <span class="p">(</span><span class="n">symb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">symb_to_prec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">symb</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">reference_prec</span><span class="p">)</span> <span class="k">else</span> <span class="n">p_str</span>
+                         <span class="k">for</span> <span class="n">symb</span><span class="p">,</span> <span class="n">p_str</span> <span class="ow">in</span> <span class="n">symbs_and_str</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">bracketed_str</span>
+
+<div class="viewcode-block" id="Merge.__str__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Merge.to_repr"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_repr">[docs]</a>    <span class="k">def</span> <span class="nf">to_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">defaults</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">sort_key</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">use_module_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="n">indent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">indent_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indent_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;    &#39;</span><span class="p">,</span>
+                <span class="n">indent_first_child</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_prepend_indent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return str representation which can be used to reproduce and compare the instance.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Tautologies in the form of duplicate children are not filtered for now, e.g.</span>
+<span class="sd">            &gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND</span>
+<span class="sd">            &gt;&gt;&gt; AND(&quot;a&quot;) == AND(&quot;a&quot;, &quot;a&quot;)</span>
+<span class="sd">            False</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND, OR</span>
+<span class="sd">        &gt;&gt;&gt; obj = OR(AND(&quot;b&quot;, &quot;c&quot;), &quot;a&quot;, symb=&quot;CustomAND&quot;, overwrite=False,)</span>
+<span class="sd">        &gt;&gt;&gt; print(obj.to_repr())</span>
+<span class="sd">        OR(&#39;a&#39;, AND(&#39;b&#39;, &#39;c&#39;), overwrite=False, symb=&#39;CustomAND&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(obj.to_repr(indent=True))</span>
+<span class="sd">        OR(&#39;a&#39;,</span>
+<span class="sd">           AND(&#39;b&#39;,</span>
+<span class="sd">               &#39;c&#39;),</span>
+<span class="sd">           overwrite=False, symb=&#39;CustomAND&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(obj.to_repr(indent_first_child=True))</span>
+<span class="sd">        OR(</span>
+<span class="sd">           &#39;a&#39;,</span>
+<span class="sd">           AND(</span>
+<span class="sd">               &#39;b&#39;,</span>
+<span class="sd">               &#39;c&#39;),</span>
+<span class="sd">           overwrite=False, symb=&#39;CustomAND&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(obj.to_repr(indent_level=1, indent_str=&#39;--&#39;))</span>
+<span class="sd">        --OR(&#39;a&#39;,</span>
+<span class="sd">        ----AND(&#39;b&#39;,</span>
+<span class="sd">        ------&#39;c&#39;),</span>
+<span class="sd">        ----overwrite=False, symb=&#39;CustomAND&#39;)</span>
+
+<span class="sd">        :param settings: the settings dict to include as key-value pairs;</span>
+<span class="sd">            defaults to :py:attr:`settings` (set e.g. to overwrite this method)</span>
+<span class="sd">        :param defaults: updates to :py:attr:`setting_defaults`; if a default for a key is given and</span>
+<span class="sd">            the value equals the default, it is excluded from printing</span>
+<span class="sd">        :param sort_key: sort child operations by the given ``sort_key``</span>
+<span class="sd">            if the parent operation :py:attr:`IS_COMMUTATIVE`; defaults to alphabetical sorting</span>
+<span class="sd">        :param use_module_names: whether to use both module plus class names or just the class names</span>
+<span class="sd">        :param indent: if not ``None``, print a tree-like view by putting each ``in_keys``</span>
+<span class="sd">            item in a new line with indent matching the class name length;</span>
+<span class="sd">            takes precedence over ``indent_level`` and ``indent_str`` arguments</span>
+<span class="sd">        :param indent_level: if not ``None`` and indent is ``None``, print a tree-like view</span>
+<span class="sd">            by putting each ``in_keys`` item in a new line with indent of ``indent_str``;</span>
+<span class="sd">            if &gt;0, ``indent_level*indent_str`` is prepended to every printed line.</span>
+<span class="sd">        :param indent_str: the (whitespace) string representing one indentation level</span>
+<span class="sd">        :param indent_first_child: whether to already indent the first child or not</span>
+<span class="sd">        :param _prepend_indent: whether to prepend the given indent to the output string (default: yes)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Class name</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">use_module_names</span><span class="p">:</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Indentation settings</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">indent_first_child</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">indent_level</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">indent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">indent</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span> <span class="n">indent</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">do_indent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">indent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">indent_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">base_indent</span> <span class="o">=</span> <span class="n">indent</span> <span class="k">if</span> <span class="n">indent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">indent_level</span> <span class="o">*</span> <span class="n">indent_str</span> <span class="k">if</span> <span class="n">indent_level</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">key_indent</span> <span class="o">=</span> <span class="n">base_indent</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">indent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">indent_str</span> <span class="k">if</span> <span class="n">indent_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">child_sep</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">key_indent</span> <span class="k">if</span> <span class="n">do_indent</span> <span class="k">else</span> <span class="s1">&#39;, &#39;</span>
+        <span class="n">setting_first_sep</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">key_indent</span> <span class="k">if</span> <span class="n">do_indent</span> <span class="k">else</span> <span class="s1">&#39;, &#39;</span>
+        <span class="n">child_first_sep</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">key_indent</span> <span class="k">if</span> <span class="p">(</span><span class="n">do_indent</span> <span class="ow">and</span> <span class="n">indent_first_child</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">last_sep</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># &#39;\n&#39; + base_indent</span>
+
+        <span class="c1"># Keys</span>
+        <span class="n">key_reprs</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">to_repr</span><span class="p">(</span><span class="n">sort_key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">,</span> <span class="n">use_module_names</span><span class="o">=</span><span class="n">use_module_names</span><span class="p">,</span>
+                                 <span class="n">indent</span><span class="o">=</span><span class="n">key_indent</span> <span class="k">if</span> <span class="n">indent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_prepend_indent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                 <span class="n">indent_first_child</span><span class="o">=</span><span class="n">indent_first_child</span><span class="p">,</span>
+                                 <span class="n">indent_level</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">indent_level</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">indent_level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">indent_str</span><span class="o">=</span><span class="n">indent_str</span><span class="p">)</span>
+                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">IS_COMMUTATIVE</span><span class="p">:</span>
+            <span class="n">key_reprs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">key_reprs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_key</span><span class="p">)</span>
+
+        <span class="c1"># Settings</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">setting_defaults</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">defaults</span> <span class="ow">or</span> <span class="p">{})}</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+        <span class="n">setting_reprs</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">val</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">val</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                         <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;in_keys&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="ow">or</span> <span class="n">defaults</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">val</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="p">((</span><span class="n">base_indent</span> <span class="k">if</span> <span class="n">_prepend_indent</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">class_name</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">child_first_sep</span> <span class="o">+</span> <span class="n">child_sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">key_reprs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_reprs</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="p">((</span><span class="n">setting_first_sep</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_reprs</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                   <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">setting_reprs</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">setting_reprs</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="o">+</span> <span class="n">last_sep</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;)&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Call :py:meth:`to_repr` without sorting.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_repr</span><span class="p">(</span><span class="n">sort_key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.__eq__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;Merge&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Two merge operations are considered equal, if their</span>
+<span class="sd">        normalized representations coincide. (See :py:meth:`to_repr`).</span>
+<span class="sd">        This means, they recursively have the same children up to commutation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Merge</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_repr</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">to_repr</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Merge.__copy__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__copy__">[docs]</a>    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Merge&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a deep copy of self using settings.&quot;&quot;&quot;</span>
+        <span class="n">setts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+        <span class="n">in_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">setts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;in_keys&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">setts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.treerecurse_replace_keys"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse_replace_keys">[docs]</a>    <span class="k">def</span> <span class="nf">treerecurse_replace_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">replace_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Merge&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a new formula with all occurences of variables in ``replace_map`` replaced</span>
+<span class="sd">        and else identical settings.</span>
+<span class="sd">        The children of the new formula instance are new instances as well.</span>
+<span class="sd">        </span>
+<span class="sd">        :param replace_map: mapping ``{old_var_name: new_var_name}``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">setts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span>
+        <span class="n">in_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">treerecurse_replace_keys</span><span class="p">(</span><span class="o">**</span><span class="n">replace_map</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span>
+                   <span class="k">else</span> <span class="n">replace_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+                   <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">setts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;in_keys&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">setts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.treerecurse"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.treerecurse">[docs]</a>    <span class="k">def</span> <span class="nf">treerecurse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Merge&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply the given function recursively to this and all children instances.</span>
+<span class="sd">        If ``fun`` returns ``None``, the operation is assumed to have been inline.</span>
+<span class="sd">        A non-``None`` return replaces the original root respectively ``in_keys`` item.</span>
+<span class="sd">        Acting root before children and depth first.&quot;&quot;&quot;</span>
+        <span class="n">fun_out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">curr_root</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">fun_out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fun_out</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curr_root</span><span class="p">,</span> <span class="n">Merge</span><span class="p">):</span>
+            <span class="n">curr_root</span><span class="o">.</span><span class="n">in_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">treerecurse</span><span class="p">(</span><span class="n">fun</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="n">fun</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+                                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">curr_root</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">curr_root</span></div>
+            
+<div class="viewcode-block" id="Merge.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span>
+                 <span class="n">keep_keys</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Call method modifying a given dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">annotations</span><span class="p">,</span> <span class="n">keep_keys</span><span class="o">=</span><span class="n">keep_keys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Merge.apply_to"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.apply_to">[docs]</a>    <span class="k">def</span> <span class="nf">apply_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span>
+                 <span class="n">keep_keys</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Apply this operation to the ``annotations`` dict.</span>
+<span class="sd">        In case of a :py:meth:`variadic_` instance, also a plain iterable may be given,</span>
+<span class="sd">        see :py:meth:`variadic_apply_to` which is called in that case.</span>
+<span class="sd">        The operation of this instance is defined in :py:attr:`operation`.</span>
+<span class="sd">        First apply all child operations to the dict.</span>
+<span class="sd">        Hereby try to overwrite a value of annotations if its key correspond</span>
+<span class="sd">        to an :py:attr:`out_key` of a child operation, but do not create the</span>
+<span class="sd">        value of a key twice. Then apply :py:attr:`operation` on the</span>
+<span class="sd">        originally given and generated values now stored in ``annotations``</span>
+<span class="sd">        and store the result also in ``annotations``.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            Annotations is inline updated.</span>
+<span class="sd">            Especially, the :py:attr:`out_key` and ``keep_keys`` items are added,</span>
+<span class="sd">            and children may apply inline operations to values!</span>
+
+<span class="sd">        :param annotations: dict to modify by adding values for :py:attr:`out_key` and ``keep_keys``</span>
+<span class="sd">        :param keep_keys: the output keys in :py:attr:`all_out_keys` for which</span>
+<span class="sd">            values shall be added to ``annotations`` in addition to :py:attr:`keep_keys`</span>
+<span class="sd">        :return: modified ``annotations`` dict, extended by the keys from</span>
+<span class="sd">            :py:attr:`all_out_keys` with the recursively generated values;</span>
+<span class="sd">            variadic instances return the plain output of :py:meth:`operation`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_variadic</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variadic_apply_to</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="n">keep_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="p">(</span><span class="n">keep_keys</span> <span class="ow">or</span> <span class="p">[]),</span> <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_keys</span> <span class="ow">or</span> <span class="p">[])]</span>
+        <span class="c1"># region value checks</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annotations</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">((</span><span class="s2">&quot;Non-variadic instances of class </span><span class="si">{}</span><span class="s2"> only accept mutable mappings &quot;</span>
+                             <span class="s2">&quot;as input to __call__, but got input of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">annotations</span><span class="p">)))</span>
+        <span class="c1"># About to overwrite a value without permission?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">in</span> <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">((</span><span class="s2">&quot;out_key </span><span class="si">{}</span><span class="s2"> exists as key in given dict </span><span class="si">{}</span><span class="s2">, and &quot;</span>
+                                <span class="s2">&quot;overwrite is False&quot;</span><span class="p">)</span>
+                               <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">,</span> <span class="n">annotations</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">==</span> <span class="s1">&#39;noop&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">annotations</span>
+
+        <span class="c1"># Any needed in_keys missing from annotations?</span>
+        <span class="n">missing_keys</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_in_keys</span> <span class="o">-</span> <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Input keys </span><span class="si">{}</span><span class="s2"> for operation </span><span class="si">{}</span><span class="s2"> missing from &quot;</span>
+                              <span class="s2">&quot;annotation keys </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing_keys</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                                     <span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># region get and add children outputs</span>
+        <span class="c1"># collect from children besides direct output: keys needed for caching, keys in keep_keys</span>
+        <span class="n">_seen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">children_keep_keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span>
+            <span class="o">*</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_out_keys_with_duplicates</span>
+               <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_seen</span> <span class="ow">or</span> <span class="n">_seen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_duplicates</span> <span class="k">else</span> <span class="p">[]),</span>
+            <span class="o">*</span><span class="n">keep_keys</span><span class="p">})</span>
+        <span class="c1"># get children outputs needed for operation</span>
+        <span class="n">children_results</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="n">keys_to_overwrite</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_out_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">children_results</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">child_op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="c1"># Output not yet created/existent?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_duplicates</span> \
+                    <span class="ow">or</span> <span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">children_results</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> \
+                    <span class="ow">or</span> <span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">in</span> <span class="n">keys_to_overwrite</span><span class="p">:</span>
+                <span class="n">children_results</span> <span class="o">=</span> <span class="n">child_op</span><span class="p">(</span><span class="n">children_results</span><span class="p">,</span> <span class="n">keep_keys</span><span class="o">=</span><span class="n">children_keep_keys</span><span class="p">)</span>
+            <span class="c1"># Mark output as created.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_duplicates</span> <span class="ow">and</span> <span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span> <span class="ow">in</span> <span class="n">keys_to_overwrite</span><span class="p">:</span>
+                <span class="n">keys_to_overwrite</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">child_op</span><span class="o">.</span><span class="n">out_key</span><span class="p">)</span>
+
+        <span class="c1"># add children outputs marked for keeping</span>
+        <span class="n">annotations</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">children_results</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="n">annotations</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="o">*</span><span class="n">keep_keys</span><span class="p">]})</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># region skip or fill None</span>
+        <span class="c1"># Any needed input is None?</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">children_results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation_keys</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_none</span><span class="p">:</span>  <span class="c1"># Fill output with None</span>
+                <span class="n">annotations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="n">annotations</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Received None values for keys </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operation_keys</span><span class="p">)</span> <span class="k">if</span> <span class="n">annotations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Finally execute operation:</span>
+        <span class="n">op_inputs</span> <span class="o">=</span> <span class="p">(</span><span class="n">children_results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation_keys</span><span class="p">)</span>
+        <span class="n">annotations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">op_inputs</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">annotations</span></div>
+
+<div class="viewcode-block" id="Merge.variadic_apply_to"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.variadic_apply_to">[docs]</a>    <span class="k">def</span> <span class="nf">variadic_apply_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the result of operation on the values/items of a mapping or sequence</span>
+<span class="sd">        of arbitrary length. Performs ``None`` check/replacement and :py:attr:`ARITY` check.</span>
+<span class="sd">        In case of a :py:attr:`ARITY` of -1 and empty annotations list, or an annotations</span>
+<span class="sd">        list length not matching the arity, an :py:class:`IndexError` is raised.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annotations</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="n">annotations</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">annotations</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annotations</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+            <span class="n">annotations</span><span class="p">:</span> <span class="n">Sequence</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Length of the given annotations (</span><span class="si">{}</span><span class="s2">) does not match ARITY (</span><span class="si">{}</span><span class="s2">)!&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">annotations</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Empty annotations list provided!&quot;</span><span class="p">)</span>
+        <span class="c1"># region skip or replace None</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_none</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span><span class="p">:</span>
+                <span class="n">annotations</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">replace_none</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Received None values in variadic input </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotations</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">annotations</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The input keys which are child operations.</span>
+<span class="sd">        Input keys are stored in :py:attr:`in_keys`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_children</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;All children operations in the flattened computational tree, sorted depth first.</span>
+<span class="sd">        See :py:attr:`children` for getting only the direct children.&quot;&quot;&quot;</span>
+        <span class="n">direct_children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Merge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">child</span> <span class="k">for</span> <span class="n">dchild</span> <span class="ow">in</span> <span class="n">direct_children</span>
+                <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dchild</span><span class="p">,</span> <span class="o">*</span><span class="n">dchild</span><span class="o">.</span><span class="n">all_children</span><span class="p">]]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">consts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The constant string keys in the input keys.</span>
+<span class="sd">        The :py:attr:`in_keys` contains both the constant keys which are to be</span>
+<span class="sd">        directly found in a given annotations dictionary, and child</span>
+<span class="sd">        operations whose output is used. For getting the child operations</span>
+<span class="sd">        stored in :py:attr:`in_keys` refer to :py:attr:`children`.</span>
+<span class="sd">        Should preserve the order in which children occur in :py:attr:`in_keys`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">operation_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The list of keys used for this parent operation in original order</span>
+<span class="sd">        (constants and children output keys).</span>
+<span class="sd">        These are all :py:attr:`consts` and the :py:attr:`out_key` of all</span>
+<span class="sd">        :py:attr:`children` operations.</span>
+<span class="sd">        Keys may be duplicate as e.g. in</span>
+
+<span class="sd">        &gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import OR, NOT</span>
+<span class="sd">        &gt;&gt;&gt; OR(&quot;a&quot;, NOT(&quot;b&quot;), &quot;a&quot;, NOT(&quot;c&quot;, out_key=&quot;not_c&quot;)).operation_keys</span>
+<span class="sd">        [&#39;a&#39;, &#39;~b&#39;, &#39;a&#39;, &#39;not_c&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">out_key</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_in_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;All string input keys both of self and of all child operations.</span>
+<span class="sd">        (See :py:attr:`in_keys`.)</span>
+<span class="sd">        These are the keys that must be present in an annotation when called</span>
+<span class="sd">        on it. Should preserve the order in which keys and children occur in</span>
+<span class="sd">        :py:attr:`in_keys`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base_key_lists</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> \
+            <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">all_in_keys</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">Merge</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">key</span><span class="p">]</span>
+             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_keys</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">base_key_list</span> <span class="ow">in</span> <span class="n">base_key_lists</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">base_key_list</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_out_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Output keys of self and all child operations.</span>
+<span class="sd">        (See :py:attr:`children`).</span>
+<span class="sd">        Should preserve the order in which children occur in :py:attr:`in_keys`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_out_keys_with_duplicates</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_all_out_keys_with_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Output keys of self and all child operations with duplicates.</span>
+<span class="sd">        (See :py:attr:`all_out_keys`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_key_lists</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">all_out_keys</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">]</span> <span class="o">+</span> <span class="p">[{</span><span class="bp">self</span><span class="o">.</span><span class="n">out_key</span><span class="p">}]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">out_key_list</span> <span class="ow">in</span> <span class="n">out_key_lists</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">out_key_list</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Merge.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_vals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Actual merge operation on values of the input keys</span>
+<span class="sd">        in annotations. See :py:attr:`in_keys`.</span>
+<span class="sd">        The ``annotation_vals`` must not contain ``None`` values,</span>
+<span class="sd">        and their length must match the :py:attr:`ARITY` of this operation.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Merge.with_"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.with_">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">additional_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MergeBuilder&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a :py:class:`MergeBuilder` with the same symbol but additional init args.</span>
+<span class="sd">        Example usage (with changed symbol):</span>
+
+<span class="sd">        &gt;&gt;&gt; from hybrid_learning.fuzzy_logic.tnorm_connectives.boolean import AND</span>
+<span class="sd">        &gt;&gt;&gt; builder = AND.with_(skip_none=False, replace_none=0).symb_(&#39;&amp;n&amp;&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; builder.SYMB</span>
+<span class="sd">        &#39;&amp;n&amp;&#39;</span>
+<span class="sd">        &gt;&gt;&gt; builder(&quot;a&quot;, &quot;b&quot;)</span>
+<span class="sd">        AND(&#39;a&#39;, &#39;b&#39;, replace_none=0, skip_none=False, symb=&#39;&amp;n&amp;&#39;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MergeBuilder</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">symb</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">additional_args</span><span class="o">=</span><span class="n">additional_args</span><span class="p">)</span></div></div>
+
+
+<span class="n">_OpBuilder</span> <span class="o">=</span> <span class="n">Type</span><span class="p">[</span><span class="n">Merge</span><span class="p">]</span>
+<span class="n">_TensorType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+<span class="n">_NumericType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">_TensorType</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="MergeBuilder"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder">[docs]</a><span class="k">class</span> <span class="nc">MergeBuilder</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return a :py:class:`Merge` operation of specified class with additional settings upon call.</span>
+<span class="sd">    Common additional init arguments can be specified and a new :py:attr:`SYMB`,</span>
+<span class="sd">    overwriting the :py:attr:`Merge.SYMB` (or attaching a ``SYMB`` attribute to another builder).</span>
+<span class="sd">    Attribute access is passed over to the :py:attr:`merge_class` specified.</span>
+<span class="sd">    For easy instantiation see also :py:meth:`Merge.with_`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MergeBuilder.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge_class</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Merge</span><span class="p">]],</span>
+                 <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">additional_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Merge</span><span class="p">]]</span> <span class="o">=</span> <span class="n">merge_class</span>
+        <span class="sd">&quot;&quot;&quot;The class or builder to use upon call.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_additional_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">additional_args</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="sd">&quot;&quot;&quot;See :py:attr:`additional_args`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">symb</span> <span class="ow">or</span> <span class="n">merge_class</span><span class="o">.</span><span class="n">SYMB</span>
+        <span class="sd">&quot;&quot;&quot;The symbol representing the wrapped class.&quot;&quot;&quot;</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">additional_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The additional arguments to and over to the :py:class:`Merge` class on each call.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional_args</span><span class="p">,</span>
+                <span class="o">**</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">symb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="n">SYMB</span> <span class="k">else</span> <span class="p">{})}</span>
+
+<div class="viewcode-block" id="MergeBuilder.symb_"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.symb_">[docs]</a>    <span class="k">def</span> <span class="nf">symb_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MergeBuilder&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set SYMB and return self.</span>
+<span class="sd">        Can be used in chain assignments.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">=</span> <span class="n">symb</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="MergeBuilder.with_"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.with_">[docs]</a>    <span class="k">def</span> <span class="nf">with_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">additional_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Update the additional arguments.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_additional_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">additional_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="MergeBuilder.variadic_"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.variadic_">[docs]</a>    <span class="k">def</span> <span class="nf">variadic_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Merge</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a variadic instance of the wrapped ``merge_class``.</span>
+<span class="sd">        Calls the ``variadic_`` function of :py:attr:`merge_class`.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Merge</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="n">variadic_</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;Building variadic instance of </span><span class="si">{}</span><span class="s2"> of arity </span><span class="si">{}</span><span class="s2"> with </span><span class="si">{}</span><span class="s2"> arguments failed: </span><span class="si">{}</span><span class="s2">(*</span><span class="si">{}</span><span class="s2">, **</span><span class="si">{}</span><span class="s2">)&quot;</span>
+                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">,</span> <span class="s1">&#39;ARITY&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">),</span>
+                              <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}))</span>
+            <span class="k">raise</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="MergeBuilder.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Merge</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Build an instance of the specified Merge class with the additional args.</span>
+<span class="sd">        The given ``kwargs`` will overwrite arguments from :py:attr:`additional_args`.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;The following init call to </span><span class="si">{}</span><span class="s2"> of arity </span><span class="si">{}</span><span class="s2"> with </span><span class="si">{}</span><span class="s2"> arguments failed: </span><span class="si">{}</span><span class="s2">(*</span><span class="si">{}</span><span class="s2">, **</span><span class="si">{}</span><span class="s2">)&quot;</span>
+                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">,</span> <span class="s1">&#39;ARITY&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">),</span>
+                              <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}))</span>
+            <span class="k">raise</span> <span class="n">t</span></div>
+
+<div class="viewcode-block" id="MergeBuilder.__getattr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__getattr__">[docs]</a>    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pass attribute requests over to Merge class.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;merge_class&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MergeBuilder.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">merge_class_repr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span> \
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="p">)</span>
+        <span class="n">setts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_class</span><span class="o">.</span><span class="n">SYMB</span><span class="p">:</span>
+            <span class="n">setts</span><span class="p">[</span><span class="s1">&#39;symb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SYMB</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_args</span><span class="p">:</span>
+            <span class="n">setts</span><span class="p">[</span><span class="s1">&#39;additional_args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_additional_args</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">merge_class_repr</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">setts</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+                <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TorchOperation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation">[docs]</a><span class="k">class</span> <span class="nc">TorchOperation</span><span class="p">(</span><span class="n">Merge</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic merge operation on torch tensors.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TorchOperation.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Operation on pytorch tensors.</span>
+<span class="sd">        If possible, the operation should support broadcasting.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TorchOperation.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_vals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the predicate output.</span>
+<span class="sd">        Non-tensor inputs are transformed to tensors.</span>
+<span class="sd">        See :py:meth:`torch_operation`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotation_vals</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotation_vals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Operation </span><span class="si">{}</span><span class="s2"> of type </span><span class="si">{}</span><span class="s2"> and arity </span><span class="si">{}</span><span class="s2"> was called with </span><span class="si">{}</span><span class="s2"> inputs:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotation_vals</span><span class="p">),</span> <span class="n">annotation_vals</span><span class="p">))</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">annotation_vals</span><span class="p">[:(</span><span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotation_vals</span><span class="p">))]</span>
+        <span class="n">masks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TorchOrNumpyOperation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation">[docs]</a><span class="k">class</span> <span class="nc">TorchOrNumpyOperation</span><span class="p">(</span><span class="n">TorchOperation</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic merge operation allowing to define both a torch and a numpy operation.</span>
+<span class="sd">    Which one is selected depends on the types of the provided annotations:</span>
+<span class="sd">    If any is a torch tensor, the torch operation is used and a torch tensor</span>
+<span class="sd">    returned, otherwise the numpy operation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TorchOrNumpyOperation.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Operation on Booleans, numpy arrays and numbers.</span>
+<span class="sd">        If possible, the operation should support broadcasting.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TorchOrNumpyOperation.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_vals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_NumericType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Operation on either torch tensors or Booleans, numpy arrays and numbers.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">annotation_vals</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_operation</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">ToTensor</span><span class="o">.</span><span class="n">to_tens</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">annotation_vals</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">annotation_vals</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,9 +1,0 @@
-ConvOpWrapper
-=============
-
-.. currentmodule:: hybrid_learning.datasets.transforms.encoder
-
-.. autoclass:: ConvOpWrapper
-    :members:
-
-    .. autoclasstoc::

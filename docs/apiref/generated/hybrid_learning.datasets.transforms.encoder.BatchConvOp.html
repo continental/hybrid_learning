@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BatchConvOp &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="BatchIntersectDecode2D" href="hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html" />
-    <link rel="prev" title="encoder" href="hybrid_learning.datasets.transforms.encoder.html" /> 
+    <link rel="prev" title="BatchBoxBloat" href="hybrid_learning.datasets.transforms.encoder.BatchBoxBloat.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,162 +47,135 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.common.html">common</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.html">dict_transforms</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.html">encoder</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.html">image_transforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.html">tuple_transforms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.transforms.html">transforms</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.transforms.encoder.html">encoder</a> &raquo;</li>
-        
       <li>BatchConvOp</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.transforms.encoder.BatchConvOp.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="batchconvop">
-<h1>BatchConvOp<a class="headerlink" href="#batchconvop" title="Permalink to this headline">¶</a></h1>
+<h1>BatchConvOp<a class="headerlink" href="#batchconvop" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp">
-<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.datasets.transforms.encoder.</code><code class="sig-name descname">BatchConvOp</code><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/encoder.html#BatchConvOp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/abc.html#abc.ABC" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dt class="sig sig-object py" id="hybrid_learning.datasets.transforms.encoder.BatchConvOp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.transforms.encoder.</span></span><span class="sig-name descname"><span class="pre">BatchConvOp</span></span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/encoder.html#BatchConvOp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.BatchWindowOp.html#hybrid_learning.datasets.transforms.encoder.BatchWindowOp" title="hybrid_learning.datasets.transforms.encoder.BatchWindowOp"><code class="xref py py-class docutils literal notranslate"><span class="pre">BatchWindowOp</span></code></a></p>
 <p>Base class for encoder that use convolution operations.</p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Data Attributes:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.AREA_DIMS" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.AREA_DIMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AREA_DIMS</span></code></a></p></td>
-<td><p>Indices of axes in which the image area is defined.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proto_shape</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proto_shape</span></code></a></p></td>
 <td><p>The kernel associated with the convolutional masking operation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_size</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_size</span></code></a></p></td>
 <td><p>The kernel size of the proto-type shape.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
 <td><p>Settings to reproduce the instance.</p></td>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>BatchWindowOp</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">AREA_DIMS</span></code></p></td>
+<td><p>Indices of axes in which the image area is defined.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_size</span></code></a></p></td>
+<td><p>The kernel size of the proto-type shape.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_patches</span></code></p></td>
-<td><p></p></td>
+<td><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">T_destination</span></code></p></td>
-<td><p></p></td>
+<td><p>alias of TypeVar('T_destination', bound=<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a>])</p></td>
 </tr>
 </tbody>
 </table>
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Methods:</p>
-<table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>BatchWindowOp</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(masks)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>(masks)</p></td>
 <td><p>Wrapper for the convolutional operation on batch of masks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.conv_op" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.conv_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conv_op</span></code></a>(masks)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">conv_op</span></code>(masks)</p></td>
 <td><p>The convolutional operation on the masks (without validation).</p></td>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(masks)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>(masks)</p></td>
 <td><p>Wrapper for the convolutional operation on batch of masks.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_buffer</span></code>(name, tensor[, persistent])</p></td>
@@ -261,11 +187,23 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
 <td><p>Adds a child module to the current module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_submodule</span></code>(target)</p></td>
+<td><p>Returns the submodule given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parameter</span></code>(target)</p></td>
+<td><p>Returns the parameter given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
+<td><p>Returns the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
 <td><p>Applies <code class="docutils literal notranslate"><span class="pre">fn</span></code> recursively to every submodule (as returned by <code class="docutils literal notranslate"><span class="pre">.children()</span></code>) as well as self.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
 <td><p>Moves all model parameters and buffers to the GPU.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpu</span></code>([device])</p></td>
+<td><p>Moves all model parameters and buffers to the XPU.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cpu</span></code>()</p></td>
 <td><p>Moves all model parameters and buffers to the CPU.</p></td>
@@ -274,7 +212,7 @@
 <td><p>Casts all parameters and buffers to <code class="xref py py-attr docutils literal notranslate"><span class="pre">dst_type</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to float datatype.</p></td>
+<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">float</span></code> datatype.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">double</span></code>()</p></td>
 <td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">double</span></code> datatype.</p></td>
@@ -285,10 +223,16 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bfloat16</span></code>()</p></td>
 <td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">bfloat16</span></code> datatype.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_empty</span></code>(*, device)</p></td>
+<td><p>Moves the parameters and buffers to the specified device without copying storage.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
 <td><p>Moves and/or casts the parameters and buffers.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
+<td><p>Registers a backward hook on the module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_full_backward_hook</span></code>(hook)</p></td>
 <td><p>Registers a backward hook on the module.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_pre_hook</span></code>(hook)</p></td>
@@ -297,55 +241,52 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_hook</span></code>(hook)</p></td>
 <td><p>Registers a forward hook on the module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">T_destination</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
 <td><p>Returns a dictionary containing a whole state of the module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
 <td><p>Copies parameters and buffers from <code class="xref py py-attr docutils literal notranslate"><span class="pre">state_dict</span></code> into this module and its descendants.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
 <td><p>Returns an iterator over module parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
 <td><p>Returns an iterator over module parameters, yielding both the name of the parameter as well as the parameter itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
 <td><p>Returns an iterator over module buffers.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
 <td><p>Returns an iterator over module buffers, yielding both the name of the buffer as well as the buffer itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
 <td><p>Returns an iterator over immediate children modules.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
 <td><p>Returns an iterator over immediate children modules, yielding both the name of the module as well as the module itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
 <td><p>Returns an iterator over all modules in the network.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix, remove_duplicate])</p></td>
 <td><p>Returns an iterator over all modules in the network, yielding both the name of the module as well as the module itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
 <td><p>Sets the module in training mode.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
 <td><p>Sets the module in evaluation mode.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
 <td><p>Change if autograd should record operations on parameters in this module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>([set_to_none])</p></td>
 <td><p>Sets gradients of all model parameters to zero.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
+<td><p>See <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.share_memory_.html#torch.Tensor.share_memory_" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.Tensor.share_memory_()</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
 <td><p>Set the extra representation of the module</p></td>
 </tr>
 </tbody>
@@ -353,18 +294,18 @@
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Special Methods:</p>
-<table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>BatchWindowOp</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
 <td><p>Representation based on this instances settings.</p></td>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -388,82 +329,32 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__delattr__</span></code>(name)</p></td>
 <td><p>Implement delattr(self, name).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
 <td><p>Representation based on this instances settings.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code>()</p></td>
-<td><p>default dir() implementation</p></td>
+<td><p>Default dir() implementation.</p></td>
 </tr>
 </tbody>
 </table>
 </details></div>
 <hr class="docutils" />
-<dl class="py method">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__">
-<code class="sig-name descname">__repr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/encoder.html#BatchConvOp.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Representation based on this instances settings.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.conv_op">
-<em class="property">abstract </em><code class="sig-name descname">conv_op</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">masks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/encoder.html#BatchConvOp.conv_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.conv_op" title="Permalink to this definition">¶</a></dt>
-<dd><p>The convolutional operation on the masks (without validation).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>masks</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a>) – <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> of shape
-<code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">1,</span> <span class="pre">width,</span> <span class="pre">height)</span></code> holding masks for one batch.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">masks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/transforms/encoder.html#BatchConvOp.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for the convolutional operation on batch of masks.
-Validates the masks and ensures the encoder is on the correct device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>masks</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a>) – <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> of shape
-<code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">1,</span> <span class="pre">width,</span> <span class="pre">height)</span></code> holding masks for one batch.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))">torch.Tensor</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.AREA_DIMS">
-<code class="sig-name descname">AREA_DIMS</code><em class="property">: Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a><span class="p">]</span></em><em class="property"> = (2, 3)</em><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.AREA_DIMS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indices of axes in which the image area is defined.
-The targets are expected to have size with the following dimensions:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">size()[0]</span></code>: batch_dim</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">size()[1]</span></code>: channels</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">size()[AREA_DIMS]</span></code>: size dimensions of one filter’s activation map,
-e.g. <code class="docutils literal notranslate"><span class="pre">(2,</span> <span class="pre">3)</span></code> for 2D and <code class="docutils literal notranslate"><span class="pre">(2,</span> <span class="pre">3,</span> <span class="pre">4)</span></code> for 3D</p></li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size">
-<em class="property">property </em><code class="sig-name descname">kernel_size</code><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.kernel_size" title="Permalink to this definition"></a></dt>
 <dd><p>The kernel size of the proto-type shape.
 (See <a class="reference internal" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape" title="hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape"><code class="xref py py-attr docutils literal notranslate"><span class="pre">proto_shape</span></code></a>).</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape">
-<em class="property">property </em><code class="sig-name descname">proto_shape</code><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proto_shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.proto_shape" title="Permalink to this definition"></a></dt>
 <dd><p>The kernel associated with the convolutional masking operation.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings">
-<em class="property">property </em><code class="sig-name descname">settings</code><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.transforms.encoder.BatchConvOp.settings" title="Permalink to this definition"></a></dt>
 <dd><p>Settings to reproduce the instance.</p>
 </dd></dl>
 
@@ -473,58 +364,33 @@ e.g. <code class="docutils literal notranslate"><span class="pre">(2,</span> <sp
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html" class="btn btn-neutral float-right" title="BatchIntersectDecode2D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.transforms.encoder.html" class="btn btn-neutral float-left" title="encoder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.transforms.encoder.BatchBoxBloat.html" class="btn btn-neutral float-left" title="BatchBoxBloat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.transforms.encoder.BatchIntersectDecode2D.html" class="btn btn-neutral float-right" title="BatchIntersectDecode2D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.datasets.custom.coco.heatmap_dataset &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.datasets.custom.coco.heatmap_dataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.datasets.custom.coco.heatmap_dataset</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handle that derives keypoint heatmaps from MS COCO keypoint annotations.&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">.keypoints_processing</span> <span class="kn">import</span> <span class="n">annotations_to_heatmap</span>
+<span class="kn">from</span> <span class="nn">.mask_dataset</span> <span class="kn">import</span> <span class="n">ConceptDataset</span>
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">trafos</span>
+
+
+<div class="viewcode-block" id="HeatmapDataset"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.html#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset">[docs]</a><span class="k">class</span> <span class="nc">HeatmapDataset</span><span class="p">(</span><span class="n">ConceptDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data handle for ground truth heatmaps of centroids of visual concepts</span>
+<span class="sd">    (body parts) generated from COCO keypoints.</span>
+<span class="sd">    Works the same as the</span>
+<span class="sd">    :py:class:`hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset`</span>
+<span class="sd">    only with different :py:attr:`MASKS_ROOT_ROOT` and different</span>
+<span class="sd">    :py:meth:`~hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask`</span>
+<span class="sd">    method. See there for details on how the centroid heatmaps look like.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MASKS_ROOT_ROOT</span> <span class="o">=</span> <span class="s2">&quot;kpt_heatmaps&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Usual parent to all heatmap folders for all body parts; sibling to</span>
+<span class="sd">    ``images`` folder&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HeatmapDataset.get_default_transforms"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.html#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.get_default_transforms">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_default_transforms</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">img_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">mask_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span>
+                                             <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Default transformation that pads and resizes both images and masks,</span>
+<span class="sd">        and binarizes the masks.&quot;&quot;&quot;</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="n">trafo</span><span class="p">:</span> <span class="n">trafos</span><span class="o">.</span><span class="n">Compose</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_default_transforms</span><span class="p">(</span>
+            <span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span> <span class="n">mask_size</span><span class="o">=</span><span class="n">mask_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># The super method adds binarizing as a last transformation -&gt; remove it</span>
+        <span class="k">assert</span> <span class="n">trafo</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">Binarize</span><span class="p">())</span>
+        <span class="c1"># noinspection PyTypeChecker</span>
+        <span class="k">return</span> <span class="n">trafo</span></div>
+
+    <span class="n">ANNOTATION_TRANSFORM</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">annotations_to_heatmap</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Callable used to transform a list of annotations into a heatmap mask.</span>
+<span class="sd">    Create a heatmap of all body parts given by keypoints in the</span>
+<span class="sd">    ``annotations``.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Currently, all keypoints occurring in the body parts are treated</span>
+<span class="sd">        separately!</span>
+<span class="sd">        Centroids of body parts consisting of more than one keypoint are</span>
+<span class="sd">        not supported yet.</span>
+
+<span class="sd">    For details see</span>
+<span class="sd">    :py:func:`~hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap`.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+    <span class="c1"># pylint: enable=line-too-long</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

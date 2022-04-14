@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>model_extension &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ActivationMapGrabber" href="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html" />
-    <link rel="prev" title="ConceptSegmentationModel2D" href="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D.html" /> 
+    <link rel="prev" title="ConceptEmbedding" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -93,98 +46,54 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.embeddings.html">embeddings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.enforcement.html">enforcement</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.kpis.html">kpis</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.base_handles.html">base_handles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_detection.html">concept_detection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_segmentation.html">concept_segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.html">concept_models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.html">embeddings</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">model_extension</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.visualization.html">visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.models.html">models</a> &raquo;</li>
-        
       <li>model_extension</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.concepts.models.model_extension.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="model-extension">
-<h1>model_extension<a class="headerlink" href="#model-extension" title="Permalink to this headline">¶</a></h1>
+<h1>model_extension<a class="headerlink" href="#model-extension" title="Permalink to this headline"></a></h1>
 <p class="rubric">Description</p>
-<span class="target" id="module-hybrid_learning.concepts.models.model_extension"></span><p>Wrapper classes to slice torch.nn.modules.
+<span class="target" id="module-hybrid_learning.concepts.models.model_extension"></span><p>Wrapper classes to slice and extend <code class="docutils literal notranslate"><span class="pre">torch.nn.modules</span></code>.
 The main mechanism used are hooks to obtain layer intermediate output.
 The base class to use this mechanism is <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">HooksHandle</span></code></a>.</p>
 <p>This is used to</p>
@@ -197,7 +106,7 @@ The base class to use this mechanism is <a class="reference internal" href="hybr
 (<a class="reference internal" href="hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelStump</span></code></a>, <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html#hybrid_learning.concepts.models.model_extension.ExtendedModelStump" title="hybrid_learning.concepts.models.model_extension.ExtendedModelStump"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtendedModelStump</span></code></a>)</p></li>
 </ul>
 <p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -221,19 +130,19 @@ The base class to use this mechanism is <a class="reference internal" href="hybr
 </tbody>
 </table>
 <p class="rubric">Functions</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.dummy_output.html#hybrid_learning.concepts.models.model_extension.dummy_output" title="hybrid_learning.concepts.models.model_extension.dummy_output"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dummy_output</span></code></a>(model, input_size[, layer_ids])</p></td>
-<td><p>Select dummy output of model’s given or all layers for all-zero tensor of input size.</p></td>
+<td><p>Select dummy output of model's given or all layers for all-zero tensor of <code class="docutils literal notranslate"><span class="pre">input_size</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.output_size.html#hybrid_learning.concepts.models.model_extension.output_size" title="hybrid_learning.concepts.models.model_extension.output_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_size</span></code></a>(model, input_size[, has_batch_dim])</p></td>
-<td><p>Feed dummy input of input_size to model to determine the model output size.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.output_size.html#hybrid_learning.concepts.models.model_extension.output_size" title="hybrid_learning.concepts.models.model_extension.output_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_size</span></code></a>(model, input_size[, ...])</p></td>
+<td><p>Feed dummy input of input_size to model to determine the output size of the layer with ID <code class="docutils literal notranslate"><span class="pre">layer_id</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.output_sizes.html#hybrid_learning.concepts.models.model_extension.output_sizes" title="hybrid_learning.concepts.models.model_extension.output_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_sizes</span></code></a>(model, input_size[, layer_ids, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.output_sizes.html#hybrid_learning.concepts.models.model_extension.output_sizes" title="hybrid_learning.concepts.models.model_extension.output_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">output_sizes</span></code></a>(model, input_size[, layer_ids, ...])</p></td>
 <td><p>Obtain the output sizes of the given or all layers for given input size.</p></td>
 </tr>
 </tbody>
@@ -242,58 +151,33 @@ The base class to use this mechanism is <a class="reference internal" href="hybr
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html" class="btn btn-neutral float-right" title="ActivationMapGrabber" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.concepts.models.concept_segmentation.ConceptSegmentationModel2D.html" class="btn btn-neutral float-left" title="ConceptSegmentationModel2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html" class="btn btn-neutral float-left" title="ConceptEmbedding" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.html" class="btn btn-neutral float-right" title="ActivationMapGrabber" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

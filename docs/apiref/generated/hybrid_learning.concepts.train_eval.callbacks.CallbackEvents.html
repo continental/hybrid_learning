@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CallbackEvents &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="CsvLoggingCallback" href="hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html" />
+    <link rel="prev" title="Callback" href="hybrid_learning.concepts.train_eval.callbacks.Callback.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.base_handles.html">base_handles</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.train_eval.callbacks.html">callbacks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.hessian.html">hessian</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.kpis.html">kpis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.train_eval.train_eval_funs.html">train_eval_funs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.html">train_eval</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.train_eval.callbacks.html">callbacks</a> &raquo;</li>
+      <li>CallbackEvents</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="callbackevents">
+<h1>CallbackEvents<a class="headerlink" href="#callbackevents" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.train_eval.callbacks.</span></span><span class="sig-name descname"><span class="pre">CallbackEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/train_eval/callbacks.html#CallbackEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>Supported callback events for training and evaluation.
+Events can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">before_epoch_train</span></code>: right before iterating one epoch of the</dt><dd><p>training set</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">after_batch_train</span></code>, <code class="docutils literal notranslate"><span class="pre">after_epoch_eval</span></code>:</dt><dd><p>after every batch of an epoch of training</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">after_epoch_train</span></code>: right after iterating one epoch of the</dt><dd><p>training set; provides kpis of the training set of current epoch,
+and the <code class="docutils literal notranslate"><span class="pre">train_loader</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">after_epoch_eval</span></code>: right after iterating one epoch of evaluation</dt><dd><p>(validation or test set);
+provides evaluation kpis of the current epoch and the <code class="docutils literal notranslate"><span class="pre">val_loader</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">after_epoch</span></code>: after an epoch of training: provides kpis of</dt><dd><p>current epoch</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">between_epochs</span></code>: after an epoch of a training run with several</dt><dd><p>epochs: provides epoch context (total KPI history, current and
+total epoch number)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">after_train</span></code>: after the training of several epochs;</dt><dd><p>provides full training and validation history as well as total
+epoch number</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">after_second_stage_train</span></code>: like <code class="docutils literal notranslate"><span class="pre">after_train</span></code> only after the</dt><dd><p>second stage training</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BEFORE_EPOCH_TRAIN" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BEFORE_EPOCH_TRAIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BEFORE_EPOCH_TRAIN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_TRAIN" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_TRAIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_BATCH_TRAIN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_TRAIN" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_TRAIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_EPOCH_TRAIN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_EVAL" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_EVAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_BATCH_EVAL</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_EVAL" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_EVAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_EPOCH_EVAL</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_EPOCH</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BETWEEN_EPOCHS" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BETWEEN_EPOCHS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BETWEEN_EPOCHS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_TRAIN" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_TRAIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_TRAIN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_SECOND_STAGE_TRAIN" title="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_SECOND_STAGE_TRAIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AFTER_SECOND_STAGE_TRAIN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Enum</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code>(value)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Enum</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
+<td><p>Return str(self).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code>()</p></td>
+<td><p>Returns all members and all public methods</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code>(format_spec)</p></td>
+<td><p>Returns format using actual value type unless __str__ has been overridden.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code>()</p></td>
+<td><p>Return hash(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code>(proto)</p></td>
+<td><p>Helper for pickle.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_EVAL">
+<span class="sig-name descname"><span class="pre">AFTER_BATCH_EVAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_batch_eval'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_EVAL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_TRAIN">
+<span class="sig-name descname"><span class="pre">AFTER_BATCH_TRAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_batch_train'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_BATCH_TRAIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH">
+<span class="sig-name descname"><span class="pre">AFTER_EPOCH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_epoch'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_EVAL">
+<span class="sig-name descname"><span class="pre">AFTER_EPOCH_EVAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_epoch_eval'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_EVAL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_TRAIN">
+<span class="sig-name descname"><span class="pre">AFTER_EPOCH_TRAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_epoch_train'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_EPOCH_TRAIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_SECOND_STAGE_TRAIN">
+<span class="sig-name descname"><span class="pre">AFTER_SECOND_STAGE_TRAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_second_stage_train'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_SECOND_STAGE_TRAIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_TRAIN">
+<span class="sig-name descname"><span class="pre">AFTER_TRAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'after_train'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.AFTER_TRAIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BEFORE_EPOCH_TRAIN">
+<span class="sig-name descname"><span class="pre">BEFORE_EPOCH_TRAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'before_epoch_train'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BEFORE_EPOCH_TRAIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BETWEEN_EPOCHS">
+<span class="sig-name descname"><span class="pre">BETWEEN_EPOCHS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'between_epochs'</span></em><a class="headerlink" href="#hybrid_learning.concepts.train_eval.callbacks.CallbackEvents.BETWEEN_EPOCHS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.train_eval.callbacks.Callback.html" class="btn btn-neutral float-left" title="Callback" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.train_eval.callbacks.CsvLoggingCallback.html" class="btn btn-neutral float-right" title="CsvLoggingCallback" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

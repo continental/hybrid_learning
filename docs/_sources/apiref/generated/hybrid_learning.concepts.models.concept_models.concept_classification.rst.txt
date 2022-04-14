@@ -1,0 +1,44 @@
+concept\_classification
+=======================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.models.concept_models.concept_classification
+
+    .. currentmodule:: hybrid_learning.concepts.models.concept_models.concept_classification
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~ConceptClassification2DTrainTestHandle
+        
+        ~ConceptClassificationModel2D
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

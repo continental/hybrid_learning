@@ -1,0 +1,6 @@
+any\_keypts\_visible
+====================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autofunction:: any_keypts_visible

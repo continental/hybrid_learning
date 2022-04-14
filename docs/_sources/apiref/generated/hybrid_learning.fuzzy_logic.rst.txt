@@ -1,0 +1,57 @@
+﻿fuzzy\_logic
+============
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.fuzzy_logic.logic_base
+        
+        ~hybrid_learning.fuzzy_logic.predicates
+        
+        ~hybrid_learning.fuzzy_logic.quantifiers
+        
+        ~hybrid_learning.fuzzy_logic.tnorm_connectives
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~logic_by_name
+        
+
+    
+    

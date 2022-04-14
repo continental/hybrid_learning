@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnalysisResult &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="BestEmbeddingResult" href="hybrid_learning.concepts.analysis.results.BestEmbeddingResult.html" />
+    <link rel="prev" title="results" href="hybrid_learning.concepts.analysis.results.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.html">analysis_handle</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.analysis.results.html">results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.analysis.visualization.html">visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.analysis.html">analysis</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.analysis.results.html">results</a> &raquo;</li>
+      <li>AnalysisResult</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.analysis.results.AnalysisResult.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="analysisresult">
+<h1>AnalysisResult<a class="headerlink" href="#analysisresult" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.analysis.results.</span></span><span class="sig-name descname"><span class="pre">AnalysisResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.analysis.results.ResultsHandle.html#hybrid_learning.concepts.analysis.results.ResultsHandle" title="hybrid_learning.concepts.analysis.results.ResultsHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResultsHandle</span></code></a></p>
+<p>Handle for saving, loading and inspection of analysis results.
+The results are saved in <a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.results" title="hybrid_learning.concepts.analysis.results.AnalysisResult.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a>. See there for the format.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.items" title="hybrid_learning.concepts.analysis.results.AnalysisResult.items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">items</span></code></a>()</p></td>
+<td><p>Emulate an items view that yields an analysis result per layer ID.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.result_for" title="hybrid_learning.concepts.analysis.results.AnalysisResult.result_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">result_for</span></code></a>(layer_id)</p></td>
+<td><p>Return the results for a single layer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.save" title="hybrid_learning.concepts.analysis.results.AnalysisResult.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(folder_path)</p></td>
+<td><p>Save analysis results.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.to_pandas" title="hybrid_learning.concepts.analysis.results.AnalysisResult.to_pandas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pandas</span></code></a>()</p></td>
+<td><p>Provide <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> multi-indexed by layer and run w/ info for each run.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>ResultsHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.save" title="hybrid_learning.concepts.analysis.results.AnalysisResult.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(folder_path)</p></td>
+<td><p>Save analysis results.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.to_pandas" title="hybrid_learning.concepts.analysis.results.AnalysisResult.to_pandas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pandas</span></code></a>()</p></td>
+<td><p>Provide <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> multi-indexed by layer and run w/ info for each run.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.__init__" title="hybrid_learning.concepts.analysis.results.AnalysisResult.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(results)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>ResultsHandle</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>results</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>, </em><em>Series</em><em>]</em><em>]</em><em>]</em>) – </p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>results</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>, </em><em>Series</em><em>]</em><em>]</em><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.items" title="Permalink to this definition"></a></dt>
+<dd><p>Emulate an items view that yields an analysis result per layer ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.ItemsView" title="(in Python v3.6)"><em>ItemsView</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>, <a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load analysis results previously saved.
+The saving format is assumed to be that of <a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.save" title="hybrid_learning.concepts.analysis.results.AnalysisResult.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>folder_path</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.result_for">
+<span class="sig-name descname"><span class="pre">result_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult.result_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.result_for" title="Permalink to this definition"></a></dt>
+<dd><p>Return the results for a single layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>layer_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save analysis results.
+The format is one retrievable by <a class="reference internal" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.load" title="hybrid_learning.concepts.analysis.results.AnalysisResult.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a>.
+The results are saved in the following files within <code class="docutils literal notranslate"><span class="pre">folder_path</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;layer&gt;</span> <span class="pre">&lt;run&gt;</span> <span class="pre">&lt;i&gt;.pt</span></code>: torch PT file with ith embedding resulting
+from <code class="docutils literal notranslate"><span class="pre">&lt;run&gt;</span></code> on <code class="docutils literal notranslate"><span class="pre">&lt;layer&gt;</span></code>; can be loaded to an embedding using
+<a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load()</span></code></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stats.csv</span></code>: CSV file holding a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with
+each rows holding an embedding statistics;
+additional columns are <code class="docutils literal notranslate"><span class="pre">'layer'</span></code>, <code class="docutils literal notranslate"><span class="pre">'run'</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">'embedding_{i}'</span></code>, where the <code class="docutils literal notranslate"><span class="pre">'embedding_{i}'</span></code> column holds the
+path to the ith PT-saved embedding corresponding of the row
+relative to the location of <code class="docutils literal notranslate"><span class="pre">stats.csv</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Also the .npz legacy format is accepted and determined from the
+file ending.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>folder_path</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – the root folder to save files under;
+must not yet exist</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/results.html#AnalysisResult.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.to_pandas" title="Permalink to this definition"></a></dt>
+<dd><p>Provide <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> multi-indexed by layer and
+run w/ info for each run.
+The information for each run is the one obtained by
+<a class="reference internal" href="hybrid_learning.concepts.analysis.results.ResultsHandle.html#hybrid_learning.concepts.analysis.results.ResultsHandle.emb_info_to_pandas" title="hybrid_learning.concepts.analysis.results.ResultsHandle.emb_info_to_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">emb_info_to_pandas()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with run result information
+multi-indexed by <code class="docutils literal notranslate"><span class="pre">(layer,</span> <span class="pre">run)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.results.AnalysisResult.results">
+<span class="sig-name descname"><span class="pre">results</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><span class="pre">ConceptEmbedding</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.core.series.Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.results.AnalysisResult.results" title="Permalink to this definition"></a></dt>
+<dd><p>The dict storage of the managed results.
+Format: <code class="docutils literal notranslate"><span class="pre">{layer_id:</span> <span class="pre">{run:</span> <span class="pre">([embedding1,</span> <span class="pre">embedding2,</span> <span class="pre">...],</span>
+<span class="pre">results_series)}}</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.analysis.results.html" class="btn btn-neutral float-left" title="results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.analysis.results.BestEmbeddingResult.html" class="btn btn-neutral float-right" title="BestEmbeddingResult" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

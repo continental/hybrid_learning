@@ -1,0 +1,6 @@
+get\_efficientdet\_config
+=========================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.fuzzy_exp_models
+
+.. autofunction:: get_efficientdet_config

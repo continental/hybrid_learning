@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DatasetWrapper &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="base" href="hybrid_learning.datasets.base.html" />
+    <link rel="prev" title="ActivationDatasetWrapper" href="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html">ActivationDatasetWrapper</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">DatasetWrapper</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.activations_handle.html">activations_handle</a> &raquo;</li>
+      <li>DatasetWrapper</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.activations_handle.DatasetWrapper.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="datasetwrapper">
+<h1>DatasetWrapper<a class="headerlink" href="#datasetwrapper" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.activations_handle.</span></span><span class="sig-name descname"><span class="pre">DatasetWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#DatasetWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDataset</span></code></a></p>
+<p>Wrap a dataset or subset to add caches or transforms.
+Wrapping a dataset with a <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper" title="hybrid_learning.datasets.activations_handle.DatasetWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">DatasetWrapper</span></code></a> has the same effect
+as the in-place version</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">transforms_cache</span> <span class="o">=</span> <span class="n">new_cache</span> <span class="o">+</span> <span class="n">cache</span>
+<span class="n">dataset</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span> <span class="o">+</span> <span class="n">new_transforms</span>
+</pre></div>
+</div>
+<p>but without changing the wrapped dataset.
+In case the data is a <a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Subset" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.Subset</span></code></a> instance,
+care is taken to correctly retrieve the descriptor of the subsetted
+data (without mixing up indices), see <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">descriptor()</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a> is read-only, and the dataset should not be
+changed. Create a new wrapper if this is necessary.</p>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset</span></code></a></p></td>
+<td><p>The wrapped dataset.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings of the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(idx)</p></td>
+<td><p>Wrap the __getitem__ of the wrapped dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code></a>(i)</p></td>
+<td><p>Wrap descriptor method of wrapped dataset.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.getitem" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(idx)</p></td>
+<td><p>Wrap the __getitem__ of the wrapped dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code></a>(i)</p></td>
+<td><p>Wrap descriptor method of wrapped dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset, **data_args)</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__len__" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+<td><p>Length determined by the length of the wrapped dataset.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__init__" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(dataset, **data_args)</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__len__" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.__len__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code></a>()</p></td>
+<td><p>Length determined by the length of the wrapped dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Nice printing function.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Dataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#DatasetWrapper.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Subset" title="torch.utils.data.Subset"><code class="docutils literal notranslate"><span class="pre">torch.utils.data.Subset</span></code></a><em>, </em><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><em>BaseDataset</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>]</em>) – Dataset to wrap; must be a sequence of tuples of
+<code class="docutils literal notranslate"><span class="pre">(image,</span> <span class="pre">ground_truth)</span></code> with both image and ground-truth
+of type <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#DatasetWrapper.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__len__" title="Permalink to this definition"></a></dt>
+<dd><p>Length determined by the length of the wrapped dataset.
+See <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor">
+<span class="sig-name descname"><span class="pre">descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#DatasetWrapper.descriptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.descriptor" title="Permalink to this definition"></a></dt>
+<dd><p>Wrap descriptor method of wrapped dataset.
+It is assumed that either <a class="reference internal" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset</span></code></a> or
+<code class="docutils literal notranslate"><span class="pre">self.dataset.dataset</span></code> provide a function
+<code class="docutils literal notranslate"><span class="pre">descriptor(i:</span> <span class="pre">int)</span></code>. This is e.g. the case for a
+<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.base.BaseDataset</span></code></a> or a
+<a class="reference external" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Subset" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.utils.data.Subset</span></code></a> instance.
+In case of a subset instance, care is taken to heed the index shuffling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper.getitem">
+<span class="sig-name descname"><span class="pre">getitem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/activations_handle.html#DatasetWrapper.getitem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.getitem" title="Permalink to this definition"></a></dt>
+<dd><p>Wrap the __getitem__ of the wrapped dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a>[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>, <em>Image</em>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a>[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>, <em>Image</em>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a>[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>, <em>Image</em>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper.__parameters__">
+<span class="sig-name descname"><span class="pre">__parameters__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.__parameters__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dataset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="https://pytorch.org/docs/stable/data.html#torch.utils.data.Subset" title="torch.utils.data.Subset"><code class="docutils literal notranslate"><span class="pre">torch.utils.data.Subset</span></code></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset" title="hybrid_learning.datasets.base.BaseDataset"><span class="pre">BaseDataset</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.activations_handle.DatasetWrapper.dataset" title="Permalink to this definition"></a></dt>
+<dd><p>The wrapped dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper.html" class="btn btn-neutral float-left" title="ActivationDatasetWrapper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.base.html" class="btn btn-neutral float-right" title="base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

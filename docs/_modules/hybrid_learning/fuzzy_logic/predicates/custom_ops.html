@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.predicates.custom_ops &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.predicates.custom_ops</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.predicates.custom_ops</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Custom fuzzy logic operations.&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+
+<span class="kn">from</span> <span class="nn">..logic_base</span> <span class="kn">import</span> <span class="n">Merge</span><span class="p">,</span> <span class="n">TorchOperation</span>
+<span class="kn">from</span> <span class="nn">..tnorm_connectives</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">...datasets.transforms.encoder</span> <span class="kn">import</span> <span class="n">same_padding</span>
+<span class="kn">from</span> <span class="nn">...datasets.base</span> <span class="kn">import</span> <span class="n">add_gaussian_peak</span>
+
+
+<div class="viewcode-block" id="LambdaOp"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp">[docs]</a><span class="k">class</span> <span class="nc">LambdaOp</span><span class="p">(</span><span class="n">Merge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provide a custom transformation on the sequence of values extracted from the annotations dict.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LambdaOp.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">in_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">],</span> <span class="n">trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Any</span><span class="p">],</span>
+                 <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;CustomOp&#39;</span><span class="p">,</span> <span class="n">arity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="n">symb</span><span class="o">=</span><span class="n">symb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">trafo</span>
+        <span class="sd">&quot;&quot;&quot;The operation to apply to the annotation values selected by ``in_keys``.</span>
+<span class="sd">        The output is added under :py:attr:`out_key`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arity</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;trafo&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">,</span> <span class="s1">&#39;arity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ARITY</span><span class="p">}</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">setting_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setting_defaults</span><span class="p">,</span> <span class="s1">&#39;arity&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+    
+<div class="viewcode-block" id="LambdaOp.operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.operation">[docs]</a>    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation_vals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply ``trafo`` to annotation values.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">(</span><span class="n">annotation_vals</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IsPartOfA"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA">[docs]</a><span class="k">class</span> <span class="nc">IsPartOfA</span><span class="p">(</span><span class="n">TorchOperation</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Unary predicate that calculates for each pixel location whether</span>
+<span class="sd">    it is part of an object segmentation.</span>
+<span class="sd">    The predicate accepts as input the segmentation mask information for objects</span>
+<span class="sd">    (encoding the predicate &quot;pixel ``p`` is a ``A``&quot; = ``IsA(p)``).</span>
+<span class="sd">    It returns a mask that for each pixel holds the truth value, whether</span>
+<span class="sd">    that pixel is part of an object, i.e. at each pixel position ``p`` the output is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \exists p_o: \text{IsA}(p_o) \wedge \text{IsPartOf}(p, p_o) \\</span>
+<span class="sd">        = \max_{p_o} \text{IsA}(p_o) \wedge \text{IsPartOf}(p, p_o)</span>
+
+<span class="sd">    It accepts 1D or 2D object masks of the shape ``[[batch x [channels x]] height x] width``,</span>
+<span class="sd">    in any format that can be parsed to a :py:class:`torch.Tensor`.</span>
+
+<span class="sd">    **Fuzzification**</span>
+
+<span class="sd">    As fuzzification of the exists quantifier, ``max`` is used.</span>
+<span class="sd">    The :py:attr:`logical_and` defines the fuzzification of ``AND``.</span>
+<span class="sd">    The values of the predicate ``IsA(.)`` are given by the pixel values of the input</span>
+<span class="sd">    segmentation mask.</span>
+<span class="sd">    The fuzzy ``IsPartOf`` relation is chosen to calculate as a Gaussian distance,</span>
+<span class="sd">    with a threshold of value :py:attr:`thresh` and distance</span>
+<span class="sd">    ``thresh_radius=int(kernel_size - 1) / 2`` for better computational performance:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        d(p, p&#39;) = \exp(- \frac{\|p - p&#39;\|_2^2}{2 \sigma^2}) \\</span>
+<span class="sd">        \text{IsPartOf}(p, p&#39;) := \begin{cases}</span>
+<span class="sd">        d(p, p&#39;) \text{if} \|p, p&#39;\|_1 &lt;= \text{thresh\_radius} \\</span>
+<span class="sd">        0 \text{else}</span>
+<span class="sd">        \end{cases}</span>
+
+<span class="sd">    with :math:`\sigma` chosen such that :math:`d(p, p&#39;) = \text{thresh}` for</span>
+<span class="sd">    :math:`\|p - p&#39;\|_2 = \text{thresh\_radius}`.</span>
+<span class="sd">    The per-pixel values of the ``IsPartOf`` predicate are stored in the</span>
+<span class="sd">    :py:attr:`_ispartof_values` mask which is then convoluted with the ``IsA`` values.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        An even :py:attr:`kernel_size` will have the same :py:attr:`_ispartof_values`</span>
+<span class="sd">        pixel values as the odd ``kernel_size-1``, only with a row and a column added</span>
+<span class="sd">        (on top/left for :py:attr:`conv_hang_front` ``True``, else on bottom/right).</span>
+
+<span class="sd">    **Choosing the right ``kernel_size``**</span>
+
+<span class="sd">    The shape of the used Gaussian can be defined by a pair of x-y-values ``(r, t)``.</span>
+<span class="sd">    The Gaussian then looks like</span>
+
+<span class="sd">    .. math:: G_{r,t}(x) = \exp\left(- \frac{ x^2 }{ \frac{r^2}{- \ln(t)}}} \right)</span>
+
+<span class="sd">    As ``thresh_radius``, ``int(kernel_size - 1) / 2`` is used, which also serves as</span>
+<span class="sd">    the cutoff distance. To choose the ``kernel_size`` such that</span>
+<span class="sd">    (1) the point ``(r, t)`` lies on the Gaussian, and</span>
+<span class="sd">    (2) the ``kernel_size`` cuts at threshold ``thresh``,</span>
+<span class="sd">    solve :math:`G_{r,t}(\frac{\text{k}-1}{2}) = \text{thresh}` for :math:`k` and gets</span>
+<span class="sd">    ``kernel_size=int(k)``.</span>
+<span class="sd">    E.g. to match the constraints that at 4 pixel shift (``r=4``), :math:`G(r)` should still be 0.8,</span>
+<span class="sd">    and the kernel should only cut off at a threshold of 0.1, the ``kernel_size`` must be</span>
+<span class="sd">    ``2*int(12.4) + 1=25``.</span>
+
+<span class="sd">    **Visualization example**</span>
+
+<span class="sd">    Visualization of the different logics:</span>
+
+<span class="sd">    &gt;&gt;&gt; import hybrid_learning.fuzzy_logic as fl</span>
+<span class="sd">    &gt;&gt;&gt; import torch, torchvision.transforms.functional as F, matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; # Builder for IsPartOf</span>
+<span class="sd">    &gt;&gt;&gt; P = fl.predicates.custom_ops.IsPartOfA.with_(kernel_size=10, thresh=0.01, conv_hang_front=False)</span>
+<span class="sd">    &gt;&gt;&gt; # The sample input mask</span>
+<span class="sd">    &gt;&gt;&gt; t = torch.zeros([1, 1, 11, 11])</span>
+<span class="sd">    &gt;&gt;&gt; t[:, :, 4, 4], t[:, :, 5, 8] = 0.75, 0.5</span>
+<span class="sd">    &gt;&gt;&gt; # The tensors to compare</span>
+<span class="sd">    &gt;&gt;&gt; figs = dict(segmask=t)  # input</span>
+<span class="sd">    &gt;&gt;&gt; for logic in (fl.LukasiewiczLogic(), fl.ProductLogic(), fl.GoedelLogic()):</span>
+<span class="sd">    ...    title = f&#39;IsPartOfA ({logic.__class__.__name__.replace(&quot;Logic&quot;, &quot;&quot;)})&#39;</span>
+<span class="sd">    ...    p = P(&quot;pedestrian&quot;, logical_and=logic.logical_(&#39;AND&#39;))</span>
+<span class="sd">    ...    figs[title] = p({&quot;pedestrian&quot;: t})[p.out_key]</span>
+<span class="sd">    &gt;&gt;&gt; # Plot</span>
+<span class="sd">    &gt;&gt;&gt; fig, axes = plt.subplots(1, len(figs), figsize=(len(figs)*3, 3), squeeze=False)</span>
+<span class="sd">    &gt;&gt;&gt; for i, (title, tens) in enumerate(figs.items()):</span>
+<span class="sd">    ...     shown_img = axes[0, i].imshow(F.to_pil_image(tens.view(t.size()[2:])))</span>
+<span class="sd">    ...     _ = axes[0, i].set_title(title)</span>
+<span class="sd">    &gt;&gt;&gt; plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)</span>
+<span class="sd">    &gt;&gt;&gt; cax = plt.axes([.85, .25, 0.01, 0.5])</span>
+<span class="sd">    &gt;&gt;&gt; _ = plt.colorbar(shown_img, cax=cax, orientation=&#39;vertical&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;IsPartOfA&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kernel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The size of the kernel to use.</span>
+<span class="sd">        The standard deviation of the gaussian is determined using</span>
+<span class="sd">        this as radius and :py:attr:`thresh`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thresh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The value the Gaussian should have at ``1/2 kernel_size``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thresh</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">conv_hang_front</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether the cutoff modelled by the ``IsPartOfA`` convolution should</span>
+<span class="sd">        hang in the front dimensions in case of unequal padding.</span>
+<span class="sd">        Internals: To achieve hanging towards the back, the padding must be chosen to hang front.&quot;&quot;&quot;</span>
+        <span class="n">padding</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_zero_pad</span><span class="o">.</span><span class="n">padding</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">rear_minus_front</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">padding</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">padding</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">rear_minus_front</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_kernel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Quadratic kernel size tuple for internal usage.&quot;&quot;&quot;</span>
+        <span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ispartof_values</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;Non-quadratic kernel size </span><span class="si">{}</span><span class="s2"> found!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kernel_size</span>
+
+<div class="viewcode-block" id="IsPartOfA.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Merge</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+                 <span class="n">logical_and</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">conv_hang_front</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">other_setts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        The parameters ``kernel_size`` and ``thresh`` are specifiers</span>
+<span class="sd">        for the distance function encoding the is-part-of relation.</span>
+<span class="sd">        The ``logical_and`` is the logical ``AND`` callable that accepts a list</span>
+<span class="sd">        of two tensors with values in [0, 1] and returns their pixel-wise logical ``AND``.</span>
+<span class="sd">        The ``in_key`` is the key of the fuzzy mask which encodes the per-pixel</span>
+<span class="sd">        membership degree to the class of interest.</span>
+<span class="sd">        E.g. if &quot;is part of a pedestrian&quot; should be calculated, ``&quot;pedestrian&quot;``</span>
+<span class="sd">        is a good choice.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="o">**</span><span class="n">other_setts</span><span class="p">)</span>
+
+        <span class="c1"># AND</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="n">logical_and</span>
+        <span class="sd">&quot;&quot;&quot;Callable accepting a list of two tensors with values in [0, 1]</span>
+<span class="sd">        and returning their pixel-wise logical ``AND``.</span>
+<span class="sd">        Mandatory argument.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Please specify a logical_and.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Specification / calculation of the IsPartOf relation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">thresh</span>
+        <span class="sd">&quot;&quot;&quot;Internal storage for :py:attr:`thresh`.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Operations</span>
+        <span class="k">if</span> <span class="n">kernel_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conv_hang_front</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;IsPartOfA initialized with odd kernel_size and conv_hang_front==False: &quot;</span>
+                                        <span class="s2">&quot;For odd kernel sizes conv_hang_front is always True.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ispartof_values</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_ispartof_kernel</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">thresh</span><span class="p">,</span>
+                                                                          <span class="n">conv_hang_front</span><span class="o">=</span><span class="n">conv_hang_front</span><span class="p">)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The kernel storing the non-zero values of the distance function.</span>
+<span class="sd">        The pixel at coordinate :math:`p` has the value :math:`d(p, \text{center\_of\_kernel})`</span>
+<span class="sd">        for the distance function :math:`d` used to encode the ``IsPartOf`` predicate.</span>
+<span class="sd">        Shape: ``(batch, channels, kernel_h, kernel_w, height, width) = (1, 1, kernel_h, kernel_w, 1, 1)``.</span>
+<span class="sd">        The non-zero ``IsPartOf`` relation values at each pixel location are stored in this kernel. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Unfold</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Unfold</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zero_pad</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">(</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">same_padding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_size</span><span class="p">,</span> <span class="n">hang_front</span><span class="o">=</span><span class="ow">not</span> <span class="n">conv_hang_front</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="IsPartOfA.create_ispartof_kernel"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.create_ispartof_kernel">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_ispartof_kernel</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                               <span class="n">thresh_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">conv_hang_front</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create the kernel tensor defining the ``IsPartOf`` relation.</span>
+<span class="sd">        For details see :py:attr:`_ispartof_values`.&quot;&quot;&quot;</span>
+        <span class="n">thresh_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">thresh_radius</span> <span class="k">if</span> <span class="n">thresh_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">int</span><span class="p">((</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">kernel_np</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">])</span>
+        <span class="n">pad_top</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">pad_left</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">same_padding</span><span class="p">((</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">),</span> <span class="n">hang_front</span><span class="o">=</span><span class="ow">not</span> <span class="n">conv_hang_front</span><span class="p">)</span>
+        <span class="n">kernel_np</span> <span class="o">=</span> <span class="n">add_gaussian_peak</span><span class="p">(</span>
+            <span class="n">kernel_np</span><span class="p">,</span>
+            <span class="n">centroid</span><span class="o">=</span><span class="p">(</span><span class="n">pad_top</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">pad_left</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">binary_radius</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mf">.5</span><span class="p">,</span> <span class="n">thresh_radius</span><span class="p">),</span> <span class="n">radius_value</span><span class="o">=</span><span class="n">thresh</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">kernel_np</span><span class="o">.</span><span class="n">shape</span><span class="p">])</span>
+        <span class="n">kernel</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">kernel_np</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span>
+                                            <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">kernel</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span>
+                           <span class="n">thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thresh</span><span class="p">,</span>
+                           <span class="n">conv_hang_front</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">conv_hang_front</span><span class="p">,</span>
+                           <span class="n">logical_and</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span><span class="p">),</span>
+                    <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">setting_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Defaults used for settings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">logical_and</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conv_hang_front</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setting_defaults</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IsPartOfA.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.torch_operation">[docs]</a>    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate value of IsPartOfA predicate for given object segmentation mask.</span>
+<span class="sd">        Allowed mask shapes (1D-4D): ``([[batch, [1,]] height,] width)``</span>
+<span class="sd">        The output shape is that of the input mask.</span>
+<span class="sd">        Invalid shapes raise a :py:class:`ValueError`.</span>
+
+<span class="sd">        The device of ``mask`` is used for calculations and will be the device</span>
+<span class="sd">        of the output tensor.</span>
+<span class="sd">        As a side effect, the internal storage of the ``IsPartOf`` values is</span>
+<span class="sd">        moved to that device, assuming that the device of inputs does not change frequently.&quot;&quot;&quot;</span>
+        <span class="c1"># region Correct size: ensure a view where image is batch x 1 x h x w</span>
+        <span class="n">orig_size</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+        <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">view</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">[]),</span> <span class="o">*</span><span class="n">orig_size</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected mask size </span><span class="si">{}</span><span class="s2">. Expected mask of size [batch [x channel]] x h x w&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># pad &amp; unfold the &quot;is a ...&quot; mask</span>
+        <span class="n">isa_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zero_pad</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="c1"># unfolded shape: (batch, channels x kernel_h x kernel_w, h x w)</span>
+        <span class="n">isa_mask</span> <span class="o">=</span> <span class="n">isa_mask</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">promote_types</span><span class="p">(</span><span class="n">isa_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">))</span>
+        <span class="n">isa_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">(</span><span class="n">isa_mask</span><span class="p">)</span>
+        <span class="c1"># new shape: (batch, channels, kernel_h, kernel_w, h, w)</span>
+        <span class="n">isa_mask</span> <span class="o">=</span> <span class="n">isa_mask</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">()[:</span><span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_size</span><span class="p">,</span> <span class="o">*</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+
+        <span class="c1"># apply AND to merge &quot;is a ...&quot; and &quot;is part of ...&quot; (on common device)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ispartof_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispartof_values</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">isa_mask</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>  <span class="c1"># select device</span>
+        <span class="n">isa_and_ispartof_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span><span class="p">([</span>
+            <span class="n">isa_mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispartof_values</span><span class="p">])</span>
+
+        <span class="c1"># apply exists quantifier</span>
+        <span class="c1"># new shape: (batch, channels, h, w)</span>
+        <span class="n">out_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">isa_and_ispartof_mask</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">out_mask</span> <span class="o">=</span> <span class="n">out_mask</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out_mask</span></div></div>
+
+
+<div class="viewcode-block" id="AbstractFuzzyIntersect"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect">[docs]</a><span class="k">class</span> <span class="nc">AbstractFuzzyIntersect</span><span class="p">(</span><span class="n">TorchOperation</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract class to define fuzzy intersection (over union) operations.</span>
+<span class="sd">    The core method provided in this class is :py:meth:`torch_intersect_proportion`.&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">logical_and</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span><span class="p">,</span> <span class="n">logical_or</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logical_or</span><span class="p">,</span>
+                       <span class="n">mask_dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_dims</span><span class="p">,</span> <span class="n">keep_dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_dims</span><span class="p">,),</span>
+                <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">setting_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">logical_and</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">logical_or</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">mask_dims</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">keep_dims</span><span class="o">=</span><span class="kc">False</span><span class="p">,),</span>
+                <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setting_defaults</span><span class="p">}</span>
+
+<div class="viewcode-block" id="AbstractFuzzyIntersect.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">in_keys</span><span class="p">,</span>
+                 <span class="n">logical_and</span><span class="p">:</span> <span class="n">Merge</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">logical_or</span><span class="p">:</span> <span class="n">Merge</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mask_dims</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                 <span class="n">keep_dims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="n">logical_and</span>
+        <span class="sd">&quot;&quot;&quot;The logical AND operation to use for calculating mask intersection</span>
+<span class="sd">        (assumed to be commutative).</span>
+<span class="sd">        If ``None``, product logic AND is used.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logical_or</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="n">logical_or</span>
+        <span class="sd">&quot;&quot;&quot;The logical OR operation to use for calculating mask union</span>
+<span class="sd">        (assumed to be commutative).</span>
+<span class="sd">        If ``None``, it calculates as ``1-self.logical_and([1-mask_a, 1-mask_b])``.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_dims</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask_dims</span><span class="p">,)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_dims</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">mask_dims</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The dimensions along which the area of a mask is defined</span>
+<span class="sd">        (after broadcasting).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_dims</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Received invalid mask_dims specification; &quot;</span>
+                            <span class="s2">&quot;should be int or sequence of ints but was of type </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mask_dims</span><span class="p">),</span> <span class="n">mask_dims</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_dims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">keep_dims</span>
+        <span class="sd">&quot;&quot;&quot;Whether to keep dim 1 entries in the ``mask_dims`` dimensions.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AbstractFuzzyIntersect.torch_intersect"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.torch_intersect">[docs]</a>    <span class="k">def</span> <span class="nf">torch_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">:</span>
+        <span class="n">intersect_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_and</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+            <span class="k">else</span> <span class="n">product</span><span class="o">.</span><span class="n">AND</span><span class="o">.</span><span class="n">torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">intersect_mask</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractFuzzyIntersect.torch_union"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.torch_union">[docs]</a>    <span class="k">def</span> <span class="nf">torch_union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_or</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">union_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outer</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mask</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">]</span>
+            <span class="n">union_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_intersect</span><span class="p">(</span><span class="o">*</span><span class="n">outer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">union_mask</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractFuzzyIntersect.torch_intersect_proportion"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AbstractFuzzyIntersect.torch_intersect_proportion">[docs]</a>    <span class="k">def</span> <span class="nf">torch_intersect_proportion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">masks</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                                   <span class="n">iou</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mask_dims</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate to what degree ``mask_a`` is covered by ``mask_b``.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: Depending on ``iou``, this is the following for masks</span>
+<span class="sd">            ``A=mask_a``, ``B=mask_b``, and fuzzy set membership function :math:`\in`:</span>
+<span class="sd">        </span>
+<span class="sd">            - ``iou=True``: intersection over union between ``mask_a`` and ``mask_b`` as</span>
+<span class="sd">              :math:`\min(1, \frac{\sum_c c\in A \wedge c\in B}{(\sum_c c \in A \vee c \in B)})`</span>
+<span class="sd">            - ``iou=False``: what proportion of ``mask_a`` area intersects with ``mask_b`` as</span>
+<span class="sd">              :math:`\min(1, \frac{\sum_c c\in A \wedge c\in B}{\sum_a a \in A})`</span>
+<span class="sd">              (here, :math:`a\vee b` is calculated as :math:`1 - ((1-a) \wedge (1-b))`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask_dims</span> <span class="o">=</span> <span class="n">mask_dims</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_dims</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">masks</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">broadcast_tensors</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">iou</span><span class="p">:</span>  <span class="c1"># mask a</span>
+            <span class="n">denom_area</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">masks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># masks logical union</span>
+            <span class="n">denom_area</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_union</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span>
+        <span class="n">denom</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">denom_area</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">mask_dims</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_dims</span><span class="p">)</span>
+
+        <span class="n">intersect</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">torch_intersect</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">mask_dims</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_dims</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">denom</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">denom</span><span class="p">)),</span>
+                           <span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">denom</span><span class="p">),</span>
+                           <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">intersect</span> <span class="o">/</span> <span class="n">denom</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="CoveredBy"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy">[docs]</a><span class="k">class</span> <span class="nc">CoveredBy</span><span class="p">(</span><span class="n">AbstractFuzzyIntersect</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the proportion of one mask covered by another.</span>
+<span class="sd">    The value calculates for masks :math:`A, B` and fuzzy set membership function</span>
+<span class="sd">    :math:`\in` as:</span>
+
+<span class="sd">    .. math:: \min(1, \frac{\sum_c c\in A \wedge c\in B}{\sum_a a \in A})</span>
+
+<span class="sd">    This is the summed fuzzy set intersection over the summed mask :math:`A`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;CoveredBy&quot;</span>
+
+<div class="viewcode-block" id="CoveredBy.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy.torch_operation">[docs]</a>    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate to what degree ``mask_a`` is covered by ``mask_b``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_intersect_proportion</span><span class="p">(</span><span class="n">mask_a</span><span class="p">,</span> <span class="n">mask_b</span><span class="p">,</span> <span class="n">iou</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IoUWith"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith">[docs]</a><span class="k">class</span> <span class="nc">IoUWith</span><span class="p">(</span><span class="n">AbstractFuzzyIntersect</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the intersection over union between two masks.</span>
+<span class="sd">    The value calculates for masks :math:`A, B` and fuzzy set membership function</span>
+<span class="sd">    :math:`\in` as:</span>
+
+<span class="sd">    .. math:: \min(1, \frac{\sum_c c\in A \wedge c\in B}{(\sum_c c \in A \vee c \in B)})</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;IoUWith&quot;</span>
+    <span class="n">IS_COMMUTATIVE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="IoUWith.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith.torch_operation">[docs]</a>    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate set intersection over union between ``mask_a`` and ``mask_b``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">torch_intersect_proportion</span><span class="p">(</span><span class="n">mask_a</span><span class="p">,</span> <span class="n">mask_b</span><span class="p">,</span> <span class="n">iou</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BestIoUWith"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith">[docs]</a><span class="k">class</span> <span class="nc">BestIoUWith</span><span class="p">(</span><span class="n">AbstractFuzzyIntersect</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given two stacked sets of masks ``masks_a`` and ``masks_b``,</span>
+<span class="sd">    calculate for each mask in ``masks_a`` the best IoU with any mask in ``masks_b``.</span>
+<span class="sd">    Precisely, all entries in ``masks_a`` and ``masks_b`` are compared via IoU</span>
+<span class="sd">    by varying over all dimensions except for :py:attr:`mask_dims` and :py:attr:`batch_dims`.</span>
+<span class="sd">    The returned result is the stacked best IoUs, one for each mask in ``masks_a``.</span>
+<span class="sd">    The input masks are assumed to have the same dimensionality in the :py:attr:`mask_dims`.</span>
+<span class="sd">    The output mask will have the same size as ``masks_a`` only with :py:attr:`mask_dims` squeezed.</span>
+
+<span class="sd">    Consider ``mask_a.size()==[batch, stack_a, h, w]`` and ``mask_b.size()==[batch, stack_b, h, w]``.</span>
+<span class="sd">    The settings :py:attr:`mask_dim` = ``(-2, -1)`` (``h`` and ``w``) and</span>
+<span class="sd">    :py:attr:`batch_dim` = ``(0,)`` then mean:</span>
+
+<span class="sd">    - The output will have size ``[batch, stack_a]``.</span>
+<span class="sd">    - The entry at index ``[batch_idx, s_a]`` is the maximum of IoUs between the mask ``masks_a[batch_idx, s_a]``</span>
+<span class="sd">      and mask ``masks_b[batch_idx, s_b]`` for any value ``s_b in \range(stack_b)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;BestIoUWith&#39;</span>
+
+<div class="viewcode-block" id="BestIoUWith.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">in_keys</span><span class="p">,</span>
+                 <span class="n">batch_dims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">in_keys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_dims</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch_dims</span>
+        <span class="sd">&quot;&quot;&quot;The dimensions to match of masks_a and masks_b before IoU comparison.</span>
+<span class="sd">        Defaults to ``(0,)`` in case the masks have more than ``len(self.mask_dims)+1`` dimensions,</span>
+<span class="sd">        else defaults to ``(,)``.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="BestIoUWith.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith.torch_operation">[docs]</a>    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">masks_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">masks_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Calculate for each mask in ``masks_a`` with those in ``masks_b`` at same non-stack dims.&quot;&quot;&quot;</span>
+        <span class="n">batch_dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_dims</span>
+        <span class="k">if</span> <span class="n">batch_dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_dims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_dims</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">()</span>
+        
+        <span class="c1"># No negative dims:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_b</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> \
+            <span class="s2">&quot;Cannot calc BestIoU for shapes of different length; got shapes </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">masks_b</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">batch_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">if</span> <span class="n">d</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">+</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">batch_dims</span><span class="p">]</span>
+        <span class="n">mask_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">if</span> <span class="n">d</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">+</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_dims</span><span class="p">]</span>
+        <span class="n">other_dims</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">batch_dims</span><span class="p">,</span> <span class="o">*</span><span class="n">mask_dims</span><span class="p">]</span>
+        
+        <span class="n">batch_dim_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">batch_dims</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">masks_b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span> <span class="k">for</span> <span class="n">dim</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch_dims</span><span class="p">,</span> <span class="n">batch_dim_vals</span><span class="p">))</span>
+
+        <span class="c1"># Move mask_dims to back and stacked dims to front to get shape [-1, *batch_dim_vals, *mask_dim_vals]</span>
+        <span class="n">stack_dims_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other_dims</span><span class="p">]</span>
+        <span class="n">stack_dim_vals_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">stack_dims_a</span><span class="p">]</span>
+        <span class="n">other_dim_vals_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">masks_a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">other_dims</span><span class="p">]</span>
+        <span class="n">permutation_a</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">stack_dims_a</span><span class="p">,</span> <span class="o">*</span><span class="n">other_dims</span><span class="p">]</span>
+        <span class="n">masks_a_flat</span> <span class="o">=</span> <span class="n">masks_a</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="n">permutation_a</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">other_dim_vals_a</span><span class="p">])</span>
+
+        <span class="n">stack_dims_b</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">masks_b</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">other_dims</span><span class="p">]</span>
+        <span class="n">other_dim_vals_b</span> <span class="o">=</span> <span class="p">[</span><span class="n">masks_b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">other_dims</span><span class="p">]</span>
+        <span class="n">masks_b_flat</span> <span class="o">=</span> <span class="n">masks_b</span><span class="o">.</span><span class="n">permute</span><span class="p">([</span><span class="o">*</span><span class="n">stack_dims_b</span><span class="p">,</span> <span class="o">*</span><span class="n">other_dims</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">other_dim_vals_b</span><span class="p">])</span>
+
+        <span class="c1"># Retrieve output of shape [prod(stack_dim_vals_a), *batch_dim_vals]</span>
+        <span class="n">best_ious</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">mask_a</span> <span class="ow">in</span> <span class="n">masks_a_flat</span><span class="p">:</span>
+            <span class="n">best_ious</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_intersect_proportion</span><span class="p">(</span>
+                <span class="n">mask_a</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">masks_b_flat</span><span class="p">,</span> <span class="n">iou</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">mask_dims</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">mask_dims</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">best_ious_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">best_ious</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Permute back:</span>
+        <span class="c1"># shape [prod(stack_dim_vals_a), *batch_dim_vals] -&gt; [*stack_dim_vals_a, *batch_dim_vals, 1...1]</span>
+        <span class="n">best_ious_t</span> <span class="o">=</span> <span class="n">best_ious_t</span><span class="o">.</span><span class="n">view</span><span class="p">([</span><span class="o">*</span><span class="n">stack_dim_vals_a</span><span class="p">,</span> <span class="o">*</span><span class="n">batch_dim_vals</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mask_dims</span><span class="p">))])</span>
+        <span class="n">best_ious_t</span> <span class="o">=</span> <span class="n">best_ious_t</span><span class="o">.</span><span class="n">permute</span><span class="p">([</span><span class="n">permutation_a</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">permutation_a</span><span class="p">))])</span>
+        
+        <span class="c1"># Discard 1s in mask dims if requested:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_dims</span><span class="p">:</span>
+            <span class="n">best_ious_t</span> <span class="o">=</span> <span class="n">best_ious_t</span><span class="o">.</span><span class="n">view</span><span class="p">([</span><span class="n">best_ious_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">best_ious_t</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                                            <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mask_dims</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">best_ious_t</span></div></div>
+
+
+
+<div class="viewcode-block" id="AllNeighbors"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors">[docs]</a><span class="k">class</span> <span class="nc">AllNeighbors</span><span class="p">(</span><span class="n">TorchOperation</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Given a mask of truth values representing the output of a formula apply average pooling.</span>
+<span class="sd">    Formally, the output mask :math:`(\text{AllNeighbors}(p))_{p\in\text{mask}}`</span>
+<span class="sd">    for a mask representing the output of the predicate :math:`M` is defined as</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \text{AllNeighbors}(p) \coloneqq \left(</span>
+<span class="sd">        \forall p_2\in\text{Neighborhood}(p)\colon M(p_2) \right)</span>
+
+<span class="sd">    with the choice :math:`\forall=\text{mean}` and</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        (p_2\in\text{Neighborhood}(p)) \coloneqq</span>
+<span class="sd">        ( \|p-p_2\|_1 \leq \lfloor\frac{1}{2}(\text{kernel\_size} - 1)\rfloor ) \;.</span>
+
+<span class="sd">    To ensure that neighborhoods are centralized around their output pixel,</span>
+<span class="sd">    even kernel sizes are reduced by 1.</span>
+<span class="sd">    A zero padding ensures that the returned mask is of the same size as the input.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AllNeighbors&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,),</span> <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">setting_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Defaults used for settings.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setting_defaults</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">kernel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The width of the square representing a neighborhood.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_avg_pool</span><span class="o">.</span><span class="n">kernel_size</span>
+
+<div class="viewcode-block" id="AllNeighbors.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Merge</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">17</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">other_setts</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">in_key</span><span class="p">,</span> <span class="o">**</span><span class="n">other_setts</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">kernel_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Increased even kernel_size </span><span class="si">%d</span><span class="s2"> by 1 to ensure centralized neighborhoods.&quot;</span><span class="p">,</span>
+                                        <span class="n">kernel_size</span><span class="p">)</span>
+            <span class="n">kernel_size</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_avg_pool</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">AvgPool2d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">AvgPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zero_pad</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ZeroPad2d</span><span class="p">(</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">same_padding</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="AllNeighbors.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors.torch_operation">[docs]</a>    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply average pooling to single input and return mask of the same size.&quot;&quot;&quot;</span>
+        <span class="n">out_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zero_pad</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">out_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_avg_pool</span><span class="p">(</span><span class="n">out_mask</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out_mask</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

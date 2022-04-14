@@ -1,5 +1,5 @@
-hybrid\_learning.datasets.base.cross\_validation\_splits
-========================================================
+cross\_validation\_splits
+=========================
 
 .. currentmodule:: hybrid_learning.datasets.base
 

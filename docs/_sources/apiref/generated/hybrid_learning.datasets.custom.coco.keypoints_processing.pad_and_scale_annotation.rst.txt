@@ -1,0 +1,6 @@
+pad\_and\_scale\_annotation
+===========================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autofunction:: pad_and_scale_annotation

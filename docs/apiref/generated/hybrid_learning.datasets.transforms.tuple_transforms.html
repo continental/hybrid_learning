@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tuple_transforms &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Compose" href="hybrid_learning.datasets.transforms.tuple_transforms.Compose.html" />
-    <link rel="prev" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_square" href="hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html" /> 
+    <link rel="next" title="ApplyMask" href="hybrid_learning.datasets.transforms.tuple_transforms.ApplyMask.html" />
+    <link rel="prev" title="padding_for_ratio" href="hybrid_learning.datasets.transforms.image_transforms.padding_for_ratio.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -94,135 +47,116 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.common.html">common</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.dict_transforms.html">dict_transforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.encoder.html">encoder</a></li>
 <li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.image_transforms.html">image_transforms</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">tuple_transforms</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.transforms.utils.html">utils</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.datasets.transforms.html">transforms</a> &raquo;</li>
-        
       <li>tuple_transforms</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.datasets.transforms.tuple_transforms.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="tuple-transforms">
-<h1>tuple_transforms<a class="headerlink" href="#tuple-transforms" title="Permalink to this headline">¶</a></h1>
+<h1>tuple_transforms<a class="headerlink" href="#tuple-transforms" title="Permalink to this headline"></a></h1>
 <p class="rubric">Description</p>
-<span class="target" id="module-hybrid_learning.datasets.transforms.tuple_transforms"></span><p>Transformations that modify tuples of <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">output)</span></code> on call
-(or use such trafos).</p>
+<span class="target" id="module-hybrid_learning.datasets.transforms.tuple_transforms"></span><p>Transformations that modify tuples of items on call.</p>
 <p>The tuple transformations are all based on <a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><code class="xref py py-class docutils literal notranslate"><span class="pre">TupleTransforms</span></code></a>.
 <a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReduceTuple</span></code></a> can be used to merge the output tuple of a
 <a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><code class="xref py py-class docutils literal notranslate"><span class="pre">TupleTransforms</span></code></a> into one output value.
 The <a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.Identity.html#hybrid_learning.datasets.transforms.tuple_transforms.Identity" title="hybrid_learning.datasets.transforms.tuple_transforms.Identity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Identity</span></code></a> transformation can be used as dummy transformation
 where necessary.</p>
 <p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.Compose.html#hybrid_learning.datasets.transforms.tuple_transforms.Compose" title="hybrid_learning.datasets.transforms.tuple_transforms.Compose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Compose</span></code></a></p></td>
-<td><p>Compose several tuple transforms by sequentially executing them.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.ApplyMask.html#hybrid_learning.datasets.transforms.tuple_transforms.ApplyMask" title="hybrid_learning.datasets.transforms.tuple_transforms.ApplyMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ApplyMask</span></code></a></p></td>
+<td><p>Given a 3-tuple of input, target, mask apply the mask to the first two.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.Identity.html#hybrid_learning.datasets.transforms.tuple_transforms.Identity" title="hybrid_learning.datasets.transforms.tuple_transforms.Identity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Identity</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.FlattenTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.FlattenTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.FlattenTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FlattenTuple</span></code></a></p></td>
+<td><p>Return the value of a sequence at selected index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.Identity.html#hybrid_learning.datasets.transforms.tuple_transforms.Identity" title="hybrid_learning.datasets.transforms.tuple_transforms.Identity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Identity</span></code></a></p></td>
 <td><p>Simple identity transformation for example for defaults.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnAll.html#hybrid_learning.datasets.transforms.tuple_transforms.OnAll" title="hybrid_learning.datasets.transforms.tuple_transforms.OnAll"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnAll</span></code></a></p></td>
+<td><p>Apply a given transformation to all tuple items.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnBothSides.html#hybrid_learning.datasets.transforms.tuple_transforms.OnBothSides" title="hybrid_learning.datasets.transforms.tuple_transforms.OnBothSides"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnBothSides</span></code></a></p></td>
 <td><p>Apply a given transformation to both input and target of a tuple in parallel.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnInput.html#hybrid_learning.datasets.transforms.tuple_transforms.OnInput" title="hybrid_learning.datasets.transforms.tuple_transforms.OnInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnInput</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnIndex.html#hybrid_learning.datasets.transforms.tuple_transforms.OnIndex" title="hybrid_learning.datasets.transforms.tuple_transforms.OnIndex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnIndex</span></code></a></p></td>
+<td><p>Apply a given transformation to tuple items at given indices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnInput.html#hybrid_learning.datasets.transforms.tuple_transforms.OnInput" title="hybrid_learning.datasets.transforms.tuple_transforms.OnInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnInput</span></code></a></p></td>
 <td><p>Apply a given one-value transformation only to the input of a two-tuple.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnTarget.html#hybrid_learning.datasets.transforms.tuple_transforms.OnTarget" title="hybrid_learning.datasets.transforms.tuple_transforms.OnTarget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnTarget</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OnTarget.html#hybrid_learning.datasets.transforms.tuple_transforms.OnTarget" title="hybrid_learning.datasets.transforms.tuple_transforms.OnTarget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OnTarget</span></code></a></p></td>
 <td><p>Apply a given one-value transformation only to the target of a two-tuple.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.OneSided.html#hybrid_learning.datasets.transforms.tuple_transforms.OneSided" title="hybrid_learning.datasets.transforms.tuple_transforms.OneSided"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OneSided</span></code></a></p></td>
-<td><p>Transformation that applies only to one element of a given tuple.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.PackMask.html#hybrid_learning.datasets.transforms.tuple_transforms.PackMask" title="hybrid_learning.datasets.transforms.tuple_transforms.PackMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PackMask</span></code></a></p></td>
+<td><p>Given a 3-tuple of prediction, target, mask tensors merge mask and target and return a two-tuple.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReduceTuple</span></code></a></p></td>
-<td><p>Transform <code class="docutils literal notranslate"><span class="pre">(input,</span> <span class="pre">target)</span></code> tuple and then reduce it to one value using a reduction func.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.ReduceTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReduceTuple</span></code></a></p></td>
+<td><p>Transform an unpacked input tuple and then reduce it to one value using a reduction func.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.SameSize.html#hybrid_learning.datasets.transforms.tuple_transforms.SameSize" title="hybrid_learning.datasets.transforms.tuple_transforms.SameSize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SameSize</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.SameSize.html#hybrid_learning.datasets.transforms.tuple_transforms.SameSize" title="hybrid_learning.datasets.transforms.tuple_transforms.SameSize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SameSize</span></code></a></p></td>
 <td><p>Given a tuple of input and target image, resize the target to the size of the input.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.SubsetTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.SubsetTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.SubsetTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SubsetTuple</span></code></a></p></td>
+<td><p>Return a tuple only containing the elements at given indices of input tuple.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TupleTransforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TupleTransforms</span></code></a></p></td>
-<td><p>Base class of tuple transformations.</p></td>
+<td><p>Base class of tuple transformations that accept the same amount of inputs as they provide outputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.TwoTupleTransforms.html#hybrid_learning.datasets.transforms.tuple_transforms.TwoTupleTransforms" title="hybrid_learning.datasets.transforms.tuple_transforms.TwoTupleTransforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TwoTupleTransforms</span></code></a></p></td>
+<td><p>Version of TupleTransforms for operating on two-tuples only.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.UnfoldTuple.html#hybrid_learning.datasets.transforms.tuple_transforms.UnfoldTuple" title="hybrid_learning.datasets.transforms.tuple_transforms.UnfoldTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnfoldTuple</span></code></a></p></td>
+<td><p>Convenience trafo that takes an iterable and returns it as tuple.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.transforms.tuple_transforms.UnpackMask.html#hybrid_learning.datasets.transforms.tuple_transforms.UnpackMask" title="hybrid_learning.datasets.transforms.tuple_transforms.UnpackMask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnpackMask</span></code></a></p></td>
+<td><p>Undo a <code class="docutils literal notranslate"><span class="pre">PackMask</span></code> operation on the target.</p></td>
 </tr>
 </tbody>
 </table>
@@ -230,58 +164,33 @@ where necessary.</p>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.datasets.transforms.tuple_transforms.Compose.html" class="btn btn-neutral float-right" title="Compose" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.datasets.transforms.image_transforms.pad_to_square.html" class="btn btn-neutral float-left" title="hybrid_learning.datasets.transforms.image_transforms.pad_to_square" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.transforms.image_transforms.padding_for_ratio.html" class="btn btn-neutral float-left" title="padding_for_ratio" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.transforms.tuple_transforms.ApplyMask.html" class="btn btn-neutral float-right" title="ApplyMask" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

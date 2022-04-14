@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TensorDictCache &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="custom" href="hybrid_learning.datasets.custom.html" />
+    <link rel="prev" title="PTCache" href="hybrid_learning.datasets.caching.PTCache.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.Cache.html">Cache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheCascade.html">CacheCascade</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheDict.html">CacheDict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheTuple.html">CacheTuple</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.DictCache.html">DictCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.FileCache.html">FileCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.JPGCache.html">JPGCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NPYCache.html">NPYCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NPZCache.html">NPZCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NoCache.html">NoCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.PTCache.html">PTCache</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">TensorDictCache</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.caching.html">caching</a> &raquo;</li>
+      <li>TensorDictCache</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.caching.TensorDictCache.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="tensordictcache">
+<h1>TensorDictCache<a class="headerlink" href="#tensordictcache" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.TensorDictCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.caching.</span></span><span class="sig-name descname"><span class="pre">TensorDictCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_safe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#TensorDictCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.TensorDictCache" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache" title="hybrid_learning.datasets.caching.DictCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictCache</span></code></a></p>
+<p>In-memory cache specifically for torch tensors.
+Other than a normal <a class="reference internal" href="hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache" title="hybrid_learning.datasets.caching.DictCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictCache</span></code></a> it takes care to move
+a <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> to CPU before saving it to the shared memory,
+since at the time being sharing of CUDA-tensors between sub-processes is
+not supported.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not expect speed improvements if CUDA based tensors are to be
+cached: Copying tensors from and to CPU is quite costly and
+comparable if not less efficient than loading from file.
+Consider using a <a class="reference internal" href="hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache" title="hybrid_learning.datasets.caching.PTCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">PTCache</span></code></a> in such cases.</p>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.put" title="hybrid_learning.datasets.caching.TensorDictCache.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>(descriptor, obj)</p></td>
+<td><p>Store torch <code class="docutils literal notranslate"><span class="pre">obj</span></code> under key <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> in a in-memory cache.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.load" title="hybrid_learning.datasets.caching.TensorDictCache.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(descriptor)</p></td>
+<td><p>Load and densify tensors from in-memory cache.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DictCache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.put" title="hybrid_learning.datasets.caching.TensorDictCache.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>(descriptor, obj)</p></td>
+<td><p>Store torch <code class="docutils literal notranslate"><span class="pre">obj</span></code> under key <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> in a in-memory cache.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.load" title="hybrid_learning.datasets.caching.TensorDictCache.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(descriptor)</p></td>
+<td><p>Load and densify tensors from in-memory cache.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p>Empty cache dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptors</span></code>()</p></td>
+<td><p>Return the keys (descriptors) of the cache dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Cache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.put" title="hybrid_learning.datasets.caching.TensorDictCache.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>(descriptor, obj)</p></td>
+<td><p>Store torch <code class="docutils literal notranslate"><span class="pre">obj</span></code> under key <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> in a in-memory cache.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.load" title="hybrid_learning.datasets.caching.TensorDictCache.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(descriptor)</p></td>
+<td><p>Load and densify tensors from in-memory cache.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">put_batch</span></code>(descriptors, objs)</p></td>
+<td><p>Store a batch of <code class="docutils literal notranslate"><span class="pre">objs</span></code> in this cache using according <code class="docutils literal notranslate"><span class="pre">descriptors</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_batch</span></code>(descriptors[, return_none_if])</p></td>
+<td><p>Load a batch of objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>()</p></td>
+<td><p>Empty cache dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptors</span></code>()</p></td>
+<td><p>Return the keys (descriptors) of the cache dict.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_dict</span></code>()</p></td>
+<td><p>Return a dict with all cached descriptors and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap</span></code>(getitem[, descriptor_map])</p></td>
+<td><p>Add this cache to the deterministic function <code class="docutils literal notranslate"><span class="pre">getitem</span></code> (which should have no side effects).</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.__init__" title="hybrid_learning.datasets.caching.TensorDictCache.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([sparse, thread_safe])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>DictCache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.TensorDictCache.__init__" title="hybrid_learning.datasets.caching.TensorDictCache.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([sparse, thread_safe])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Cache</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">self</span></code> then <code class="docutils literal notranslate"><span class="pre">other</span></code> with default sync mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__radd__</span></code>(other)</p></td>
+<td><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">other</span></code> then <code class="docutils literal notranslate"><span class="pre">self</span></code> with default sync mode.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>thread_safe</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.TensorDictCache.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread_safe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#TensorDictCache.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.TensorDictCache.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether tensors should be sparsified before put
+(and de-sparsified afterwards)</p></li>
+<li><p><strong>thread_safe</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>]</em>) – whether to use a multiprocessing-capable dict;
+only available if <code class="docutils literal notranslate"><span class="pre">sparse</span></code> is not activated</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.TensorDictCache.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#TensorDictCache.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.TensorDictCache.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load and densify tensors from in-memory cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>descriptor</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.TensorDictCache.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#TensorDictCache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.TensorDictCache.put" title="Permalink to this definition"></a></dt>
+<dd><p>Store torch <code class="docutils literal notranslate"><span class="pre">obj</span></code> under key <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> in a in-memory cache.
+In case it already exists, the existing object is overwritten.
+If the tensor device is CPU, the tensor is cached, else a CPU copy
+of it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptor</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a>) – the descriptor key under which to store the
+object; used to access the object later</p></li>
+<li><p><strong>obj</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – the tensor to put into cache; must not be <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.caching.PTCache.html" class="btn btn-neutral float-left" title="PTCache" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.custom.html" class="btn btn-neutral float-right" title="custom" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

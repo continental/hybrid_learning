@@ -1,0 +1,6 @@
+logic\_by\_name
+===============
+
+.. currentmodule:: hybrid_learning.fuzzy_logic
+
+.. autofunction:: logic_by_name

@@ -1,0 +1,9 @@
+ConceptDetectionModel2D
+=======================
+
+.. currentmodule:: hybrid_learning.concepts.models.concept_models.concept_detection
+
+.. autoclass:: ConceptDetectionModel2D
+    :members:
+
+    .. autoclasstoc::

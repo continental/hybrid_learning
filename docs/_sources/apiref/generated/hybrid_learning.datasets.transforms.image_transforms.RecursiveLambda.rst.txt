@@ -1,0 +1,9 @@
+RecursiveLambda
+===============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autoclass:: RecursiveLambda
+    :members:
+
+    .. autoclasstoc::

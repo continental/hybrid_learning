@@ -1,5 +1,5 @@
-hybrid\_learning.concepts.models.model\_extension.output\_size
-==============================================================
+output\_size
+============
 
 .. currentmodule:: hybrid_learning.concepts.models.model_extension
 

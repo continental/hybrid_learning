@@ -1,0 +1,6 @@
+run\_callbacks
+==============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.callbacks
+
+.. autofunction:: run_callbacks

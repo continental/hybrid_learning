@@ -1,0 +1,9 @@
+FileCache
+=========
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: FileCache
+    :members:
+
+    .. autoclasstoc::

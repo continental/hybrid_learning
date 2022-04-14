@@ -1,0 +1,43 @@
+hessian
+=======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.hessian
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.hessian
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~exact_hessian
+        
+        ~grad_2nd
+        
+
+    
+    

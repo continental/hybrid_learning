@@ -1,0 +1,9 @@
+OnValues
+========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: OnValues
+    :members:
+
+    .. autoclasstoc::

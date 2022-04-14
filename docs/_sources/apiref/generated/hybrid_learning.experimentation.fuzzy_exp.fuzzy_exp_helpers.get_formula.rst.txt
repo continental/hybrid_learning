@@ -1,0 +1,6 @@
+get\_formula
+============
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers
+
+.. autofunction:: get_formula

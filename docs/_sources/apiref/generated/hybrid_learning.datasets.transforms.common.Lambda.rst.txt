@@ -1,0 +1,9 @@
+Lambda
+======
+
+.. currentmodule:: hybrid_learning.datasets.transforms.common
+
+.. autoclass:: Lambda
+    :members:
+
+    .. autoclasstoc::

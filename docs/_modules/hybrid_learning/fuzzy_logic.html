@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Parse fuzzy logic rules to truth functions in the form of dictionary transformations.</span>
+<span class="sd">This module implements a general framework and DSL to specify and parse (fuzzy)</span>
+<span class="sd">logical rules into a computational tree of</span>
+<span class="sd">:py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` operations.</span>
+<span class="sd">Besides the base classes to define rules, logical theories, and parse rules in a logic</span>
+<span class="sd">to/from string, several standard operations are provided.</span>
+
+<span class="sd">Logical formulas and theories are modelled</span>
+<span class="sd">using the base classes</span>
+<span class="sd">:py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` and</span>
+<span class="sd">:py:class:`~hybrid_learning.fuzzy_logic.logic_base.logic.Logic`</span>
+<span class="sd">as follows:</span>
+
+<span class="sd">- (Logical) merge operations: These are instances of ``Merge`` operations,</span>
+<span class="sd">  i.e. callables that accept a dictionary</span>
+<span class="sd">  (the grounding = a map assigning values to variable names)</span>
+<span class="sd">  and return the dictionary with the operation outputs added.</span>
+<span class="sd">- Variables and constants: Variables are represented by string keys.</span>
+<span class="sd">  They may be grounded (have a value assigned) by adding the key-value pair</span>
+<span class="sd">  to the grounding dictionary.</span>
+<span class="sd">  Constants are treated like grounded variables.</span>
+<span class="sd">- Formula = tree of operations: Merge operations may depend directly on</span>
+<span class="sd">  values given by keys (names of variables or constants) in the grounding dictionary,</span>
+<span class="sd">  or they may have children operations on the output of which they depend.</span>
+<span class="sd">  An example would be the operation ``AND(&quot;a&quot;, OR(&quot;b&quot;, &quot;c&quot;))` depending</span>
+<span class="sd">  on the variable ``&quot;a&quot;`` and the child operation ``OR(&quot;b&quot;, &quot;c&quot;)``.</span>
+<span class="sd">  The children operations are applied to the grounding dictionary</span>
+<span class="sd">  before the parent operation, adding their outputs.</span>
+<span class="sd">  Such a computational tree of operations constitutes a logical formula.</span>
+<span class="sd">- Typical logical operations are:</span>
+
+<span class="sd">  - (Fuzzy) logical connectives: AND, OR, NOT, IMPLIES;</span>
+<span class="sd">    These receive truth values (either Boolean or fuzzy) and return a truth value.</span>
+<span class="sd">    Standard ones are those defined by the standard t-norm fuzzy logics.</span>
+<span class="sd">  - Predicates: e.g. IsPartOfA, GreaterThan;</span>
+<span class="sd">    These receive an arbitrary domain value, e.g. a pixel position, and return a truth value.</span>
+<span class="sd">  - Quantifiers: EXISTS, FORALL;</span>
+<span class="sd">    These reduce a domain of values, e.g. a set of image samples,</span>
+<span class="sd">    to a single truth value, using a child predicate (the body formula)</span>
+<span class="sd">    and a truth value reduction.</span>
+
+<span class="sd">- Logic: A ``Logic`` is here defined by a collection of operation types (operation builders)</span>
+<span class="sd">  for building formulas.</span>
+<span class="sd">  To allow parsing of infix notation, these are associated with an operator precedence</span>
+<span class="sd">  (their order in the collection).</span>
+<span class="sd">- Parsing: A logic allows parsing of infix notation string representations of formulas using a</span>
+<span class="sd">  :py:class:`~hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser`.</span>
+<span class="sd">  Calling ``str`` on the resulting formula returns an equivalent parsable string</span>
+<span class="sd">  representation of the formula.</span>
+
+
+<span class="sd">Note that naming is adopted from the case of Boolean mask operations</span>
+<span class="sd">on segmentation mask annotations</span>
+<span class="sd">(hence ``Merge`` operations accepting ``annotations`` dictionaries).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">_typing</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logic_base</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">predicates</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">quantifiers</span>
+<span class="kn">from</span> <span class="nn">.logic_base</span> <span class="kn">import</span> <span class="n">FormulaParser</span><span class="p">,</span> <span class="n">Logic</span><span class="p">,</span> <span class="n">Merge</span><span class="p">,</span> <span class="n">MergeBuilder</span>
+<span class="kn">from</span> <span class="nn">.predicates</span> <span class="kn">import</span> <span class="n">arithmetic</span>
+<span class="kn">from</span> <span class="nn">.tnorm_connectives</span> <span class="kn">import</span> <span class="n">boolean</span><span class="p">,</span> <span class="n">goedel</span><span class="p">,</span> <span class="n">lukasiewicz</span><span class="p">,</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">.tnorm_connectives.boolean</span> <span class="kn">import</span> <span class="n">BooleanLogic</span>
+<span class="kn">from</span> <span class="nn">.tnorm_connectives.goedel</span> <span class="kn">import</span> <span class="n">GoedelLogic</span>
+<span class="kn">from</span> <span class="nn">.tnorm_connectives.lukasiewicz</span> <span class="kn">import</span> <span class="n">LukasiewiczLogic</span>
+<span class="kn">from</span> <span class="nn">.tnorm_connectives.product</span> <span class="kn">import</span> <span class="n">ProductLogic</span>
+
+<span class="n">_PARSERS</span><span class="p">:</span> <span class="n">_typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Logic</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">lukasiewicz</span><span class="o">=</span><span class="n">LukasiewiczLogic</span><span class="p">,</span>
+    <span class="n">goedel</span><span class="o">=</span><span class="n">GoedelLogic</span><span class="p">,</span>
+    <span class="n">product</span><span class="o">=</span><span class="n">ProductLogic</span><span class="p">,</span>
+    <span class="n">boolean</span><span class="o">=</span><span class="n">BooleanLogic</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Map from string keys to fuzzy logic handles as used in :py:func:`logic_by_name`.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="logic_by_name"><a class="viewcode-back" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_by_name.html#hybrid_learning.fuzzy_logic.logic_by_name">[docs]</a><span class="k">def</span> <span class="nf">logic_by_name</span><span class="p">(</span><span class="n">fuzzy_logic_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Logic</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Select a fuzzy logic handle by string identifier.</span>
+<span class="sd">    It can be used to parse formulas or access the logical operators</span>
+<span class="sd">    of that logic.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">fuzzy_logic_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PARSERS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Unknown fuzzy_logic_key </span><span class="si">{}</span><span class="s2">; choose from </span><span class="si">{}</span><span class="s2">&quot;</span>
+                       <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fuzzy_logic_key</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+    <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="n">fuzzy_logic_key</span><span class="p">]()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.concepts.models.concept_models.concept_classification &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.concepts.models.concept_models.concept_classification</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.concepts.models.concept_models.concept_classification</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Model for concept classification, and its training and evaluation handle.</span>
+<span class="sd">See :py:class:`ConceptClassificationModel2D` and</span>
+<span class="sd">:py:class:`ConceptClassification2DTrainTestHandle` for details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">torch.nn</span>
+
+<span class="kn">from</span> <span class="nn">hybrid_learning.datasets.transforms</span> <span class="kn">import</span> <span class="n">TupleTransforms</span>
+<span class="kn">from</span> <span class="nn">.concept_detection</span> <span class="kn">import</span> <span class="n">ConceptDetectionModel2D</span><span class="p">,</span> <span class="n">ConceptDetection2DTrainTestHandle</span>
+<span class="kn">from</span> <span class="nn">..model_extension</span> <span class="kn">import</span> <span class="n">ModelStump</span>
+<span class="kn">from</span> <span class="nn">...concepts</span> <span class="kn">import</span> <span class="n">Concept</span>
+<span class="kn">from</span> <span class="nn">....datasets</span> <span class="kn">import</span> <span class="n">DataTriple</span>
+
+
+<div class="viewcode-block" id="ConceptClassificationModel2D"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D">[docs]</a><span class="k">class</span> <span class="nc">ConceptClassificationModel2D</span><span class="p">(</span><span class="n">ConceptDetectionModel2D</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A concept model that classifies whether an image-level concept is</span>
+<span class="sd">    recognized in an activation map.</span>
+<span class="sd">    This is solved by a localization model with window respectively kernel size</span>
+<span class="sd">    the same as the input size.</span>
+
+<span class="sd">    A forward run with a batch of size</span>
+<span class="sd">    ``(batch, in_channels, h, w)`` returns a batch of confidence values of</span>
+<span class="sd">    the size ``(batch, 1)``.</span>
+<span class="sd">    For a usage example compare</span>
+<span class="sd">    :py:class:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle`.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        An error is raised if a tensor with ``(height, width)`` different from</span>
+<span class="sd">        :py:attr:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size`</span>
+<span class="sd">        is provided to :py:meth:`forward`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: enable=line-too-long</span>
+
+<div class="viewcode-block" id="ConceptClassificationModel2D.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">concept</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Concept</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">layer_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">in_channels</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">act_map_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">other_settings</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        Wrapper around init of a</span>
+<span class="sd">        :py:class:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D`</span>
+<span class="sd">        with fixed</span>
+<span class="sd">        :py:attr:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.kernel_size`</span>
+<span class="sd">        of :math:`1\times1` and disabled padding.</span>
+<span class="sd">        For details on the arguments see the init function of the super class</span>
+<span class="sd">        :py:class:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">act_map_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_missing</span> <span class="ow">in</span> <span class="p">(</span><span class="n">argn</span> <span class="k">for</span> <span class="n">argn</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span>
+                             <span class="p">((</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;layer_id&quot;</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">),</span>
+                              <span class="p">(</span><span class="s2">&quot;concept&quot;</span><span class="p">,</span> <span class="n">concept</span><span class="p">))</span> <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> not given so cannot infer in_channels &quot;</span>
+                                 <span class="s2">&quot;and layer_out_size&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_missing</span><span class="p">))</span>
+            <span class="n">auto_layer_out_size</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_layer_out_info</span><span class="p">(</span>
+                <span class="n">concept</span><span class="p">,</span> <span class="n">ModelStump</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">))</span>
+            <span class="n">in_channels</span> <span class="o">=</span> <span class="n">auto_layer_out_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> \
+                <span class="k">if</span> <span class="n">in_channels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">in_channels</span>
+            <span class="n">act_map_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">auto_layer_out_size</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="k">if</span> \
+                <span class="n">act_map_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">act_map_size</span>
+
+        <span class="c1"># Set the concept separately, since it need not be a segmentation</span>
+        <span class="c1"># concept!</span>
+        <span class="n">other_settings</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="n">act_map_size</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">layer_id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">,</span>
+                         <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+                         <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">other_settings</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">apply_padding</span><span class="o">=</span><span class="kc">False</span><span class="p">)})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_concept</span><span class="p">:</span> <span class="n">Concept</span> <span class="o">=</span> <span class="n">concept</span></div>
+
+<div class="viewcode-block" id="ConceptClassificationModel2D.forward"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassificationModel2D.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper around super forward method.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> \
+                <span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Got tensor of size </span><span class="si">{}</span><span class="s2"> but expected size &quot;</span>
+                              <span class="s2">&quot;(batch, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_size</span>
+            <span class="p">))</span>
+        <span class="n">outp</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">out</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">outp</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="ConceptClassification2DTrainTestHandle"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle">[docs]</a><span class="k">class</span> <span class="nc">ConceptClassification2DTrainTestHandle</span><span class="p">(</span><span class="n">ConceptDetection2DTrainTestHandle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Train and test handle for concept classification providing loss and</span>
+<span class="sd">    metric defaults.</span>
+<span class="sd">    See :py:class:`ConceptClassificationModel2D` for details on the model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConceptClassification2DTrainTestHandle.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_classification.ConceptClassification2DTrainTestHandle.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">concept_model</span><span class="p">:</span> <span class="n">ConceptClassificationModel2D</span><span class="p">,</span>
+                 <span class="n">data</span><span class="p">:</span> <span class="n">DataTriple</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">model_output_transform</span><span class="p">:</span> <span class="n">TupleTransforms</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">metric_input_transform</span><span class="p">:</span> <span class="n">TupleTransforms</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span>
+                 <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        For details on the init parameters see the init of the super class</span>
+<span class="sd">        :py:class:`~hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+
+        <span class="c1"># Ensure that the super model does not set the model_output_transform</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">concept_model</span><span class="o">=</span><span class="n">concept_model</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">model_output_transform</span><span class="o">=</span><span class="n">model_output_transform</span><span class="p">,</span>
+            <span class="n">metric_input_transform</span><span class="o">=</span><span class="n">metric_input_transform</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

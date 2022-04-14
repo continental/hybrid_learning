@@ -1,9 +1,0 @@
-WeightedLossSum
-===============
-
-.. currentmodule:: hybrid_learning.concepts.kpis
-
-.. autoclass:: WeightedLossSum
-    :members:
-
-    .. autoclasstoc::

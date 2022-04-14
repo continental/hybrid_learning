@@ -1,5 +1,5 @@
-hybrid\_learning.datasets.data\_visualization.visualize\_mask\_transforms
-=========================================================================
+visualize\_mask\_transforms
+===========================
 
 .. currentmodule:: hybrid_learning.datasets.data_visualization
 

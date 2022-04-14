@@ -1,0 +1,6 @@
+exact\_hessian
+==============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.hessian
+
+.. autofunction:: exact_hessian

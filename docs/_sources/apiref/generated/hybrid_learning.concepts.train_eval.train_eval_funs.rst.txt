@@ -1,0 +1,51 @@
+train\_eval\_funs
+=================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.train_eval_funs
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.train_eval_funs
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~device_of
+        
+        ~evaluate
+        
+        ~loader
+        
+        ~predict_laplace
+        
+        ~second_stage_train
+        
+        ~train_one_epoch
+        
+
+    
+    

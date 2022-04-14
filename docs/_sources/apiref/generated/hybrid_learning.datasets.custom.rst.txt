@@ -21,6 +21,8 @@ custom
         
         ~hybrid_learning.datasets.custom.fasseg
         
+        ~hybrid_learning.datasets.custom.person_size_estimation
+        
 
     
     

@@ -1,0 +1,6 @@
+bbox\_to\_segmask
+=================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common
+
+.. autofunction:: bbox_to_segmask

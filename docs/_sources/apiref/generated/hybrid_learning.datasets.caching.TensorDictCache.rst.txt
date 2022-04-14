@@ -1,0 +1,9 @@
+TensorDictCache
+===============
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: TensorDictCache
+    :members:
+
+    .. autoclasstoc::

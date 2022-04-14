@@ -1,0 +1,6 @@
+flatten\_cols
+=============
+
+.. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+.. autofunction:: flatten_cols

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConceptAnalysis &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="EmbeddingReduction" href="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html" />
+    <link rel="prev" title="analysis_handle" href="hybrid_learning.concepts.analysis.analysis_handle.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.html">analysis_handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.analysis.results.html">results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.analysis.visualization.html">visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.analysis.html">analysis</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.analysis.analysis_handle.html">analysis_handle</a> &raquo;</li>
+      <li>ConceptAnalysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="conceptanalysis">
+<h1>ConceptAnalysis<a class="headerlink" href="#conceptanalysis" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.analysis.analysis_handle.</span></span><span class="sig-name descname"><span class="pre">ConceptAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_infos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_val_runs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_val_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EmbeddingReduction.MEAN_NORMALIZED_DIST</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concept_model_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_val_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_layer_hook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Handle for conducting a concept embedding analysis.
+Saves the analysis settings and can run a complete analysis.</p>
+<p>The core methods are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analysis()</span></code></a>: plain analysis (collect
+<span class="math notranslate nohighlight">\(\text{cross_val_runs}\cdot\text{num_val_splits}\)</span>
+embeddings for each layer in :py:attr`layer_infos`)</p></li>
+<li><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">best_embedding()</span></code></a>: aggregate embeddings of an analysis per layer,
+then choose best one</p></li>
+<li><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging"><code class="xref py py-meth docutils literal notranslate"><span class="pre">best_embedding_with_logging()</span></code></a>: combination of the latter two
+with automatic logging and result saving</p></li>
+</ul>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_runs" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_runs</span></code></a></p></td>
+<td><p>The total number of runs that are conducted per layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.settings" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings dict to reproduce instance.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">best_embedding</span></code></a>([analysis_results])</p></td>
+<td><p>Conduct an analysis and from results derive the best embedding.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analysis</span></code></a>()</p></td>
+<td><p>Conduct a concept embedding analysis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analysis_for_layer</span></code></a>(layer_id)</p></td>
+<td><p>Get a concept embedding of the given concept in the given layer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_handle" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_handle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concept_model_handle</span></code></a>([c_model, emb, layer_id])</p></td>
+<td><p>Train and eval handle for the given concept model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concept_model_for_layer</span></code></a>(layer_id)</p></td>
+<td><p>Return a concept model for the given layer ID.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concept_model_from_embedding</span></code></a>(emb)</p></td>
+<td><p>Get concept model from embedding for training and eval.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_for_concept_model" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_for_concept_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_for_concept_model</span></code></a>([c_model, layer_id])</p></td>
+<td><p>Get the concept model data for this instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.evaluate_embedding" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.evaluate_embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_embedding</span></code></a>(embedding[, log_prefix])</p></td>
+<td><p>Evaluate the embedding on its concept test data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.embedding_reduction" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.embedding_reduction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embedding_reduction</span></code></a>(results_per_run)</p></td>
+<td><p>Aggregate the embeddings collected in <code class="docutils literal notranslate"><span class="pre">results_per_run</span></code> to a best one.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.fill_train_data_infos" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.fill_train_data_infos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_train_data_infos</span></code></a>()</p></td>
+<td><p>Collect layer-wise information about the corresponding concept model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">best_embedding_with_logging</span></code></a>(concept_exp_root)</p></td>
+<td><p>Conduct an analysis, collect mean and best embeddings, and save and log all results.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__init__" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(concept, model[, layer_infos, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__repr__" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concept</strong> (<a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><em>Concept</em></a>) – </p></li>
+<li><p><strong>model</strong> (<em>Module</em>) – </p></li>
+<li><p><strong>layer_infos</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>cross_val_runs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>num_val_splits</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>emb_reduction</strong> (<a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction"><em>EmbeddingReduction</em></a>) – </p></li>
+<li><p><strong>concept_model_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>train_val_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>data_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p></li>
+<li><p><strong>after_layer_hook</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a><em>, </em><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle"><em>ConceptDetection2DTrainTestHandle</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_infos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_val_runs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_val_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb_reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EmbeddingReduction.MEAN_NORMALIZED_DIST</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concept_model_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_val_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">after_layer_hook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concept</strong> (<a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><em>Concept</em></a>) – concept to find the embedding of</p></li>
+<li><p><strong>model</strong> (<em>Module</em>) – the DNN</p></li>
+<li><p><strong>layer_infos</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em><em>]</em>) – <p>information about the layers in which to look for
+the best concept embedding; it may be given either as sequence of
+layer IDs or as dict where the indices are the layer keys in
+the model’s <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.named_modules()</span></code></a> dict;
+used keys:</p>
+<ul>
+<li><p>kernel_size: fixed kernel size to use for this layer
+(overrides value from <code class="docutils literal notranslate"><span class="pre">concept_model_args</span></code>)</p></li>
+<li><p>lr: learning rate to use</p></li>
+</ul>
+</p></li>
+<li><p><strong>num_val_splits</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – the number of validation splits to use for
+each cross-validation run</p></li>
+<li><p><strong>cross_val_runs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – for a layer, several concept models are
+trained in different runs; the runs differ by model initialization,
+and the validation data split;
+<code class="docutils literal notranslate"><span class="pre">cross_val_runs</span></code> is the number of cross-validation runs,
+i.e. collections of runs with num_val_splits distinct validation
+sets each</p></li>
+<li><p><strong>emb_reduction</strong> (<a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction"><em>EmbeddingReduction</em></a>) – aggregation function to reduce list of
+embeddings to one</p></li>
+<li><p><strong>concept_model_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – dict with arguments for the concept model
+initialization</p></li>
+<li><p><strong>train_val_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – any further arguments to initialize the concept
+model handle; a loss and a metric are added by default</p></li>
+<li><p><strong>data_args</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – any further arguments to initialize the training and
+eval data tuple using <a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model.html#hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model" title="hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">data_for_concept_model()</span></code></a></p></li>
+<li><p><strong>after_layer_hook</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a><em>, </em><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle"><em>ConceptDetection2DTrainTestHandle</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>]</em>) – see <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.after_layer_hook" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.after_layer_hook"><code class="xref py py-attr docutils literal notranslate"><span class="pre">after_layer_hook</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis">
+<span class="sig-name descname"><span class="pre">analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.analysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis" title="Permalink to this definition"></a></dt>
+<dd><p>Conduct a concept embedding analysis.</p>
+<p>For each layer in <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_infos</span></code></a>:</p>
+<ul class="simple">
+<li><p>train <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cross_val_runs</span></code></a> x <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_val_splits</span></code></a>
+concept models,</p></li>
+<li><p>collect their evaluation results,</p></li>
+<li><p>convert them to embeddings.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a analysis result object holding a dictionary of
+<code class="docutils literal notranslate"><span class="pre">{layer_id:</span> <span class="pre">{run:</span> <span class="pre">(embedding,</span>
+<span class="pre">pandas.Series</span> <span class="pre">with</span> <span class="pre">{pre_:</span> <span class="pre">metric_val}}}</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer">
+<span class="sig-name descname"><span class="pre">analysis_for_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.analysis_for_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Get a concept embedding of the given concept in the given layer.
+A number of <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cross_val_runs</span></code></a> cross validation runs is conducted
+with each <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_val_splits</span></code></a> non-intersecting splits for the
+validation data.
+In case <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_val_splits</span></code></a> is 1, just <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cross_val_runs</span></code></a>
+a normal training runs are conducted.</p>
+<p>After the analysis is completed, <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.after_layer_hook" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.after_layer_hook"><code class="xref py py-attr docutils literal notranslate"><span class="pre">after_layer_hook</span></code></a> is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>layer_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – ID of the layer to find embedding in; key in
+<a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_infos</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an analysis result object holding only information on
+this layer</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding">
+<span class="sig-name descname"><span class="pre">best_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysis_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.best_embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding" title="Permalink to this definition"></a></dt>
+<dd><p>Conduct an analysis and from results derive the best embedding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>analysis_results</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>, </em><em>Series</em><em>]</em><em>]</em><em>]</em><em>]</em>) – optionally the results of a previously run
+analysis; defaults to running a new analysis via <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analysis()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the determined best embedding of all layers analysed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging">
+<span class="sig-name descname"><span class="pre">best_embedding_with_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">concept_exp_root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_logging_formatter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log.txt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_fp_templ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'{}.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visualization_transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.best_embedding_with_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_embedding_with_logging" title="Permalink to this definition"></a></dt>
+<dd><p>Conduct an analysis, collect mean and best embeddings,
+and save and log all results.</p>
+<p class="rubric">Saved results</p>
+<ul class="simple">
+<li><p>the embedding of each layer and run as .pt file;
+for format see
+<a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.save" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hybrid_learning.concepts.models.embeddings.ConceptEmbedding.save()</span></code></a>;
+load with
+<a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hybrid_learning.concepts.models.embeddings.ConceptEmbedding.load()</span></code></a></p></li>
+<li><p>the aggregated (best) embedding for each layer (see above)</p></li>
+<li><p>the final best embedding amongst all layers
+(chosen from above best embeddings; see above)</p></li>
+<li><p>statistics of the runs for each layer incl. evaluation results and
+infos on final embedding obtained by each run;
+for format see
+<a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult.save" title="hybrid_learning.concepts.analysis.results.AnalysisResult.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a>;
+load with
+<a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult.load" title="hybrid_learning.concepts.analysis.results.AnalysisResult.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a>;</p></li>
+<li><p>statistics for the aggregated (best) embeddings;
+for format see
+<a class="reference internal" href="hybrid_learning.concepts.analysis.results.BestEmbeddingResult.html#hybrid_learning.concepts.analysis.results.BestEmbeddingResult.save" title="hybrid_learning.concepts.analysis.results.BestEmbeddingResult.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a>;</p></li>
+</ul>
+<p class="rubric">Saved visualizations</p>
+<ul class="simple">
+<li><p>visualization of the training data</p></li>
+<li><p>visualization of the final best embedding on some test data samples</p></li>
+<li><p>visualization of the best embedding and each embedding in its layer
+for comparison (the best embedding is a kind of mean of the embeddings
+from its layer)</p></li>
+<li><p>visualization of the aggregated embeddings of each layer
+for comparison</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concept_exp_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – the root directory in which to save results
+for this part</p></li>
+<li><p><strong>logger</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/logging.html#logging.Logger" title="(in Python v3.6)"><em>Logger</em></a><em>]</em>) – the logger to use for file logging; defaults to the
+module level logger; for the analysis, the logging level is set
+to <code class="xref py py-const docutils literal notranslate"><span class="pre">logging.INFO</span></code></p></li>
+<li><p><strong>file_logging_formatter</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/logging.html#logging.Formatter" title="(in Python v3.6)"><em>Formatter</em></a><em>]</em>) – if given, the formatter for the file
+logging</p></li>
+<li><p><strong>log_file</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – the path to the logfile to use relative to
+<code class="docutils literal notranslate"><span class="pre">concept_exp_root</span></code></p></li>
+<li><p><strong>img_fp_templ</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – template for the path of image files relative to
+<code class="docutils literal notranslate"><span class="pre">concept_exp_root</span></code>; must include one <code class="docutils literal notranslate"><span class="pre">'{}'</span></code> formatting variable</p></li>
+<li><p><strong>visualization_transform</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em><em>]</em>) – a transformation applied to the tuple of
+concept model output and ground truth mask before visualization as mask</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the found best embedding for that part</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_layer_from_stats">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">best_layer_from_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_per_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.best_layer_from_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.best_layer_from_stats" title="Permalink to this definition"></a></dt>
+<dd><p>From the embedding quality results per layer, select the best layer.
+For segmentation concepts, select by set IoU.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>results_per_layer</strong> (<a class="reference internal" href="hybrid_learning.concepts.analysis.results.BestEmbeddingResult.html#hybrid_learning.concepts.analysis.results.BestEmbeddingResult" title="hybrid_learning.concepts.analysis.results.BestEmbeddingResult"><em>BestEmbeddingResult</em></a>) – a best embedding result object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>layer ID with best stats</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer">
+<span class="sig-name descname"><span class="pre">concept_model_for_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.concept_model_for_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer" title="Permalink to this definition"></a></dt>
+<dd><p>Return a concept model for the given layer ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>layer_id</strong> – ID of the layer the concept model should be attached
+to; key in <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_infos</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>concept model for <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept"><code class="xref py py-attr docutils literal notranslate"><span class="pre">concept</span></code></a> attached to given
+layer in <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.model" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">model</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding">
+<span class="sig-name descname"><span class="pre">concept_model_from_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.concept_model_from_embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding" title="Permalink to this definition"></a></dt>
+<dd><p>Get concept model from embedding for training and eval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>emb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D"><em>ConceptDetectionModel2D</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_handle">
+<span class="sig-name descname"><span class="pre">concept_model_handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.concept_model_handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_handle" title="Permalink to this definition"></a></dt>
+<dd><p>Train and eval handle for the given concept model.
+The concept model to handle can either be specified directly or is
+created from an embedding or from a given <code class="docutils literal notranslate"><span class="pre">layer_id</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c_model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D"><em>ConceptDetectionModel2D</em></a><em>]</em>) – the concept model to provide a handle for</p></li>
+<li><p><strong>emb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>]</em><em>]</em>) – if <code class="docutils literal notranslate"><span class="pre">c_model</span></code> is not given, it is initialized using
+<a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_from_embedding"><code class="xref py py-meth docutils literal notranslate"><span class="pre">concept_model_from_embedding()</span></code></a> on <code class="docutils literal notranslate"><span class="pre">emb</span></code></p></li>
+<li><p><strong>layer_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – if c_model and emb is not given, it is initialized
+using <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_for_layer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">concept_model_for_layer()</span></code></a> on <code class="docutils literal notranslate"><span class="pre">layer_id</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a handle for the specified or created concept model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle"><em>ConceptDetection2DTrainTestHandle</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_for_concept_model">
+<span class="sig-name descname"><span class="pre">data_for_concept_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.data_for_concept_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_for_concept_model" title="Permalink to this definition"></a></dt>
+<dd><p>Get the concept model data for this instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c_model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetectionModel2D"><em>ConceptDetectionModel2D</em></a><em>]</em>) – </p></li>
+<li><p><strong>layer_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="hybrid_learning.datasets.base.DataTriple.html#hybrid_learning.datasets.base.DataTriple" title="hybrid_learning.datasets.base.DataTriple"><em>DataTriple</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.embedding_reduction">
+<span class="sig-name descname"><span class="pre">embedding_reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_per_run</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.embedding_reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.embedding_reduction" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregate the embeddings collected in <code class="docutils literal notranslate"><span class="pre">results_per_run</span></code>
+to a best one.
+This is a wrapper with standard deviation and stats collection and
+logging around a call to <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.emb_reduction" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.emb_reduction"><code class="xref py py-func docutils literal notranslate"><span class="pre">emb_reduction()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>results_per_run</strong> (<a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><em>AnalysisResult</em></a>) – analysis result object as returned by
+<a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analysis()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>a best embedding result object holding one tuple entry of</p>
+<ul class="simple">
+<li><p>an aggregated (“mean”) embedding for the concept and the layer,</p></li>
+<li><p>the standard deviation values of the normal vectors,</p></li>
+<li><p>the stats for the chosen “mean” embedding</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="hybrid_learning.concepts.analysis.results.BestEmbeddingResult.html#hybrid_learning.concepts.analysis.results.BestEmbeddingResult" title="hybrid_learning.concepts.analysis.results.BestEmbeddingResult"><em>BestEmbeddingResult</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.evaluate_embedding">
+<span class="sig-name descname"><span class="pre">evaluate_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.evaluate_embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.evaluate_embedding" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate the embedding on its concept test data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>log_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.fill_train_data_infos">
+<span class="sig-name descname"><span class="pre">fill_train_data_infos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#ConceptAnalysis.fill_train_data_infos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.fill_train_data_infos" title="Permalink to this definition"></a></dt>
+<dd><p>Collect layer-wise information about the corresponding concept
+model.
+The results are stored into <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos"><code class="xref py py-attr docutils literal notranslate"><span class="pre">layer_infos</span></code></a> and returned
+as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.after_layer_hook">
+<span class="sig-name descname"><span class="pre">after_layer_hook</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="hybrid_learning.concepts.analysis.results.AnalysisResult.html#hybrid_learning.concepts.analysis.results.AnalysisResult" title="hybrid_learning.concepts.analysis.results.AnalysisResult"><span class="pre">AnalysisResult</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle.html#hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle" title="hybrid_learning.concepts.models.concept_models.concept_detection.ConceptDetection2DTrainTestHandle"><span class="pre">ConceptDetection2DTrainTestHandle</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.after_layer_hook" title="Permalink to this definition"></a></dt>
+<dd><p>Callable that is called after each layer analysis with the
+analysis result and the used training handle as arguments.
+Can e.g. be used to clear dataset caches or store the result.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept">
+<span class="sig-name descname"><span class="pre">concept</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept" title="hybrid_learning.concepts.concepts.Concept"><span class="pre">Concept</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept" title="Permalink to this definition"></a></dt>
+<dd><p>The concept to find the embedding for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_args">
+<span class="sig-name descname"><span class="pre">concept_model_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.concept_model_args" title="Permalink to this definition"></a></dt>
+<dd><p>Any arguments for initializing a new concept model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs">
+<span class="sig-name descname"><span class="pre">cross_val_runs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs" title="Permalink to this definition"></a></dt>
+<dd><p>The number of cross-validation runs to conduct for each layer.
+A cross-validation run consists of <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits"><code class="xref py py-attr docutils literal notranslate"><span class="pre">num_val_splits</span></code></a> training
+runs with distinct validation sets. The resulting embeddings of all
+runs of all cross-validation runs are then used to obtain the layer’s
+best concept embedding.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_args">
+<span class="sig-name descname"><span class="pre">data_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.data_args" title="Permalink to this definition"></a></dt>
+<dd><p>Any arguments except for the concept model specifiers to the
+concept model data initializer.
+See <a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model.html#hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model" title="hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">data_for_concept_model()</span></code></a> for details.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.emb_reduction">
+<span class="sig-name descname"><span class="pre">emb_reduction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction"><span class="pre">EmbeddingReduction</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.emb_reduction" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregation function to reduce a list of embeddings from several
+runs to one.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos">
+<span class="sig-name descname"><span class="pre">layer_infos</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.layer_infos" title="Permalink to this definition"></a></dt>
+<dd><p>Information about the layers in which to look for the best concept
+embedding; the indices are the layer keys in the model’s
+<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.named_modules()</span></code></a> dict</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">torch.nn.modules.module.Module</span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.model" title="Permalink to this definition"></a></dt>
+<dd><p>The model in which to find the embedding.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_runs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_runs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_runs" title="Permalink to this definition"></a></dt>
+<dd><p>The total number of runs that are conducted per layer.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits">
+<span class="sig-name descname"><span class="pre">num_val_splits</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.num_val_splits" title="Permalink to this definition"></a></dt>
+<dd><p>The number of validation splits per cross-validation run.
+If set to 1, no cross-validation is conducted but simply a number of
+<a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.cross_val_runs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cross_val_runs</span></code></a> training runs.
+See <a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer" title="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.analysis_for_layer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">analysis_for_layer()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.settings" title="Permalink to this definition"></a></dt>
+<dd><p>Settings dict to reproduce instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.train_val_args">
+<span class="sig-name descname"><span class="pre">train_val_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.train_val_args" title="Permalink to this definition"></a></dt>
+<dd><p>Any training and evaluation arguments for the concept model
+initialization.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.analysis.analysis_handle.html" class="btn btn-neutral float-left" title="analysis_handle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.html" class="btn btn-neutral float-right" title="EmbeddingReduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

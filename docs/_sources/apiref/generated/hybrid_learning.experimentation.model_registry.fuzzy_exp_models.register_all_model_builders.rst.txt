@@ -1,0 +1,6 @@
+register\_all\_model\_builders
+==============================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.fuzzy_exp_models
+
+.. autofunction:: register_all_model_builders

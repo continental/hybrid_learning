@@ -1,0 +1,6 @@
+pairwise\_cosines
+=================
+
+.. currentmodule:: hybrid_learning.concepts.analysis.visualization
+
+.. autofunction:: pairwise_cosines

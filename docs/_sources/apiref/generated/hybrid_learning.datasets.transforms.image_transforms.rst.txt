@@ -25,15 +25,41 @@ image\_transforms
         :toctree:
         :nosignatures:
         
+        ~AsBatch
+        
+        ~BatchWiseImageTransform
+        
         ~Binarize
         
         ~BinarizeByQuantile
         
+        ~ConvOpWrapper
+        
         ~ImageTransform
+        
+        ~IntersectDecode
+        
+        ~IntersectEncode
+        
+        ~IoUEncode
+        
+        ~NoGrad
         
         ~PadAndResize
         
-        ~ToDevice
+        ~RecursiveLambda
+        
+        ~Resize
+        
+        ~Threshold
+        
+        ~ToActMap
+        
+        ~ToBBoxes
+        
+        ~ToFixedDims
+        
+        ~ToTensor
         
         ~WithThresh
         
@@ -54,7 +80,13 @@ image\_transforms
     .. autosummary::
         :toctree:
         
-        ~pad_to_square
+        ~pad_and_resize
+        
+        ~pad_to_ratio
+        
+        ~padding_for_ratio
+        
+        ~resize
         
 
     

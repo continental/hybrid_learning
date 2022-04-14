@@ -1,0 +1,6 @@
+grad\_2nd
+=========
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.hessian
+
+.. autofunction:: grad_2nd

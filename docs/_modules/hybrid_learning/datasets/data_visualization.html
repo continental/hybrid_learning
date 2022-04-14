@@ -1,69 +1,33 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>hybrid_learning.datasets.data_visualization &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,19 +35,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">User Guide</a></li>
@@ -91,82 +44,47 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>hybrid_learning.datasets.data_visualization</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for hybrid_learning.datasets.data_visualization</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Helper functions for visualization and analysis of (image) datasets.&quot;&quot;&quot;</span>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Helper functions for visualization and analysis of image datasets.&quot;&quot;&quot;</span>
 
-<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
-
+<span class="kn">import</span> <span class="nn">collections.abc</span>
 <span class="kn">import</span> <span class="nn">textwrap</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">PIL.Image</span>
 <span class="kn">import</span> <span class="nn">PIL.ImageEnhance</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+<span class="kn">from</span> <span class="nn">torchvision.transforms.functional</span> <span class="kn">import</span> <span class="n">to_pil_image</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Subset</span><span class="p">,</span> <span class="n">RandomSampler</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">.activations_handle</span> <span class="kn">import</span> <span class="n">ActivationDatasetWrapper</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
@@ -231,14 +149,18 @@
             <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Subset</span><span class="p">),</span> \
                 <span class="s2">&quot;&#39;Subset&#39; requires index adaption&quot;</span>
             <span class="n">img_t</span><span class="p">,</span> <span class="n">orig_mask_t</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="n">ax_idx</span><span class="p">]</span>
-            <span class="n">img</span><span class="p">,</span> <span class="n">orig_mask</span> <span class="o">=</span> <span class="n">to_img</span><span class="p">(</span><span class="n">img_t</span><span class="p">),</span> <span class="n">to_img</span><span class="p">(</span><span class="n">orig_mask_t</span><span class="p">)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">to_img</span><span class="p">(</span><span class="n">img_t</span><span class="p">)</span>
+            <span class="c1"># TODO: support visualization of stacked masks</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_t</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_t</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">to_img</span><span class="p">(</span><span class="n">mask_t</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">)</span>
-            <span class="n">applied_masks</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span><span class="n">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">),</span>
-                                       <span class="n">orig_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
-            <span class="n">pics</span> <span class="o">+=</span> <span class="p">[(</span><span class="s2">&quot;Masked img </span><span class="si">{}</span><span class="s2">; green=new, yellow=orig&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ax_idx</span><span class="p">),</span>
-                      <span class="n">applied_masks</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s2">&quot;Mask </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ax_idx</span><span class="p">),</span>
-                      <span class="n">mask</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">orig_mask_t</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orig_mask_t</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">orig_mask</span> <span class="o">=</span> <span class="n">to_img</span><span class="p">(</span><span class="n">orig_mask_t</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">BOX</span><span class="p">)</span>
+                <span class="n">applied_masks</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span><span class="n">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">),</span>
+                                        <span class="n">orig_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+                <span class="n">pics</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;Masked img </span><span class="si">{}</span><span class="s2">; green=new, yellow=orig&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ax_idx</span><span class="p">),</span>
+                             <span class="n">applied_masks</span><span class="p">))</span>
+            <span class="n">pics</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;Mask </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ax_idx</span><span class="p">),</span> <span class="n">mask</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">ax_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">pic</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pics</span><span class="p">):</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">ax_idx</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="mi">30</span><span class="p">)))</span>
@@ -351,7 +273,8 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="neg_pixel_prop"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.neg_pixel_prop.html#hybrid_learning.datasets.data_visualization.neg_pixel_prop">[docs]</a><span class="k">def</span> <span class="nf">neg_pixel_prop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">max_num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="neg_pixel_prop"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.neg_pixel_prop.html#hybrid_learning.datasets.data_visualization.neg_pixel_prop">[docs]</a><span class="k">def</span> <span class="nf">neg_pixel_prop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">max_num_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                   <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Collect the mean proportion of negative pixels in the binary</span>
 <span class="sd">    segmentation mask data.</span>
 <span class="sd">    The proportion is estimated from the first ``max_num_samples`` samples</span>
@@ -363,12 +286,20 @@
 <span class="sd">        masks (as :py:class:`torch.Tensor`).</span>
 <span class="sd">    :param max_num_samples: the maximum number of samples to take into</span>
 <span class="sd">        account for the estimation</span>
+<span class="sd">    :param show_progress_bar: whether to show a progress bar for loading the</span>
+<span class="sd">        masks</span>
 <span class="sd">    :return: the proportion of negative pixels in all (resp. the first</span>
 <span class="sd">        ``num_samples``) binary segmentation masks contained in the given data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">max_num_samples</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
         <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">max_num_samples</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mean_proportion_pos_px</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)])</span></div>
+    <span class="n">iterator</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
+        <span class="n">iterator</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">iterator</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Masks loaded&quot;</span><span class="p">)</span>
+    <span class="n">masks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+        <span class="n">masks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mean_proportion_pos_px</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="apply_mask"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.apply_mask.html#hybrid_learning.datasets.data_visualization.apply_mask">[docs]</a><span class="k">def</span> <span class="nf">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
@@ -414,6 +345,21 @@
     <span class="k">return</span> <span class="n">applied_mask</span></div>
 
 
+<div class="viewcode-block" id="apply_masks"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.apply_masks.html#hybrid_learning.datasets.data_visualization.apply_masks">[docs]</a><span class="k">def</span> <span class="nf">apply_masks</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">masks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]],</span>
+                <span class="n">colors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">),</span>
+                <span class="n">alphas</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="p">[</span><span class="n">alphas</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphas</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+    <span class="n">masks</span> <span class="o">=</span> <span class="n">_to_pil_masks</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">masks</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">img</span></div>
+
+
 <div class="viewcode-block" id="to_monochrome_img"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.to_monochrome_img.html#hybrid_learning.datasets.data_visualization.to_monochrome_img">[docs]</a><span class="k">def</span> <span class="nf">to_monochrome_img</span><span class="p">(</span><span class="n">img_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;:py:class:`torch.Tensor` to monochrome :py:class:`PIL.Image.Image` in</span>
 <span class="sd">    ``&#39;L&#39;`` (=8-bit) mode.</span>
@@ -426,78 +372,75 @@
     <span class="k">return</span> <span class="n">img</span></div>
 
 
-<div class="viewcode-block" id="compare_masks"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.compare_masks.html#hybrid_learning.datasets.data_visualization.compare_masks">[docs]</a><span class="k">def</span> <span class="nf">compare_masks</span><span class="p">(</span><span class="n">mask1</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">mask2</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
-                  <span class="n">color1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">color2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+<div class="viewcode-block" id="compare_masks"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.data_visualization.compare_masks.html#hybrid_learning.datasets.data_visualization.compare_masks">[docs]</a><span class="k">def</span> <span class="nf">compare_masks</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">],</span>
+                  <span class="n">colors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Merge several monochrome masks in different colors into the same image.</span>
 
+<span class="sd">    :param masks: monochrome PIL images (model ``&#39;L&#39;`` or ``&#39;1&#39;``),</span>
+<span class="sd">        ``RGB`` mode PIL images, or torch tensors;</span>
+<span class="sd">        torch tensors are converted to ``&#39;L&#39;`` mode PIL images</span>
 <span class="sd">    :return: image with bright part of each mask in corresponding color</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># region Quick sizes check</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">mask1</span><span class="p">,</span> <span class="n">mask2</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="p">[</span><span class="n">mask1</span><span class="p">,</span> <span class="n">mask2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Mask at index </span><span class="si">{}</span><span class="s2"> has size </span><span class="si">{}</span><span class="s2">, which differs from&quot;</span>
-                              <span class="s2">&quot; mask at index 0 of size </span><span class="si">{}</span><span class="s2">&quot;</span>
-                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="p">[</span><span class="n">mask1</span><span class="p">,</span> <span class="n">mask2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
-    <span class="c1"># endregion</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+    <span class="n">pil_masks</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="n">_to_pil_masks</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">)</span>
 
-    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color1</span><span class="p">,</span> <span class="n">color2</span><span class="p">]</span>
-    <span class="n">colored_mask1</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span>
-        <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">mask1</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span>
-        <span class="n">mask1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">colored_mask2</span> <span class="o">=</span> <span class="n">apply_mask</span><span class="p">(</span>
-        <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">mask2</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">),</span>
-        <span class="n">mask2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">colored_masks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">apply_mask</span><span class="p">(</span>
+            <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">),</span>
+            <span class="n">mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">colors</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s1">&#39;RGB&#39;</span> <span class="k">else</span> <span class="n">mask</span>
+        <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">pil_masks</span><span class="p">]</span>
+    
     <span class="c1"># noinspection PyTypeChecker</span>
     <span class="n">mask_comparison</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">colored_mask2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">colored_mask1</span><span class="p">),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">colored_masks</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">),</span>
         <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mask_comparison</span></div>
+
+<span class="k">def</span> <span class="nf">_to_pil_masks</span><span class="p">(</span><span class="o">*</span><span class="n">masks</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">masks</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)]:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> \
+            <span class="s2">&quot;Encountered mask tensor with more than one channel of shape </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">pil_masks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">mask</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span> <span class="k">else</span> <span class="n">to_pil_image</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">]</span>
+    <span class="c1"># region Quick sizes check</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pil_masks</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">pil_masks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Mask at index </span><span class="si">{}</span><span class="s2"> has size </span><span class="si">{}</span><span class="s2"> (w x h), which differs from&quot;</span>
+                              <span class="s2">&quot; mask at index 0 of size </span><span class="si">{}</span><span class="s2"> (w x h)&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">masks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="c1"># endregion</span>
+    <span class="k">return</span> <span class="n">pil_masks</span>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

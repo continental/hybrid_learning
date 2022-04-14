@@ -1,0 +1,9 @@
+ProgressBarUpdater
+==================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.callbacks
+
+.. autoclass:: ProgressBarUpdater
+    :members:
+
+    .. autoclasstoc::

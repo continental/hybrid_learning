@@ -1,0 +1,44 @@
+kpis
+====
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.kpis
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.kpis
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+        
+        ~hybrid_learning.concepts.train_eval.kpis.batch_kpis
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

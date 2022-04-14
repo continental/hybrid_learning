@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Framework for Fuzzy Logic Rule Definition &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Experimentation Utils" href="experimentation.html" />
+    <link rel="prev" title="Dataset Tooling" href="datasets.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="concepts.html">Concept Analysis Tooling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="datasets.html">Dataset Tooling</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Framework for Fuzzy Logic Rule Definition</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#base-classes">Base Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#standard-fuzzy-logics">Standard Fuzzy Logics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parsing">Parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#standard-connectives">Standard Connectives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#standard-quantifiers">Standard Quantifiers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#predicates">Predicates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="experimentation.html">Experimentation Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_model.html">Using a concept model to find an embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concept_analysis.html">Conducting a Concept Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_extension.html">Extending DNN model outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_dataset_handles/index.html">Custom dataset handles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzy_logic.html">Fuzzy Logic Operations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+          <li><a href="index.html">Overview</a> &raquo;</li>
+      <li>Framework for Fuzzy Logic Rule Definition</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/userguide/overview/fuzzy_logic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="framework-for-fuzzy-logic-rule-definition">
+<h1>Framework for Fuzzy Logic Rule Definition<a class="headerlink" href="#framework-for-fuzzy-logic-rule-definition" title="Permalink to this headline"></a></h1>
+<p>The module <a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.html#module-hybrid_learning.fuzzy_logic" title="hybrid_learning.fuzzy_logic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic</span></code></a> defines a framework to</p>
+<ul class="simple">
+<li><p>define (logical) operations as functions that accept a grounding and provide the rule truth value</p></li>
+<li><p>define (fuzzy) logic rules as computational trees of operations</p></li>
+<li><p>parse rules to and from string representation</p></li>
+<li><p>define logics as collections of operation builders</p></li>
+</ul>
+<p>For details have a look at the <a class="reference internal" href="../../apiref/index.html#api-reference"><span class="std std-ref">API Reference</span></a>
+and the <a class="reference internal" href="../fuzzy_logic.html#fuzzy-logic-operations"><span class="std std-ref">user guide</span></a>.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#base-classes" id="id1">Base Classes</a></p></li>
+<li><p><a class="reference internal" href="#standard-fuzzy-logics" id="id2">Standard Fuzzy Logics</a></p></li>
+<li><p><a class="reference internal" href="#parsing" id="id3">Parsing</a></p></li>
+<li><p><a class="reference internal" href="#standard-connectives" id="id4">Standard Connectives</a></p></li>
+<li><p><a class="reference internal" href="#standard-quantifiers" id="id5">Standard Quantifiers</a></p></li>
+<li><p><a class="reference internal" href="#predicates" id="id6">Predicates</a></p>
+<ul>
+<li><p><a class="reference internal" href="#arithmetic-predicates" id="id7">Arithmetic Predicates</a></p></li>
+<li><p><a class="reference internal" href="#custom-operations" id="id8">Custom Operations</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="base-classes">
+<h2><a class="toc-backref" href="#contents">Base Classes</a><a class="headerlink" href="#base-classes" title="Permalink to this headline"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Merge</span></code></a></p></td>
+<td><p>Base class for operations and operation trees on dictionary inputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOrNumpyOperation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TorchOrNumpyOperation</span></code></a></p></td>
+<td><p>Generic merge operation allowing to define both a torch and a numpy operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic" title="hybrid_learning.fuzzy_logic.logic_base.logic.Logic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Logic</span></code></a></p></td>
+<td><p>Basic definition of a logic.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser" title="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FormulaParser</span></code></a></p></td>
+<td><p>Base class to parse string formula specifiers in infix notation to merge operations.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="standard-fuzzy-logics">
+<h2><a class="toc-backref" href="#contents">Standard Fuzzy Logics</a><a class="headerlink" href="#standard-fuzzy-logics" title="Permalink to this headline"></a></h2>
+<p>The following (fuzzy) logics with standard connectives from Boolean or t-norms fuzzy logic
+are defined in <a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.html#module-hybrid_learning.fuzzy_logic.tnorm_connectives" title="hybrid_learning.fuzzy_logic.tnorm_connectives"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic.tnorm_connectives</span></code></a>.
+Select one of them by key using <a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_by_name.html#hybrid_learning.fuzzy_logic.logic_by_name" title="hybrid_learning.fuzzy_logic.logic_by_name"><code class="xref py py-func docutils literal notranslate"><span class="pre">hybrid_learning.fuzzy_logic.logic_by_name()</span></code></a>.</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boolean.BooleanLogic</span></code></a></p></td>
+<td><p>Boolean logic and parser.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.ProductLogic.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.ProductLogic" title="hybrid_learning.fuzzy_logic.tnorm_connectives.product.ProductLogic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product.ProductLogic</span></code></a></p></td>
+<td><p>Product fuzzy logic parser.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.LukasiewiczLogic.html#hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.LukasiewiczLogic" title="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.LukasiewiczLogic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lukasiewicz.LukasiewiczLogic</span></code></a></p></td>
+<td><p>Lukasiewicz logic parser.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.GoedelLogic.html#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.GoedelLogic" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.GoedelLogic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goedel.GoedelLogic</span></code></a></p></td>
+<td><p>Goedel fuzzy logic parser.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="parsing">
+<h2><a class="toc-backref" href="#contents">Parsing</a><a class="headerlink" href="#parsing" title="Permalink to this headline"></a></h2>
+<p>See <a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser" title="hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">FormulaParser</span></code></a>.</p>
+</div>
+<div class="section" id="standard-connectives">
+<h2><a class="toc-backref" href="#contents">Standard Connectives</a><a class="headerlink" href="#standard-connectives" title="Permalink to this headline"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common.NOT.html#hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common.NOT" title="hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common.NOT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fuzzy_common.NOT</span></code></a></p></td>
+<td><p>Fuzzy logic NOT.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.AND"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boolean.AND</span></code></a></p></td>
+<td><p>Intersection/AND operation on binary masks and scalars.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.OR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boolean.OR</span></code></a></p></td>
+<td><p>Union/OR operation on binary masks and scalars.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boolean.IMPLIES</span></code></a></p></td>
+<td><p>Pixel-wise implication logical connective on binary masks and scalars.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY" title="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.IMPLIEDBY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boolean.IMPLIEDBY</span></code></a></p></td>
+<td><p>Goedel inverted logic IMPLIES connective.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND" title="hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product.AND</span></code></a></p></td>
+<td><p>Product AND operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR" title="hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product.OR</span></code></a></p></td>
+<td><p>Product OR operation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES" title="hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product.IMPLIES</span></code></a></p></td>
+<td><p>Product logic IMPLIES connective.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY" title="hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">product.IMPLIEDBY</span></code></a></p></td>
+<td><p>Goedel inverted logic IMPLIES connective.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.AND" title="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.AND"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lukasiewicz.AND</span></code></a></p></td>
+<td><p>Lukasiewicz AND operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.OR" title="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.OR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lukasiewicz.OR</span></code></a></p></td>
+<td><p>Lukasiewicz OR operation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.IMPLIES" title="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.IMPLIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lukasiewicz.IMPLIES</span></code></a></p></td>
+<td><p>Lukasiewicz logic IMPLIES connective.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.IMPLIEDBY" title="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.IMPLIEDBY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lukasiewicz.IMPLIEDBY</span></code></a></p></td>
+<td><p>Goedel inverted logic IMPLIES connective.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.AND" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.AND"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goedel.AND</span></code></a></p></td>
+<td><p>Goedel or Minimum AND operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goedel.OR</span></code></a></p></td>
+<td><p>Goedel or Maximum OR operation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIES" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goedel.IMPLIES</span></code></a></p></td>
+<td><p>Goedel logic IMPLIES connective.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIEDBY" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIEDBY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">goedel.IMPLIEDBY</span></code></a></p></td>
+<td><p>Goedel inverted logic IMPLIES connective.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="standard-quantifiers">
+<h2><a class="toc-backref" href="#contents">Standard Quantifiers</a><a class="headerlink" href="#standard-quantifiers" title="Permalink to this headline"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.quantifiers.ALL.html#hybrid_learning.fuzzy_logic.quantifiers.ALL" title="hybrid_learning.fuzzy_logic.quantifiers.ALL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALL</span></code></a></p></td>
+<td><p>Reduce a single tensor along given dimensions using logical AND.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.quantifiers.ANY.html#hybrid_learning.fuzzy_logic.quantifiers.ANY" title="hybrid_learning.fuzzy_logic.quantifiers.ANY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANY</span></code></a></p></td>
+<td><p>Reduce a single tensor along given dimensions using logical OR.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.quantifiers.WHERE.html#hybrid_learning.fuzzy_logic.quantifiers.WHERE" title="hybrid_learning.fuzzy_logic.quantifiers.WHERE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WHERE</span></code></a></p></td>
+<td><p>Filter the dimensions in tensor <code class="docutils literal notranslate"><span class="pre">a</span></code> by the boolean values given in <code class="docutils literal notranslate"><span class="pre">cond</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="predicates">
+<h2><a class="toc-backref" href="#contents">Predicates</a><a class="headerlink" href="#predicates" title="Permalink to this headline"></a></h2>
+<div class="section" id="arithmetic-predicates">
+<h3><a class="toc-backref" href="#contents">Arithmetic Predicates</a><a class="headerlink" href="#arithmetic-predicates" title="Permalink to this headline"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals" title="hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Equals</span></code></a></p></td>
+<td><p>Predicate of arity 2 that checks element-wise equality between two arrays.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan" title="hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GreaterEqualsThan</span></code></a></p></td>
+<td><p>Predicate of arity 2 that thresholds number values at a given threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan" title="hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GreaterThan</span></code></a></p></td>
+<td><p>Predicate of arity 2 that thresholds number values at a given threshold.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan" title="hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowerEqualsThan</span></code></a></p></td>
+<td><p>Predicate of arity 2 that checks whether an input is below or equals a threshold.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan" title="hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowerThan</span></code></a></p></td>
+<td><p>Predicate of arity 2 that checks whether an input is below a threshold.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="custom-operations">
+<h3><a class="toc-backref" href="#contents">Custom Operations</a><a class="headerlink" href="#custom-operations" title="Permalink to this headline"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.AllNeighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AllNeighbors</span></code></a></p></td>
+<td><p>Given a mask of truth values representing the output of a formula apply average pooling.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.BestIoUWith"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BestIoUWith</span></code></a></p></td>
+<td><p>Given two stacked sets of masks <code class="docutils literal notranslate"><span class="pre">masks_a</span></code> and <code class="docutils literal notranslate"><span class="pre">masks_b</span></code>, calculate for each mask in <code class="docutils literal notranslate"><span class="pre">masks_a</span></code> the best IoU with any mask in <code class="docutils literal notranslate"><span class="pre">masks_b</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.CoveredBy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoveredBy</span></code></a></p></td>
+<td><p>Calculate the proportion of one mask covered by another.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IoUWith</span></code></a></p></td>
+<td><p>Calculate the intersection over union between two masks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IsPartOfA</span></code></a></p></td>
+<td><p>Unary predicate that calculates for each pixel location whether it is part of an object segmentation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.html#hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LambdaOp</span></code></a></p></td>
+<td><p>Provide a custom transformation on the sequence of values extracted from the annotations dict.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="datasets.html" class="btn btn-neutral float-left" title="Dataset Tooling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="experimentation.html" class="btn btn-neutral float-right" title="Experimentation Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

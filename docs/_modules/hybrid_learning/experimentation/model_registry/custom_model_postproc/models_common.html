@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Common utility functions for custom model extensions.&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+
+
+<div class="viewcode-block" id="bbox_to_segmask"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.bbox_to_segmask.html#hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.bbox_to_segmask">[docs]</a><span class="k">def</span> <span class="nf">bbox_to_segmask</span><span class="p">(</span><span class="n">bbox_info_batch</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+                    <span class="n">logical_or</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+                    <span class="n">image_size</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">640</span><span class="p">),</span>
+                    <span class="n">target_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">min_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Transform EfficientDet output into segmentation mask.</span>
+<span class="sd">    The ``bbox_info_batch`` must have shape ``[batch, #bboxes per image, 6]``,</span>
+<span class="sd">    each row representing ``[x_min, y_min, x_max, y_max, score, class]``.</span>
+<span class="sd">    The returned mask has shape ``[batch, (#bboxes | 1), *image_size]``.</span>
+<span class="sd">    The per-image-bbox-masks are reduced to per-image-masks using ``logical_or``</span>
+<span class="sd">    if this is set.</span>
+<span class="sd">    Note that not setting ``logical_or`` will only succeed in case of uniform #bboxes!</span>
+<span class="sd">    For details see the forward method and attributes of</span>
+<span class="sd">    :py:class:`EfficientDetToSetMask`.</span>
+
+<span class="sd">    :param bbox_info_batch: tensor of shape ``[batch, #bbox per image, 6]``</span>
+<span class="sd">        where the last dimension encodes ``(x_min, y_min, x_max, y_max, score, class)``</span>
+<span class="sd">    :param logical_or: callable that accepts a list of tensor segmentation masks</span>
+<span class="sd">        with values in [0, 1] (one 2D mask for each bounding box in an image)</span>
+<span class="sd">        and returns a single combined segmentation mask;</span>
+<span class="sd">        e.g. use a variadic fuzzy logical OR object</span>
+<span class="sd">    :param image_size: the size of the original image as ``(height, width)``</span>
+<span class="sd">        for which to draw the bounding boxes</span>
+<span class="sd">    :param target_class: the ID of the target class (see also ``bbox_info_batch``) for selection</span>
+<span class="sd">    :param min_score: the minimum score a box must have to be included in the combined mask</span>
+<span class="sd">    :return: tensor of size ``(batch, 1, height, width)``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_size</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Invalid image_size: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">image_size</span><span class="p">)</span>
+    <span class="n">_tens_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">bbox_info_batch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">bbox_info_batch</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">bbox_info_batch</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">out_tensors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="n">bbox_info_batch</span><span class="p">:</span>
+        <span class="n">bbox_masks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Subsetting:</span>
+        <span class="k">if</span> <span class="n">target_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">classes</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="n">classes</span> <span class="o">==</span> <span class="n">target_class</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">min_score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="n">scores</span> <span class="o">&gt;=</span> <span class="n">min_score</span><span class="p">]</span>
+
+        <span class="c1"># Box generation:</span>
+        <span class="k">for</span> <span class="n">bbox_id</span><span class="p">,</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
+            <span class="n">bbox_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">*</span><span class="n">image_size</span><span class="p">,</span> <span class="o">**</span><span class="n">_tens_args</span><span class="p">)</span>
+            <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()[:]</span>
+            <span class="n">bbox_mask</span><span class="p">[</span><span class="n">y_min</span><span class="p">:</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">x_min</span><span class="p">:</span> <span class="n">x_max</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+            <span class="n">bbox_masks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox_mask</span><span class="p">)</span>
+
+        <span class="c1"># Logics</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bbox_masks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pred_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">image_size</span><span class="p">,</span> <span class="o">**</span><span class="n">_tens_args</span><span class="p">)</span>  <span class="c1"># size = [1, h, w]</span>
+        <span class="k">elif</span> <span class="n">logical_or</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pred_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">logical_or</span><span class="p">(</span><span class="n">bbox_masks</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># size = [1, h, w]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pred_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">bbox_masks</span><span class="p">)</span>  <span class="c1"># size = [num_bboxes, h, w]</span>
+
+        <span class="n">out_tensors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pred_mask</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">out_tensors</span><span class="p">)</span>  <span class="c1"># size = [batch_size, (num_bboxes | 1), h, w]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

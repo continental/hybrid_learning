@@ -1,0 +1,9 @@
+MaskRCNNBoxToSegMask
+====================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.custom_model_postproc.mask_rcnn_extensions
+
+.. autoclass:: MaskRCNNBoxToSegMask
+    :members:
+
+    .. autoclasstoc::

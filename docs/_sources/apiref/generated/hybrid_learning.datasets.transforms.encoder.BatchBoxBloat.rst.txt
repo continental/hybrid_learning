@@ -1,0 +1,9 @@
+BatchBoxBloat
+=============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.encoder
+
+.. autoclass:: BatchBoxBloat
+    :members:
+
+    .. autoclasstoc::

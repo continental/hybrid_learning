@@ -19,15 +19,9 @@
         
         ~hybrid_learning.concepts.concepts
         
-        ~hybrid_learning.concepts.embeddings
-        
-        ~hybrid_learning.concepts.enforcement
-        
-        ~hybrid_learning.concepts.kpis
-        
         ~hybrid_learning.concepts.models
         
-        ~hybrid_learning.concepts.visualization
+        ~hybrid_learning.concepts.train_eval
         
 
     

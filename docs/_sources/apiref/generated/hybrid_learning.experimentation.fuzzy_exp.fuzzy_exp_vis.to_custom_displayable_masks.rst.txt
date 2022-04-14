@@ -1,0 +1,6 @@
+to\_custom\_displayable\_masks
+==============================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis
+
+.. autofunction:: to_custom_displayable_masks

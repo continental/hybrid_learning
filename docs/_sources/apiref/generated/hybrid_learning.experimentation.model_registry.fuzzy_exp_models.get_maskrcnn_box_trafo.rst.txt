@@ -1,0 +1,6 @@
+get\_maskrcnn\_box\_trafo
+=========================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.fuzzy_exp_models
+
+.. autofunction:: get_maskrcnn_box_trafo

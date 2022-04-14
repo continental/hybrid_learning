@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cache &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="CacheCascade" href="hybrid_learning.datasets.caching.CacheCascade.html" />
+    <link rel="prev" title="caching" href="hybrid_learning.datasets.caching.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Cache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheCascade.html">CacheCascade</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheDict.html">CacheDict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.CacheTuple.html">CacheTuple</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.DictCache.html">DictCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.FileCache.html">FileCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.JPGCache.html">JPGCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NPYCache.html">NPYCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NPZCache.html">NPZCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.NoCache.html">NoCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.PTCache.html">PTCache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.caching.TensorDictCache.html">TensorDictCache</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.caching.html">caching</a> &raquo;</li>
+      <li>Cache</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.caching.Cache.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="cache">
+<h1>Cache<a class="headerlink" href="#cache" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.caching.</span></span><span class="sig-name descname"><span class="pre">Cache</span></span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/abc.html#abc.ABC" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Caching base handle.
+Put objects into the cache using <a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.put" title="hybrid_learning.datasets.caching.Cache.put"><code class="xref py py-meth docutils literal notranslate"><span class="pre">put()</span></code></a>,
+and load cached objects by their cache descriptor using <a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.load" title="hybrid_learning.datasets.caching.Cache.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a>.
+Derive custom caching handles from this class.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.put" title="hybrid_learning.datasets.caching.Cache.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>(descriptor, obj)</p></td>
+<td><p>Store <code class="docutils literal notranslate"><span class="pre">obj</span></code> in this cache.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.load" title="hybrid_learning.datasets.caching.Cache.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(descriptor)</p></td>
+<td><p>Load the object stored under key <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> from cache.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.put_batch" title="hybrid_learning.datasets.caching.Cache.put_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put_batch</span></code></a>(descriptors, objs)</p></td>
+<td><p>Store a batch of <code class="docutils literal notranslate"><span class="pre">objs</span></code> in this cache using according <code class="docutils literal notranslate"><span class="pre">descriptors</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.load_batch" title="hybrid_learning.datasets.caching.Cache.load_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_batch</span></code></a>(descriptors[, return_none_if])</p></td>
+<td><p>Load a batch of objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.clear" title="hybrid_learning.datasets.caching.Cache.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p>Clear the current cache.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.descriptors" title="hybrid_learning.datasets.caching.Cache.descriptors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptors</span></code></a>()</p></td>
+<td><p>Return all descriptors for which an element is cached.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.as_dict" title="hybrid_learning.datasets.caching.Cache.as_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_dict</span></code></a>()</p></td>
+<td><p>Return a dict with all cached descriptors and objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.wrap" title="hybrid_learning.datasets.caching.Cache.wrap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap</span></code></a>(getitem[, descriptor_map])</p></td>
+<td><p>Add this cache to the deterministic function <code class="docutils literal notranslate"><span class="pre">getitem</span></code> (which should have no side effects).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.__repr__" title="hybrid_learning.datasets.caching.Cache.__repr__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code></a>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.__add__" title="hybrid_learning.datasets.caching.Cache.__add__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code></a>(other)</p></td>
+<td><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">self</span></code> then <code class="docutils literal notranslate"><span class="pre">other</span></code> with default sync mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.__radd__" title="hybrid_learning.datasets.caching.Cache.__radd__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__radd__</span></code></a>(other)</p></td>
+<td><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">other</span></code> then <code class="docutils literal notranslate"><span class="pre">self</span></code> with default sync mode.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.__add__">
+<span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.__add__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">self</span></code> then
+<code class="docutils literal notranslate"><span class="pre">other</span></code> with default sync mode.
+In case <code class="docutils literal notranslate"><span class="pre">other</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> or a dummy <a class="reference internal" href="hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache" title="hybrid_learning.datasets.caching.NoCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoCache</span></code></a>,
+return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>one of the summands in case the other is a no-op, else
+a <a class="reference internal" href="hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade" title="hybrid_learning.datasets.caching.CacheCascade"><code class="xref py py-class docutils literal notranslate"><span class="pre">CacheCascade</span></code></a> transforms.</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache" title="hybrid_learning.datasets.caching.Cache"><em>Cache</em></a><em>]</em>) – </p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache" title="hybrid_learning.datasets.caching.Cache"><em>Cache</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.__radd__">
+<span class="sig-name descname"><span class="pre">__radd__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.__radd__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.__radd__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a (cascaded) cache which will first lookup <code class="docutils literal notranslate"><span class="pre">other</span></code> then
+<code class="docutils literal notranslate"><span class="pre">self</span></code> with default sync mode.
+See <a class="reference internal" href="#hybrid_learning.datasets.caching.Cache.__add__" title="hybrid_learning.datasets.caching.Cache.__add__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache" title="hybrid_learning.datasets.caching.Cache"><em>Cache</em></a><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#hybrid_learning.datasets.caching.Cache" title="hybrid_learning.datasets.caching.Cache"><em>Cache</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Return a dict with all cached descriptors and objects.
+Beware: This can be very large!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.clear">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.clear" title="Permalink to this definition"></a></dt>
+<dd><p>Clear the current cache.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.descriptors">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">descriptors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.descriptors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.descriptors" title="Permalink to this definition"></a></dt>
+<dd><p>Return all descriptors for which an element is cached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.load">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load the object stored under key <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> from cache.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> is returned if the object is not in the cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>descriptor</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.load_batch">
+<span class="sig-name descname"><span class="pre">load_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_none_if</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'any'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.load_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.load_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Load a batch of objects. Return <code class="docutils literal notranslate"><span class="pre">None</span></code> according to <code class="docutils literal notranslate"><span class="pre">return_none_if</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptors</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a><em>]</em>) – descriptors to load values for</p></li>
+<li><p><strong>return_none_if</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – may be <code class="docutils literal notranslate"><span class="pre">&quot;any&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;never&quot;</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Collection" title="(in Python v3.6)"><em>Collection</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.put">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.put" title="Permalink to this definition"></a></dt>
+<dd><p>Store <code class="docutils literal notranslate"><span class="pre">obj</span></code> in this cache.
+In case it already exists, the existing object is overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptor</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a>) – the descriptor key under which to store the
+object; used to access the object later</p></li>
+<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>) – the object to put into cache; must not be <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.put_batch">
+<span class="sig-name descname"><span class="pre">put_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.put_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.put_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Store a batch of <code class="docutils literal notranslate"><span class="pre">objs</span></code> in this cache using according <code class="docutils literal notranslate"><span class="pre">descriptors</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptors</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a><em>]</em>) – </p></li>
+<li><p><strong>objs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.caching.Cache.wrap">
+<span class="sig-name descname"><span class="pre">wrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">getitem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descriptor_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/caching.html#Cache.wrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.caching.Cache.wrap" title="Permalink to this definition"></a></dt>
+<dd><p>Add this cache to the deterministic function <code class="docutils literal notranslate"><span class="pre">getitem</span></code> (which
+should have no side effects).
+When the wrapped method is called, the desired item from cache is
+returned. Only if it does not exist in the cache, the original
+<code class="docutils literal notranslate"><span class="pre">getitem</span></code> is called, and its output cached and returned.
+The optional <code class="docutils literal notranslate"><span class="pre">descriptor_map</span></code> function should map a <code class="docutils literal notranslate"><span class="pre">getitem</span></code>-input
+to the hash value which is to be used for the cache.
+E.g. it could map an index to the underlying file name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">getitem</span></code> should</p>
+<ul class="simple">
+<li><p>have no side effects, and</p></li>
+<li><p>have deterministic output, i.e. calls with equal input value
+will return equal output values.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">descriptor_map</span></code> should</p>
+<ul class="simple">
+<li><p>accept elements from the same domain as <code class="docutils literal notranslate"><span class="pre">getitem</span></code>,</p></li>
+<li><p>be injective, i.e. map each <code class="docutils literal notranslate"><span class="pre">getitem</span></code>-input to a <em>unique</em> descriptor
+value.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>getitem</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a><em>]</em>) – the function to wrap; for requirements see above</p></li>
+<li><p><strong>descriptor_map</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Hashable" title="(in Python v3.6)"><em>Hashable</em></a><em>]</em><em>]</em>) – optionally a map from <code class="docutils literal notranslate"><span class="pre">getitem</span></code>-input to
+descriptor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a>[[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.caching.html" class="btn btn-neutral float-left" title="caching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.caching.CacheCascade.html" class="btn btn-neutral float-right" title="CacheCascade" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

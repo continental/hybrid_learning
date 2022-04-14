@@ -48,6 +48,8 @@ base
     .. autosummary::
         :toctree:
         
+        ~add_gaussian_peak
+        
         ~cross_validation_splits
         
 

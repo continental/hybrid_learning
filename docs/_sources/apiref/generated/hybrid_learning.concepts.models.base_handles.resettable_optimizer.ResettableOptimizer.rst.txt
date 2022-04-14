@@ -1,9 +1,0 @@
-ResettableOptimizer
-===================
-
-.. currentmodule:: hybrid_learning.concepts.models.base_handles.resettable_optimizer
-
-.. autoclass:: ResettableOptimizer
-    :members:
-
-    .. autoclasstoc::

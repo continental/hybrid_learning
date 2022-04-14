@@ -1,0 +1,6 @@
+apply\_masks
+============
+
+.. currentmodule:: hybrid_learning.datasets.data_visualization
+
+.. autofunction:: apply_masks

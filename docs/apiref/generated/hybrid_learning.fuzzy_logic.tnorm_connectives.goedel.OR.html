@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OR &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="lukasiewicz" href="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.html" />
+    <link rel="prev" title="IMPLIES" href="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIES.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html">quantifiers</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.html">boolean</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common.html">fuzzy_common</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.html">goedel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.html">lukasiewicz</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.product.html">product</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html">logic_by_name</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.html">goedel</a> &raquo;</li>
+      <li>OR</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="or">
+<h1>OR<a class="headerlink" href="#or" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.</span></span><span class="sig-name descname"><span class="pre">OR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">in_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_variadic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/tnorm_connectives/goedel.html#OR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.connectives.AbstractOR.html#hybrid_learning.fuzzy_logic.logic_base.connectives.AbstractOR" title="hybrid_learning.fuzzy_logic.logic_base.connectives.AbstractOR"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractOR</span></code></a></p>
+<p>Goedel or Maximum OR operation.
+For a finite amount of truth values <span class="math notranslate nohighlight">\((a_i)_{i=1}^n\)</span> it calculates as</p>
+<div class="math notranslate nohighlight">
+\[\bigvee_{i=1}^n a_i = \max_i a_i\]</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<details><summary>Inherited from    : py: class:<cite>AbstractOR</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></p></td>
+<td><p>The string symbol of this class (override for sub-classes).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IS_COMMUTATIVE</span></code></p></td>
+<td><p>Whether instances are equivalent to ones with permuted <a class="reference internal" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Merge</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></p></td>
+<td><p>The string symbol of this class (override for sub-classes).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ARITY</span></code></p></td>
+<td><p>The arity of the operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IS_COMMUTATIVE</span></code></p></td>
+<td><p>Whether instances are equivalent to ones with permuted <a class="reference internal" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_variadic</span></code></p></td>
+<td><p>Whether the instance is variadic.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">setting_defaults</span></code></p></td>
+<td><p>Defaults used for <code class="xref py py-attr docutils literal notranslate"><span class="pre">settings</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pretty_op_symb</span></code></p></td>
+<td><p>Name of the operation symbol suitable for filenames etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code></p></td>
+<td><p>The input keys which are child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_children</span></code></p></td>
+<td><p>All children operations in the flattened computational tree, sorted depth first.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">consts</span></code></p></td>
+<td><p>The constant string keys in the input keys.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation_keys</span></code></p></td>
+<td><p>The list of keys used for this parent operation in original order (constants and children output keys).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_in_keys</span></code></p></td>
+<td><p>All string input keys both of self and of all child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_out_keys</span></code></p></td>
+<td><p>Output keys of self and all child operations.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_CLASS</span></code></p></td>
+<td><p>The identity class or classes for composition / addition.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<details><summary>Inherited from    : py: class:<cite>TorchOrNumpyOperation</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code>(annotation_vals)</p></td>
+<td><p>Operation on either torch tensors or Booleans, numpy arrays and numbers.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>TorchOperation</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code>(annotation_vals)</p></td>
+<td><p>Operation on either torch tensors or Booleans, numpy arrays and numbers.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Merge</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_infix_notation</span></code>([sort_key, ...])</p></td>
+<td><p>Return an infix str encoding equal for differently sorted operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str</span></code>(**infix_notation_kwargs)</p></td>
+<td><p>Alias for <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_infix_notation()</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pretty_str</span></code>(**infix_notation_kwargs)</p></td>
+<td><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_str()</span></code> but using pretty operation names suitable for filenames etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_repr</span></code>([settings, defaults, sort_key, ...])</p></td>
+<td><p>Return str representation which can be used to reproduce and compare the instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">treerecurse_replace_keys</span></code>(**replace_map)</p></td>
+<td><p>Return a new formula with all occurences of variables in <code class="docutils literal notranslate"><span class="pre">replace_map</span></code> replaced and else identical settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">treerecurse</span></code>(fun)</p></td>
+<td><p>Apply the given function recursively to this and all children instances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">variadic_apply_to</span></code>(annotations)</p></td>
+<td><p>Return the result of operation on the values/items of a mapping or sequence of arbitrary length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code>(annotation_vals)</p></td>
+<td><p>Operation on either torch tensors or Booleans, numpy arrays and numbers.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<details><summary>Inherited from    : py: class:<cite>Merge</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>(*in_keys[, out_key, overwrite, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
+<td><p>Return str(self).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code> without sorting.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
+<td><p>Two merge operations are considered equal, if their normalized representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__copy__</span></code>()</p></td>
+<td><p>Return a deep copy of self using settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code> without sorting.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
+<td><p>Two merge operations are considered equal, if their normalized representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__copy__</span></code>()</p></td>
+<td><p>Return a deep copy of self using settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p>Return a flat composition of <code class="docutils literal notranslate"><span class="pre">self</span></code> with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__radd__</span></code>(other)</p></td>
+<td><p>Return a flat composition of <code class="docutils literal notranslate"><span class="pre">other</span></code> and <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em>) – </p></li>
+<li><p><strong>out_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>skip_none</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>symb</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p></li>
+<li><p><strong>cache_duplicates</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+<li><p><strong>keep_keys</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Collection" title="(in Python v3.6)"><em>Collection</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+<li><p><strong>_variadic</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.numpy_operation">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">numpy_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/tnorm_connectives/goedel.html#OR.numpy_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.numpy_operation" title="Permalink to this definition"></a></dt>
+<dd><p>Goedel OR on Booleans, numpy arrays and numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>ndarray</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a>[<em>ndarray</em>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.torch_operation">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">torch_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/tnorm_connectives/goedel.html#OR.torch_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.torch_operation" title="Permalink to this definition"></a></dt>
+<dd><p>Goedel OR on pytorch tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.cache_duplicates">
+<span class="sig-name descname"><span class="pre">cache_duplicates</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.cache_duplicates" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to cache duplicate child operation outputs with duplicate out_key.
+If set to false, all children and children children are evaluated and the
+values of duplicate <code class="docutils literal notranslate"><span class="pre">out_keys</span></code> are evaluated several times and overwritten,
+possibly leading to more computational time while using less memory.
+Note that the order of children execution is determined by their order in
+<a class="reference internal" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys"><code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code></a>, depth first for nested operations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys">
+<span class="sig-name descname"><span class="pre">in_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'Merge'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.in_keys" title="Permalink to this definition"></a></dt>
+<dd><p>The keys of segmentation masks to unite in given order.
+Keys are either constant strings or a merge operation.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.keep_keys">
+<span class="sig-name descname"><span class="pre">keep_keys</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Collection</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.keep_keys" title="Permalink to this definition"></a></dt>
+<dd><p>The keys of intermediate outputs in <code class="xref py py-attr docutils literal notranslate"><span class="pre">all_out_keys</span></code> which should
+be added to the return of a call.
+Default (<code class="docutils literal notranslate"><span class="pre">None</span></code> or empty collection): duplicate children outputs are cached
+but not returned to save memory.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.out_key">
+<span class="sig-name descname"><span class="pre">out_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.out_key" title="Permalink to this definition"></a></dt>
+<dd><p>The key to use to store the merge output in the annotations dict.
+Take care to not accidentally overwrite existing keys
+(cf. <a class="reference internal" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.overwrite" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.overwrite"><code class="xref py py-attr docutils literal notranslate"><span class="pre">overwrite</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.overwrite">
+<span class="sig-name descname"><span class="pre">overwrite</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'noop'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.overwrite" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to overwrite a value in the input dictionary when
+applying this operation.
+The operation is defined in <code class="xref py py-meth docutils literal notranslate"><span class="pre">operation()</span></code>.
+The key that may be overwritten is stored in <a class="reference internal" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.out_key" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a>.
+An exception is raised if this is <code class="docutils literal notranslate"><span class="pre">False</span></code> and the key exists.
+If set to <code class="docutils literal notranslate"><span class="pre">'noop'</span></code> and <a class="reference internal" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.out_key" title="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.out_key"><code class="xref py py-attr docutils literal notranslate"><span class="pre">out_key</span></code></a> is in the given
+annotations dict, it is returned unchanged.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.replace_none">
+<span class="sig-name descname"><span class="pre">replace_none</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.replace_none" title="Permalink to this definition"></a></dt>
+<dd><p>If not <code class="docutils literal notranslate"><span class="pre">None</span></code>, any received <code class="docutils literal notranslate"><span class="pre">None</span></code> value is replaced by the
+given value. This is done only for computation, the <code class="docutils literal notranslate"><span class="pre">None</span></code> value in the
+received dict is left unchanged. Key-value pairs with <code class="docutils literal notranslate"><span class="pre">None</span></code> value may
+come from the input or from child operations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.skip_none">
+<span class="sig-name descname"><span class="pre">skip_none</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.OR.skip_none" title="Permalink to this definition"></a></dt>
+<dd><p>If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, when a None input value is encountered simply
+<code class="docutils literal notranslate"><span class="pre">None</span></code> is returned. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, an error is raised.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.fuzzy_logic.tnorm_connectives.goedel.IMPLIES.html" class="btn btn-neutral float-left" title="IMPLIES" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz.html" class="btn btn-neutral float-right" title="lukasiewicz" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+AbstractNOT
+===========
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.connectives
+
+.. autoclass:: AbstractNOT
+    :members:
+
+    .. autoclasstoc::

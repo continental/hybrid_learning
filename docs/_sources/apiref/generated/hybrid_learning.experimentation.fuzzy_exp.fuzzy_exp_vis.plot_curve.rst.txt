@@ -1,0 +1,6 @@
+plot\_curve
+===========
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis
+
+.. autofunction:: plot_curve

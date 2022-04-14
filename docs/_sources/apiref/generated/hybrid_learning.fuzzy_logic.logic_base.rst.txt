@@ -1,0 +1,48 @@
+logic\_base
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.logic_base
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.logic_base
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.fuzzy_logic.logic_base.connectives
+        
+        ~hybrid_learning.fuzzy_logic.logic_base.logic
+        
+        ~hybrid_learning.fuzzy_logic.logic_base.merge_operation
+        
+        ~hybrid_learning.fuzzy_logic.logic_base.parsing
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

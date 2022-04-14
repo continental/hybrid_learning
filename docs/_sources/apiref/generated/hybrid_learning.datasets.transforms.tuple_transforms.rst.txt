@@ -25,23 +25,37 @@ tuple\_transforms
         :toctree:
         :nosignatures:
         
-        ~Compose
+        ~ApplyMask
+        
+        ~FlattenTuple
         
         ~Identity
         
+        ~OnAll
+        
         ~OnBothSides
+        
+        ~OnIndex
         
         ~OnInput
         
         ~OnTarget
         
-        ~OneSided
+        ~PackMask
         
         ~ReduceTuple
         
         ~SameSize
         
+        ~SubsetTuple
+        
         ~TupleTransforms
+        
+        ~TwoTupleTransforms
+        
+        ~UnfoldTuple
+        
+        ~UnpackMask
         
 
     

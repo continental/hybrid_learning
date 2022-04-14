@@ -1,0 +1,6 @@
+registered\_model\_keys
+=======================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.model_registry
+
+.. autofunction:: registered_model_keys

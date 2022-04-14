@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>plot_overview &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="plot_overview_for_concept" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html" />
+    <link rel="prev" title="plot_best_ious_wt_std" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS.html">hybrid_learning.experimentation.ca_exp_eval.ALEXNET_LAYERS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS.html">hybrid_learning.experimentation.ca_exp_eval.VGG16_LAYERS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS.html">hybrid_learning.experimentation.ca_exp_eval.MASK_RCNN_LAYERS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.analysis_root.html">analysis_root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.display_overview.html">display_overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.gather_stats.html">gather_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats.html">get_all_best_emb_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_all_stats.html">get_all_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_best_emb.html">get_best_emb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats.html">get_best_emb_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_common_concepts.html">get_common_concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_concepts.html">get_concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_embs.html">get_embs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_layers.html">get_layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_stats.html">get_stats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding.html">get_vis_best_embedding</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue.html">highlight_max_blue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.merge_to_overview.html">merge_to_overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison.html">plot_best_iou_comparison</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std.html">plot_best_ious_wt_std</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">plot_overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html">plot_overview_for_concept</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a> &raquo;</li>
+      <li>plot_overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.ca_exp_eval.plot_overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="plot-overview">
+<h1>plot_overview<a class="headerlink" href="#plot-overview" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="hybrid_learning.experimentation.ca_exp_eval.plot_overview">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.experimentation.ca_exp_eval.</span></span><span class="sig-name descname"><span class="pre">plot_overview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">best_set_iou_display</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'set_iou'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/experimentation/ca_exp_eval.html#plot_overview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.experimentation.ca_exp_eval.plot_overview" title="Permalink to this definition"></a></dt>
+<dd><p>Plot and save the output of <code class="docutils literal notranslate"><span class="pre">merge_to_overview</span></code> using
+<code class="docutils literal notranslate"><span class="pre">plot_best_ious_wt_std</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>best_set_iou_display</strong> (<em>DataFrame</em>) – DataFrame in the format as provided by
+<code class="docutils literal notranslate"><span class="pre">merge_to_overview</span></code></p></li>
+<li><p><strong>model_name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – used to determine default for save_as</p></li>
+<li><p><strong>metric</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – used to determine default for save_as</p></li>
+<li><p><strong>max_val</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – see <code class="docutils literal notranslate"><span class="pre">plot_best_ious_wt_std</span></code></p></li>
+<li><p><strong>save_as</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the filename to save plot as; no saving if set to <code class="docutils literal notranslate"><span class="pre">False</span></code>;
+if a directory or None, a default file name is used (under directory);
+if ends with <code class="docutils literal notranslate"><span class="pre">.svg</span></code>, both an SVG and a PNG image are saved</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std.html" class="btn btn-neutral float-left" title="plot_best_ious_wt_std" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html" class="btn btn-neutral float-right" title="plot_overview_for_concept" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

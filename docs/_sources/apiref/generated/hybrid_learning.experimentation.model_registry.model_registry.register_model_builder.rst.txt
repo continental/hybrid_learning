@@ -1,0 +1,6 @@
+register\_model\_builder
+========================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.model_registry
+
+.. autofunction:: register_model_builder

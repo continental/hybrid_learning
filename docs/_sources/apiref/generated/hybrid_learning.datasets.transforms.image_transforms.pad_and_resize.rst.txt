@@ -1,0 +1,6 @@
+pad\_and\_resize
+================
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autofunction:: pad_and_resize

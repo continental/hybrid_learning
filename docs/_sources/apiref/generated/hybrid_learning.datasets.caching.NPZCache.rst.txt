@@ -1,0 +1,9 @@
+NPZCache
+========
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: NPZCache
+    :members:
+
+    .. autoclasstoc::

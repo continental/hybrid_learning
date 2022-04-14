@@ -1,0 +1,6 @@
+stack\_tensors
+==============
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.merge_operation
+
+.. autofunction:: stack_tensors

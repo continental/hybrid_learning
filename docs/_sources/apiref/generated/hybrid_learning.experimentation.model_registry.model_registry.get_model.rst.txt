@@ -1,0 +1,6 @@
+get\_model
+==========
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.model_registry
+
+.. autofunction:: get_model

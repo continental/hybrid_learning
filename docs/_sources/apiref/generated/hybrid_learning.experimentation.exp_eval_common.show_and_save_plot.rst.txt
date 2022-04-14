@@ -1,0 +1,6 @@
+show\_and\_save\_plot
+=====================
+
+.. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+.. autofunction:: show_and_save_plot

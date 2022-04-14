@@ -1,9 +1,0 @@
-ToDevice
-========
-
-.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
-
-.. autoclass:: ToDevice
-    :members:
-
-    .. autoclasstoc::

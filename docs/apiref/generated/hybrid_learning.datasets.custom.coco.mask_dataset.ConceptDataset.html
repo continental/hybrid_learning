@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConceptDataset &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="fasseg" href="hybrid_learning.datasets.custom.fasseg.html" />
+    <link rel="prev" title="mask_dataset" href="hybrid_learning.datasets.custom.coco.mask_dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.custom.coco.html">coco</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.html">coco</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.mask_dataset.html">mask_dataset</a> &raquo;</li>
+      <li>ConceptDataset</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="conceptdataset">
+<h1>ConceptDataset<a class="headerlink" href="#conceptdataset" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.custom.coco.mask_dataset.</span></span><span class="sig-name descname"><span class="pre">ConceptDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body_parts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy_mask_generation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset" title="hybrid_learning.datasets.custom.coco.base.COCODataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">COCODataset</span></code></a></p>
+<p>Data handle for ground truth segmentations of visual concepts
+(body parts) generated from COCO keypoints. The concepts that can be
+handled are combinations of objects (body parts) marked by keypoints.</p>
+<p>The input images the dataset contains are the original COCO images.
+The annotations are segmentation masks masking the desired concept which are
+generated from the keypoint annotations. The translation of keypoint
+annotations to masks can be found in <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">annotations_to_mask()</span></code></a>.</p>
+<p>The ground truth masks are generated and stored in a sub-directory
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.masks_root" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.masks_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">masks_root</span></code></a>:</p>
+<pre class="literal-block"><code class="docutils literal notranslate"><span class="pre">&lt;root</span> <span class="pre">root&gt;</span></code>
+|
++---annotations
+|   +---<code class="docutils literal notranslate"><span class="pre">&lt;annotations</span> <span class="pre">file&gt;.json</span></code>
+|
++---images
+|   +---<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.dataset_root" title="hybrid_learning.datasets.base.BaseDataset.dataset_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dataset_root</span></code></a>
+|
++---masks
+    +---<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.masks_root" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.masks_root"><code class="xref py py-attr docutils literal notranslate"><span class="pre">masks_root</span></code></a>
+        (default: <code class="docutils literal notranslate"><span class="pre">&lt;dataset_root&gt;_&lt;concept</span> <span class="pre">desc&gt;</span></code>)</pre>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MASKS_ROOT_ROOT</span></code></a></p></td>
+<td><p>Usual parent to all masks folders for all body parts; sibling to <code class="docutils literal notranslate"><span class="pre">images</span></code> folder</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>COCODataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">COMMERCIAL_LICENSE_IDS</span></code></p></td>
+<td><p>IDs of COCO image licenses that allow for commercial use.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATASET_ROOT_TEMPL</span></code></p></td>
+<td><p>Default root directory template for image files that accepts the <code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANNOTATION_FP_TEMPL</span></code></p></td>
+<td><p>Default template for the annotation file path that accepts the <code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>) and the <code class="docutils literal notranslate"><span class="pre">root</span></code> directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_IMG_SIZE</span></code></p></td>
+<td><p>Default target size of images to use for the default transforms as <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">license_mapping</span></code></p></td>
+<td><p>The mapping of image IDs to license descriptions and URLs.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(i)</p></td>
+<td><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.load_orig_mask" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.load_orig_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_orig_mask</span></code></a>(i)</p></td>
+<td><p>Load and return unmodified mask as image by index in dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_exists" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_exists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_exists</span></code></a>(i)</p></td>
+<td><p>Check whether a mask for the specified index already exists.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_filepath" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_filepath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_filepath</span></code></a>(i)</p></td>
+<td><p>Provide the path under which the mask for the given image ID should lie.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.ANNOTATION_TRANSFORM" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.ANNOTATION_TRANSFORM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANNOTATION_TRANSFORM</span></code></a>(*, annotations, ...[, ...])</p></td>
+<td><p>Create a mask of the linked keypoints from the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotations_to_mask</span></code></a>(orig_img_wh, annotations)</p></td>
+<td><p>Create mask of all configured keypoints from <code class="docutils literal notranslate"><span class="pre">annotations</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.generate_masks" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.generate_masks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_masks</span></code></a>([force_rebuild, ...])</p></td>
+<td><p>Generate and save the masks for the images in this dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.save_mask" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.save_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_mask</span></code></a>(i, mask)</p></td>
+<td><p>Save the given mask according to the given index in the dataset.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>COCODataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset</span></code>(*[, license_ids, body_parts, num, ...])</p></td>
+<td><p>Restrict the items by the given selection criteria and an optional custom condition.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code>()</p></td>
+<td><p>Wrapper around <code class="xref py py-meth docutils literal notranslate"><span class="pre">subset()</span></code> that only shuffles the instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_raw_anns</span></code>([description, save_as])</p></td>
+<td><p>Create the content of a new valid annotations file restricted to the current image IDs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_to</span></code>([root_root, description, overwrite, ...])</p></td>
+<td><p>Create a new dataset by copying used images and annotations to new root folder.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_orig_image</span></code>(i)</p></td>
+<td><p>Load unmodified image by index in dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code>(i)</p></td>
+<td><p>Return the image file name for the item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_filepath</span></code>(i)</p></td>
+<td><p>Path to image file at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_attribution</span></code>(i)</p></td>
+<td><p>Get attribution information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_meta</span></code>(i)</p></td>
+<td><p>Load the dict with meta information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">raw_anns</span></code>(i)</p></td>
+<td><p>Return the list of raw annotations for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(i)</p></td>
+<td><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code></a>(i)</p></td>
+<td><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code>(i)</p></td>
+<td><p>Return the image file name for the item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(body_parts[, force_rebuild, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>COCODataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(body_parts[, force_rebuild, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
+<td><p>Length is given by the length of the index mapping.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(body_parts[, force_rebuild, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
+<td><p>Length is given by the length of the index mapping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Nice printing function.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Dataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.ANNOTATION_TRANSFORM">
+<span class="sig-name descname"><span class="pre">ANNOTATION_TRANSFORM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keypoint_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skeleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.ANNOTATION_TRANSFORM" title="Permalink to this definition"></a></dt>
+<dd><p>Callable used to transform a list of annotations into a mask.
+All keypoints belonging to any of the <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">body_parts</span></code></a> are
+marked, and keypoints belonging to a common body part are linked
+according to the person skeleton.
+For details see
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotations_to_mask()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotation_wh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>]</em>) – </p></li>
+<li><p><strong>keypoint_idxs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>skeleton</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>pt_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – </p></li>
+<li><p><strong>link_width</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Image</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body_parts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy_mask_generation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body_parts</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference internal" href="hybrid_learning.datasets.custom.coco.body_parts.BodyParts.html#hybrid_learning.datasets.custom.coco.body_parts.BodyParts" title="hybrid_learning.datasets.custom.coco.body_parts.BodyParts"><em>BodyParts</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em><em>]</em>) – see
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">body_parts</span></code></a></p></li>
+<li><p><strong>force_rebuild</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to regenerate all masks during init,
+or to skip existing ones.</p></li>
+<li><p><strong>pt_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – see
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pt_radius</span></code></a></p></li>
+<li><p><strong>masks_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – set the root directory under which to generate the
+masks; note that one should prefer setting <code class="docutils literal notranslate"><span class="pre">masks_root_root</span></code>
+instead</p></li>
+<li><p><strong>masks_root_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the path to the root under which the masks
+folder is created; the masks folder’s name is uniquely determined
+by the mask generation settings;
+defaults to <code class="docutils literal notranslate"><span class="pre">coco_root/MASKS_ROOT_ROOT</span></code>
+where <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MASKS_ROOT_ROOT</span></code></a> is the class default</p></li>
+<li><p><strong>lazy_mask_generation</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to generate the masks lazily or
+directly during init;
+overwritten by <code class="docutils literal notranslate"><span class="pre">force_rebuild</span></code>: if this is true,
+masks are directly regenerated.</p></li>
+<li><p><strong>img_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – see super class</p></li>
+<li><p><strong>mask_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – if given, the size of the generated masks
+(annotations are scaled and padded to this size before mask
+generation)</p></li>
+<li><p><strong>kwargs</strong> – Any other arguments for the super class</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>device</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask">
+<span class="sig-name descname"><span class="pre">annotations_to_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig_img_wh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.annotations_to_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Create mask of all configured keypoints from <code class="docutils literal notranslate"><span class="pre">annotations</span></code>.
+It is assumed that the original image considered in <code class="docutils literal notranslate"><span class="pre">annotations</span></code>
+has <code class="docutils literal notranslate"><span class="pre">orig_img_wh</span></code>.
+If <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_size</span></code></a>
+is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the mask size will be <code class="docutils literal notranslate"><span class="pre">orig_img_wh</span></code>.
+For details see <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.ANNOTATION_TRANSFORM" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.ANNOTATION_TRANSFORM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ANNOTATION_TRANSFORM</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orig_img_wh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Image</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.default_masks_root">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_masks_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body_parts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">person_rel_size_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.default_masks_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.default_masks_root" title="Permalink to this definition"></a></dt>
+<dd><p>Return default mask root directory for given settings.
+By default, a directory structure as follows is assumed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">coco_root</span>
+ <span class="o">|</span>
+ <span class="o">+-</span><span class="n">images_root_root</span>
+ <span class="o">|</span>  <span class="o">+-</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">)</span>
+ <span class="o">|</span>
+ <span class="o">+-</span><span class="n">masks_root_root</span>
+   <span class="o">+-</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">)</span><span class="o">+</span><span class="n">spec_specifier</span>
+</pre></div>
+</div>
+<p>If optional specifiers are not given, they are omitted.
+For the details on the parameters, see
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings_to_str" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings_to_str"><code class="xref py py-meth docutils literal notranslate"><span class="pre">settings_to_str()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the root directory of the coco images;
+basename is used to prefix the mask folder;
+the folder is used to determine the default for <code class="docutils literal notranslate"><span class="pre">masks_root_root</span></code></p></li>
+<li><p><strong>masks_root_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – the root folder under which to put the masks;
+defaults to <code class="docutils literal notranslate"><span class="pre">dataset_root/../../</span></code><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MASKS_ROOT_ROOT</span></code></a>;</p></li>
+<li><p><strong>body_parts</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>pt_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – </p></li>
+<li><p><strong>person_rel_size_range</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>img_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>mask_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>split</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.generate_masks">
+<span class="sig-name descname"><span class="pre">generate_masks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress_bar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.generate_masks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.generate_masks" title="Permalink to this definition"></a></dt>
+<dd><p>Generate and save the masks for the images in this dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force_rebuild</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to overwrite masks that already exist.</p></li>
+<li><p><strong>show_progress_bar</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – whether to show the progress using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm.tqdm</span></code></p></li>
+<li><p><strong>kwargs</strong> – further arguments to the progress bar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.get_default_transforms">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_default_transforms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.get_default_transforms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.get_default_transforms" title="Permalink to this definition"></a></dt>
+<dd><p>Default transformation that pads and resizes both images and masks,
+and binarizes the masks.
+If <code class="docutils literal notranslate"><span class="pre">mask_size</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the masks are scaled and
+padded to the original image, otherwise to <code class="docutils literal notranslate"><span class="pre">mask_size</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>mask_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>device</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a>[[<em>Image</em>, <em>Image</em>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a>[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>, <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem">
+<span class="sig-name descname"><span class="pre">getitem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.getitem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.getitem" title="Permalink to this definition"></a></dt>
+<dd><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.
+Used for
+<a class="reference internal" href="hybrid_learning.datasets.base.BaseDataset.html#hybrid_learning.datasets.base.BaseDataset.__getitem__" title="hybrid_learning.datasets.base.BaseDataset.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a>[<em>Image</em>, <em>Image</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.load_orig_mask">
+<span class="sig-name descname"><span class="pre">load_orig_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.load_orig_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.load_orig_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Load and return unmodified mask as image by index in dataset.
+Image mode of returned masks is ‘L’.
+Note that the mask has
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_size</span></code></a>
+if this is set, not the original image’s size (which is only changed
+to <code class="docutils literal notranslate"><span class="pre">img_size</span></code> during transformation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Image</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_exists">
+<span class="sig-name descname"><span class="pre">mask_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.mask_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_exists" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether a mask for the specified index already exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_filepath">
+<span class="sig-name descname"><span class="pre">mask_filepath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.mask_filepath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_filepath" title="Permalink to this definition"></a></dt>
+<dd><p>Provide the path under which the mask for the given image ID
+should lie.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.save_mask">
+<span class="sig-name descname"><span class="pre">save_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.save_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.save_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Save the given mask according to the given index in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – ID of the image the mask belongs to.</p></li>
+<li><p><strong>mask</strong> (<em>Image</em>) – mask image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings_to_str">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body_parts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">person_rel_size_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/mask_dataset.html#ConceptDataset.settings_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings_to_str" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string representation of the given mask
+generation settings.
+Intended to serve as unique folder name.
+If optional specifiers are not given, they are omitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body_parts</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em><em>]</em>) – see
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts"><code class="xref py py-attr docutils literal notranslate"><span class="pre">body_parts</span></code></a></p></li>
+<li><p><strong>pt_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – see
+<a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pt_radius</span></code></a></p></li>
+<li><p><strong>person_rel_size_range</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em><em>]</em><em>]</em>) – the minimum and maximum height of persons
+included, relative to the image height;
+provide as tuple <code class="docutils literal notranslate"><span class="pre">(min,</span> <span class="pre">max)</span></code> and set <code class="docutils literal notranslate"><span class="pre">None</span></code> to unset values</p></li>
+<li><p><strong>mask_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – the size of the created masks as <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width)</span></code>;
+defaults to <code class="docutils literal notranslate"><span class="pre">img_size</span></code></p></li>
+<li><p><strong>img_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – the image size for which the mask is created;
+should be given if one cannot assume the mask fits the original
+image size, or if e.g. <code class="docutils literal notranslate"><span class="pre">person_rel_size_range</span></code> is dependent on the
+image size; should be given as <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width)</span></code></p></li>
+<li><p><strong>dataset_root</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – if given, used instead of split</p></li>
+<li><p><strong>split</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="hybrid_learning.datasets.base.DatasetSplit.html#hybrid_learning.datasets.base.DatasetSplit" title="hybrid_learning.datasets.base.DatasetSplit"><em>DatasetSplit</em></a><em>]</em><em>]</em>) – the dataset split</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>string that is unique for the given settings and can be used
+as folder name</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT">
+<span class="sig-name descname"><span class="pre">MASKS_ROOT_ROOT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'masks'</span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.MASKS_ROOT_ROOT" title="Permalink to this definition"></a></dt>
+<dd><p>Usual parent to all masks folders for all body parts; sibling to
+<code class="docutils literal notranslate"><span class="pre">images</span></code> folder</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__parameters__">
+<span class="sig-name descname"><span class="pre">__parameters__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.__parameters__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts">
+<span class="sig-name descname"><span class="pre">body_parts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="hybrid_learning.datasets.custom.coco.body_parts.BodyParts.html#hybrid_learning.datasets.custom.coco.body_parts.BodyParts" title="hybrid_learning.datasets.custom.coco.body_parts.BodyParts"><span class="pre">BodyParts</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.body_parts" title="Permalink to this definition"></a></dt>
+<dd><p>List of concepts to mask in selected images.
+See <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">annotations_to_mask()</span></code></a> for details.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size">
+<span class="sig-name descname"><span class="pre">mask_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.mask_size" title="Permalink to this definition"></a></dt>
+<dd><p>If given, annotations are scaled and padded to this size before
+generating the masks (of this size).
+If left <code class="docutils literal notranslate"><span class="pre">None</span></code>, the generated masks have the same size as the
+original image.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.masks_root">
+<span class="sig-name descname"><span class="pre">masks_root</span></span><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.masks_root" title="Permalink to this definition"></a></dt>
+<dd><p>Folder name of the directory in which all generated masks are
+stored.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius">
+<span class="sig-name descname"><span class="pre">pt_radius</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><span class="pre">float</span></a></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.pt_radius" title="Permalink to this definition"></a></dt>
+<dd><p>Radius of white circles to draw centered at the keypoint coordinates
+in the masks. Also used as half of the width of link lines between
+keypoints in the masks.
+Unit: proportion of height of annotated person in the image
+(defaults to the image height if person height cannot be estimated).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.settings" title="Permalink to this definition"></a></dt>
+<dd><p>Settings to reproduce the instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.custom.coco.mask_dataset.html" class="btn btn-neutral float-left" title="mask_dataset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.custom.fasseg.html" class="btn btn-neutral float-right" title="fasseg" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuzzy_exp_helpers &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="FormulaEvaluator" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaEvaluator.html" />
+    <link rel="prev" title="to_logic_dirs" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval.to_logic_dirs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval.html">fuzzy_exp_eval</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">fuzzy_exp_helpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_vis.html">fuzzy_exp_vis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a> &raquo;</li>
+      <li>fuzzy_exp_helpers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="fuzzy-exp-helpers">
+<h1>fuzzy_exp_helpers<a class="headerlink" href="#fuzzy-exp-helpers" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers"></span><p>Helper functions for experiment evaluating fuzzy logic rules.
+This includes definition of a standard logic to use.
+Most functions are based on receiving an experiment config mapping,
+as is created by Sacred experiments (see respective Sacred experiment script for config format).</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaEvaluator.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaEvaluator" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaEvaluator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FormulaEvaluator</span></code></a></p></td>
+<td><p>Evaluate predicates and formulas with intermediate values cached according to a config.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaIDInfo.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaIDInfo" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaIDInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FormulaIDInfo</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.KeypointsDatasetWithDesc.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.KeypointsDatasetWithDesc" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.KeypointsDatasetWithDesc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KeypointsDatasetWithDesc</span></code></a></p></td>
+<td><p>Wrapper around coco dataset class returning tuples of <code class="docutils literal notranslate"><span class="pre">(descriptor,</span> <span class="pre">(image,</span> <span class="pre">anns))</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.SwapTupleArgs.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.SwapTupleArgs" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.SwapTupleArgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SwapTupleArgs</span></code></a></p></td>
+<td><p>Swap the two arguments in a tuple.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.cached_eval.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.cached_eval" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.cached_eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cached_eval</span></code></a>(descriptors, input_batch, model)</p></td>
+<td><p>Given <code class="docutils literal notranslate"><span class="pre">descriptors</span></code> load <code class="docutils literal notranslate"><span class="pre">model</span></code> outputs either from <code class="docutils literal notranslate"><span class="pre">cache</span></code> or generate them from <code class="docutils literal notranslate"><span class="pre">input_batch</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.default_logdir.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.default_logdir" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.default_logdir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_logdir</span></code></a>(conf)</p></td>
+<td><p>Return the default logging directory root.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.default_uncollate.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.default_uncollate" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.default_uncollate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_uncollate</span></code></a>(batch_out[, batch_size])</p></td>
+<td><p>Uncollate a batch of predicate outputs previously collated by torch default_collate</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.fix_formula_obj.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.fix_formula_obj" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.fix_formula_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fix_formula_obj</span></code></a>(formula_obj, fuzzy_logic_key)</p></td>
+<td><p>Fix loaded objects from legacy experiments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_spec_to_dir.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_spec_to_dir" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_spec_to_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">formula_spec_to_dir</span></code></a>(formula_spec, ...[, ...])</p></td>
+<td><p>Legacy shortcut for <code class="docutils literal notranslate"><span class="pre">formula_spec_to_idinfo(...).dir</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_spec_to_idinfo.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_spec_to_idinfo" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_spec_to_idinfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">formula_spec_to_idinfo</span></code></a>([formula_spec, ...])</p></td>
+<td><p>Return a unique infos on the given <code class="docutils literal notranslate"><span class="pre">formula_spec</span></code> based on the formula, logic, and constants.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_trafo_caches_for.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_trafo_caches_for" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.formula_trafo_caches_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">formula_trafo_caches_for</span></code></a>(formulas_to_cache, ...)</p></td>
+<td><p>Get caches for formula transformation outputs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_data.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_data" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a>(img_size, dataset_root, split[, ...])</p></td>
+<td><p>Return data triple of COCO keypoint datasets with output transformed to semantic segmentation of persons.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_data_loader_for.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_data_loader_for" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_data_loader_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_loader_for</span></code></a>(dataset, loader_setts, ...)</p></td>
+<td><p>Uncaptured version of <code class="docutils literal notranslate"><span class="pre">get_data_loader</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_formula.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_formula" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_formula"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_formula</span></code></a>(formula_spec, fuzzy_logic_key, ...)</p></td>
+<td><p>Parse a formula specification to a formula object of the given logic.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_formula_obj.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_formula_obj" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_formula_obj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_formula_obj</span></code></a>(conf[, parse, formula_spec])</p></td>
+<td><p>Parse a formula object from the settings in sacred experiment <code class="docutils literal notranslate"><span class="pre">conf</span></code> or load the original formula object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logic</span></code></a>(fuzzy_logic_key[, ...])</p></td>
+<td><p>Get a fuzzy logic from key and settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic_from_conf.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic_from_conf" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_logic_from_conf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logic_from_conf</span></code></a>(conf[, ...])</p></td>
+<td><p>Prepare a logic object with the correct predicates from given sacred experiment <code class="docutils literal notranslate"><span class="pre">conf</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_predicates.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_predicates" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.get_predicates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_predicates</span></code></a>(concept_model_root, ...[, ...])</p></td>
+<td><p>Get the predicate function: Takes an image and returns a dict with all predicate values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.mask_cache.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.mask_cache" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.mask_cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_cache</span></code></a>(subdir, results_cache_dir, device)</p></td>
+<td><p>Standard mask cache.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.predicates_cache_for.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.predicates_cache_for" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.predicates_cache_for"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predicates_cache_for</span></code></a>(concept_to_layer, ...)</p></td>
+<td><p>Provide caches with folder structure <code class="docutils literal notranslate"><span class="pre">&lt;pedestrian_key&gt;/&lt;logic&gt;/*.pt</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;concept&gt;/&lt;layer&gt;/*.pt</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.save_metrics_to.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.save_metrics_to" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.save_metrics_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_metrics_to</span></code></a>(metric_vals[, ...])</p></td>
+<td><p>Save dict <code class="docutils literal notranslate"><span class="pre">{metric_name:</span> <span class="pre">val}</span></code> to <code class="docutils literal notranslate"><span class="pre">metrics_logdir/metrics.csv</span></code> and/or using <code class="docutils literal notranslate"><span class="pre">log_scalar</span></code> method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.to_bool_predicates.html#hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.to_bool_predicates" title="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.to_bool_predicates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_bool_predicates</span></code></a>(config, formula_obj[, ...])</p></td>
+<td><p>Replace all occurences of predicate variables by a boolean version binarized at <code class="docutils literal notranslate"><span class="pre">thresh_key</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval.to_logic_dirs.html" class="btn btn-neutral float-left" title="to_logic_dirs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers.FormulaEvaluator.html" class="btn btn-neutral float-right" title="FormulaEvaluator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

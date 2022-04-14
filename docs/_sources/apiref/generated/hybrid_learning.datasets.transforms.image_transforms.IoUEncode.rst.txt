@@ -1,0 +1,9 @@
+IoUEncode
+=========
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autoclass:: IoUEncode
+    :members:
+
+    .. autoclasstoc::

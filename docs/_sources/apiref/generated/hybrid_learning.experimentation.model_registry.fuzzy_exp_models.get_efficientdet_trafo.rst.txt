@@ -1,0 +1,6 @@
+get\_efficientdet\_trafo
+========================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.fuzzy_exp_models
+
+.. autofunction:: get_efficientdet_trafo

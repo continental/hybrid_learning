@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EmbeddingReduction &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="data_for_concept_model" href="hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model.html" />
+    <link rel="prev" title="ConceptAnalysis" href="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.analysis.analysis_handle.html">analysis_handle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.analysis.results.html">results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.analysis.visualization.html">visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.analysis.html">analysis</a> &raquo;</li>
+          <li><a href="hybrid_learning.concepts.analysis.analysis_handle.html">analysis_handle</a> &raquo;</li>
+      <li>EmbeddingReduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="embeddingreduction">
+<h1>EmbeddingReduction<a class="headerlink" href="#embeddingreduction" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.analysis.analysis_handle.</span></span><span class="sig-name descname"><span class="pre">EmbeddingReduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#EmbeddingReduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>Aggregator callables to get the mean from a list of embeddings.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_NORMALIZED_DIST" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_NORMALIZED_DIST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MEAN_NORMALIZED_DIST</span></code></a></p></td>
+<td><p>Embedding with distance function the mean of those of the normed representations</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_DIST" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_DIST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MEAN_DIST</span></code></a></p></td>
+<td><p>Embedding with distance the mean of the distance functions</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_ANGLE" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_ANGLE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MEAN_ANGLE</span></code></a></p></td>
+<td><p>Embedding with distance function the mean of the distance functions weighted by cosine distance of the normal vectors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.FIRST" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.FIRST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FIRST</span></code></a></p></td>
+<td><p>First element of the result list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.DEFAULT" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.DEFAULT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT</span></code></a></p></td>
+<td><p>The default instance to be used.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Enum</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_NORMALIZED_DIST" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_NORMALIZED_DIST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MEAN_NORMALIZED_DIST</span></code></a></p></td>
+<td><p>Embedding with distance function the mean of those of the normed representations</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_DIST" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_DIST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MEAN_DIST</span></code></a></p></td>
+<td><p>Embedding with distance the mean of the distance functions</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_ANGLE" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_ANGLE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MEAN_ANGLE</span></code></a></p></td>
+<td><p>Embedding with distance function the mean of the distance functions weighted by cosine distance of the normal vectors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.FIRST" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.FIRST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FIRST</span></code></a></p></td>
+<td><p>First element of the result list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.DEFAULT" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.DEFAULT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT</span></code></a></p></td>
+<td><p>The default instance to be used.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__init__" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(func)</p></td>
+<td><p>The init routine for enum members makes function available as instance fields.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__call__" title="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a>(embeddings)</p></td>
+<td><p>Call aggregation function behind the instance on the embeddings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__new__</span></code>(value)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Enum</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Return repr(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
+<td><p>Return str(self).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code>()</p></td>
+<td><p>Returns all members and all public methods</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__format__</span></code>(format_spec)</p></td>
+<td><p>Returns format using actual value type unless __str__ has been overridden.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__hash__</span></code>()</p></td>
+<td><p>Return hash(self).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__reduce_ex__</span></code>(proto)</p></td>
+<td><p>Helper for pickle.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#EmbeddingReduction.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Call aggregation function behind the instance on the embeddings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>embeddings</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/analysis/analysis_handle.html#EmbeddingReduction.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>The init routine for enum members makes function available as
+instance fields.
+It is automatically called for all defined enum instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em><em>]</em><em>, </em><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><em>ConceptEmbedding</em></a><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.DEFAULT">
+<span class="sig-name descname"><span class="pre">DEFAULT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;bound</span> <span class="pre">method</span> <span class="pre">ConceptEmbedding.mean</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'hybrid_learning.concepts.models.embeddings.ConceptEmbedding'&gt;&gt;,)</span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.DEFAULT" title="Permalink to this definition"></a></dt>
+<dd><p>The default instance to be used.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.FIRST">
+<span class="sig-name descname"><span class="pre">FIRST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;bound</span> <span class="pre">method</span> <span class="pre">ConceptEmbedding.first</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'hybrid_learning.concepts.models.embeddings.ConceptEmbedding'&gt;&gt;,)</span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.FIRST" title="Permalink to this definition"></a></dt>
+<dd><p>First element of the result list</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_ANGLE">
+<span class="sig-name descname"><span class="pre">MEAN_ANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;bound</span> <span class="pre">method</span> <span class="pre">ConceptEmbedding.mean_by_angle</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'hybrid_learning.concepts.models.embeddings.ConceptEmbedding'&gt;&gt;,)</span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_ANGLE" title="Permalink to this definition"></a></dt>
+<dd><p>Embedding with distance function the mean of the distance functions
+weighted by cosine distance of the normal vectors</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_DIST">
+<span class="sig-name descname"><span class="pre">MEAN_DIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;bound</span> <span class="pre">method</span> <span class="pre">ConceptEmbedding.mean_by_distance</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'hybrid_learning.concepts.models.embeddings.ConceptEmbedding'&gt;&gt;,)</span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_DIST" title="Permalink to this definition"></a></dt>
+<dd><p>Embedding with distance the mean of the distance functions</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_NORMALIZED_DIST">
+<span class="sig-name descname"><span class="pre">MEAN_NORMALIZED_DIST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;bound</span> <span class="pre">method</span> <span class="pre">ConceptEmbedding.mean</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'hybrid_learning.concepts.models.embeddings.ConceptEmbedding'&gt;&gt;,)</span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.MEAN_NORMALIZED_DIST" title="Permalink to this definition"></a></dt>
+<dd><p>Embedding with distance function the mean of those of the
+normed representations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.function">
+<span class="sig-name descname"><span class="pre">function</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><span class="pre">ConceptEmbedding</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.ConceptEmbedding.html#hybrid_learning.concepts.models.embeddings.ConceptEmbedding" title="hybrid_learning.concepts.models.embeddings.ConceptEmbedding"><span class="pre">ConceptEmbedding</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.concepts.analysis.analysis_handle.EmbeddingReduction.function" title="Permalink to this definition"></a></dt>
+<dd><p>Actual function that reduces a list of embeddings to a new one.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function is manually saved as attribute during <code class="docutils literal notranslate"><span class="pre">__init__</span></code>
+due to the following issue:
+Enums currently do not support functions as values, as explained in
+<a class="reference external" href="https://stackoverflow.com/questions/40338652">this</a> and
+<a class="reference external" href="https://mail.python.org/pipermail/python-ideas/2017-April/045435.html">this discussion</a>.
+The chosen workaround follows
+<a class="reference external" href="https://stackoverflow.com/a/30311492">this suggestion</a>
+<em>(though the code is not used)</em>.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.analysis.analysis_handle.ConceptAnalysis.html" class="btn btn-neutral float-left" title="ConceptAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.analysis.analysis_handle.data_for_concept_model.html" class="btn btn-neutral float-right" title="data_for_concept_model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

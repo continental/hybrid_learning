@@ -1,0 +1,9 @@
+AbstractFuzzyIntersect
+======================
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.predicates.custom_ops
+
+.. autoclass:: AbstractFuzzyIntersect
+    :members:
+
+    .. autoclasstoc::

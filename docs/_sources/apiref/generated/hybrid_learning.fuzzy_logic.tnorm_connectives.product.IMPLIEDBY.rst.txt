@@ -1,0 +1,9 @@
+IMPLIEDBY
+=========
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.product
+
+.. autoclass:: IMPLIEDBY
+    :members:
+
+    .. autoclasstoc::

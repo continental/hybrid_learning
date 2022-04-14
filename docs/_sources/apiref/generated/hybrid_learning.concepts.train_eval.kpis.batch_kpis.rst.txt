@@ -1,0 +1,62 @@
+batch\_kpis
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+    .. currentmodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AbstractIoULike
+        
+        ~AbstractIoULoss
+        
+        ~AbstractIoUMetric
+        
+        ~BalancedBCELoss
+        
+        ~BalancedPenaltyReducedFocalLoss
+        
+        ~BatchReduction
+        
+        ~IoU
+        
+        ~MaskRCNNLoss
+        
+        ~Net2VecLoss
+        
+        ~TverskyLoss
+        
+        ~WeightedLossSum
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

@@ -1,0 +1,6 @@
+to\_bool\_predicates
+====================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers
+
+.. autofunction:: to_bool_predicates

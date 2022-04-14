@@ -1,9 +1,0 @@
-AbstractIoUMetric
-=================
-
-.. currentmodule:: hybrid_learning.concepts.kpis
-
-.. autoclass:: AbstractIoUMetric
-    :members:
-
-    .. autoclasstoc::

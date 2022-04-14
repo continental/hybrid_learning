@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.logic_base.logic &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.logic_base.logic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.logic_base.logic</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Base classes for defining a logic. For details see :py:class:`Logic`.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">collections.abc</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">.merge_operation</span> <span class="kn">import</span> <span class="n">Merge</span><span class="p">,</span> <span class="n">_OpBuilder</span>
+<span class="kn">from</span> <span class="nn">.parsing</span> <span class="kn">import</span> <span class="n">FormulaParser</span>
+
+
+<div class="viewcode-block" id="Logic"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic">[docs]</a><span class="k">class</span> <span class="nc">Logic</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Basic definition of a logic.</span>
+<span class="sd">    A logic must have operator builders for some basic connectives</span>
+<span class="sd">    (by default ``AND``, ``OR``, ``NOT``, see :py:attr:`DEFAULT_CONNECTIVES`)</span>
+<span class="sd">    and holds a default operator builder precedence for parsing.</span>
+<span class="sd">    New operator builders (e.g. for predicates or functions) can be added.</span>
+<span class="sd">    The logic allows to iterate over its :py:attr:`operators` (the operator builders)</span>
+<span class="sd">    using usual ``__getitem__`` notation.</span>
+<span class="sd">    Operator builders must</span>
+<span class="sd">    (cf. :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge`</span>
+<span class="sd">    sub-classes and</span>
+<span class="sd">    :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.MergeBuilder`</span>
+<span class="sd">    for examples of valid operator builders):</span>
+
+<span class="sd">    - be callable with string variable names, e.g. ``OR(&quot;a&quot;, &quot;b&quot;)``, or child operators,</span>
+<span class="sd">      e.g. ``OR(NOT(&quot;a&quot;), &quot;b&quot;)``, returning an operator,</span>
+<span class="sd">    - return operators that are callable on dicts matching the variable names to instantiations,</span>
+<span class="sd">    - provide a ``variadic_`` class method that returns a callable which</span>
+<span class="sd">      accepts tensors/arrays/floats/Booleans and returns</span>
+<span class="sd">      the result of the connective operation upon those inputs,</span>
+<span class="sd">    - provide a ``SYMB`` attribute that specifies the (unique) parsing symbol</span>
+<span class="sd">      within this logic.</span>
+
+<span class="sd">    **Operator Access**</span>
+
+<span class="sd">    Obtain primitive variadic instances (i.e. callables on logic values)</span>
+<span class="sd">    of the operations via :py:meth:`logical_`.</span>
+<span class="sd">    The basic connectives specified in :py:attr:`DEFAULT_CONNECTIVES` or</span>
+<span class="sd">    (as overrides) during init can be accessed by their given common name,</span>
+<span class="sd">    i.e. the used key. All other operations can be accessed by their parsing</span>
+<span class="sd">    ``SYMB``. See also :py:meth:`op` for this access.</span>
+
+<span class="sd">    **Sub-classing**</span>
+
+<span class="sd">    To provide your own Logic, either create a :py:class:`Logic` instance</span>
+<span class="sd">    and override all mandatory (i.e. ``None`` valued) :py:attr:`DEFAULT_CONNECTIVES`</span>
+<span class="sd">    values, or define a sub-class that defines its own :py:attr:`DEFAULT_CONNECTIVES`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_CONNECTIVES</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span>
+        <span class="n">IMPLIEDBY</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">IMPLIES</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">AND</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">OR</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">NOT</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Default connectives by common names.</span>
+<span class="sd">    Set ``None`` as default to force users to specify it during init.</span>
+<span class="sd">    Set ``False`` to just mark the precedence position but not force</span>
+<span class="sd">    users to specify an implementation during init.</span>
+<span class="sd">    The order also determines the default order of precedence (higher index = higher precedence).&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Logic.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operators</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">default_overrides</span><span class="p">:</span> <span class="n">_OpBuilder</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param operators: the list of operators this logic holds;</span>
+<span class="sd">            extended by the :py:attr:`DEFAULT_CONNECTIVES` and the ``default_overrides``;</span>
+<span class="sd">            accessible via their symbol</span>
+<span class="sd">        :param default_overrides: overrides and additions in the form ``common_name=op_builder``</span>
+<span class="sd">            for the :py:attr:`DEFAULT_CONNECTIVES`;</span>
+<span class="sd">            added to the :py:attr:`operators` in the order given first by :py:attr:`DEFAULT_CONNECTIVES`</span>
+<span class="sd">            then by additionally added connectives;</span>
+<span class="sd">            later also accessible via their common name;</span>
+<span class="sd">            set ``common_name=False`` to explicitly discard this standard operator from the logic.</span>
+<span class="sd">        :raises: :py:class`TypeError` in case not all mandatory basic connectives</span>
+<span class="sd">            (such with ``None`` entries in :py:attr:`DEFAULT_CONNECTIVES`) are overridden</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operators</span><span class="p">)</span> <span class="k">if</span> <span class="n">operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;Logical operators in their default order of precedence during parsing.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_CONNECTIVES</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">default_overrides</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Non-deletable basic operators ordered by precedence.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Add required operators as defaults up front (respecting precedence):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="n">op</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Please provide required operator </span><span class="si">{}</span><span class="s2"> as keyword argument&quot;</span>
+                                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">op</span> <span class="ow">and</span> <span class="n">op</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">op</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">SYMB</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Got duplicate parsing symbols in operator builder list (class, symbol): </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">([(</span><span class="n">b</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">SYMB</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="Logic.op"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.op">[docs]</a>    <span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_OpBuilder</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the operator builder for the given symbol.</span>
+<span class="sd">        The symbol may be the common name, or, in second precedence, the parsing ``SYMB``.</span>
+
+<span class="sd">        :raises: :py:class:`KeyError` in case the symbol is not found or not unique.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">symb</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">op</span>
+        <span class="n">op_builders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span> <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">==</span> <span class="n">symb</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op_builders</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Duplicate symbol </span><span class="si">{}</span><span class="s2"> in operator list! Found operator builders: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">symb</span><span class="p">,</span> <span class="n">op_builders</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op_builders</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No operator builder registered for symbol </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">symb</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">op_builders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Logic.logical_"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.logical_">[docs]</a>    <span class="k">def</span> <span class="nf">logical_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symb</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Merge</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]],</span>
+                                                           <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;Get a variadic instance of the logical operation specified by ``symb``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="n">symb</span><span class="p">)</span><span class="o">.</span><span class="n">variadic_</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Logic.parser"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.parser">[docs]</a>    <span class="k">def</span> <span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;FormulaParser&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a default parser for this logic.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FormulaParser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Logic.is_pure"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.is_pure">[docs]</a>    <span class="k">def</span> <span class="nf">is_pure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Merge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether the formula ``op`` purely consists of operators built from this logic.</span>
+<span class="sd">        See method</span>
+<span class="sd">        :py:meth:`~hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.is_pure`</span>
+<span class="sd">        of :py:class:`~hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="p">()</span><span class="o">.</span><span class="n">is_pure</span><span class="p">(</span><span class="n">op</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Logic.insert"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precedence</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">op_builder</span><span class="p">:</span> <span class="n">_OpBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add an operator builder with precedence ``precedence``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">SYMB</span> <span class="o">==</span> <span class="n">op_builder</span><span class="o">.</span><span class="n">SYMB</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot insert operator builder </span><span class="si">{}</span><span class="s2"> with symbol </span><span class="si">{}</span><span class="s2">: Symbol occupied by operator </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op_builder</span><span class="p">,</span> <span class="n">op_builder</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span>
+                                     <span class="p">{</span><span class="n">b</span><span class="o">.</span><span class="n">SYMB</span><span class="p">:</span> <span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">}[</span><span class="n">op_builder</span><span class="o">.</span><span class="n">SYMB</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">precedence</span><span class="p">,</span> <span class="n">op_builder</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Logic.__setitem__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__setitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precedence</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">op_builder</span><span class="p">:</span> <span class="n">_OpBuilder</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">precedence</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Index </span><span class="si">{}</span><span class="s2"> out of range for operator builder list of length </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">precedence</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">precedence</span><span class="p">,</span> <span class="n">op_builder</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Logic.__getitem__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Logic.__delitem__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__delitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot remove required operator </span><span class="si">{}</span><span class="s2"> from logic.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="Logic.__len__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Logic.__add__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Merge</span><span class="p">]):</span>
+        <span class="n">other_basic_connectives</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_basic_connectives</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Logic</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">],</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">,</span> <span class="o">**</span><span class="n">other_basic_connectives</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="Logic.__radd__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Merge</span><span class="p">]):</span>
+        <span class="n">other_basic_connectives</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_basic_connectives</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Logic</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="o">*</span><span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">],</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">other_basic_connectives</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="Logic.__repr__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.logic.Logic.html#hybrid_learning.fuzzy_logic.logic_base.logic.Logic.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Operators list</span>
+        <span class="n">operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operators</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">)])</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="n">operators</span> <span class="o">=</span> <span class="n">operators</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">):]</span>
+        <span class="n">op_str</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                                  <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">operators</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">operators</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="c1"># Default overrides</span>
+        <span class="n">setts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">common_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">[</span><span class="n">common_name</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_CONNECTIVES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">common_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">setts</span><span class="p">[</span><span class="n">common_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basic_connectives</span><span class="p">[</span><span class="n">common_name</span><span class="p">]</span>
+        <span class="n">setts_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">arg_n</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">else</span> <span class="nb">repr</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+                              <span class="k">for</span> <span class="n">arg_n</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">setts</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="n">op_str</span><span class="p">,</span> <span class="n">setts_str</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

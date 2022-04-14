@@ -1,0 +1,6 @@
+pad\_to\_ratio
+==============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.image_transforms
+
+.. autofunction:: pad_to_ratio

@@ -1,0 +1,9 @@
+Logic
+=====
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.product
+
+.. autoclass:: Logic
+    :members:
+
+    .. autoclasstoc::

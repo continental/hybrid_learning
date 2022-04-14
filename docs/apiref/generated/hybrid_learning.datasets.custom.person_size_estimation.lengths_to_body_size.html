@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lengths_to_body_size &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="data_visualization" href="hybrid_learning.datasets.data_visualization.html" />
+    <link rel="prev" title="keypoints_to_lengths" href="hybrid_learning.datasets.custom.person_size_estimation.keypoints_to_lengths.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.coco.html">coco</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a> &raquo;</li>
+      <li>lengths_to_body_size</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.person_size_estimation.lengths_to_body_size.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="lengths-to-body-size">
+<h1>lengths_to_body_size<a class="headerlink" href="#lengths-to-body-size" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.person_size_estimation.lengths_to_body_size">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.custom.person_size_estimation.</span></span><span class="sig-name descname"><span class="pre">lengths_to_body_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">lengths,</span> <span class="pre">factors=</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">bbox_width</span>&#160; <span class="pre">bbox_height</span>&#160; <span class="pre">...</span>&#160; <span class="pre">upper_arm</span>&#160; <span class="pre">lower_arm</span> <span class="pre">slope</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">1</span>&#160; <span class="pre">...</span>&#160;&#160;&#160;&#160; <span class="pre">3.7200</span>&#160;&#160;&#160;&#160; <span class="pre">4.4600</span> <span class="pre">intersect</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">0</span>&#160; <span class="pre">...</span>&#160;&#160;&#160;&#160; <span class="pre">0.4486</span>&#160;&#160;&#160;&#160; <span class="pre">0.5694</span>&#160; <span class="pre">[2</span> <span class="pre">rows</span> <span class="pre">x</span> <span class="pre">11</span> <span class="pre">columns],</span> <span class="pre">assumed_height=1.7</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/person_size_estimation.html#lengths_to_body_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.person_size_estimation.lengths_to_body_size" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate the body size in pixels given anatomical <code class="docutils literal notranslate"><span class="pre">lengths</span></code> in pixels,
+the <code class="docutils literal notranslate"><span class="pre">assumed_height</span></code> and formula <code class="docutils literal notranslate"><span class="pre">factors</span></code> in meters.</p>
+<p>Assume a person of height <span class="math notranslate nohighlight">\(h = \text{assumed\_height}\)</span> in meters
+is scaled by a factor <span class="math notranslate nohighlight">\(f\)</span> to a height of <span class="math notranslate nohighlight">\(h'\)</span> pixels.
+The following is given:</p>
+<ul class="simple">
+<li><p>From <code class="docutils literal notranslate"><span class="pre">factors</span></code>:
+The formula <span class="math notranslate nohighlight">\(h(l) = l \cdot s + c\)</span> to calculate the total body size
+in meters of a person from an anatomical size <span class="math notranslate nohighlight">\(l\)</span> in meters
+with given slope <span class="math notranslate nohighlight">\(s\)</span> and intersect <span class="math notranslate nohighlight">\(c\)</span>.</p></li>
+<li><p>From <code class="docutils literal notranslate"><span class="pre">lengths</span></code>:
+The value <span class="math notranslate nohighlight">\(l' = f \cdot l\)</span> of the anatomical size <span class="math notranslate nohighlight">\(l\)</span> scaled
+by <span class="math notranslate nohighlight">\(f\)</span>.</p></li>
+<li><p>The value of <span class="math notranslate nohighlight">\(h(l)\)</span> (in meters) is assumed to be <code class="docutils literal notranslate"><span class="pre">assumed_height</span></code>.</p></li>
+</ul>
+<p>The goal is to find the scaled size <span class="math notranslate nohighlight">\(f\cdot h(l)\)</span>.
+This is given by the formula</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f \cdot h(l)
+= f\cdot (l \cdot s + c)
+= l'\cdot s + f \cdot c \\
+\Rightarrow f = \frac{l'}{h(l) - c} \\
+\Rightarrow f \cdot h(l) = l' \cdot \frac{h(l)}{h(l) - c}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lengths</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><em>Mapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – mapping of anatomic length identifiers to floats</p></li>
+<li><p><strong>factors</strong> – mapping of anatomic length identifier to parameters for
+linear formula to calculate the body size in meters</p></li>
+<li><p><strong>assumed_height</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – the assumed height of the person in meters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a mapping of anatomic length to body height estimated from its
+value and formula;
+if an anatomic length is not given (missing from lengths or <code class="docutils literal notranslate"><span class="pre">None</span></code>),
+its total size return value is <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.custom.person_size_estimation.keypoints_to_lengths.html" class="btn btn-neutral float-left" title="keypoints_to_lengths" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.data_visualization.html" class="btn btn-neutral float-right" title="data_visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

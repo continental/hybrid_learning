@@ -1,0 +1,6 @@
+train\_one\_epoch
+=================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.train_eval_funs
+
+.. autofunction:: train_one_epoch

@@ -1,0 +1,43 @@
+person\_size\_estimation
+========================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.custom.person_size_estimation
+
+    .. currentmodule:: hybrid_learning.datasets.custom.person_size_estimation
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~keypoints_to_lengths
+        
+        ~lengths_to_body_size
+        
+
+    
+    

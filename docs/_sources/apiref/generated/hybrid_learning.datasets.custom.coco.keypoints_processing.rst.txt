@@ -1,0 +1,65 @@
+keypoints\_processing
+=====================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+    .. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Attributes
+
+    .. autosummary::
+        :toctree:
+        
+        ~COCO_STD_KEYPOINT_NAMES
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~all_keypts_visible
+        
+        ~annotation_to_sizes
+        
+        ~annotation_to_tot_height
+        
+        ~annotations_to_heatmap
+        
+        ~annotations_to_mask
+        
+        ~any_keypts_visible
+        
+        ~pad_and_scale_annotation
+        
+        ~person_has_rel_size
+        
+        ~to_keypoint_idxs
+        
+
+    
+    

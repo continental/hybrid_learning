@@ -1,0 +1,6 @@
+default\_uncollate
+==================
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_helpers
+
+.. autofunction:: default_uncollate

@@ -1,0 +1,9 @@
+CacheCascade
+============
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: CacheCascade
+    :members:
+
+    .. autoclasstoc::

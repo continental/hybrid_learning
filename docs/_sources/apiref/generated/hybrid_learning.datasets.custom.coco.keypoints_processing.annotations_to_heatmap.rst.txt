@@ -1,0 +1,6 @@
+annotations\_to\_heatmap
+========================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autofunction:: annotations_to_heatmap

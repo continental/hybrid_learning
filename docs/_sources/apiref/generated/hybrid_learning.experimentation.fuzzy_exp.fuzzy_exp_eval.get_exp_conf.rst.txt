@@ -1,0 +1,6 @@
+get\_exp\_conf
+==============
+
+.. currentmodule:: hybrid_learning.experimentation.fuzzy_exp.fuzzy_exp_eval
+
+.. autofunction:: get_exp_conf

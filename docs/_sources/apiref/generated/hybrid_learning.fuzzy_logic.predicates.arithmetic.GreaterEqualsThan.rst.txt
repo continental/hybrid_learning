@@ -1,0 +1,9 @@
+GreaterEqualsThan
+=================
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.predicates.arithmetic
+
+.. autoclass:: GreaterEqualsThan
+    :members:
+
+    .. autoclasstoc::

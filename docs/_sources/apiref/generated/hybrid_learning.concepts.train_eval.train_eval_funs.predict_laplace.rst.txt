@@ -1,0 +1,6 @@
+predict\_laplace
+================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.train_eval_funs
+
+.. autofunction:: predict_laplace

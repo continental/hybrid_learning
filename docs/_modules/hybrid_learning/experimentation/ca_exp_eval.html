@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.experimentation.ca_exp_eval &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.experimentation.ca_exp_eval</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.experimentation.ca_exp_eval</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Helper functions for evaluation of standard concept embedding analysis experiments.</span>
+<span class="sd">Experiment results are assumed to have a folder structure of</span>
+<span class="sd">``&lt;root&gt;/layers/&lt;layer_id&gt;/&lt;timestamp&gt;/&lt;concept_name&gt;``.</span>
+<span class="sd">For details see the respective sample Sacred experiment scripts.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> \
+    <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">pandas.io.formats.style</span> <span class="kn">import</span> <span class="n">Styler</span>
+
+<span class="c1"># pylint: disable=import-error,wrong-import-position</span>
+<span class="kn">from</span> <span class="nn">hybrid_learning.concepts.analysis</span> <span class="kn">import</span> <span class="n">AnalysisResult</span><span class="p">,</span> \
+    <span class="n">BestEmbeddingResult</span>
+<span class="kn">from</span> <span class="nn">hybrid_learning.concepts.models</span> <span class="kn">import</span> <span class="n">ConceptEmbedding</span>
+
+<span class="n">to_img</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToPILImage</span><span class="p">()</span>
+<span class="n">to_tens</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()</span>
+
+<span class="c1"># ======================================</span>
+<span class="c1"># DEFAULT MODEL LAYERS</span>
+<span class="c1"># ======================================</span>
+
+<span class="c1"># ALexNet</span>
+<span class="n">ALEXNET_LAYERS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;features.1&#39;</span><span class="p">,</span> <span class="s1">&#39;features.2&#39;</span><span class="p">,</span> <span class="s1">&#39;features.4&#39;</span><span class="p">,</span> <span class="s1">&#39;features.5&#39;</span><span class="p">,</span> <span class="s1">&#39;features.7&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;features.9&#39;</span><span class="p">,</span> <span class="s1">&#39;features.11&#39;</span><span class="p">,</span> <span class="s1">&#39;features.12&#39;</span><span class="p">,</span> <span class="s1">&#39;avgpool&#39;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Layer IDs of pytorch AlexNet model in correct order.&quot;&quot;&quot;</span>
+
+<span class="c1"># VGG16</span>
+<span class="n">VGG16_LAYERS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;features.4&#39;</span><span class="p">,</span> <span class="s1">&#39;features.6&#39;</span><span class="p">,</span> <span class="s1">&#39;features.8&#39;</span><span class="p">,</span> <span class="s1">&#39;features.9&#39;</span><span class="p">,</span> <span class="s1">&#39;features.11&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;features.13&#39;</span><span class="p">,</span> <span class="s1">&#39;features.15&#39;</span><span class="p">,</span> <span class="s1">&#39;features.16&#39;</span><span class="p">,</span> <span class="s1">&#39;features.18&#39;</span><span class="p">,</span> <span class="s1">&#39;features.20&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;features.22&#39;</span><span class="p">,</span> <span class="s1">&#39;features.23&#39;</span><span class="p">,</span> <span class="s1">&#39;features.25&#39;</span><span class="p">,</span> <span class="s1">&#39;features.27&#39;</span><span class="p">,</span> <span class="s1">&#39;features.29&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;features.30&#39;</span><span class="p">,</span> <span class="s1">&#39;avgpool&#39;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Layer IDs of pytorch VGG16 model in correct order.&quot;&quot;&quot;</span>
+
+<span class="c1"># Mask R-CNN</span>
+<span class="n">MASK_RCNN_LAYERS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;backbone.body.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.maxpool&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer1.0.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.0.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer1.0.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer1.1.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.1.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer1.1.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer1.2.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.2.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer1.2.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.0.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.0.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.0.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.0&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.1.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.1.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.1.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.2.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.2.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.2.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.3.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.3.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer2.3.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.3&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.0.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.0.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.0.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.1.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.1.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.1.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.2.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.2.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.2.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.3.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.3.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.3.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.4.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.4.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.4.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.4&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.5.bn1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.5.bn2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer3.5.relu&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.5&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4.0.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.0.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4.0.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.0&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4.1.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.1.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4.1.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.1&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4.2.bn1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.2.bn2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer4.2.relu&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer1.0.downsample&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer2.0.downsample&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.body.layer3.0.downsample&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.body.layer4.0.downsample&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.fpn&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.fpn.inner_blocks.0&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.fpn.inner_blocks.1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.fpn.inner_blocks.2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.fpn.inner_blocks.3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.fpn.layer_blocks.0&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.fpn.layer_blocks.1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.fpn.layer_blocks.2&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone.fpn.layer_blocks.3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;backbone.fpn.extra_blocks&#39;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Layer IDs of pytorch Mask R-CNN model in correct order.&quot;&quot;&quot;</span>
+
+
+<span class="c1"># ======================================</span>
+<span class="c1"># FILEPATHS</span>
+<span class="c1"># ======================================</span>
+
+
+<span class="k">def</span> <span class="nf">_experiments</span><span class="p">(</span><span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;List of experiment folders for given layer and root.</span>
+<span class="sd">    Ones starting with underscore are excluded.&quot;&quot;&quot;</span>
+    <span class="n">layer_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;layers&quot;</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">layer_root</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">layer_root</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="analysis_root"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.analysis_root.html#hybrid_learning.experimentation.ca_exp_eval.analysis_root">[docs]</a><span class="k">def</span> <span class="nf">analysis_root</span><span class="p">(</span><span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">concept_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the analysis root folder path for given</span>
+<span class="sd">    ``root``, ``layer_id``, and ``concept_name``.&quot;&quot;&quot;</span>
+    <span class="n">exps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">exp</span> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">_experiments</span><span class="p">(</span><span class="n">layer_id</span><span class="o">=</span><span class="n">layer_id</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+                       <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">concept_name</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Concept results not found for concept </span><span class="si">{}</span><span class="s2"> and layer </span><span class="si">{}</span><span class="s2"> in root </span><span class="si">{}</span><span class="s2">&quot;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept_name</span><span class="p">,</span> <span class="n">layer_id</span><span class="p">,</span> <span class="n">root</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exps</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Ambiguous results for concept </span><span class="si">{}</span><span class="s2">: Found experiments </span><span class="si">{}</span><span class="s2">&quot;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept_name</span><span class="p">,</span>
+                        <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">concept_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">exps</span><span class="p">]))</span>
+    <span class="n">concept_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exps</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">concept_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">concept_root</span></div>
+
+
+<div class="viewcode-block" id="get_layers"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_layers.html#hybrid_learning.experimentation.ca_exp_eval.get_layers">[docs]</a><span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Return all available layers for the given analysis root.&quot;&quot;&quot;</span>
+    <span class="n">available_layers</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;layers&quot;</span><span class="p">)))</span>
+    <span class="n">model_layers</span> <span class="o">=</span> <span class="n">model_layers</span> <span class="ow">or</span> <span class="n">available_layers</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">model_layers</span> <span class="k">if</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">available_layers</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_layers</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Skipping non-available layers </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">model_layers</span> <span class="k">if</span> <span class="n">l</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_layers</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">layers</span></div>
+
+
+<div class="viewcode-block" id="get_concepts"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_concepts.html#hybrid_learning.experimentation.ca_exp_eval.get_concepts">[docs]</a><span class="k">def</span> <span class="nf">get_concepts</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get all the concept names available for the given experiment root.&quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="ow">or</span> <span class="n">get_layers</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">c</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span>
+                   <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">_experiments</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">exp</span><span class="p">)})</span></div>
+
+
+<div class="viewcode-block" id="get_common_concepts"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_common_concepts.html#hybrid_learning.experimentation.ca_exp_eval.get_common_concepts">[docs]</a><span class="k">def</span> <span class="nf">get_common_concepts</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get all the concept names available for ALL layers in the</span>
+<span class="sd">    given experiment ``root``.&quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="ow">or</span> <span class="n">get_layers</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="p">[</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">concept</span> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">_experiments</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">concept</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">exp</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">]))</span></div>
+
+
+<span class="c1"># ======================================</span>
+<span class="c1"># RESULTS RETRIEVAL</span>
+<span class="c1"># ======================================</span>
+
+
+<div class="viewcode-block" id="get_stats"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_stats">[docs]</a><span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stats of an analysis run as DataFrame.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">AnalysisResult</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_best_emb_stats"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_best_emb_stats">[docs]</a><span class="k">def</span> <span class="nf">get_best_emb_stats</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stats of the best embeddings of an analysis as DataFrame.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">BestEmbeddingResult</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_embs"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_embs.html#hybrid_learning.experimentation.ca_exp_eval.get_embs">[docs]</a><span class="k">def</span> <span class="nf">get_embs</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Embeddings of an analysis as series indexed by ``layer_id``.</span>
+<span class="sd">    Each embedding is encapsulated in a 1-element list to keep pandas</span>
+<span class="sd">    working.&quot;&quot;&quot;</span>
+    <span class="n">analysis_results</span> <span class="o">=</span> <span class="n">AnalysisResult</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">results</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({(</span><span class="n">layer</span><span class="p">,</span> <span class="n">run</span><span class="p">):</span> <span class="p">[</span><span class="n">emb</span><span class="p">]</span>
+                      <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">layer_stats</span> <span class="ow">in</span> <span class="n">analysis_results</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                      <span class="k">for</span> <span class="n">run</span><span class="p">,</span> <span class="p">(</span><span class="n">emb</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="n">layer_stats</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_best_emb"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_best_emb.html#hybrid_learning.experimentation.ca_exp_eval.get_best_emb">[docs]</a><span class="k">def</span> <span class="nf">get_best_emb</span><span class="p">(</span><span class="n">layer_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConceptEmbedding</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Best embedding for given layer.&quot;&quot;&quot;</span>
+    <span class="n">best_emb_result</span> <span class="o">=</span> <span class="n">BestEmbeddingResult</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">best_emb_result</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">layer_id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_vis_best_embedding"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding.html#hybrid_learning.experimentation.ca_exp_eval.get_vis_best_embedding">[docs]</a><span class="k">def</span> <span class="nf">get_vis_best_embedding</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the saved visualization of the best embedding.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;vis_best_embedding.png&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_all_best_emb_stats"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_all_best_emb_stats">[docs]</a><span class="k">def</span> <span class="nf">get_all_best_emb_stats</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                           <span class="n">concepts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gather a DataFrame with the stats of all best embeddings.</span>
+<span class="sd">    The frame is indexed by ``concept`` and ``layer``, and columns are the</span>
+<span class="sd">    stats names.</span>
+<span class="sd">    Stats are retrieved from experiment ``root``, for given ``layers`` and</span>
+<span class="sd">    ``concepts``.&quot;&quot;&quot;</span>
+    <span class="n">concepts</span> <span class="o">=</span> <span class="n">concepts</span> <span class="ow">or</span> <span class="n">get_concepts</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">)</span>
+    <span class="n">best_emb_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{(</span><span class="n">concept</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span> <span class="n">get_best_emb_stats</span><span class="p">(</span>
+            <span class="n">analysis_root</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">concept</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">))</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span> <span class="k">for</span> <span class="n">concept</span> <span class="ow">in</span> <span class="n">concepts</span>
+         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">analysis_root</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">concept</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">))}</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span>
+    <span class="n">best_emb_stats</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;concept&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">]</span>
+    <span class="n">best_emb_stats</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">best_emb_stats</span></div>
+
+
+<div class="viewcode-block" id="get_all_stats"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.get_all_stats.html#hybrid_learning.experimentation.ca_exp_eval.get_all_stats">[docs]</a><span class="k">def</span> <span class="nf">get_all_stats</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                  <span class="n">concepts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gather a DataFrame with the stats of all embedding runs.</span>
+<span class="sd">    Same as ``get_all_best_emb_stats``, only indexed by</span>
+<span class="sd">    ``concept``, ``layer``, *and* ``run``.&quot;&quot;&quot;</span>
+    <span class="n">concepts</span> <span class="o">=</span> <span class="n">concepts</span> <span class="ow">or</span> <span class="n">get_concepts</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">)</span>
+    <span class="n">stats_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">concept</span> <span class="ow">in</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">concepts</span> <span class="k">if</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">analysis_root</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">))]:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">get_stats</span><span class="p">(</span><span class="n">analysis_root</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">concept</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">))</span>
+            <span class="n">stats_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{(</span><span class="n">concept</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">run</span><span class="p">):</span> <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">layer</span><span class="p">,</span> <span class="n">run</span><span class="p">)]</span> <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span>
+                 <span class="n">results</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()})</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">stats_dict</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;concept&#39;</span><span class="p">,</span> <span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;run&#39;</span><span class="p">]</span>
+    <span class="n">stats</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stats</span></div>
+
+
+<div class="viewcode-block" id="gather_stats"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.gather_stats.html#hybrid_learning.experimentation.ca_exp_eval.gather_stats">[docs]</a><span class="k">def</span> <span class="nf">gather_stats</span><span class="p">(</span><span class="n">roots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">root_templ</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">root_params</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">model_layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;set_iou&#39;</span>
+                 <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gather dicts with all_stats, best_emb_stats, and merged_stats for</span>
+<span class="sd">    different roots.&quot;&quot;&quot;</span>
+    <span class="c1"># Prepare roots:</span>
+    <span class="k">if</span> <span class="n">roots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">roots</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="n">roots</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">root</span><span class="p">)):</span> <span class="n">root</span>
+                <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">root_templ</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">root_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Either root, or root_templ and root_params must be &quot;</span>
+                         <span class="s2">&quot;given&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">root_params</span> <span class="o">=</span> <span class="p">[[</span><span class="n">p</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">root_params</span><span class="p">]</span>
+        <span class="n">roots</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">param</span><span class="p">):</span> <span class="n">root_templ</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">param</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">root_params</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">root</span><span class="p">),</span> <span class="n">root</span>
+
+    <span class="n">all_stats</span><span class="p">,</span> <span class="n">best_stats</span><span class="p">,</span> <span class="n">merged_stats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">graph_name</span><span class="p">,</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="n">get_layers</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">model_layers</span><span class="o">=</span><span class="n">model_layers</span><span class="p">)</span>
+        <span class="n">all_stats</span><span class="p">[</span><span class="n">graph_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_all_stats</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">)</span>
+        <span class="n">best_stats</span><span class="p">[</span><span class="n">graph_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_all_best_emb_stats</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+                                                        <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">)</span>
+        <span class="n">merged_stats</span><span class="p">[</span><span class="n">graph_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_to_overview</span><span class="p">(</span><span class="n">best_stats</span><span class="p">[</span><span class="n">graph_name</span><span class="p">],</span>
+                                                     <span class="n">all_stats</span><span class="p">[</span><span class="n">graph_name</span><span class="p">],</span>
+                                                     <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">all_stats</span><span class="p">,</span> <span class="n">best_stats</span><span class="p">,</span> <span class="n">merged_stats</span></div>
+
+
+<span class="c1"># ======================================</span>
+<span class="c1"># PANDAS DISPLAY</span>
+<span class="c1"># ======================================</span>
+
+<div class="viewcode-block" id="highlight_max_blue"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue.html#hybrid_learning.experimentation.ca_exp_eval.highlight_max_blue">[docs]</a><span class="k">def</span> <span class="nf">highlight_max_blue</span><span class="p">(</span><span class="n">series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Highlight the maximum in a Series with red font color.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;color: blue; font-weight: bold&#39;</span> <span class="k">if</span> <span class="n">v</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">series</span> <span class="o">==</span> <span class="n">series</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span></div>
+
+
+<div class="viewcode-block" id="merge_to_overview"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.merge_to_overview.html#hybrid_learning.experimentation.ca_exp_eval.merge_to_overview">[docs]</a><span class="k">def</span> <span class="nf">merge_to_overview</span><span class="p">(</span><span class="n">best_ious</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">all_stats</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                      <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;set_iou&#39;</span><span class="p">,</span> <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Merge the stats from all runs and from the best embeddings</span>
+<span class="sd">    to an overview over the test values of ``metric``.</span>
+<span class="sd">    The resulting DataFrame is indexed by the ``layer_id``, and columns are a</span>
+<span class="sd">    multi-index of ``(concept_name, stats_name)``, with ``stats_name`` one of</span>
+
+<span class="sd">    - ``best_emb``: the best embedding performance</span>
+<span class="sd">    - ``mean``: the mean performance of the runs for that concept &amp; layer</span>
+<span class="sd">    - ``std``: the corresponding standard deviation</span>
+
+<span class="sd">    :param all_stats: should an output of ``get_all_stats``</span>
+<span class="sd">    :param best_ious: should an output of ``get_all_best_emb_stats``</span>
+<span class="sd">    :param metric: the (column) name of the metric to use</span>
+<span class="sd">    :param layers: optionally restrict to given layers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">all_stats</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;concept&#39;</span><span class="p">]:</span>
+        <span class="n">all_stats</span> <span class="o">=</span> <span class="n">all_stats</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;concept&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">best_ious</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;concept&#39;</span><span class="p">]:</span>
+        <span class="n">best_ious</span> <span class="o">=</span> <span class="n">best_ious</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;layer&#39;</span><span class="p">,</span> <span class="s1">&#39;concept&#39;</span><span class="p">])</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="ow">or</span> <span class="n">all_stats</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">best_set_iou_display</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">({</span>
+        <span class="s1">&#39;best_emb&#39;</span><span class="p">:</span> <span class="n">best_ious</span><span class="p">[[</span><span class="s1">&#39;test_&#39;</span> <span class="o">+</span> <span class="n">metric</span><span class="p">]],</span>
+        <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">all_stats</span><span class="p">[[</span><span class="s1">&#39;test_&#39;</span> <span class="o">+</span> <span class="n">metric</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+        <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="n">all_stats</span><span class="p">[[</span><span class="s1">&#39;test_&#39;</span> <span class="o">+</span> <span class="n">metric</span><span class="p">]]</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+    <span class="p">},</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> \
+        <span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">swaplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">layers</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">best_set_iou_display</span></div>
+
+
+<div class="viewcode-block" id="display_overview"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.display_overview.html#hybrid_learning.experimentation.ca_exp_eval.display_overview">[docs]</a><span class="k">def</span> <span class="nf">display_overview</span><span class="p">(</span><span class="n">best_set_iou_display</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Styler</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provide a nice display style of ``best_set_iou_display``.</span>
+<span class="sd">    E.g. highlight maxima, apply color gradients, and take care of precision.</span>
+
+<span class="sd">    :param best_set_iou_display:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">best_emb_cols</span> <span class="o">=</span> <span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span>
+                    <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">std_cols</span> <span class="o">=</span> <span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;std&#39;</span><span class="p">)]</span> \
+        <span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">mean_cols</span> <span class="o">=</span> <span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;mean&#39;</span><span class="p">)]</span> \
+        <span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">style</span> \
+        <span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="s2">&quot;Set IoU values by layer and concept (both the set IoU of &quot;</span>
+                     <span class="s2">&quot;the mean embedding and the mean set IoU with standard &quot;</span>
+                     <span class="s2">&quot;deviation)&quot;</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">set_precision</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">background_gradient</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greens&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="n">best_emb_cols</span><span class="p">,</span>
+                             <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> \
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">highlight_max_blue</span><span class="p">,</span>
+               <span class="n">subset</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">best_emb_cols</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">mean_cols</span><span class="p">))</span> \
+        <span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="n">col</span><span class="p">:</span> <span class="s2">&quot;±</span><span class="si">{:.4f}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">std_cols</span><span class="p">})</span></div>
+
+
+<span class="c1"># ======================================</span>
+<span class="c1"># PLOTTING</span>
+<span class="c1"># ======================================</span>
+
+
+<div class="viewcode-block" id="plot_best_ious_wt_std"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std.html#hybrid_learning.experimentation.ca_exp_eval.plot_best_ious_wt_std">[docs]</a><span class="k">def</span> <span class="nf">plot_best_ious_wt_std</span><span class="p">(</span><span class="n">best_emb_ious</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                          <span class="n">iou_stds</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">plot_args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provide a plot of metric values against layers for all concepts in</span>
+<span class="sd">    ``best_emb_ious``.</span>
+<span class="sd">    Plotted points are the best embedding performances, the plotted standard</span>
+<span class="sd">    deviation is that of the runs. Optionally save the figure.&quot;&quot;&quot;</span>
+    <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">capsize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+                        <span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">best_emb_ious</span><span class="o">.</span><span class="n">index</span><span class="p">))),</span> <span class="o">**</span><span class="n">plot_args</span><span class="p">}</span>
+    <span class="n">layers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_emb_ious</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="n">max_val</span> <span class="k">if</span> <span class="n">max_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> \
+        <span class="n">best_emb_ious</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.01</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">*</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="n">max_val</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Embedding performance&quot;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">concept</span> <span class="ow">in</span> <span class="n">best_emb_ious</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">best_emb_ious</span><span class="p">[(</span><span class="n">concept</span><span class="p">,</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)]</span> \
+            <span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">yerr</span><span class="o">=</span><span class="n">iou_stds</span><span class="p">[</span><span class="n">concept</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">plot_args</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_best_iou_comparison"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison.html#hybrid_learning.experimentation.ca_exp_eval.plot_best_iou_comparison">[docs]</a><span class="k">def</span> <span class="nf">plot_best_iou_comparison</span><span class="p">(</span><span class="n">metric_mean_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                             <span class="n">metric_std_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                             <span class="n">concept</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;set_iou&#39;</span><span class="p">,</span>
+                             <span class="n">axis</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">set_title</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                             <span class="o">**</span><span class="n">plot_args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provide a plot of metric values against layers for one concept and all</span>
+<span class="sd">    settings in ``best_emb_ious``.</span>
+<span class="sd">    Plotted points are the best embedding performances, the plotted standard</span>
+<span class="sd">    deviation is that of the runs. Optionally save the figure.&quot;&quot;&quot;</span>
+    <span class="n">layers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">metric_mean_map</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">concept</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">concept</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="n">metric_mean_map</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> \
+        <span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_val</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
+                         <span class="nb">max</span><span class="p">(</span><span class="n">ious</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.01</span> <span class="k">for</span> <span class="n">ious</span> <span class="ow">in</span>
+                             <span class="n">metric_mean_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">*</span> <span class="mi">12</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">set_title</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">concept</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="n">max_val</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">set_title</span><span class="p">:</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">concept</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="n">max_val</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">graph_name</span><span class="p">,</span> <span class="n">best_emb_ious</span> <span class="ow">in</span> <span class="n">metric_mean_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">values</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">best_emb_ious</span><span class="p">[(</span><span class="n">concept</span><span class="p">,</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)],</span>
+                                      <span class="n">name</span><span class="o">=</span><span class="n">graph_name</span><span class="p">)</span>
+        <span class="c1"># Make sure layers are all aligned!!</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">idx</span><span class="p">:</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">],</span>
+                          <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">))</span>
+        <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">rot</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">))),</span>
+                     <span class="o">**</span><span class="n">plot_args</span><span class="p">}</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">yerr</span><span class="o">=</span><span class="n">metric_std_map</span><span class="p">[</span><span class="n">graph_name</span><span class="p">][</span><span class="n">concept</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">],</span>
+                           <span class="n">ax</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">metric</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="plot_overview"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.plot_overview.html#hybrid_learning.experimentation.ca_exp_eval.plot_overview">[docs]</a><span class="k">def</span> <span class="nf">plot_overview</span><span class="p">(</span><span class="n">best_set_iou_display</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                  <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;set_iou&#39;</span><span class="p">,</span>
+                  <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="o">**</span><span class="n">plot_args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot and save the output of ``merge_to_overview`` using</span>
+<span class="sd">    ``plot_best_ious_wt_std``.</span>
+
+<span class="sd">    :param best_set_iou_display: DataFrame in the format as provided by</span>
+<span class="sd">        ``merge_to_overview``</span>
+<span class="sd">    :param model_name: used to determine default for save_as</span>
+<span class="sd">    :param metric: used to determine default for save_as</span>
+<span class="sd">    :param max_val: see ``plot_best_ious_wt_std``</span>
+<span class="sd">    :param save_as: the filename to save plot as; no saving if set to ``False``;</span>
+<span class="sd">        if a directory or None, a default file name is used (under directory);</span>
+<span class="sd">        if ends with ``.svg``, both an SVG and a PNG image are saved</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default save position</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">save_as</span><span class="p">):</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">save_as</span> <span class="o">=</span> <span class="n">save_as</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">model_name</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">save_as</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> \
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">.svg&quot;</span><span class="p">)</span>
+    <span class="n">save_as</span> <span class="o">=</span> <span class="n">save_as</span> <span class="ow">or</span> <span class="kc">None</span>
+
+    <span class="n">plot_best_ious_wt_std</span><span class="p">(</span>
+        <span class="n">best_emb_ious</span><span class="o">=</span><span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)],</span>
+        <span class="n">iou_stds</span><span class="o">=</span><span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;std&#39;</span><span class="p">)],</span>
+        <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="n">max_val</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span>
+    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">plot_best_ious_wt_std</span><span class="p">(</span>
+        <span class="n">best_emb_ious</span><span class="o">=</span><span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)],</span>
+        <span class="n">iou_stds</span><span class="o">=</span><span class="n">best_set_iou_display</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;std&#39;</span><span class="p">)],</span>
+        <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.svg&quot;</span><span class="p">,</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">save_as</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_val</span><span class="o">=</span><span class="n">max_val</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span>
+    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="plot_overview_for_concept"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept.html#hybrid_learning.experimentation.ca_exp_eval.plot_overview_for_concept">[docs]</a><span class="k">def</span> <span class="nf">plot_overview_for_concept</span><span class="p">(</span><span class="n">merged_stats_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span>
+                              <span class="n">concepts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+                              <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;set_iou&#39;</span><span class="p">,</span>
+                              <span class="n">one_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">legend_in</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">fig_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">axes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">plot_args</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-branches</span>
+    <span class="sd">&quot;&quot;&quot;Plot and save the output of ``merge_to_overview`` using</span>
+<span class="sd">    ``plot_best_ious_wt_std``.</span>
+
+<span class="sd">    :param merged_stats_map: dict with values the output of merge_to_overview;</span>
+<span class="sd">        each value will get its own graph</span>
+<span class="sd">    :param concepts: the concept or concepts to plot</span>
+<span class="sd">    :param max_val: the common x-axis limit for all created plots;</span>
+<span class="sd">        defaults to the maximum metric value for a concept</span>
+<span class="sd">    :param save_as: an optional save location;</span>
+<span class="sd">        must contain ``{concept}`` if ``one_plot`` is not ``True``;</span>
+<span class="sd">        if a directory is given, the file name is auto-inferred from the</span>
+<span class="sd">        other arguments</span>
+<span class="sd">    :param model_name: for file name auto-inference</span>
+<span class="sd">    :param metric: for axis label and file name auto-inference</span>
+<span class="sd">    :param one_plot: whether to put all into one common plot</span>
+<span class="sd">        (save_as must not contain formatting string for concept)</span>
+<span class="sd">    :param legend_in: if ``one_plot``, index of the axis the legend should be</span>
+<span class="sd">        placed in; if set to None, legend is placed outside of plot</span>
+<span class="sd">    :param axes: plot into given axes</span>
+<span class="sd">    :param fig_size: if ``one_plot``, used ``fig_size``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="c1"># Collect data</span>
+    <span class="n">metric_mean_map</span><span class="p">,</span> <span class="n">metric_std_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(),</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">graph_name</span><span class="p">,</span> <span class="n">merged_stats</span> <span class="ow">in</span> <span class="n">merged_stats_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">metric_mean_map</span><span class="p">[</span><span class="n">graph_name</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">merged_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)]</span>
+        <span class="n">metric_std_map</span><span class="p">[</span><span class="n">graph_name</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">merged_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;std&#39;</span><span class="p">)]</span>
+
+    <span class="n">max_val_by_concept</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">concept</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_val</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="nb">max</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="n">concept</span><span class="p">,</span> <span class="s1">&#39;best_emb&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.01</span>
+                         <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">metric_mean_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">concept</span> <span class="ow">in</span> <span class="n">concepts</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">save_as</span><span class="p">):</span>
+        <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">save_as</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">one_plot</span> <span class="k">else</span> <span class="s1">&#39;_</span><span class="si">{concept}</span><span class="s1">&#39;</span><span class="si">}</span><span class="s2">.svg&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">one_plot</span> <span class="ow">and</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">layers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">metric_mean_map</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_val_by_concept</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">max_val_by_concept</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">max_val</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">concepts</span><span class="p">}</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">concepts</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+            <span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span> <span class="ow">or</span>
+                    <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">concepts</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">):</span>
+            <span class="n">axes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">concept</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">concepts</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">concept</span> <span class="ow">in</span> <span class="n">means</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;concept&#39;</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">means</span> <span class="ow">in</span> <span class="n">metric_mean_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">concept</span> <span class="ow">in</span> <span class="n">stds</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;concept&#39;</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">stds</span> <span class="ow">in</span> <span class="n">metric_std_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="n">max_val</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">max_val_by_concept</span><span class="p">[</span><span class="n">concept</span><span class="p">]</span>
+        <span class="n">curr_save_as</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">save_as</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">concept</span><span class="o">=</span><span class="n">concept</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">one_plot</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">curr_save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">curr_save_as</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.svg&#39;</span><span class="p">):</span>
+            <span class="n">plot_best_iou_comparison</span><span class="p">(</span>
+                <span class="n">metric_mean_map</span><span class="o">=</span><span class="n">metric_mean_map</span><span class="p">,</span>
+                <span class="n">metric_std_map</span><span class="o">=</span><span class="n">metric_std_map</span><span class="p">,</span>
+                <span class="n">concept</span><span class="o">=</span><span class="n">concept</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="n">max_val</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
+                <span class="n">save_as</span><span class="o">=</span><span class="p">(</span><span class="n">curr_save_as</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.svg&#39;</span><span class="p">,</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">curr_save_as</span>
+                         <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">axis</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">plot_best_iou_comparison</span><span class="p">(</span>
+            <span class="n">metric_mean_map</span><span class="o">=</span><span class="n">metric_mean_map</span><span class="p">,</span>
+            <span class="n">metric_std_map</span><span class="o">=</span><span class="n">metric_std_map</span><span class="p">,</span>
+            <span class="n">concept</span><span class="o">=</span><span class="n">concept</span><span class="p">,</span> <span class="n">max_val</span><span class="o">=</span><span class="n">max_val</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span>
+            <span class="n">save_as</span><span class="o">=</span><span class="n">curr_save_as</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">axis</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">one_plot</span><span class="p">:</span>
+        <span class="c1"># handles, labels = axes[-1].get_legend_handles_labels()</span>
+        <span class="c1"># fig.legend(handles, labels, loc=&#39;center left&#39;, bbox_to_anchor=(.9,0.5))</span>
+        <span class="k">if</span> <span class="n">legend_in</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">legend_in</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">save_as</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.svg&#39;</span><span class="p">):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.svg&#39;</span><span class="p">,</span> <span class="s1">&#39;.png&#39;</span><span class="p">),</span>
+                            <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

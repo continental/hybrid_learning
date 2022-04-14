@@ -1,0 +1,9 @@
+SameSizeTensorValues
+====================
+
+.. currentmodule:: hybrid_learning.datasets.transforms.dict_transforms
+
+.. autoclass:: SameSizeTensorValues
+    :members:
+
+    .. autoclasstoc::

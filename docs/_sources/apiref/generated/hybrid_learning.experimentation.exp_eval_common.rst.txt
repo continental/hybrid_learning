@@ -1,0 +1,57 @@
+exp\_eval\_common
+=================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.experimentation.exp_eval_common
+
+    .. currentmodule:: hybrid_learning.experimentation.exp_eval_common
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~auc
+        
+        ~cache_at
+        
+        ~constrain_pd
+        
+        ~do_for
+        
+        ~f_beta
+        
+        ~flatten_cols
+        
+        ~show_and_save_plot
+        
+        ~to_fig_for
+        
+        ~update_dict
+        
+
+    
+    

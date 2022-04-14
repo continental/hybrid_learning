@@ -1,9 +1,0 @@
-SetIoU
-======
-
-.. currentmodule:: hybrid_learning.concepts.kpis
-
-.. autoclass:: SetIoU
-    :members:
-
-    .. autoclasstoc::

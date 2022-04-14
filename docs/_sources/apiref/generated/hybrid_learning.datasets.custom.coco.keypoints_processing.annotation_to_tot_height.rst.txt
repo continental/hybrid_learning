@@ -1,0 +1,6 @@
+annotation\_to\_tot\_height
+===========================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autofunction:: annotation_to_tot_height

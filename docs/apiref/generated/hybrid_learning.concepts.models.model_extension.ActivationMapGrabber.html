@@ -1,71 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ActivationMapGrabber &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="ExtendedModelStump" href="hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html" />
     <link rel="prev" title="model_extension" href="hybrid_learning.concepts.models.model_extension.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +37,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
@@ -93,128 +46,72 @@
 <li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.analysis.html">analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.concepts.html">concepts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.embeddings.html">embeddings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.enforcement.html">enforcement</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.kpis.html">kpis</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.concepts.models.html">models</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.base_handles.html">base_handles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_detection.html">concept_detection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_segmentation.html">concept_segmentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.concept_models.html">concept_models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.concepts.models.embeddings.html">embeddings</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.concepts.models.model_extension.html">model_extension</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.visualization.html">visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.concepts.train_eval.html">train_eval</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">API Reference</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.html">concepts</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.models.html">models</a> &raquo;</li>
-        
           <li><a href="hybrid_learning.concepts.models.model_extension.html">model_extension</a> &raquo;</li>
-        
       <li>ActivationMapGrabber</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../../_sources/apiref/generated/hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="activationmapgrabber">
-<h1>ActivationMapGrabber<a class="headerlink" href="#activationmapgrabber" title="Permalink to this headline">¶</a></h1>
+<h1>ActivationMapGrabber<a class="headerlink" href="#activationmapgrabber" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber">
-<em class="property">class </em><code class="sig-prename descclassname">hybrid_learning.concepts.models.model_extension.</code><code class="sig-name descname">ActivationMapGrabber</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">module_ids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.concepts.models.model_extension.HooksHandle</span></code></a></p>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.concepts.models.model_extension.</span></span><span class="sig-name descname"><span class="pre">ActivationMapGrabber</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">HooksHandle</span></code></a></p>
 <p>Wrapper class to obtain intermediate outputs from models.
-This is done using the hooking mechanism of <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a>.</p>
+This is done using the hooking mechanism of <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code></a>.</p>
 <p>The wrapper adds to the output of a model the intermediate output of
 specified sub-modules of it. The output of a forward pass then then is as
 tuple of the form
 <code class="docutils literal notranslate"><span class="pre">(output_of_wrapped_model,</span> <span class="pre">{module_id:</span> <span class="pre">intermediate_out_of_sub_module})</span></code>.</p>
 <p>The module ID is the specifier with which the sub-module can be selected
-from <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.named_modules()</span></code></a> of the wrapped <code class="docutils literal notranslate"><span class="pre">model</span></code>.</p>
+from <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.named_modules" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.named_modules()</span></code></a> of the wrapped <code class="docutils literal notranslate"><span class="pre">model</span></code>.</p>
 <p>The sub-modules can be registered and unregistered.
 The currently registered sub-modules to obtain intermediate output from and
 the corresponding hooks are stored in the dictionary
 <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle.hook_handles" title="hybrid_learning.concepts.models.model_extension.HooksHandle.hook_handles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hook_handles</span></code></a>.</p>
-<p>Init.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.modules.module.Module</em>) – the model to wrap</p></li>
-<li><p><strong>module_ids</strong> (<em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – <p>the IDs of sub-modules to obtain intermediate output
-from;</p>
-</p></li>
-</ul>
-</dd>
-</dl>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Data Attributes:</p>
-<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">HooksHandle</span></code></a></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>HooksHandle</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -225,24 +122,24 @@ from;</p>
 </tr>
 </tbody>
 </table>
-</details><details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump_patches</span></code></p></td>
-<td><p></p></td>
+<td><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">T_destination</span></code></p></td>
-<td><p></p></td>
+<td><p>alias of TypeVar('T_destination', bound=<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Mapping" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code></a>])</p></td>
 </tr>
 </tbody>
 </table>
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Public Methods:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -256,7 +153,7 @@ from;</p>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">HooksHandle</span></code></a></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>HooksHandle</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -276,7 +173,7 @@ from;</p>
 </tr>
 </tbody>
 </table>
-</details><details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -294,11 +191,23 @@ from;</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
 <td><p>Adds a child module to the current module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_submodule</span></code>(target)</p></td>
+<td><p>Returns the submodule given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parameter</span></code>(target)</p></td>
+<td><p>Returns the parameter given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
+<td><p>Returns the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
 <td><p>Applies <code class="docutils literal notranslate"><span class="pre">fn</span></code> recursively to every submodule (as returned by <code class="docutils literal notranslate"><span class="pre">.children()</span></code>) as well as self.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
 <td><p>Moves all model parameters and buffers to the GPU.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpu</span></code>([device])</p></td>
+<td><p>Moves all model parameters and buffers to the XPU.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cpu</span></code>()</p></td>
 <td><p>Moves all model parameters and buffers to the CPU.</p></td>
@@ -307,7 +216,7 @@ from;</p>
 <td><p>Casts all parameters and buffers to <code class="xref py py-attr docutils literal notranslate"><span class="pre">dst_type</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to float datatype.</p></td>
+<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">float</span></code> datatype.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">double</span></code>()</p></td>
 <td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">double</span></code> datatype.</p></td>
@@ -318,10 +227,16 @@ from;</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bfloat16</span></code>()</p></td>
 <td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">bfloat16</span></code> datatype.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_empty</span></code>(*, device)</p></td>
+<td><p>Moves the parameters and buffers to the specified device without copying storage.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
 <td><p>Moves and/or casts the parameters and buffers.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
+<td><p>Registers a backward hook on the module.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_full_backward_hook</span></code>(hook)</p></td>
 <td><p>Registers a backward hook on the module.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_pre_hook</span></code>(hook)</p></td>
@@ -330,55 +245,52 @@ from;</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_hook</span></code>(hook)</p></td>
 <td><p>Registers a forward hook on the module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">T_destination</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
 <td><p>Returns a dictionary containing a whole state of the module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
 <td><p>Copies parameters and buffers from <code class="xref py py-attr docutils literal notranslate"><span class="pre">state_dict</span></code> into this module and its descendants.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
 <td><p>Returns an iterator over module parameters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
 <td><p>Returns an iterator over module parameters, yielding both the name of the parameter as well as the parameter itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
 <td><p>Returns an iterator over module buffers.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
 <td><p>Returns an iterator over module buffers, yielding both the name of the buffer as well as the buffer itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
 <td><p>Returns an iterator over immediate children modules.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
 <td><p>Returns an iterator over immediate children modules, yielding both the name of the module as well as the module itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
 <td><p>Returns an iterator over all modules in the network.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix, remove_duplicate])</p></td>
 <td><p>Returns an iterator over all modules in the network, yielding both the name of the module as well as the module itself.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
 <td><p>Sets the module in training mode.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
 <td><p>Sets the module in evaluation mode.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
 <td><p>Change if autograd should record operations on parameters in this module.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>([set_to_none])</p></td>
 <td><p>Sets gradients of all model parameters to zero.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
+<td><p>See <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.share_memory_.html#torch.Tensor.share_memory_" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.Tensor.share_memory_()</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
 <td><p>Set the extra representation of the module</p></td>
 </tr>
 </tbody>
@@ -386,7 +298,7 @@ from;</p>
 </details></div>
 <div class="autoclasstoc docutils container">
 <p class="rubric">Special Methods:</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -397,7 +309,7 @@ from;</p>
 </tr>
 </tbody>
 </table>
-<details><summary>Inherited from <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.HooksHandle.html#hybrid_learning.concepts.models.model_extension.HooksHandle" title="hybrid_learning.concepts.models.model_extension.HooksHandle"><code class="xref py py-class docutils literal notranslate"><span class="pre">HooksHandle</span></code></a></summary><table class="longtable docutils align-default">
+<details><summary>Inherited from    : py: class:<cite>HooksHandle</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -406,9 +318,12 @@ from;</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__" title="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(model[, module_ids])</p></td>
 <td><p>Init.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__del__</span></code>()</p></td>
+<td><p>Unregister all hooks held by this handle on handle delete.</p></td>
+</tr>
 </tbody>
 </table>
-</details><details><summary>Inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></summary><table class="longtable docutils align-default">
+</details><details><summary>Inherited from    : py: class:<cite>Module</cite></summary><table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -436,21 +351,29 @@ from;</p>
 <td><p>Return repr(self).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__dir__</span></code>()</p></td>
-<td><p>default dir() implementation</p></td>
+<td><p>Default dir() implementation.</p></td>
 </tr>
 </tbody>
 </table>
 </details></div>
 <hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>Module</em>) – </p></li>
+<li><p><strong>module_ids</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
-<dt id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">module_ids</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Init.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>torch.nn.modules.module.Module</em>) – the model to wrap</p></li>
-<li><p><strong>module_ids</strong> (<em>Iterable</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em>) – <p>the IDs of sub-modules to obtain intermediate output
+<li><p><strong>model</strong> (<em>Module</em>) – the model to wrap</p></li>
+<li><p><strong>module_ids</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>]</em><em>]</em>) – <p>the IDs of sub-modules to obtain intermediate output
 from;</p>
 </p></li>
 </ul>
@@ -459,22 +382,23 @@ from;</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">inps</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return tuple of outputs of the wrapped model and of the sub-modules.</p>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">inps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Return tuple of outputs of the wrapped model and of the
+sub-modules.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inps</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.6.0a0+4392e52 ))"><em>torch.Tensor</em></a><em>]</em>) – </p>
+<dd class="field-odd"><p><strong>inps</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Tuple[Any, Dict[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a>, Any]]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><em>Dict</em></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><em>Any</em></a>]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.stump">
-<code class="sig-name descname">stump</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber.stump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.stump" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.stump">
+<span class="sig-name descname"><span class="pre">stump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/concepts/models/model_extension.html#ActivationMapGrabber.stump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.stump" title="Permalink to this definition"></a></dt>
 <dd><p>Provide a <a class="reference internal" href="hybrid_learning.concepts.models.model_extension.ModelStump.html#hybrid_learning.concepts.models.model_extension.ModelStump" title="hybrid_learning.concepts.models.model_extension.ModelStump"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelStump</span></code></a> (in eval mode) which yields act
 maps of given sub-module.</p>
 <dl class="field-list simple">
@@ -482,14 +406,14 @@ maps of given sub-module.</p>
 <dd class="field-odd"><p><strong>module_id</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – </p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Callable</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.training">
-<code class="sig-name descname">training</code><em class="property">: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)">bool</a></em><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.training" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.concepts.models.model_extension.ActivationMapGrabber.training" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -498,58 +422,33 @@ maps of given sub-module.</p>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html" class="btn btn-neutral float-right" title="ExtendedModelStump" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="hybrid_learning.concepts.models.model_extension.html" class="btn btn-neutral float-left" title="model_extension" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.concepts.models.model_extension.html" class="btn btn-neutral float-left" title="model_extension" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.concepts.models.model_extension.ExtendedModelStump.html" class="btn btn-neutral float-right" title="ExtendedModelStump" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

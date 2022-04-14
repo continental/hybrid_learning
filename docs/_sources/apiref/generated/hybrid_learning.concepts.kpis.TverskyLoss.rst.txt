@@ -1,9 +1,0 @@
-TverskyLoss
-===========
-
-.. currentmodule:: hybrid_learning.concepts.kpis
-
-.. autoclass:: TverskyLoss
-    :members:
-
-    .. autoclasstoc::

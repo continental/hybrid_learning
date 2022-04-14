@@ -1,0 +1,9 @@
+Compose
+=======
+
+.. currentmodule:: hybrid_learning.datasets.transforms.common
+
+.. autoclass:: Compose
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.tnorm_connectives.product &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.tnorm_connectives.product</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.tnorm_connectives.product</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Product fuzzy logic and connectives.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">.fuzzy_common</span> <span class="kn">import</span> <span class="n">NOT</span>
+<span class="kn">from</span> <span class="nn">..logic_base</span> <span class="kn">import</span> <span class="n">Logic</span> <span class="k">as</span> <span class="n">BaseLogic</span><span class="p">,</span> <span class="n">stack_tensors</span>
+<span class="kn">from</span> <span class="nn">..logic_base.connectives</span> <span class="kn">import</span> <span class="n">AbstractAND</span><span class="p">,</span> <span class="n">AbstractOR</span><span class="p">,</span> <span class="n">AbstractIMPLIES</span><span class="p">,</span> <span class="n">AbstractIMPLIEDBY</span>
+
+
+<div class="viewcode-block" id="AND"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND">[docs]</a><span class="k">class</span> <span class="nc">AND</span><span class="p">(</span><span class="n">AbstractAND</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Product AND operation.</span>
+<span class="sd">    For a finite amount of truth values :math:`(a_i)_{i=1}^n` it calculates as</span>
+
+<span class="sd">    .. math:: \bigwedge_{i=1}^n a_i = \prod_i a_i</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AND.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Product AND on pytorch tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">stack_tensors</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AND.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.AND.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Product AND on Booleans, numpy arrays and numbers.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="OR"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR">[docs]</a><span class="k">class</span> <span class="nc">OR</span><span class="p">(</span><span class="n">AbstractOR</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Product OR operation.</span>
+<span class="sd">    For two fuzzy truth values it calculates as</span>
+
+<span class="sd">    .. math:: a \vee b = a + b - a\cdot b</span>
+
+<span class="sd">    For a finite amount of truth values :math:`(a_i)_{i=1}^n` it calculates as</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \bigvee_{i=1}^n a_i</span>
+<span class="sd">        = \sum_{i=1}^n (-1)^{i-1} \sum_{S\subset\{1,\dots,n\}, |S|=i} \prod_{j\in S} a_j</span>
+<span class="sd">        = (a_1 + \dots + a_n) - (a_1a_2 + a_1a_3 + \dots + a_na_{n-1}) + (a_1a_2a_3 + \dots) - \dots</span>
+
+<span class="sd">    To minimize the number of operations, the value for :math:`n&gt;2`</span>
+<span class="sd">    is calculated in a tail recursion instead of the global sum formula.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OR.general_or_binary"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.general_or_binary">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">general_or_binary</span><span class="p">(</span><span class="n">inp1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+                          <span class="n">inp2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Product OR formula for two fuzzy truth values.</span>
+<span class="sd">        Works for both tensors and numpy types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inp1</span> <span class="o">+</span> <span class="n">inp2</span> <span class="o">-</span> <span class="p">(</span><span class="n">inp1</span> <span class="o">*</span> <span class="n">inp2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OR.general_or"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.general_or">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">general_or</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Product OR formula for arbitrary amount of fuzzy truth values</span>
+<span class="sd">        as tail recursion. Works for both tensors and numpy types.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">((</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">general_or_binary</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)),</span> <span class="n">inputs</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OR.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.torch_operation">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Product OR on pytorch tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">general_or</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OR.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.OR.numpy_operation">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Product OR on Booleans, numpy arrays and numbers.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">general_or</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IMPLIES"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES">[docs]</a><span class="k">class</span> <span class="nc">IMPLIES</span><span class="p">(</span><span class="n">AbstractIMPLIES</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Product logic IMPLIES connective.</span>
+<span class="sd">    The connective is of arity 2 and calculates as</span>
+<span class="sd">    :math:`a\rightarrow b = \min(1, \frac{b}{a})`.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        For product logic, implication is not the same as :math:`\neg a \vee b`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IMPLIES.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Product logic IMPLIES on tensors.&quot;&quot;&quot;</span>
+        <span class="n">one</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">inp_a</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">inp_a</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">zero</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">inp_a</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">inp_a</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># Calc min(1, b/a); Note that in torch: x/0 = inf and 0/0 = nan</span>
+        <span class="n">b_over_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">inp_b</span> <span class="o">/</span> <span class="n">inp_a</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">nan</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="c1"># Filter the cases where both a and b are close to 0</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">inp_a</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">inp_a</span><span class="p">,</span> <span class="n">zero</span><span class="p">)),</span>
+                           <span class="n">one</span><span class="p">,</span> <span class="n">b_over_a</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">inp_a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IMPLIES.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIES.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Product logic IMPLIES on numpy arrays.&quot;&quot;&quot;</span>
+        <span class="c1"># Calc min(1, b/a); Note that in numpy: x/0 = inf and 0/0 = nan (and both raise warnings)</span>
+        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+            <span class="n">b_over_a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">inp_b</span> <span class="o">/</span> <span class="n">inp_a</span><span class="p">,</span> <span class="n">a_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">a_max</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">nan</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="c1"># Filter the cases where both a and b are close to 0</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">inp_a</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">inp_a</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+                        <span class="mi">1</span><span class="p">,</span> <span class="n">b_over_a</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="IMPLIEDBY"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY">[docs]</a><span class="k">class</span> <span class="nc">IMPLIEDBY</span><span class="p">(</span><span class="n">AbstractIMPLIEDBY</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Goedel inverted logic IMPLIES connective.</span>
+<span class="sd">    For details see :py:class:`IMPLIES`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IMPLIEDBY.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Inverted Goedel logical IMPLIES on tensors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">IMPLIES</span><span class="o">.</span><span class="n">torch_operation</span><span class="p">(</span><span class="n">inp_b</span><span class="p">,</span> <span class="n">inp_a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IMPLIEDBY.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.IMPLIEDBY.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Inverted Goedel logical IMPLIES on numpy arrays.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">IMPLIES</span><span class="o">.</span><span class="n">numpy_operation</span><span class="p">(</span><span class="n">inp_b</span><span class="p">,</span> <span class="n">inp_a</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ProductLogic"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.tnorm_connectives.product.ProductLogic.html#hybrid_learning.fuzzy_logic.tnorm_connectives.product.ProductLogic">[docs]</a><span class="k">class</span> <span class="nc">ProductLogic</span><span class="p">(</span><span class="n">BaseLogic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Product fuzzy logic parser. For details see the super class.&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_CONNECTIVES</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span>
+        <span class="n">BaseLogic</span><span class="o">.</span><span class="n">DEFAULT_CONNECTIVES</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">AND</span><span class="o">=</span><span class="n">AND</span><span class="p">,</span> <span class="n">OR</span><span class="o">=</span><span class="n">OR</span><span class="p">,</span> <span class="n">NOT</span><span class="o">=</span><span class="n">NOT</span><span class="p">,</span> <span class="n">IMPLIES</span><span class="o">=</span><span class="n">IMPLIES</span><span class="p">,</span> <span class="n">IMPLIEDBY</span><span class="o">=</span><span class="n">IMPLIEDBY</span><span class="p">))</span></div>
+
+
+<span class="n">Logic</span> <span class="o">=</span> <span class="n">ProductLogic</span>
+<span class="sd">&quot;&quot;&quot;Alias for logic handle.&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

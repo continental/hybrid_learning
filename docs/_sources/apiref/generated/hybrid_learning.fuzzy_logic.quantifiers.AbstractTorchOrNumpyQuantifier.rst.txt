@@ -1,0 +1,9 @@
+AbstractTorchOrNumpyQuantifier
+==============================
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.quantifiers
+
+.. autoclass:: AbstractTorchOrNumpyQuantifier
+    :members:
+
+    .. autoclasstoc::

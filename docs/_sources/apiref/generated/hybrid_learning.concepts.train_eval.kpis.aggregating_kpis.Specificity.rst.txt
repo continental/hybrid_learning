@@ -1,0 +1,9 @@
+Specificity
+===========
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+.. autoclass:: Specificity
+    :members:
+
+    .. autoclasstoc::

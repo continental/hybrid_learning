@@ -1,9 +1,0 @@
-ConceptEmbedding
-================
-
-.. currentmodule:: hybrid_learning.concepts.embeddings
-
-.. autoclass:: ConceptEmbedding
-    :members:
-
-    .. autoclasstoc::

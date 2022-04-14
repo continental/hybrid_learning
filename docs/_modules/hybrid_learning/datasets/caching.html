@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.datasets.caching &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.datasets.caching</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.datasets.caching</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="sd">&quot;&quot;&quot;Base classes and implementations of cache handles.</span>
+<span class="sd">The common base class is :py:class:`Cache`.</span>
+
+<span class="sd">Cache types provided::</span>
+
+<span class="sd">- :py:class:`DictCache`: An in-memory cache</span>
+<span class="sd">- :py:class:`FileCache`: Base class for file system caches</span>
+<span class="sd">- Combined caches:</span>
+
+<span class="sd">  - :py:class:`CacheCascade`: A chain map for caches with different sync modes</span>
+<span class="sd">  - :py:class:`CacheTuple`: Have each entry of a tuple handled by a separate</span>
+<span class="sd">    cache, but with shared descriptor key</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> \
+    <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Collection</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchvision.transforms.functional</span> <span class="k">as</span> <span class="nn">tv_functional</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">multiprocessing</span>
+
+<span class="kn">from</span> <span class="nn">.transforms.image_transforms</span> <span class="kn">import</span> <span class="n">ToTensor</span>
+
+
+<div class="viewcode-block" id="Cache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache">[docs]</a><span class="k">class</span> <span class="nc">Cache</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Caching base handle.</span>
+<span class="sd">    Put objects into the cache using :py:meth:`put`,</span>
+<span class="sd">    and load cached objects by their cache descriptor using :py:meth:`load`.</span>
+<span class="sd">    Derive custom caching handles from this class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Cache.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.put">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store ``obj`` in this cache.</span>
+<span class="sd">        In case it already exists, the existing object is overwritten.</span>
+
+<span class="sd">        :param descriptor: the descriptor key under which to store the</span>
+<span class="sd">            object; used to access the object later</span>
+<span class="sd">        :param obj: the object to put into cache; must not be ``None``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cache.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.load">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load the object stored under key ``descriptor`` from cache.</span>
+<span class="sd">        ``None`` is returned if the object is not in the cache.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cache.put_batch"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.put_batch">[docs]</a>    <span class="k">def</span> <span class="nf">put_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span> <span class="n">objs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Store a batch of ``objs`` in this cache using according ``descriptors``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">descriptors</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;objs and descriptors must be iterable and of same length,&quot;</span>
+                             <span class="s2">&quot;but were of type (objs) </span><span class="si">{}</span><span class="s2"> and (descriptors) </span><span class="si">{}</span><span class="s2">!&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">objs</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">descriptors</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">desc</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">descriptors</span><span class="p">,</span> <span class="n">objs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cache.load_batch"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.load_batch">[docs]</a>    <span class="k">def</span> <span class="nf">load_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span>
+                   <span class="n">return_none_if</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;any&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load a batch of objects. Return ``None`` according to ``return_none_if``.</span>
+
+<span class="sd">        :param descriptors: descriptors to load values for</span>
+<span class="sd">        :param return_none_if: may be ``&quot;any&quot;``, ``&quot;all&quot;``, ``&quot;never&quot;``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_none_if</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_return_none_if</span><span class="p">(</span><span class="n">return_none_if</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_none</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">descriptors</span><span class="p">],</span> <span class="n">return_none_if</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_standardize_return_none_if</span><span class="p">(</span><span class="n">return_none_if</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return an int representation of the ``return_none_if`` value.</span>
+<span class="sd">        Raise if ``return_none_if`` has invalid value.&quot;&quot;&quot;</span>
+        <span class="n">return_none_if_vals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;any&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;never&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">return_none_if</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="o">*</span><span class="n">return_none_if_vals</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                  <span class="o">*</span><span class="n">return_none_if_vals</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Expected as value of return_none_if a key or &quot;</span>
+                              <span class="s2">&quot;value of </span><span class="si">{}</span><span class="s2">, but was </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">return_none_if_vals</span><span class="p">,</span> <span class="n">return_none_if</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">return_none_if_vals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">return_none_if</span><span class="p">,</span> <span class="n">return_none_if</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_to_none</span><span class="p">(</span><span class="n">objs</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">return_none_if</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Collection</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return ``None`` if the condition encoded by ``return_none_if`` holds,</span>
+<span class="sd">        else return ``objs`` unchanged.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">objs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">objs</span>
+        <span class="k">elif</span> <span class="n">return_none_if</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">):</span>
+            <span class="n">objs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">return_none_if</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">objs</span><span class="p">):</span>
+            <span class="n">objs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">objs</span>
+
+<div class="viewcode-block" id="Cache.clear"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.clear">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear the current cache.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cache.descriptors"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.descriptors">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">descriptors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return all descriptors for which an element is cached.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Cache.as_dict"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a dict with all cached descriptors and objects.</span>
+<span class="sd">        Beware: This can be very large!&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptors</span><span class="p">()}</span></div>
+
+<div class="viewcode-block" id="Cache.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;()&quot;</span></div>
+
+<div class="viewcode-block" id="Cache.wrap"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.wrap">[docs]</a>    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">getitem</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span>
+             <span class="n">descriptor_map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Hashable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Add this cache to the deterministic function ``getitem`` (which</span>
+<span class="sd">        should have no side effects).</span>
+<span class="sd">        When the wrapped method is called, the desired item from cache is</span>
+<span class="sd">        returned. Only if it does not exist in the cache, the original</span>
+<span class="sd">        ``getitem`` is called, and its output cached and returned.</span>
+<span class="sd">        The optional ``descriptor_map`` function should map a ``getitem``-input</span>
+<span class="sd">        to the hash value which is to be used for the cache.</span>
+<span class="sd">        E.g. it could map an index to the underlying file name.</span>
+
+<span class="sd">        ``getitem`` should</span>
+
+<span class="sd">        - have no side effects, and</span>
+<span class="sd">        - have deterministic output, i.e. calls with equal input value</span>
+<span class="sd">          will return equal output values.</span>
+
+<span class="sd">        ``descriptor_map`` should</span>
+
+<span class="sd">        - accept elements from the same domain as ``getitem``,</span>
+<span class="sd">        - be injective, i.e. map each ``getitem``-input to a *unique* descriptor</span>
+<span class="sd">          value.</span>
+
+<span class="sd">        :param getitem: the function to wrap; for requirements see above</span>
+<span class="sd">        :param descriptor_map: optionally a map from ``getitem``-input to</span>
+<span class="sd">            descriptor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">descriptor_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">descriptor_map</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span>
+
+        <span class="k">def</span> <span class="nf">cached_getitem</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;The cached ``getitem`` method.&quot;&quot;&quot;</span>
+            <span class="n">desc</span><span class="p">:</span> <span class="n">Hashable</span> <span class="o">=</span> <span class="n">descriptor_map</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">getitem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">out</span>
+
+        <span class="n">cached_getitem</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">getitem</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">cached_getitem</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">getitem</span><span class="o">.</span><span class="vm">__doc__</span>
+        <span class="k">return</span> <span class="n">cached_getitem</span></div>
+
+<div class="viewcode-block" id="Cache.__add__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Cache&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cache&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a (cascaded) cache which will first lookup ``self`` then</span>
+<span class="sd">        ``other`` with default sync mode.</span>
+<span class="sd">        In case ``other`` is ``None`` or a dummy :py:class:`NoCache`,</span>
+<span class="sd">        return ``self``.</span>
+
+<span class="sd">        :return: one of the summands in case the other is a no-op, else</span>
+<span class="sd">            a :py:class:`CacheCascade` transforms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Cache</span><span class="p">)</span> <span class="ow">or</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="c1"># no-op:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoCache</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">CacheCascade</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cache.__radd__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.Cache.html#hybrid_learning.datasets.caching.Cache.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Cache&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Cache&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a (cascaded) cache which will first lookup ``other`` then</span>
+<span class="sd">        ``self`` with default sync mode.</span>
+<span class="sd">        See :py:meth:`__add__`.&quot;&quot;&quot;</span>
+        <span class="c1"># no-op:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Cache</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># noinspection PyMissingOrEmptyDocstring</span>
+<div class="viewcode-block" id="NoCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache">[docs]</a><span class="k">class</span> <span class="nc">NoCache</span><span class="p">(</span><span class="n">Cache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dummy cache that has no effect.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NoCache.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="NoCache.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="NoCache.descriptors"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache.descriptors">[docs]</a>    <span class="k">def</span> <span class="nf">descriptors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">()</span></div>
+
+<div class="viewcode-block" id="NoCache.clear"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="NoCache.__add__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Cache</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cache</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Cache</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="NoCache.__radd__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NoCache.html#hybrid_learning.datasets.caching.NoCache.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Cache</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Cache</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="n">other</span></div></div>
+
+
+<div class="viewcode-block" id="DictCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache">[docs]</a><span class="k">class</span> <span class="nc">DictCache</span><span class="p">(</span><span class="n">Cache</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Cache objects in a (multiprocessing capable) dictionary in memory.</span>
+<span class="sd">    In case this cache is used, the multiprocessing sharing strategy is</span>
+<span class="sd">    automatically set to ``&#39;file_system&#39;`` since otherwise the ulimit of</span>
+<span class="sd">    multiprocessing is exceeded for larger cache sizes.</span>
+<span class="sd">    See `pytorch issue 973 &lt;https://github.com/pytorch/pytorch/issues/973&gt;`_</span>
+<span class="sd">    for this, and the `pytorch doc on multiprocessing &lt;https://pytorch.org/docs/stable/multiprocessing.html#file-system-file-system&gt;`_</span>
+<span class="sd">    for the drawbacks of this sharing strategy.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Be sure to have enough RAM!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: enable=line-too-long</span>
+
+<div class="viewcode-block" id="DictCache.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param thread_safe: whether to use a multiprocessing-capable dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">thread_safe</span><span class="p">:</span>
+            <span class="c1"># This is needed to ensure that the ulimit is not exceeded, see here</span>
+            <span class="c1"># https://github.com/pytorch/pytorch/issues/973</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">set_sharing_strategy</span><span class="p">(</span><span class="s1">&#39;file_system&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="DictCache.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store ``obj`` under key ``descriptor`` in a in-memory cache.</span>
+<span class="sd">        In case it already exists, the existing object is overwritten.</span>
+
+<span class="sd">        :param descriptor: the descriptor key under which to store the</span>
+<span class="sd">            object; used to access the object later</span>
+<span class="sd">        :param obj: the object to put into cache; must not be ``None``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cache received None object for descriptor </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">descriptor</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">descriptor</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="DictCache.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load the object stored under ``descriptor`` from in-memory cache.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DictCache.clear"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Empty cache dict.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> \
+            <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DictCache.descriptors"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.DictCache.html#hybrid_learning.datasets.caching.DictCache.descriptors">[docs]</a>    <span class="k">def</span> <span class="nf">descriptors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the keys (descriptors) of the cache dict.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="TensorDictCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.TensorDictCache.html#hybrid_learning.datasets.caching.TensorDictCache">[docs]</a><span class="k">class</span> <span class="nc">TensorDictCache</span><span class="p">(</span><span class="n">DictCache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;In-memory cache specifically for torch tensors.</span>
+<span class="sd">    Other than a normal :py:class:`DictCache` it takes care to move</span>
+<span class="sd">    a :py:class:`torch.Tensor` to CPU before saving it to the shared memory,</span>
+<span class="sd">    since at the time being sharing of CUDA-tensors between sub-processes is</span>
+<span class="sd">    not supported.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Do not expect speed improvements if CUDA based tensors are to be</span>
+<span class="sd">        cached: Copying tensors from and to CPU is quite costly and</span>
+<span class="sd">        comparable if not less efficient than loading from file.</span>
+<span class="sd">        Consider using a :py:class:`PTCache` in such cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TensorDictCache.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.TensorDictCache.html#hybrid_learning.datasets.caching.TensorDictCache.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">thread_safe</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param sparse: whether tensors should be sparsified before put</span>
+<span class="sd">            (and de-sparsified afterwards)</span>
+<span class="sd">        :param thread_safe: whether to use a multiprocessing-capable dict;</span>
+<span class="sd">            only available if ``sparse`` is not activated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">thread_safe</span><span class="o">=</span><span class="p">(</span><span class="ow">not</span> <span class="n">sparse</span><span class="p">)</span> <span class="ow">and</span>
+                                     <span class="p">(</span><span class="n">thread_safe</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">thread_safe</span><span class="p">))</span>
+        <span class="c1"># It looks like sparse tensors are for now not pickleable:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_to_tens</span><span class="p">:</span> <span class="n">ToTensor</span> <span class="o">=</span> <span class="n">ToTensor</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TensorDictCache.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.TensorDictCache.html#hybrid_learning.datasets.caching.TensorDictCache.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store torch ``obj`` under key ``descriptor`` in a in-memory cache.</span>
+<span class="sd">        In case it already exists, the existing object is overwritten.</span>
+<span class="sd">        If the tensor device is CPU, the tensor is cached, else a CPU copy</span>
+<span class="sd">        of it.</span>
+
+<span class="sd">        :param descriptor: the descriptor key under which to store the</span>
+<span class="sd">            object; used to access the object later</span>
+<span class="sd">        :param obj: the tensor to put into cache; must not be ``None``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cache received None object for descriptor </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">descriptor</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">descriptor</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_tens</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TensorDictCache.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.TensorDictCache.html#hybrid_learning.datasets.caching.TensorDictCache.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load and densify tensors from in-memory cache.&quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">obj</span></div></div>
+
+
+<div class="viewcode-block" id="FileCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache">[docs]</a><span class="k">class</span> <span class="nc">FileCache</span><span class="p">(</span><span class="n">Cache</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class to cache objects as files under a cache folder.</span>
+<span class="sd">    An implementation needs to set the :py:attr:`FILE_ENDING` and</span>
+<span class="sd">    implement the object type specific :py:meth:`~FileCache.put_file` and</span>
+<span class="sd">    :py:meth:`~FileCache.load_file` methods.</span>
+<span class="sd">    Mind that writing to the files is not multiprocess save, so ensure no</span>
+<span class="sd">    objects in cache are overwritten while other processes are reading</span>
+<span class="sd">    from cache.</span>
+
+<span class="sd">    The descriptors are used to create the filenames by appending the</span>
+<span class="sd">    :py:attr:`FILE_ENDING`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">FILE_ENDING</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;The file ending to append to descriptors to get the file path.</span>
+<span class="sd">    See :py:meth:`~FileCache.descriptor_to_fp`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FileCache.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param cache_root: see :py:attr:`~FileCache.cache_root`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span> <span class="o">=</span> <span class="n">cache_root</span> <span class="ow">or</span> <span class="s2">&quot;.cache&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The path to the root folder under which to store cached files.&quot;&quot;&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileCache.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store ``obj`` under the cache root using</span>
+<span class="sd">        :py:func:`~FileCache.put_file`.</span>
+<span class="sd">        The file name is ``descriptor`` + :py:attr:`FILE_ENDING`.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This put method is not multiprocessing capable!</span>
+<span class="sd">            Already created/put files may be overwritten by parallel processes.</span>
+<span class="sd">            Make sure, no two processes will attempt to put an object to the</span>
+<span class="sd">            same descriptor (e.g. handled by</span>
+<span class="sd">            :py:class:`torch.utils.data.DataLoader` for map-style datasets).</span>
+
+<span class="sd">        :param descriptor: The (unique) file name to use without</span>
+<span class="sd">            :py:attr:`FILE_ENDING`; may also be a file path relative to the</span>
+<span class="sd">            :py:attr:`~FileCache.cache_root`</span>
+<span class="sd">        :param obj: the object to save; must not be ``None``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cache received None object for descriptor </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">descriptor</span><span class="p">))</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptor_to_fp</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileCache.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load object from file ``descriptor`` + :py:attr:`FILE_ENDING`</span>
+<span class="sd">        under cache root.</span>
+<span class="sd">        Return ``None`` if file is not in cache.</span>
+
+<span class="sd">        :param descriptor: The (unique) file name to use without the</span>
+<span class="sd">            :py:attr:`FILE_ENDING`; may also be a file path relative to</span>
+<span class="sd">            the :py:attr:`cache_root`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptor_to_fp</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">PermissionError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot access cache file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                        <span class="n">filepath</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Encountered empty cache file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                        <span class="n">filepath</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="FileCache.clear"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove all files from cache root.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This also removes files which were not created by this cache handle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">filelike</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">):</span>  <span class="c1"># os.scandir?</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">,</span> <span class="n">filelike</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">islink</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileCache.descriptors"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.descriptors">[docs]</a>    <span class="k">def</span> <span class="nf">descriptors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Provide paths of all cached files with ending stripped and</span>
+<span class="sd">        relative to cache root.</span>
+<span class="sd">        These can be used as descriptors for accessing the cached files via</span>
+<span class="sd">        :py:meth:`load`. The paths are given as normed paths using</span>
+<span class="sd">        :py:func:`os.path.normpath`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">),</span> <span class="n">fn</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_ENDING</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">filenames</span>
+            <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_ENDING</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileCache.descriptor_to_fp"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.descriptor_to_fp">[docs]</a>    <span class="k">def</span> <span class="nf">descriptor_to_fp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the file path of the cache file for a given ``descriptor``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">descriptor</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">FILE_ENDING</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FileCache.put_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.put_file">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">put_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save put ``obj`` under ``filepath``.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FileCache.load_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.load_file">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load object from ``filepath``.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FileCache.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.FileCache.html#hybrid_learning.datasets.caching.FileCache.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(cache_root=</span><span class="si">{cache_root}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="n">cache_root</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">)</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PTCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache">[docs]</a><span class="k">class</span> <span class="nc">PTCache</span><span class="p">(</span><span class="n">FileCache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;File cache that uses torch saving and loading mechanism.</span>
+<span class="sd">    All objects are moved to the given :py:attr:`device`</span>
+<span class="sd">    during loading.</span>
+<span class="sd">    For further details see super class.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The file sizes may become quite large for larger tensors.</span>
+<span class="sd">        Consider a file cache applying compression if saving/loading times</span>
+<span class="sd">        or storage space get a problem.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FILE_ENDING</span> <span class="o">=</span> <span class="s2">&quot;.pt&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The file ending to append to descriptors to get the file path.</span>
+<span class="sd">    See :py:meth:`~FileCache.descriptor_to_fp`.</span>
+<span class="sd">    This is the standard for :py:func:`torch.save`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PTCache.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">sparse</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s1">&#39;smallest&#39;</span><span class="p">,</span>
+                 <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">before_put</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">after_load</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param cache_root: see :py:attr:`~FileCache.cache_root`</span>
+<span class="sd">        :param device: see :py:attr:`device`</span>
+<span class="sd">        :param sparse: sparse option of the default :py:attr:`before_put`</span>
+<span class="sd">        :param dtype: dtype option of the default :py:attr:`before_put`</span>
+<span class="sd">        :param before_put: see :py:attr:`before_put`;</span>
+<span class="sd">            overrides ``sparse`` and ``dtype``</span>
+<span class="sd">        :param after_load: see :py:attr:`after_load`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cache_root</span><span class="o">=</span><span class="n">cache_root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="s1">&#39;cpu&#39;</span>
+        <span class="sd">&quot;&quot;&quot;The device to load elements to.</span>
+<span class="sd">        See :py:meth:`~FileCache.load_file` and</span>
+<span class="sd">        :py:meth:`~FileCache.put_file`.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_put</span><span class="p">:</span> <span class="n">ToTensor</span> <span class="o">=</span> <span class="n">before_put</span> <span class="ow">or</span> <span class="n">ToTensor</span><span class="p">(</span>
+            <span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The transformation to call to obtain a tensor with desired</span>
+<span class="sd">        properties for saving.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_load</span><span class="p">:</span> <span class="n">ToTensor</span> <span class="o">=</span> <span class="n">after_load</span> <span class="ow">or</span> <span class="n">ToTensor</span><span class="p">(</span>
+            <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The transformation to call on loaded tensors.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="PTCache.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(&quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;cache_root=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_root</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;device=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;before_put=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">before_put</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span> \
+               <span class="sa">f</span><span class="s2">&quot;after_load=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">after_load</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+<div class="viewcode-block" id="PTCache.put_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache.put_file">[docs]</a>    <span class="k">def</span> <span class="nf">put_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save ``obj`` to ``filepath`` using :py:func:`torch.save`.</span>
+<span class="sd">        Move ``obj`` to :py:attr:`device` before saving.&quot;&quot;&quot;</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">before_put</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">filepath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PTCache.load_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.PTCache.html#hybrid_learning.datasets.caching.PTCache.load_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load ``obj`` from ``filepath`` using :py:func:`torch.load`.</span>
+<span class="sd">        Move them to :py:attr:`device` before return.</span>
+<span class="sd">        (Note that the tensors may be sparse.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_load</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Received the following RuntimeError for cached file </span><span class="si">%s</span><span class="s2">:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">filepath</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span></div></div>
+
+
+<div class="viewcode-block" id="NPYCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NPYCache.html#hybrid_learning.datasets.caching.NPYCache">[docs]</a><span class="k">class</span> <span class="nc">NPYCache</span><span class="p">(</span><span class="n">FileCache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;File cache that uses numpy saving and loading mechanism to cache</span>
+<span class="sd">    :py:class:`torch.Tensor` objects.</span>
+<span class="sd">    Cannot use sparse tensor representation for saving for now.</span>
+<span class="sd">    For further details see super class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FILE_ENDING</span> <span class="o">=</span> <span class="s2">&quot;.npy&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The file ending to append to descriptors to get the file path.</span>
+<span class="sd">    See :py:meth:`FileCache.descriptor_to_fp`.</span>
+<span class="sd">    This is the standard for :py:func:`numpy.save`.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NPYCache.put_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NPYCache.html#hybrid_learning.datasets.caching.NPYCache.put_file">[docs]</a>    <span class="k">def</span> <span class="nf">put_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save ``obj`` to ``filepath`` using :py:func:`numpy.save`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NPYCache.load_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NPYCache.html#hybrid_learning.datasets.caching.NPYCache.load_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load ``obj`` from ``filepath`` using :py:func:`numpy.load`.&quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></div></div>
+
+
+<div class="viewcode-block" id="NPZCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NPZCache.html#hybrid_learning.datasets.caching.NPZCache">[docs]</a><span class="k">class</span> <span class="nc">NPZCache</span><span class="p">(</span><span class="n">FileCache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;File cache that uses numpy compressed saving and loading mechanism to</span>
+<span class="sd">    cache :py:class:`torch.Tensor` objects.</span>
+<span class="sd">    For further details see super class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FILE_ENDING</span> <span class="o">=</span> <span class="s2">&quot;.npz&quot;</span>
+    <span class="sd">&quot;&quot;&quot;The file ending to append to descriptors to get the file path.</span>
+<span class="sd">    See :py:meth:`FileCache.descriptor_to_fp`.</span>
+<span class="sd">    This is the standard for :py:func:`numpy.savez_compressed`.&quot;&quot;&quot;</span>
+
+    <span class="n">OBJ_KEY</span> <span class="o">=</span> <span class="s1">&#39;obj&#39;</span>
+    <span class="sd">&quot;&quot;&quot;The key within the compressed ZIP archive under which to store and</span>
+<span class="sd">    find the object.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NPZCache.put_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NPZCache.html#hybrid_learning.datasets.caching.NPZCache.put_file">[docs]</a>    <span class="k">def</span> <span class="nf">put_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save ``obj`` to .npz archive at ``filepath`` using</span>
+<span class="sd">        :py:func:`numpy.savez_compressed`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savez_compressed</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">OBJ_KEY</span><span class="p">:</span> <span class="n">obj</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="NPZCache.load_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.NPZCache.html#hybrid_learning.datasets.caching.NPZCache.load_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load ``obj`` from .npz archive at ``filepath`` using</span>
+<span class="sd">        :py:func:`numpy.load`.&quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">OBJ_KEY</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></div></div>
+
+
+<div class="viewcode-block" id="JPGCache"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.JPGCache.html#hybrid_learning.datasets.caching.JPGCache">[docs]</a><span class="k">class</span> <span class="nc">JPGCache</span><span class="p">(</span><span class="n">FileCache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Cache for JPEG images using :py:mod:`PIL`.</span>
+<span class="sd">    Non-image tensor or array objects are converted to images and must</span>
+<span class="sd">    have the shape ``(height, width, channels)``.</span>
+<span class="sd">    For mode auto-inference see :py:class:`torchvision.transforms.ToPILImage`.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Will by default return tensors of type :py:class:`torch.float`</span>
+<span class="sd">        with a value range in ``[0, 1]``.</span>
+<span class="sd">        Set :py:attr:`after_load` accordingly, if a different type and value</span>
+<span class="sd">        range is desired.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        If :py:attr:`mode` is set to ``RGB``, make sure that the dtype of the</span>
+<span class="sd">        tensors either is</span>
+
+
+<span class="sd">    The pixel value ranges of the JPG images are always in ``[0, 255]``.</span>
+<span class="sd">    For modes &#39;L&#39; and &#39;RGB&#39; with float dtype (not mode &#39;F&#39; and not for int</span>
+<span class="sd">    or bool types!), the value range of the tensor is automatically scaled</span>
+<span class="sd">    from [0, 1] to [0, 255] during put.</span>
+<span class="sd">    During load, modes &#39;L&#39; and &#39;RGB&#39; are automatically downscaled again from</span>
+<span class="sd">    range [0, 255] to [0, 1].</span>
+<span class="sd">    This means, the following pixel value ranges of the tensors (after the</span>
+<span class="sd">    :py:attr:`before_put` transformation) are assumed:</span>
+
+<span class="sd">    - mode &#39;F&#39;: [0, 255]</span>
+<span class="sd">    - mode &#39;L&#39;, dtype int: [0, 255]</span>
+<span class="sd">    - mode &#39;L&#39;, dtype float: [0, 1] -&gt; automatically scaled to [0, 255]</span>
+<span class="sd">    - mode &#39;RGB&#39;, dtype int: [0, 255]</span>
+<span class="sd">    - mode &#39;RGB&#39;, dtype float: [0, 1] -&gt; automatically scaled to [0, 255]</span>
+
+<span class="sd">    Note that only integer values can be saved in JPG images, so values of</span>
+<span class="sd">    mode &#39;F&#39; get rounded to obtain valid mode &#39;L&#39; values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FILE_ENDING</span> <span class="o">=</span> <span class="s2">&quot;.jpg&quot;</span>
+    <span class="sd">&quot;&quot;&quot;JPEG file ending. Appended to the descriptors to get the file path</span>
+<span class="sd">    (may lead to a double ending, this is intentional).&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="JPGCache.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.JPGCache.html#hybrid_learning.datasets.caching.JPGCache.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span><span class="p">,</span>
+                 <span class="n">before_put</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">after_load</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param cache_root: the cache root directory</span>
+<span class="sd">        :param mode: see :py:attr:`mode`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cache_root</span><span class="o">=</span><span class="n">cache_root</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="sd">&quot;&quot;&quot;The :py:class:`PIL.Image.Image` mode to be represented by the put</span>
+<span class="sd">        and loaded tensors (after the :py:attr`before_put` resp. before the</span>
+<span class="sd">        :py:attr:`after_load` transformation).</span>
+<span class="sd">        Note that the images are converted to mode ``&#39;RGB&#39;`` (for 3 to 4</span>
+<span class="sd">        channels) or mode ``&#39;L&#39;`` (for 1 to 2 channels) before saving to JPG.</span>
+<span class="sd">        Not all dtypes are supported for ``mode==None``.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_put</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">before_put</span> <span class="ow">or</span> <span class="n">ToTensor</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The transformation applied to tensors before turning them into</span>
+<span class="sd">        images for putting. By default only densifies them.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_load</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> \
+            <span class="n">after_load</span> <span class="ow">or</span> <span class="n">ToTensor</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;The transformation applied to loaded tensors.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="JPGCache.save_image"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.JPGCache.html#hybrid_learning.datasets.caching.JPGCache.save_image">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">save_image</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save an image as JPG and take care of necessary conversion.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;RGBA&#39;</span><span class="p">,</span> <span class="s1">&#39;HSV&#39;</span><span class="p">,</span> <span class="s1">&#39;PA&#39;</span><span class="p">]:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;I;16&#39;</span><span class="p">,</span> <span class="s1">&#39;I;16L&#39;</span><span class="p">,</span> <span class="s1">&#39;I;16B&#39;</span><span class="p">,</span> <span class="s1">&#39;I;16N&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;LA&#39;</span><span class="p">,</span> <span class="p">]:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">)</span>
+        <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JPGCache.put_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.JPGCache.html#hybrid_learning.datasets.caching.JPGCache.put_file">[docs]</a>    <span class="k">def</span> <span class="nf">put_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert ``obj`` to a py:mod:`PIL` image and save to ``filepath``.&quot;&quot;&quot;</span>
+        <span class="n">obj</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">before_put</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+        <span class="c1"># Auto-conversion of non-floating point images to uint8:</span>
+        <span class="c1"># 1-channel: int8 and bool aren&#39;t supported yet</span>
+        <span class="c1"># 2-channel, 3-channel: mode==None requires uint8</span>
+        <span class="c1"># 3-channel RGB: expects uint8 with value range [0, 255]</span>
+        <span class="n">num_channels</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_floating_point</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;RGB&#39;</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">int8</span> \
+                    <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">num_channels</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">bool</span> <span class="ow">and</span> <span class="n">num_channels</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span>
+
+        <span class="n">obj</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">tv_functional</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_image</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JPGCache.load_file"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.JPGCache.html#hybrid_learning.datasets.caching.JPGCache.load_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load image and convert to correct mode.&quot;&quot;&quot;</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_load</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img</span></div></div>
+
+
+<div class="viewcode-block" id="CacheCascade"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade">[docs]</a><span class="k">class</span> <span class="nc">CacheCascade</span><span class="p">(</span><span class="n">Cache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Combine several caches by trying to load from first to last.</span>
+<span class="sd">    In case of a put, all caches are updated.</span>
+<span class="sd">    In case of a load, the object is collected from the first cache holding it.</span>
+<span class="sd">    In case</span>
+<span class="sd">    and all previous ones are updated to also hold it.</span>
+<span class="sd">    If :py:attr:`sync_by` is ``True``, then on load the first match is put</span>
+<span class="sd">    to *all* other cache instances, not only the previous ones. I.e. the order</span>
+<span class="sd">    of :py:attr:`caches` also determines the precedence.</span>
+
+
+<span class="sd">    Some use-cases:</span>
+
+<span class="sd">    - *Combine in-memory and persistent cache*:</span>
+<span class="sd">      Combine a :py:class:`DictCache` with a :py:class:`FileCache` instance:</span>
+<span class="sd">      Files are stored in file system for later runs, respectively loaded from</span>
+<span class="sd">      previous runs, and additionally for even faster access stored in memory.</span>
+<span class="sd">    - *Cache to different cache locations*:</span>
+<span class="sd">      Combine several :py:class:`FileCache` caches with ``sync_by=True`` to</span>
+<span class="sd">      write cache to several locations (can be used as sort of a lazy copy).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CacheCascade.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">caches</span><span class="p">:</span> <span class="n">Cache</span><span class="p">,</span>
+                 <span class="n">sync_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s1">&#39;precedence&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param caches: cache instances in the correct load order</span>
+<span class="sd">        :param sync_by: synchronization mode; must be one of ``&#39;none&#39;`` /</span>
+<span class="sd">            ``False``, ``&#39;precedence&#39;``, ``&#39;all&#39;``;</span>
+<span class="sd">            for details see :py:attr:`sync_by`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sync_by_vals</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;precedence&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sync_by</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sync_by_vals</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sync_by must be one of </span><span class="si">{}</span><span class="s2">, but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sync_by_vals</span><span class="p">,</span> <span class="n">sync_by</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No cache given&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Cache</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">caches</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;The list of caches to consult during load, ordered by descending</span>
+<span class="sd">        precedence.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync_by</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">sync_by</span> <span class="k">if</span> <span class="n">sync_by</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Synchronization mode for loading. Update other instances according</span>
+<span class="sd">        to the following settings:</span>
+
+<span class="sd">        - ``False``: no sync; simply load from the first cache holding an</span>
+<span class="sd">          object without updating the others</span>
+<span class="sd">        - ``&#39;precedence&#39;``: when loading, update all caches with higher</span>
+<span class="sd">          precedence (earlier in the :py:attr:`caches` list) that do not</span>
+<span class="sd">          hold the object</span>
+<span class="sd">        - ``&#39;all&#39;``: put object to all other caches when a value was loaded</span>
+<span class="sd">          from one</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="CacheCascade.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Put ``obj`` to all caches under key ``descriptor``.</span>
+<span class="sd">        Beware that the key may be changed (e.g. transformed to string) in</span>
+<span class="sd">        sub-caches, leading to non-unique descriptors.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CacheCascade.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load object stored under ``descriptor`` from the cache with highest</span>
+<span class="sd">        precedence holding it.</span>
+<span class="sd">        Possibly update other cache instances according to :py:attr:`sync_by`</span>
+<span class="sd">        mode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># obtain object</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">first_hit</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># index at which value was found</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">)):</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">first_hit</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">break</span>
+
+        <span class="c1"># update all other caches by sync_by mode:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">first_hit</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_by</span> <span class="o">==</span> <span class="s1">&#39;precedence&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="p">(</span><span class="n">first_hit</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_by</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+            <span class="n">caches_to_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">[:</span><span class="n">first_hit</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_by</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span> <span class="ow">and</span> <span class="n">first_hit</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">caches_to_update</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">first_hit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+            <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="n">caches_to_update</span><span class="p">:</span>
+                <span class="n">cache</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="CacheCascade.clear"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clears *all* caches in the cascade.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CacheCascade.descriptors"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.descriptors">[docs]</a>    <span class="k">def</span> <span class="nf">descriptors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;This returns the united descriptor lists of all sub-caches.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This may be very computationally expensive, depending on</span>
+<span class="sd">            the size of the lists to merge into a set. So use with care!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">desc</span>
+                <span class="k">for</span> <span class="n">descs</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">descriptors</span><span class="p">()</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">descs</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="CacheCascade.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{caches}{other_setts}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="n">caches</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">repr</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">]),</span>
+            <span class="n">other_setts</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;, sync_by=&#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sync_by</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_by</span> <span class="o">!=</span> <span class="s1">&#39;precedence&#39;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CacheCascade.append"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Cache</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CacheCascade&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Append ``cache`` to the cascade and return self.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="CacheCascade.insert"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">Cache</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CacheCascade&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Insert ``cache`` at position ``i`` in cascade and return self.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="CacheCascade.remove"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheCascade.html#hybrid_learning.datasets.caching.CacheCascade.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CacheCascade&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Remove the cache at position ``i`` in cascade and return self.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+
+
+<div class="viewcode-block" id="CacheTuple"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple">[docs]</a><span class="k">class</span> <span class="nc">CacheTuple</span><span class="p">(</span><span class="n">Cache</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Cache the values of tuples using different caches.</span>
+<span class="sd">    Given a descriptor and a tuple of objects, each value of the tuple</span>
+<span class="sd">    is stored in a different cache under the given descriptor.</span>
+
+<span class="sd">    Can be used e.g. to store transformed pairs of (input, target) using</span>
+<span class="sd">    two different caches.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CacheTuple.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">caches</span><span class="p">:</span> <span class="n">Cache</span><span class="p">,</span>
+                 <span class="n">return_none_if</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;any&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param caches: the caches to use to cache the values of given tuples</span>
+<span class="sd">        :param return_none_if: see</span>
+<span class="sd">            :py:attr:`~hybrid_learning.datasets.caching.CacheTuple.return_none_if`;</span>
+<span class="sd">            may be one of ``&#39;any&#39;, &#39;all&#39;, &#39;never&#39;, 1, 0, -1``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># region value checks</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caches</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty caches given.&quot;</span><span class="p">)</span>
+        <span class="c1"># endregion</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Cache</span><span class="p">]</span> <span class="o">=</span> <span class="n">caches</span>
+        <span class="sd">&quot;&quot;&quot;The tuple of caches to handle tuple values.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_none_if</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_return_none_if</span><span class="p">(</span><span class="n">return_none_if</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Mode by which to return ``None`` on :py:meth:`load`.</span>
+<span class="sd">        Possible modes:</span>
+
+<span class="sd">        - ``1`` /``&#39;any&#39;``: Return ``None`` if any cache load returns ``None``.</span>
+<span class="sd">        - ``0``/``&#39;all&#39;``: Return ``None`` if all cache loads return ``None``.</span>
+<span class="sd">        - ``-1``/``&#39;never&#39;``: Do not return ``None``, but always a tuple</span>
+<span class="sd">          (possibly only holding ``None`` values).</span>
+
+<span class="sd">        The string specifiers will get mapped to integer values to increase</span>
+<span class="sd">        speed.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="CacheTuple.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{caches}{other_setts}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="n">caches</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">repr</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">]),</span>
+            <span class="n">other_setts</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;, return_none_if=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_none_if</span><span class="p">))</span>
+                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_none_if</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CacheTuple.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Load all objects stored under ``descriptor`` and return as tuple.</span>
+<span class="sd">        Return ``None`` according to the setting of :py:attr:`return_none_if`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">objs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> \
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">)</span>
+        <span class="n">objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_none</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_none_if</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">objs</span></div>
+
+<div class="viewcode-block" id="CacheTuple.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Put ``obj[i]`` into ``caches[i]`` under key ``descriptor``.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">obj</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">((</span><span class="s2">&quot;Given object to put must be tuple of length </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                             <span class="s2">&quot;with puttable data, but was </span><span class="si">{}</span><span class="s2"> (type: </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">),</span> <span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span> <span class="kn">from</span> <span class="nn">exc</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">((</span><span class="s2">&quot;Given object tuple was too short: Required &quot;</span>
+                              <span class="s2">&quot;tuple length </span><span class="si">{}</span><span class="s2"> but was </span><span class="si">{}</span><span class="s2">&quot;</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span> <span class="kn">from</span> <span class="nn">exc</span></div>
+
+<div class="viewcode-block" id="CacheTuple.clear"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear all caches in the tuple.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CacheTuple.descriptors"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheTuple.html#hybrid_learning.datasets.caching.CacheTuple.descriptors">[docs]</a>    <span class="k">def</span> <span class="nf">descriptors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return all descriptors that occur in any of the given caches.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This may be slow, as the descriptor sets need to be united.</span>
+<span class="sd">            Instead collect the descriptors of one cache if you know the</span>
+<span class="sd">            caches have the same descriptors:</span>
+<span class="sd">            ``tuple_cache.caches[0].descriptors()``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">desc</span>
+                <span class="k">for</span> <span class="n">descs</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">descriptors</span><span class="p">()</span> <span class="k">for</span> <span class="n">cache</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">descs</span><span class="p">}</span></div></div>
+
+
+<div class="viewcode-block" id="CacheDict"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheDict.html#hybrid_learning.datasets.caching.CacheDict">[docs]</a><span class="k">class</span> <span class="nc">CacheDict</span><span class="p">(</span><span class="n">CacheTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Cache the values of dicts using different caches.</span>
+<span class="sd">    Under the hood this is a :py:class:`CacheTuple` matching keys to caches.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cache_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Cache</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The dictionary of caches used.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">caches</span><span class="p">))</span>
+
+<div class="viewcode-block" id="CacheDict.__init__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheDict.html#hybrid_learning.datasets.caching.CacheDict.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Cache</span><span class="p">],</span>
+                 <span class="n">return_none_if</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;any&#39;</span><span class="p">):</span>
+        <span class="n">keys</span><span class="p">,</span> <span class="n">caches</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">cache_dict</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">caches</span><span class="p">,</span> <span class="n">return_none_if</span><span class="o">=</span><span class="n">return_none_if</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">=</span> <span class="n">keys</span>
+        <span class="sd">&quot;&quot;&quot;The keys matching the caches.</span>
+<span class="sd">        Caches are stored in :py:attr:`~CacheTuple.caches`.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="CacheDict.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheDict.html#hybrid_learning.datasets.caching.CacheDict.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="si">{caches}{other_setts}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="n">caches</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_dict</span><span class="p">),</span>
+            <span class="n">other_setts</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;, return_none_if=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_none_if</span><span class="p">))</span>
+                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_none_if</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CacheDict.load"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheDict.html#hybrid_learning.datasets.caching.CacheDict.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load a cached dict.&quot;&quot;&quot;</span>
+        <span class="n">tuple_obj</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tuple_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="n">tuple_obj</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CacheDict.put"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.datasets.caching.CacheDict.html#hybrid_learning.datasets.caching.CacheDict.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cache a dict.&quot;&quot;&quot;</span>
+        <span class="n">tuple_obj</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">))]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">tuple_obj</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

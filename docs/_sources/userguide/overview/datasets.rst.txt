@@ -1,4 +1,4 @@
-Dataset tooling
+Dataset Tooling
 ===============
 The tooling for datasets is collected in the module :py:mod:`hybrid_learning.datasets`.
 For details have a look at the :ref:`apiref/index:API Reference`.
@@ -9,7 +9,7 @@ For details have a look at the :ref:`apiref/index:API Reference`.
     :backlinks: top
 
 
-Base Dataset Handles
+Base dataset handles
 --------------------
 .. autosummary::
     :nosignatures:
@@ -18,7 +18,7 @@ Base Dataset Handles
     ~hybrid_learning.datasets.activations_handle.ActivationDatasetWrapper
 
 
-Custom Dataset Handles
+Custom dataset handles
 ----------------------
 
 .. py:currentmodule:: hybrid_learning.datasets.custom
@@ -28,39 +28,59 @@ Custom Dataset Handles
     broden
 
 
+Caching handles
+---------------
+Cache handles will allow to insert and read objects into/from a cache.
+For details see :ref:`userguide/custom_dataset_handles/caching:Dataset Caching`.
+
+.. automodsumm:: hybrid_learning.datasets.caching
+    :skip: Hashable, Any, Optional, Dict, Iterable, List, Union, Callable, Tuple, Collection, Sequence, ToTensor
+    :classes-only:
+    :nosignatures:
+
+
 Transformations
 ---------------
 Transformations can be used to modify data tuples or values.
 
-.. rubric:: Transformations for Tuples
+.. rubric:: Transformations for tuples
 
 .. automodsumm:: hybrid_learning.datasets.transforms.tuple_transforms
-    :skip: Any, Callable, Dict, Sequence, Tuple, List, settings_to_repr
+    :skip: Any, Callable, Dict, Tuple, Optional, Iterable, List, Sequence, Set, Union, Mapping, Transform, Compose, TupleTransforms, TwoTupleTransforms, TwoTuple, TensorTwoTuple, TensorThreeTuple
+    :classes-only:
     :nosignatures:
 
-.. rubric:: Transformations for Dicts
+.. rubric:: Transformations for dicts
 
 .. automodsumm:: hybrid_learning.datasets.transforms.dict_transforms
-    :skip: Any, Dict, Optional, Sequence, List, Iterable, Set, Union
+    :skip: Any, Callable, Dict, Tuple, Optional, Iterable, List, Sequence, Set, Union, Mapping, Transform
+    :classes-only:
     :nosignatures:
 
-.. rubric:: Transformations for (Tensor) Images
+.. rubric:: Transformations for (tensor) images
 
 .. automodsumm:: hybrid_learning.datasets.transforms.image_transforms
-    :skip: Tuple, Callable, Dict, Any, Optional, settings_to_repr
+    :skip: Any, Callable, Dict, Tuple, Optional, Iterable, Mapping, List, Sequence, Set, Union, BatchBoxBloat, BatchConvOp, BatchIntersectDecode2D, BatchIntersectEncode2D, BatchIoUEncode2D, Transform
+    :classes-only:
     :nosignatures:
 
-.. rubric:: Intersection and Intersection over Union Encoders
+.. rubric:: Intersection and intersection over union encoders
 
 .. automodsumm:: hybrid_learning.datasets.transforms.encoder
-    :skip: Tuple, Dict, Any, Sequence, settings_to_repr, WithThresh
+    :skip: Any, Callable, Dict, Tuple, Optional, Iterable, Mapping, List, Sequence, Set, Union
+    :classes-only:
     :nosignatures:
 
 
 Visualization and Utility Functions
 -----------------------------------
+.. rubric:: From :py:mod:`hybrid_learning.datasets.data_visualization`
+
 .. automodsumm:: hybrid_learning.datasets.data_visualization
+    :skip: to_pil_image
     :functions-only:
+
+.. rubric:: From :py:mod:`hybrid_learning.datasets.base`
 
 .. automodsumm:: hybrid_learning.datasets.base
     :functions-only:

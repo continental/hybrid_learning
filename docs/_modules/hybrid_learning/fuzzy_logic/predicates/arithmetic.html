@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.predicates.arithmetic &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.predicates.arithmetic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.predicates.arithmetic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Implementations of arithmetic comparison predicates for torch and numpy arrays.</span>
+<span class="sd">A default precedence list for adding arithmetic comparison operations to a logic</span>
+<span class="sd">is given in :py:data:`ARITHMETIC_OP_PRECEDENCE`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">..logic_base.merge_operation</span> <span class="kn">import</span> <span class="n">TorchOrNumpyOperation</span>
+
+
+<div class="viewcode-block" id="GreaterThan"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan">[docs]</a><span class="k">class</span> <span class="nc">GreaterThan</span><span class="p">(</span><span class="n">TorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Predicate of arity 2 that thresholds number values at a given threshold.&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&gt;&quot;</span>
+
+<div class="viewcode-block" id="GreaterThan.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold torch tensor ``inp`` to boolean tensor at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">thresh</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GreaterThan.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterThan.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold array ``inp`` to boolean at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inp</span> <span class="o">&gt;</span> <span class="n">thresh</span></div></div>
+
+
+<div class="viewcode-block" id="GreaterEqualsThan"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan">[docs]</a><span class="k">class</span> <span class="nc">GreaterEqualsThan</span><span class="p">(</span><span class="n">TorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Predicate of arity 2 that thresholds number values at a given threshold.&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&gt;=&quot;</span>
+
+<div class="viewcode-block" id="GreaterEqualsThan.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold torch tensor ``inp`` to boolean tensor at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">thresh</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GreaterEqualsThan.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.GreaterEqualsThan.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold array ``inp`` to boolean at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inp</span> <span class="o">&gt;=</span> <span class="n">thresh</span></div></div>
+
+
+<div class="viewcode-block" id="LowerThan"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan">[docs]</a><span class="k">class</span> <span class="nc">LowerThan</span><span class="p">(</span><span class="n">TorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Predicate of arity 2 that checks whether an input is below a threshold.&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;&quot;</span>
+
+<div class="viewcode-block" id="LowerThan.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold torch tensor ``inp`` to boolean tensor at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">thresh</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowerThan.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerThan.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold array ``inp`` to boolean at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inp</span> <span class="o">&lt;</span> <span class="n">thresh</span></div></div>
+
+
+<div class="viewcode-block" id="LowerEqualsThan"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan">[docs]</a><span class="k">class</span> <span class="nc">LowerEqualsThan</span><span class="p">(</span><span class="n">TorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Predicate of arity 2 that checks whether an input is below or equals a threshold.&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;=&quot;</span>
+
+<div class="viewcode-block" id="LowerEqualsThan.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold torch tensor ``inp`` to boolean tensor at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">le</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">thresh</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowerEqualsThan.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.LowerEqualsThan.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">thresh</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Threshold array ``inp`` to boolean at ``thresh``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inp</span> <span class="o">&lt;=</span> <span class="n">thresh</span></div></div>
+
+
+<div class="viewcode-block" id="Equals"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals">[docs]</a><span class="k">class</span> <span class="nc">Equals</span><span class="p">(</span><span class="n">TorchOrNumpyOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Predicate of arity 2 that checks element-wise equality between two arrays.&quot;&quot;&quot;</span>
+    <span class="n">ARITY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SYMB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;==&quot;</span>
+
+<div class="viewcode-block" id="Equals.torch_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals.torch_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">torch_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Where is ``inp_a`` equal to ``inp_b``?&quot;&quot;&quot;</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">promote_types</span><span class="p">(</span><span class="n">inp_a</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">inp_b</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">inp_a</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">),</span> <span class="n">inp_b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Equals.numpy_operation"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals.html#hybrid_learning.fuzzy_logic.predicates.arithmetic.Equals.numpy_operation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">numpy_operation</span><span class="p">(</span><span class="n">inp_a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">inp_b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Where is ``inp_a`` equal to ``inp_b``?&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">inp_a</span> <span class="o">==</span> <span class="n">inp_b</span></div></div>
+
+
+<span class="n">ARITHMETIC_OP_PRECEDENCE</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">GreaterThan</span><span class="p">,</span>
+    <span class="n">LowerThan</span><span class="p">,</span>
+    <span class="n">GreaterEqualsThan</span><span class="p">,</span>
+    <span class="n">LowerEqualsThan</span><span class="p">,</span>
+    <span class="n">Equals</span>
+<span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

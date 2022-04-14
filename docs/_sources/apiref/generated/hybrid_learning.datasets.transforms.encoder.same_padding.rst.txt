@@ -1,5 +1,5 @@
-hybrid\_learning.datasets.transforms.encoder.same\_padding
-==========================================================
+same\_padding
+=============
 
 .. currentmodule:: hybrid_learning.datasets.transforms.encoder
 

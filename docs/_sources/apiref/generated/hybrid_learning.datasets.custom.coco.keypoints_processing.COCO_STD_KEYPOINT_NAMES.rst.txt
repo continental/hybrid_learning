@@ -1,0 +1,6 @@
+hybrid\_learning.datasets.custom.coco.keypoints\_processing.COCO\_STD\_KEYPOINT\_NAMES
+======================================================================================
+
+.. currentmodule:: hybrid_learning.datasets.custom.coco.keypoints_processing
+
+.. autodata:: COCO_STD_KEYPOINT_NAMES

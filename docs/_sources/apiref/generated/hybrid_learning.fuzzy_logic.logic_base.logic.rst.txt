@@ -1,0 +1,42 @@
+logic
+=====
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.logic_base.logic
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.logic
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Logic
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

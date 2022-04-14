@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.datasets.custom.coco.keypoints_processing &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.datasets.custom.coco.keypoints_processing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.datasets.custom.coco.keypoints_processing</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Util functions to process, transform, and evaluate MS COCO keypoint</span>
+<span class="sd">information.</span>
+
+<span class="sd">The main functionality is:</span>
+
+<span class="sd">- annotation transformation:</span>
+<span class="sd">  :py:func:`pad_and_scale_annotation`,</span>
+<span class="sd">  :py:func:`annotations_to_mask`</span>
+<span class="sd">- estimation of the size (in pixels) of a person in an image from an annotation:</span>
+<span class="sd">  :py:func:`annotation_to_sizes`, :py:func:`annotation_to_tot_height`</span>
+<span class="sd">- some functions that may serve as filtering conditions:</span>
+<span class="sd">  :py:func:`person_has_rel_size`,</span>
+<span class="sd">  :py:func:`all_keypts_visible`,</span>
+<span class="sd">  :py:func:`any_keypts_visible`</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> \
+    <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">PIL.ImageDraw</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pycocotools.mask</span>
+<span class="c1"># format: {ID: (slope, intercept)};</span>
+<span class="kn">from</span> <span class="nn">pycocotools.coco</span> <span class="kn">import</span> <span class="n">COCO</span>
+
+<span class="kn">from</span> <span class="nn">..person_size_estimation</span> <span class="kn">import</span> <span class="n">FACTORS</span><span class="p">,</span> \
+    <span class="n">lengths_to_body_size</span><span class="p">,</span> <span class="n">keypoints_to_lengths</span>
+<span class="kn">from</span> <span class="nn">...base</span> <span class="kn">import</span> <span class="n">add_gaussian_peak</span>
+<span class="kn">from</span> <span class="nn">...transforms.image_transforms</span> <span class="kn">import</span> <span class="n">padding_for_ratio</span>
+
+<span class="n">COCO_STD_KEYPOINT_NAMES</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;nose&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_eye&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_eye&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_ear&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_ear&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_shoulder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_shoulder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_elbow&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_elbow&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_wrist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_wrist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_hip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_hip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_knee&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_knee&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;left_ankle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;right_ankle&quot;</span>
+<span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;The standard list of keypoint names for MS COCO.</span>
+<span class="sd">These are needed to translate a raw list of keypoint information of the</span>
+<span class="sd">form ``[x1,y1,v1, x2,y2,v2, ...]`` into a dictionary of</span>
+<span class="sd">``{keypoint_name: keypoint_info}``.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># ---------------------------------</span>
+<span class="c1"># COCO specific keypoint handling</span>
+<span class="c1"># ---------------------------------</span>
+
+
+<span class="k">def</span> <span class="nf">_ann_to_kpts_info</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Extract the keypoint information from the annotations.</span>
+
+<span class="sd">    :param annotation: a COCO style annotation</span>
+<span class="sd">    :return: a tuple of 3 lists:</span>
+
+<span class="sd">        - x-coordinate: pixels from upper left corner</span>
+<span class="sd">        - y-coordinate: pixels from upper left corner</span>
+<span class="sd">        - visibility: 0=not marked, 1=marked but occluded, 2=visible</span>
+
+<span class="sd">        The index in the list is the same as that of the keypoint name in the</span>
+<span class="sd">        ``keypoints`` list specified in the COCO annotations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">,</span> <span class="n">visibilities</span> <span class="o">=</span> \
+        <span class="nb">tuple</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span>
+            <span class="c1"># kpts in format [x1,y1,v1,x2,..]:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;keypoints&#39;</span><span class="p">]),</span>
+            <span class="c1"># number of kpts:</span>
+            <span class="n">indices_or_sections</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;keypoints&#39;</span><span class="p">])</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">,</span> <span class="n">visibilities</span>
+
+
+<div class="viewcode-block" id="annotation_to_sizes"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes">[docs]</a><span class="k">def</span> <span class="nf">annotation_to_sizes</span><span class="p">(</span>
+        <span class="n">annotation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">all_keypoint_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">COCO_STD_KEYPOINT_NAMES</span><span class="p">,</span>
+        <span class="n">assumed_height</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span>
+        <span class="n">factors</span><span class="o">=</span><span class="n">FACTORS</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+    <span class="c1"># pylint: disable=line-too-long</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the body size of a person in an image in</span>
+<span class="sd">    pixels from skeletal keypoints and linear formulas given by ``factors``.</span>
+
+<span class="sd">    The ``factors`` holds parameters of linear functions that each calculate</span>
+<span class="sd">    an estimate of the physical body height of a person in meters from</span>
+<span class="sd">    a given anatomical size in meters (see</span>
+<span class="sd">    :py:data:`hybrid_learning.datasets.custom.person_size_estimation.FACTORS`).</span>
+<span class="sd">    Assuming a real height in meters of ``assumed_height``, missing sizes</span>
+<span class="sd">    are inferred using these linear relations.</span>
+
+<span class="sd">    :param annotation: MS COCO style annotation dict for a single instance</span>
+<span class="sd">        holding skeletal keypoint information</span>
+<span class="sd">    :param all_keypoint_names: list of names for each keypoint occurring in the</span>
+<span class="sd">        annotation in order</span>
+<span class="sd">    :param assumed_height: the assumed total height of the person in meters</span>
+<span class="sd">    :param factors: see parameters for linear relations between anatomic</span>
+<span class="sd">        sizes and total body height in meters as in</span>
+<span class="sd">        :py:data:`hybrid_learning.datasets.custom.person_size_estimation.FACTORS`</span>
+<span class="sd">    :return: a :py:class:`pandas.DataFrame` representing a mapping of anatomic</span>
+<span class="sd">        size identifiers (columns) each to a mapping with keys (index)</span>
+
+<span class="sd">        - ``&#39;len&#39;``: the value of the anatomic size in pixels</span>
+<span class="sd">        - ``&#39;tot_height&#39;``: the value of the total body size of the person</span>
+<span class="sd">          in pixels assuming a real body height of ``assumed_height`` in meters</span>
+<span class="sd">          and estimated from the one anatomic size using relation from</span>
+<span class="sd">          ``factors``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: enable=line-too-long</span>
+    <span class="c1"># Collect named keypoint and visibility information:</span>
+    <span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">,</span> <span class="n">visibilities</span> <span class="o">=</span> <span class="n">_ann_to_kpts_info</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+    <span class="n">named_kpts</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">all_keypoint_names</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">kpt_xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kpt_ys</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_keypoint_names</span><span class="p">))</span>
+    <span class="p">}</span>
+    <span class="n">named_vis</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">all_keypoint_names</span><span class="p">,</span> <span class="n">visibilities</span><span class="p">))</span>
+
+    <span class="c1"># Collect anatomic lengths in pixels:</span>
+    <span class="n">lengths</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> \
+        <span class="n">keypoints_to_lengths</span><span class="p">(</span><span class="n">named_kpts</span><span class="p">,</span> <span class="n">named_vis</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="n">factors</span><span class="p">)</span>
+    <span class="n">lengths</span><span class="p">[</span><span class="s1">&#39;bbox_width&#39;</span><span class="p">],</span> <span class="n">lengths</span><span class="p">[</span><span class="s1">&#39;bbox_height&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="c1"># Collect body height information:</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;len&#39;</span><span class="p">:</span> <span class="n">lengths</span><span class="p">,</span>
+        <span class="s1">&#39;tot_height&#39;</span><span class="p">:</span> <span class="n">lengths_to_body_size</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="n">factors</span><span class="o">=</span><span class="n">factors</span><span class="p">,</span>
+                                           <span class="n">assumed_height</span><span class="o">=</span><span class="n">assumed_height</span><span class="p">)</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">infer_objects</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="annotation_to_tot_height"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height">[docs]</a><span class="k">def</span> <span class="nf">annotation_to_tot_height</span><span class="p">(</span>
+        <span class="n">annotation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">all_keypoint_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">COCO_STD_KEYPOINT_NAMES</span><span class="p">,</span>
+        <span class="n">assumed_height</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span>
+        <span class="n">factors</span><span class="o">=</span><span class="n">FACTORS</span><span class="p">,</span>
+        <span class="n">use_bbox_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`annotation_to_sizes` that returns the cleaned</span>
+<span class="sd">    maximum total height.</span>
+
+<span class="sd">    :param annotation: the annotation to estimate the total person height of</span>
+<span class="sd">    :param all_keypoint_names: see :py:func:`annotation_to_sizes`</span>
+<span class="sd">    :param assumed_height: see :py:func:`annotation_to_sizes`</span>
+<span class="sd">    :param factors: see :py:func:`annotation_to_sizes`</span>
+<span class="sd">    :param use_bbox_info: whether to use the bounding box width and height</span>
+<span class="sd">        as fallback estimations of the person height;</span>
+<span class="sd">        only useful for very small sizes, as otherwise close-ups of body parts</span>
+<span class="sd">        with too few annotated keypoints may result in wrong classification</span>
+<span class="sd">    :return: the maximum estimated total height of the person described by the</span>
+<span class="sd">        annotation instance;</span>
+<span class="sd">        if size cannot be estimated, ``None`` is returned</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">annotation_to_sizes</span><span class="p">(</span><span class="n">annotation</span><span class="o">=</span><span class="n">annotation</span><span class="p">,</span>
+                                <span class="n">all_keypoint_names</span><span class="o">=</span><span class="n">all_keypoint_names</span><span class="p">,</span>
+                                <span class="n">assumed_height</span><span class="o">=</span><span class="n">assumed_height</span><span class="p">,</span>
+                                <span class="n">factors</span><span class="o">=</span><span class="n">factors</span><span class="p">)</span>
+    <span class="n">tot_heights</span> <span class="o">=</span> <span class="p">[</span><span class="n">sizes</span><span class="p">[</span><span class="n">by_part</span><span class="p">][</span><span class="s1">&#39;tot_height&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">by_part</span> <span class="ow">in</span> <span class="n">sizes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                   <span class="k">if</span> <span class="n">use_bbox_info</span> <span class="ow">or</span> <span class="s1">&#39;bbox&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">by_part</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tot_heights</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">person_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">t</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tot_heights</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">person_height</span></div>
+
+
+<div class="viewcode-block" id="person_has_rel_size"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size.html#hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size">[docs]</a><span class="k">def</span> <span class="nf">person_has_rel_size</span><span class="p">(</span>
+        <span class="n">img_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">ann</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">min_rel_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_rel_height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">img_target_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">all_keypoint_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">COCO_STD_KEYPOINT_NAMES</span><span class="p">,</span>
+        <span class="n">assumed_height</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span>
+        <span class="n">factors</span><span class="o">=</span><span class="n">FACTORS</span><span class="p">,</span>
+        <span class="n">use_bbox_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Check whether the relative size of the person described by annotation</span>
+<span class="sd">    ``ann`` wrt image size is in specified range.</span>
+<span class="sd">    If ``img_target_size`` is given, it is assumed the image is padded before</span>
+<span class="sd">    heights are compared (i.e. either height or width are increased until</span>
+<span class="sd">    the same ratio is achieved as for ``img_target_size``).</span>
+<span class="sd">    The size of the person is the maximum total height estimated using</span>
+<span class="sd">    :py:func:`annotation_to_sizes`.</span>
+
+
+<span class="sd">    :param img_meta: the image meta data containing the image size info;</span>
+<span class="sd">        the dict must at least contain</span>
+<span class="sd">        ``{&quot;width&quot;: img_width, &quot;height&quot;: img_height``}</span>
+<span class="sd">        describing the dimensions to which the annotation currently applies</span>
+<span class="sd">    :param ann: the annotation with the keypoint data for the person</span>
+<span class="sd">    :param min_rel_height: the lower bound for the relative height</span>
+<span class="sd">    :param max_rel_height: the upper bound for the relative height</span>
+<span class="sd">    :param img_target_size: target image size ``(height, width)`` in pixels;</span>
+<span class="sd">        if this is given, it is assumed that the image is padded to the ratio</span>
+<span class="sd">        specified by the given size before applying the height ratio check</span>
+<span class="sd">        between image and person height</span>
+<span class="sd">    :param all_keypoint_names: see :py:func:`annotation_to_sizes`</span>
+<span class="sd">    :param assumed_height: see :py:func:`annotation_to_sizes`</span>
+<span class="sd">    :param factors: see :py:func:`annotation_to_sizes`</span>
+<span class="sd">    :param use_bbox_info: whether to use the bounding box information;</span>
+<span class="sd">        see :py:func:`annotation_to_tot_height` for details</span>
+<span class="sd">    :return: whether the relative height of the person to the image height</span>
+<span class="sd">        is within the given bounds (possibly scaling the annotation if</span>
+<span class="sd">        required);</span>
+<span class="sd">        ``None`` if the person height could not be determined</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The assumed height in pixels:</span>
+    <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">img_meta</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">],</span> <span class="n">img_meta</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">])</span>
+    <span class="c1"># Resize annotation if requested:</span>
+    <span class="k">if</span> <span class="n">img_target_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ann</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">pad_and_scale_annotation</span><span class="p">(</span>
+            <span class="n">ann</span><span class="p">,</span> <span class="n">from_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span> <span class="n">to_size</span><span class="o">=</span><span class="n">img_target_size</span><span class="p">)</span>
+        <span class="n">img_size</span> <span class="o">=</span> <span class="n">img_target_size</span>
+
+    <span class="n">person_height</span> <span class="o">=</span> <span class="n">annotation_to_tot_height</span><span class="p">(</span>
+        <span class="n">annotation</span><span class="o">=</span><span class="n">ann</span><span class="p">,</span>
+        <span class="n">all_keypoint_names</span><span class="o">=</span><span class="n">all_keypoint_names</span><span class="p">,</span>
+        <span class="n">assumed_height</span><span class="o">=</span><span class="n">assumed_height</span><span class="p">,</span>
+        <span class="n">factors</span><span class="o">=</span><span class="n">factors</span><span class="p">,</span>
+        <span class="n">use_bbox_info</span><span class="o">=</span><span class="n">use_bbox_info</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">person_height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">rel_height</span> <span class="o">=</span> <span class="n">person_height</span> <span class="o">/</span> <span class="n">img_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">min_rel_height</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">min_rel_height</span> <span class="o">&lt;=</span> <span class="n">rel_height</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="p">(</span><span class="n">max_rel_height</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rel_height</span> <span class="o">&lt;=</span> <span class="n">max_rel_height</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="annotations_to_mask"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask">[docs]</a><span class="k">def</span> <span class="nf">annotations_to_mask</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">annotation_wh</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                        <span class="n">annotations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+                        <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                                             <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
+                        <span class="n">skeleton</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+                        <span class="n">pt_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">/</span> <span class="mi">400</span><span class="p">,</span>
+                        <span class="n">link_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create a mask of the linked keypoints from the ``annotations`` list.</span>
+<span class="sd">    Keypoints are specified by their ``keypoint_idxs``.</span>
+<span class="sd">    It is assumed that the original image considered in ``annotations``</span>
+<span class="sd">    has ``annotation_wh``, which is the used as the size of the created mask.</span>
+
+<span class="sd">    :param annotation_wh: :py:class:`PIL.Image.Image` size of the</span>
+<span class="sd">        original image assumed by the annotation and output size of the mask;</span>
+<span class="sd">        format: ``(width, height)`` in pixels</span>
+<span class="sd">    :param annotations: annotations from which to create mask</span>
+<span class="sd">    :param keypoint_idxs: indices of the starting positions of keypoints to</span>
+<span class="sd">        process; the keypoints are saved in a list of the form</span>
+<span class="sd">        ``[x1,y1,v1, x2,y2,v2, ...]``, and to process keypoints 1 and 2 one</span>
+<span class="sd">        needs ``keypoint_idxs=[0,3]``;</span>
+<span class="sd">        ``keypoint_idxs`` should be given as a list of &quot;parts&quot;, where each</span>
+<span class="sd">        part is a list of keypoint indices which should be connected by</span>
+<span class="sd">        a link line in the mask;</span>
+<span class="sd">        in case just a list of ``int`` values is given, these are assumed to</span>
+<span class="sd">        represent only one part</span>
+<span class="sd">    :param skeleton: list of links as tuples ``[kpt1_idx, kpt2_idx]``;</span>
+<span class="sd">        this is the skeleton list from the COCO annotations, only each</span>
+<span class="sd">        entry reduced by 1</span>
+<span class="sd">    :param pt_radius: radius of a point relative to the height of the annotated</span>
+<span class="sd">        person (as returned by :py:func:`annotation_to_tot_height`);</span>
+<span class="sd">        if the height cannot be estimated, it is assumed to be the image height</span>
+<span class="sd">    :param link_width: the width the line of a link should have</span>
+<span class="sd">        relative to the person height (see ``pt_radius``);</span>
+<span class="sd">        defaults to 2x the ``pt_radius``</span>
+<span class="sd">    :return: mask (same size as original image)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">link_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">link_width</span> <span class="k">if</span> <span class="n">link_width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pt_radius</span>
+
+    <span class="c1"># start with empty mask</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">annotation_wh</span><span class="p">)</span>
+    <span class="n">draw</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">keypoint_idxs</span><span class="p">]</span> \
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keypoint_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">keypoint_idxs</span>
+
+    <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+        <span class="c1"># Get point radius and link width wrt. person height:</span>
+        <span class="n">person_height</span> <span class="o">=</span> <span class="n">annotation_to_tot_height</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">or</span> <span class="n">annotation_wh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">abs_pt_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">pt_radius</span> <span class="o">*</span> <span class="n">person_height</span><span class="p">))</span>
+        <span class="n">abs_link_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">link_width</span> <span class="o">*</span> <span class="n">person_height</span><span class="p">))</span>
+
+        <span class="c1"># obtain all keypoints:</span>
+        <span class="c1"># The keypoints annotations have format [x1,y1,v1, x2,y2,v2, ...];</span>
+        <span class="c1"># turn this into numpy arrays</span>
+        <span class="c1"># xs=[x1,x2,..], ys=[y1,y2,..], vs=[v1,v2,..]:</span>
+        <span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">,</span> <span class="n">visibilities</span> <span class="o">=</span> <span class="n">_ann_to_kpts_info</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+        <span class="c1"># sanity check: are all keypoints within image?</span>
+        <span class="k">for</span> <span class="n">kpt_x</span><span class="p">,</span> <span class="n">kpt_y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">kpt_x</span> <span class="o">&lt;=</span> <span class="n">annotation_wh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">kpt_y</span> <span class="o">&lt;=</span> <span class="n">annotation_wh</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s2">&quot;Keypoint coordinates (</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">) out of bounds of&quot;</span>
+                     <span class="s2">&quot; image size (</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">)&quot;</span>
+                     <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kpt_x</span><span class="p">,</span> <span class="n">kpt_y</span><span class="p">,</span> <span class="o">*</span><span class="n">annotation_wh</span><span class="p">))</span>
+
+        <span class="c1"># add one part (keypoints &amp; links) after another:</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">keypoint_idxs</span><span class="p">:</span>
+            <span class="n">includes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">visibilities</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">*</span> <span class="mi">3</span> <span class="ow">in</span> <span class="n">part</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">visibilities</span><span class="p">))]</span>
+
+            <span class="n">_add_kpts_and_links</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span>
+                                <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">)),</span> <span class="n">includes</span><span class="p">,</span> <span class="n">skeleton</span><span class="p">,</span>
+                                <span class="n">abs_pt_radius</span><span class="p">,</span> <span class="n">abs_link_width</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span></div>
+
+
+<span class="c1"># noinspection PyIncorrectDocstring</span>
+<div class="viewcode-block" id="annotations_to_heatmap"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap">[docs]</a><span class="k">def</span> <span class="nf">annotations_to_heatmap</span><span class="p">(</span><span class="n">annotation_wh</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                           <span class="n">annotations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+                           <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                                                <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
+                           <span class="n">skeleton</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+                           <span class="n">pt_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">/</span> <span class="mi">400</span><span class="p">,</span>
+                           <span class="n">link_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+    <span class="c1"># pylint: disable=unused-argument</span>
+    <span class="sd">&quot;&quot;&quot;Create a heatmap marking the centroids of the linked keypoints from the</span>
+<span class="sd">    ``annotations`` list.</span>
+<span class="sd">    Keypoints are specified by their ``keypoint_idxs``.</span>
+<span class="sd">    For details on the parameters, see :py:func:`annotations_to_mask`.</span>
+
+<span class="sd">    :param pt_radius: this is used as standard deviation and as the</span>
+<span class="sd">        point radius to calculate connected components</span>
+<span class="sd">    :return: heatmap (1-channel grayscale image in mode ``&#39;L&#39;``) of</span>
+<span class="sd">        size ``annotation_wh``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># start with empty mask (numpy representation of a PIL.Image.Image)</span>
+    <span class="n">mask_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">annotation_wh</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">annotation_wh</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">keypoint_idxs</span><span class="p">]</span> \
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keypoint_idxs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">keypoint_idxs</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">kpts</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">kpts</span> <span class="ow">in</span> <span class="n">keypoint_idxs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Received a body part consisting of more &quot;</span>
+                                  <span class="s2">&quot;than one keypoint. Centroids of connected&quot;</span>
+                                  <span class="s2">&quot;keypoints are not supported yet!&quot;</span>
+                                  <span class="s2">&quot;keypoint_idxs: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keypoint_idxs</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+        <span class="c1"># Get point radius and link width wrt. person height:</span>
+        <span class="n">person_height</span> <span class="o">=</span> <span class="n">annotation_to_tot_height</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">or</span> <span class="n">annotation_wh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">abs_pt_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">pt_radius</span> <span class="o">*</span> <span class="n">person_height</span><span class="p">))</span>
+
+        <span class="c1"># obtain all keypoints:</span>
+        <span class="c1"># The keypoints annotations have format [x1,y1,v1, x2,y2,v2, ...];</span>
+        <span class="c1"># turn this into numpy arrays</span>
+        <span class="c1"># xs=[x1,x2,..], ys=[y1,y2,..], vs=[v1,v2,..]:</span>
+        <span class="n">kpt_xs</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">,</span> <span class="n">visibilities</span> <span class="o">=</span> <span class="n">_ann_to_kpts_info</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+
+        <span class="c1"># add one part (keypoints &amp; links) after another:</span>
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">keypoint_idxs</span><span class="p">:</span>
+            <span class="c1"># TODO: collect centroids of connected components</span>
+            <span class="c1"># For now: Just treat each keypoint separately</span>
+            <span class="c1"># Allocate keypoints centroids in the middle of the pixels: (px[0]+0.5, px[1]+0.5)</span>
+            <span class="n">centroids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">kpt_xs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">kpt_ys</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">visibilities</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">visibilities</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">*</span> <span class="mi">3</span> <span class="ow">in</span> <span class="n">part</span>
+            <span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">centroid</span> <span class="ow">in</span> <span class="n">centroids</span><span class="p">:</span>
+                <span class="n">mask_np</span> <span class="o">=</span> <span class="n">add_gaussian_peak</span><span class="p">(</span><span class="n">mask_np</span><span class="p">,</span> <span class="n">centroid</span><span class="p">,</span>
+                                            <span class="n">binary_radius</span><span class="o">=</span><span class="n">abs_pt_radius</span><span class="p">)</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">mask_np</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mask</span></div>
+
+
+<span class="k">def</span> <span class="nf">_add_kpts_and_links</span><span class="p">(</span>
+        <span class="n">draw</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">,</span>
+        <span class="n">kpt_coords</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">includes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span>
+        <span class="n">skeleton</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="n">abs_pt_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">abs_link_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a draw object, add points for the given keypoint coordinates</span>
+<span class="sd">    and lines for the specified links.</span>
+
+<span class="sd">    :param draw: the draw object</span>
+<span class="sd">    :param kpt_coords: a sequence of keypoint coordinates within the given</span>
+<span class="sd">        draw object as ``(x, y)``</span>
+<span class="sd">    :param includes: visibility information for the given keypoints;</span>
+<span class="sd">        ``kpt_coords`` at index ``i`` are added and considered for</span>
+<span class="sd">        link drawing in case ``includes[i]`` is (``True``)</span>
+<span class="sd">    :param skeleton: the list of links between the keypoints for which to</span>
+<span class="sd">        draw lines; a link between keypoint at index ``idx1`` and the one</span>
+<span class="sd">        at index ``idx2`` in the ``kpt_coord`` list should be given as</span>
+<span class="sd">        the tuple ``(idx1, idx2)``</span>
+<span class="sd">    :param abs_pt_radius: the absolute radius of keypoint points to draw</span>
+<span class="sd">        in pixels</span>
+<span class="sd">    :param abs_link_width: the absolute width of link lines to draw in pixels;</span>
+<span class="sd">         defaults to 2x ``abs_pt_radius``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">abs_link_width</span> <span class="o">=</span> <span class="n">abs_link_width</span> <span class="ow">or</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">abs_pt_radius</span>
+
+    <span class="c1"># draw skeleton</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">skeleton</span><span class="p">:</span>
+        <span class="c1"># if visible and of interest, draw link</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">includes</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]):</span>
+            <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">xy</span><span class="o">=</span><span class="p">[</span><span class="n">kpt_coords</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                          <span class="n">kpt_coords</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]]],</span>
+                      <span class="n">width</span><span class="o">=</span><span class="n">abs_link_width</span><span class="p">,</span>
+                      <span class="n">fill</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># draw keypoints</span>
+    <span class="k">for</span> <span class="n">kpt_x</span><span class="p">,</span> <span class="n">kpt_y</span> <span class="ow">in</span> <span class="p">[</span><span class="n">kpt_coords</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kpt_coords</span><span class="p">))</span>
+                         <span class="k">if</span> <span class="n">includes</span><span class="p">[</span><span class="n">i</span><span class="p">]]:</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">ellipse</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">kpt_x</span> <span class="o">-</span> <span class="n">abs_pt_radius</span><span class="p">,</span> <span class="n">kpt_y</span> <span class="o">-</span> <span class="n">abs_pt_radius</span><span class="p">,</span>
+             <span class="n">kpt_x</span> <span class="o">+</span> <span class="n">abs_pt_radius</span><span class="p">,</span> <span class="n">kpt_y</span> <span class="o">+</span> <span class="n">abs_pt_radius</span><span class="p">),</span>
+            <span class="n">fill</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="to_keypoint_idxs"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.to_keypoint_idxs.html#hybrid_learning.datasets.custom.coco.keypoints_processing.to_keypoint_idxs">[docs]</a><span class="k">def</span> <span class="nf">to_keypoint_idxs</span><span class="p">(</span><span class="n">keypoint_names</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                     <span class="n">coco</span><span class="p">:</span> <span class="n">COCO</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">all_keypoint_names</span><span class="o">=</span><span class="n">COCO_STD_KEYPOINT_NAMES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Return the start indices for the given keypoints within an</span>
+<span class="sd">    annotations ``&#39;keypoint&#39;`` field.</span>
+
+<span class="sd">    Keypoints</span>
+
+<span class="sd">        ``{keypt_name1: (x1,y1,visibility1), keypt_name2: (...), ...}``</span>
+
+<span class="sd">    are in COCO annotated as a list of</span>
+
+<span class="sd">        ``[x1, y1, visibility1,   x2, y2, ...]``</span>
+
+<span class="sd">    This method returns the index of the x-coordinates within the</span>
+<span class="sd">    annotation list.</span>
+<span class="sd">    To obtain the mapping from keypoints to keypoint indices, either directly</span>
+<span class="sd">    specify the list of keypoint names or provide the coco instance to retrieve</span>
+<span class="sd">    it from.</span>
+
+<span class="sd">    :param keypoint_names: list of keypoint names to collect the start</span>
+<span class="sd">        indices for</span>
+<span class="sd">    :param all_keypoint_names: mapping of keypoint names to keypoint indices</span>
+<span class="sd">        (3x their index in the list)</span>
+<span class="sd">    :param coco: coco handler from which to retrieve mapping of keypoint</span>
+<span class="sd">        names to keypoint indices (overrides all_keypoint_names)</span>
+<span class="sd">    :return: list with the start indices for the given keypoints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">keypoint_names</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;keypoint_names is str not iterable of strings: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">keypoint_names</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">coco</span><span class="p">:</span>
+        <span class="n">all_keypoint_names</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">cat</span> <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">coco</span><span class="o">.</span><span class="n">cats</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                                    <span class="k">if</span> <span class="n">cat</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;person&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;keypoints&#39;</span><span class="p">]</span>
+    <span class="n">keypoint_idxs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">kpt_name</span> <span class="ow">in</span> <span class="n">keypoint_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kpt_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_keypoint_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">((</span><span class="s2">&quot;keypoint name </span><span class="si">{}</span><span class="s2"> not in available keypoint &quot;</span>
+                            <span class="s2">&quot;names </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kpt_name</span><span class="p">,</span>
+                                               <span class="n">all_keypoint_names</span><span class="p">))</span>
+        <span class="n">keypoint_idxs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">all_keypoint_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">kpt_name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">keypoint_idxs</span></div>
+
+
+<div class="viewcode-block" id="all_keypts_visible"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible.html#hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible">[docs]</a><span class="k">def</span> <span class="nf">all_keypts_visible</span><span class="p">(</span><span class="n">ann</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                       <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Whether all given keypoints are marked as visible in the given</span>
+<span class="sd">    annotation.</span>
+
+<span class="sd">    :param ann: coco annotation to check</span>
+<span class="sd">    :param keypoint_idxs: keypoint constraints:</span>
+<span class="sd">        starting indices of keypoints in the ``keypoint`` list of the</span>
+<span class="sd">        annotation that must be marked as visible</span>
+<span class="sd">        (cf. :py:meth:`to_keypoint_idxs`);</span>
+<span class="sd">        if ``None`` or empty, ``True`` is returned for the annotation</span>
+<span class="sd">        to be regarded valid</span>
+<span class="sd">    :return: whether all specified keypoints are marked as visible in the</span>
+<span class="sd">        annotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Keypoint constraints empty?</span>
+    <span class="k">if</span> <span class="n">keypoint_idxs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">keypoint_idxs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Any keypoint annotated?</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ann</span><span class="p">[</span><span class="s1">&#39;num_keypoints&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Needed keypoints visible?</span>
+    <span class="n">keypoint_infos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ann</span><span class="p">[</span><span class="s1">&#39;keypoints&#39;</span><span class="p">][</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                                       <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">keypoint_idxs</span><span class="p">]</span>
+    <span class="c1"># for each info: info[2] is visibility info, a value of 2 means visible</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">k</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keypoint_infos</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="any_keypts_visible"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible.html#hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible">[docs]</a><span class="k">def</span> <span class="nf">any_keypts_visible</span><span class="p">(</span><span class="n">ann</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                       <span class="n">keypoint_idxs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Whether any of the given keypoints are marked as visible in the given</span>
+<span class="sd">    annotation.</span>
+
+<span class="sd">    :param ann: coco annotation to check</span>
+<span class="sd">    :param keypoint_idxs: keypoint constraints:</span>
+<span class="sd">        starting indices of keypoints in the ``keypoint`` list of the</span>
+<span class="sd">        annotation that must be marked as visible</span>
+<span class="sd">        (cf. :py:meth:`to_keypoint_idxs`);</span>
+<span class="sd">        if ``None`` or empty, ``True`` is returned for the annotation</span>
+<span class="sd">        to be regarded valid</span>
+<span class="sd">    :return: whether all specified keypoints are marked as visible in the</span>
+<span class="sd">        annotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Keypoint constraints empty?</span>
+    <span class="k">if</span> <span class="n">keypoint_idxs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">keypoint_idxs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># Any keypoint annotated?</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ann</span><span class="p">[</span><span class="s1">&#39;num_keypoints&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Needed keypoints visible?</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">keypoint_idxs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ann</span><span class="p">[</span><span class="s1">&#39;keypoints&#39;</span><span class="p">][</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="k">def</span> <span class="nf">_padding_and_scale_for</span><span class="p">(</span><span class="n">from_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                           <span class="n">to_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate padding and scale to get from ``from_size`` to ``to_size``</span>
+<span class="sd">    via first padding then scaling a 2D image.</span>
+
+<span class="sd">    :param from_size: previous size as ``(height, width)`` in px</span>
+<span class="sd">    :param to_size: new target size as ``(height, width)`` in px</span>
+<span class="sd">    :return: padding values as tuple</span>
+<span class="sd">        ``(pad_left, pad_right, pad_top, pad_bottom)``</span>
+<span class="sd">        and float scale value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">from_h</span> <span class="o">=</span> <span class="n">from_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">from_w</span> <span class="o">=</span> <span class="n">from_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">to_h</span> <span class="o">=</span> <span class="n">to_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">to_w</span> <span class="o">=</span> <span class="n">to_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">from_h</span> <span class="o">/</span> <span class="n">from_w</span> <span class="o">&gt;</span> <span class="n">to_h</span> <span class="o">/</span> <span class="n">to_w</span><span class="p">:</span>  <span class="c1"># pad width</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">to_h</span> <span class="o">/</span> <span class="n">from_h</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># pad height</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">to_w</span> <span class="o">/</span> <span class="n">from_w</span>
+
+    <span class="n">padding</span> <span class="o">=</span> <span class="n">padding_for_ratio</span><span class="p">(</span><span class="n">from_size</span><span class="o">=</span><span class="n">from_size</span><span class="p">,</span>
+                                <span class="n">to_ratio</span><span class="o">=</span><span class="n">to_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">to_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">padding</span><span class="p">,</span> <span class="n">scale</span>
+
+
+<div class="viewcode-block" id="pad_and_scale_annotation"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation.html#hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation">[docs]</a><span class="k">def</span> <span class="nf">pad_and_scale_annotation</span><span class="p">(</span>
+        <span class="n">ann</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">from_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+        <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">to_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">skip</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a MS COCO style annotation, apply first padding and/or then</span>
+<span class="sd">    scaling to its coordinates.</span>
+<span class="sd">    The image transformation operation that is imitated on the</span>
+<span class="sd">    annotation is</span>
+
+<span class="sd">    1. addition of 0-padding at top, bottom, left, and right.</span>
+<span class="sd">    2. a rescaling by the given ``scale=(scale_height, scale_width)``</span>
+<span class="sd">       factors.</span>
+
+<span class="sd">    The following coordinate information is adjusted:</span>
+
+<span class="sd">    - bounding box (float values)</span>
+<span class="sd">    - keypoints (float values)</span>
+<span class="sd">    - segmentation mask (polygon or Run-Length Encoded)</span>
+
+<span class="sd">    If ``inplace`` is ``True``, operate on ``ann`` and return it in the end,</span>
+<span class="sd">    else operate on a copy which is finally returned.</span>
+<span class="sd">    If ``to_size`` is given, ``padding`` and ``scale`` are determined to match</span>
+<span class="sd">    the :py:class:`~hybrid_learning.datasets.transforms.image_transforms.PadAndResize`</span>
+<span class="sd">    transformation behavior.</span>
+
+<span class="sd">    :param ann: the annotation to scale and pad</span>
+<span class="sd">    :param from_size: the original size of the image the annotation is for</span>
+<span class="sd">        as ``(height, width)`` in pixels;</span>
+<span class="sd">        can be obtained from the image meta annotation</span>
+<span class="sd">    :param to_size: the target size as ``(height, width)`` to achieve by first</span>
+<span class="sd">        scaling then padding;</span>
+<span class="sd">        overrides ``scale`` and ``padding``</span>
+<span class="sd">    :param scale: the scaling factors as ``(scale_height, scale_width)``;</span>
+<span class="sd">        if one float value is given, a uniform scaling is applied</span>
+<span class="sd">    :param padding: the padding to apply after rescaling in pixels as</span>
+<span class="sd">        ``(padding_left_right, padding_top_bottom)`` or</span>
+<span class="sd">        ``(pad_left, pad_right, pad_top, pad_bottom)``</span>
+<span class="sd">    :param inplace: whether to write changes back to ``ann``</span>
+<span class="sd">    :param skip: list of strings (or comma separated string concatenation)</span>
+<span class="sd">        of any of ``keypoints``, ``segmentation``, ``bbox``;</span>
+<span class="sd">        any mentioned information will be excluded from scaling &amp; padding</span>
+<span class="sd">        and is left unchanged (may increase speed in case only one type of</span>
+<span class="sd">        rescale is needed)</span>
+<span class="sd">    :return: annotation with coordinate information scaled and padded;</span>
+<span class="sd">        a new instance in case ``inplace`` is false, else the changed ``ann``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">to_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">padding</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="n">_padding_and_scale_for</span><span class="p">(</span><span class="n">from_size</span><span class="o">=</span><span class="n">from_size</span><span class="p">,</span>
+                                                <span class="n">to_size</span><span class="o">=</span><span class="n">to_size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+    <span class="n">scale_height</span><span class="p">,</span> <span class="n">scale_width</span> <span class="o">=</span> <span class="n">scale</span>
+    <span class="n">pad_left</span><span class="p">,</span> <span class="n">pad_right</span><span class="p">,</span> <span class="n">pad_top</span><span class="p">,</span> <span class="n">pad_bottom</span> <span class="o">=</span> <span class="n">padding</span>
+    <span class="n">to_size</span> <span class="o">=</span> <span class="n">to_size</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">from_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_height</span><span class="p">),</span>
+                          <span class="nb">int</span><span class="p">(</span><span class="n">from_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_width</span><span class="p">))</span>
+    <span class="n">new_ann</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
+
+    <span class="c1"># region KEYPOINTS</span>
+    <span class="k">if</span> <span class="s2">&quot;keypoints&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">:</span>
+        <span class="n">kpts_x</span><span class="p">,</span> <span class="n">kpts_y</span><span class="p">,</span> <span class="n">vis</span> <span class="o">=</span> <span class="n">_ann_to_kpts_info</span><span class="p">(</span><span class="n">ann</span><span class="p">)</span>
+        <span class="n">kpts_y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kpts_y</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad_top</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale_height</span><span class="p">)</span>
+        <span class="n">kpts_x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kpts_x</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad_left</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale_width</span><span class="p">)</span>
+        <span class="n">new_ann</span><span class="p">[</span><span class="s1">&#39;keypoints&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">kpts_info</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">kpts_x</span><span class="p">,</span> <span class="n">kpts_y</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kpts_info</span><span class="p">]</span>
+    <span class="c1"># endregion</span>
+
+    <span class="c1"># region SEGMENTATION</span>
+    <span class="k">if</span> <span class="s2">&quot;segmentation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">new_ann</span><span class="p">[</span><span class="s1">&#39;iscrowd&#39;</span><span class="p">]:</span>
+            <span class="c1"># RLE (run-length encoding) storage format:</span>
+            <span class="c1"># For details on format have a look at the pycocotools.mask source.</span>
+            <span class="c1"># The format can be parsed to and from PIL.Image.Image using the</span>
+            <span class="c1"># pycocotools utils.</span>
+            <span class="n">seg</span> <span class="o">=</span> <span class="n">ann</span><span class="p">[</span><span class="s1">&#39;segmentation&#39;</span><span class="p">]</span>
+            <span class="n">rle</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> \
+                <span class="n">pycocotools</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">frPyObjects</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">from_size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">from_size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">new_mask_np</span> <span class="o">=</span> <span class="n">pycocotools</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">rle</span><span class="p">)</span>
+            <span class="c1"># pad</span>
+            <span class="n">new_mask_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span>
+                <span class="n">new_mask_np</span><span class="p">,</span>
+                <span class="n">pad_width</span><span class="o">=</span><span class="p">((</span><span class="n">pad_top</span><span class="p">,</span> <span class="n">pad_bottom</span><span class="p">),</span> <span class="p">(</span><span class="n">pad_left</span><span class="p">,</span> <span class="n">pad_right</span><span class="p">)),</span>
+                <span class="n">constant_values</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># rescale</span>
+            <span class="n">new_mask_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asfortranarray</span><span class="p">(</span>
+                <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">new_mask_np</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;L&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
+                    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">to_size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">to_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="n">resample</span><span class="o">=</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">))</span>
+            <span class="n">rle</span> <span class="o">=</span> <span class="n">pycocotools</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">new_mask_np</span><span class="p">)</span>
+            <span class="n">new_ann</span><span class="p">[</span><span class="s1">&#39;segmentation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rle</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Polygon:</span>
+            <span class="c1"># The coordinates of connected corner points of the polygon is</span>
+            <span class="c1"># saved as list of the form [x1,y1, x2,y2, ...].</span>
+            <span class="c1"># A segmentation may consist of one or more of such lists.</span>
+            <span class="n">new_segs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">ann</span><span class="p">[</span><span class="s1">&#39;segmentation&#39;</span><span class="p">]:</span>
+                <span class="n">orig_xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">new_xy</span> <span class="o">=</span> <span class="p">((</span><span class="n">orig_xy</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pad_left</span><span class="p">,</span> <span class="n">pad_top</span><span class="p">]))</span>
+                          <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">scale_width</span><span class="p">,</span> <span class="n">scale_height</span><span class="p">]))</span>
+                <span class="n">new_segs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_xy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="n">new_ann</span><span class="p">[</span><span class="s1">&#39;segmentation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_segs</span>
+        <span class="c1"># endregion</span>
+
+    <span class="c1"># region BBOX</span>
+    <span class="k">if</span> <span class="s2">&quot;bbox&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">:</span>
+        <span class="n">bbox_x</span><span class="p">,</span> <span class="n">bbox_y</span><span class="p">,</span> <span class="n">bbox_w</span><span class="p">,</span> <span class="n">bbox_h</span> <span class="o">=</span> <span class="n">ann</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span>
+        <span class="n">new_ann</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">bbox_x</span> <span class="o">+</span> <span class="n">pad_left</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale_width</span><span class="p">,</span>
+                           <span class="p">(</span><span class="n">bbox_y</span> <span class="o">+</span> <span class="n">pad_top</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale_height</span><span class="p">,</span>
+                           <span class="n">bbox_w</span> <span class="o">*</span> <span class="n">scale_width</span><span class="p">,</span>
+                           <span class="n">bbox_h</span> <span class="o">*</span> <span class="n">scale_height</span><span class="p">]</span>
+    <span class="c1"># endregion</span>
+
+    <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">new_ann</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ann</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">ann</span>
+    <span class="k">return</span> <span class="n">new_ann</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

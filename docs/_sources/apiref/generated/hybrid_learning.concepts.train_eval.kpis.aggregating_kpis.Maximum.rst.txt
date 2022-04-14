@@ -1,0 +1,9 @@
+Maximum
+=======
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+.. autoclass:: Maximum
+    :members:
+
+    .. autoclasstoc::

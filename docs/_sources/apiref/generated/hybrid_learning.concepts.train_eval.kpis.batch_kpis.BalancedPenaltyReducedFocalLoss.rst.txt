@@ -1,0 +1,9 @@
+BalancedPenaltyReducedFocalLoss
+===============================
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+.. autoclass:: BalancedPenaltyReducedFocalLoss
+    :members:
+
+    .. autoclasstoc::

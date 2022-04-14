@@ -1,0 +1,54 @@
+custom\_ops
+===========
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.predicates.custom_ops
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.predicates.custom_ops
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AbstractFuzzyIntersect
+        
+        ~AllNeighbors
+        
+        ~BestIoUWith
+        
+        ~CoveredBy
+        
+        ~IoUWith
+        
+        ~IsPartOfA
+        
+        ~LambdaOp
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

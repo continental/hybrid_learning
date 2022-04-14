@@ -9,31 +9,35 @@ coco
 
     
     
-    
-
-
-    
-    
-    
-
-
-    
-    
-    .. rubric:: Classes
+    .. rubric:: Sub-modules
 
     .. autosummary::
         :toctree:
-        :nosignatures:
+        :recursive:
         
-        ~BodyParts
+        ~hybrid_learning.datasets.custom.coco.base
         
-        ~COCODataset
+        ~hybrid_learning.datasets.custom.coco.body_parts
         
-        ~ConceptDataset
+        ~hybrid_learning.datasets.custom.coco.heatmap_dataset
         
-        ~KeypointsDataset
+        ~hybrid_learning.datasets.custom.coco.keypoints_dataset
+        
+        ~hybrid_learning.datasets.custom.coco.keypoints_processing
+        
+        ~hybrid_learning.datasets.custom.coco.mask_dataset
         
 
+    
+    
+
+
+    
+    
+    
+
+
+    
     
     
 

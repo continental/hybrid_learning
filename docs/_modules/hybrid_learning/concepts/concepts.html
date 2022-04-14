@@ -1,69 +1,33 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>hybrid_learning.concepts.concepts &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,19 +35,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../userguide/index.html">User Guide</a></li>
@@ -91,76 +44,39 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>hybrid_learning.concepts.concepts</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for hybrid_learning.concepts.concepts</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Concept base class, concept types and corresponding sub-classes.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Concept base class, concept types, and corresponding sub-classes.</span>
 
 <span class="sd">A concept is represented by dataset splits.</span>
 <span class="sd">Different concept types are implemented using sub-classes.</span>
-<span class="sd">Depending on the type, the data sets must fulfill different criteria.</span>
+<span class="sd">Depending on the type, the data sets must fulfill different validation criteria.</span>
 <span class="sd">E.g. a segmentation concept requires segmentation masks as ground truth.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
 
 <span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Iterable</span>
@@ -294,11 +210,10 @@
 
 <div class="viewcode-block" id="Concept.__repr__"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.concepts.concepts.Concept.html#hybrid_learning.concepts.concepts.Concept.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Nice printing function.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="se">\n</span><span class="s2">    name=</span><span class="si">{name}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">    data=</span><span class="si">{data}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{cls}</span><span class="s2">(</span><span class="se">\n</span><span class="si">{content}</span><span class="se">\n</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-            <span class="n">data</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
-        <span class="p">)</span></div></div>
+            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;,</span><span class="se">\n</span><span class="s2">    &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span></div></div>
 
 
 <div class="viewcode-block" id="SegmentationConcept2D"><a class="viewcode-back" href="../../../apiref/generated/hybrid_learning.concepts.concepts.SegmentationConcept2D.html#hybrid_learning.concepts.concepts.SegmentationConcept2D">[docs]</a><span class="k">class</span> <span class="nc">SegmentationConcept2D</span><span class="p">(</span><span class="n">Concept</span><span class="p">):</span>
@@ -330,7 +245,7 @@
                                   <span class="s2">&quot;(</span><span class="si">{}</span><span class="s2"> instead of 2): </span><span class="si">{}</span><span class="s2">&quot;</span>
                                   <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rel_size</span><span class="p">),</span> <span class="n">rel_size</span><span class="p">))</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">SegmentationConcept2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rel_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="n">rel_size</span>
         <span class="sd">&quot;&quot;&quot;Size of the concept in ``(width, height)`` relative to the</span>
 <span class="sd">        image size. If set, used by detection and segmentation concept models</span>
@@ -340,7 +255,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Settings dict to reproduce instance. Use as kwargs for init.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">super</span><span class="p">(</span><span class="n">SegmentationConcept2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
                     <span class="n">rel_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_size</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -376,10 +291,11 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Dataset </span><span class="si">{desc}</span><span class="s2"> mask at index 0, was no &quot;</span>
                               <span class="s2">&quot;torch.tensor but of type </span><span class="si">{}</span><span class="s2">&quot;</span>
                               <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="n">data_desc</span><span class="p">))</span>
-        <span class="c1"># Correct number of axes?</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Dataset </span><span class="si">{desc}</span><span class="s2"> mask at index 0 is not 2D, but &quot;</span>
-                              <span class="s2">&quot;has size </span><span class="si">{}</span><span class="s2">&quot;</span>
+        <span class="c1"># Correct number of axes? (2=(h,w), 3=(1,h,w), 4=(gt_types, 1,h,w))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Dataset </span><span class="si">{desc}</span><span class="s2"> mask at index 0 is not 2D &quot;</span>
+                              <span class="s2">&quot;or 2D with different ground truth types with size &quot;</span>
+                              <span class="s2">&quot;([[gt_types], 1], h, w), but Dataset train mask at index has size </span><span class="si">{}</span><span class="s2">&quot;</span>
                               <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">desc</span><span class="o">=</span><span class="n">data_desc</span><span class="p">))</span>
         <span class="c1"># Valid number of channels?</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -387,12 +303,6 @@
                               <span class="s2">&quot;channel information: should be at dimension 0 &quot;</span>
                               <span class="s2">&quot;with 1 channel, but mask has size </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
                              <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">desc</span><span class="o">=</span><span class="n">data_desc</span><span class="p">))</span>
-        <span class="c1"># Same size as image?</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;Dataset </span><span class="si">{desc}</span><span class="s2"> input at index 0 has input and &quot;</span>
-                              <span class="s2">&quot;mask of differing size: &quot;</span>
-                              <span class="s2">&quot;input size=</span><span class="si">{}</span><span class="s2">, mask size=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">desc</span><span class="o">=</span><span class="n">data_desc</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">data</span>
 
@@ -401,55 +311,36 @@
 <span class="sd">        :py:meth:`~hybrid_learning.concepts.concepts.Concept.__eq__`</span>
 <span class="sd">        check ``rel_size``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">SegmentationConcept2D</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span> <span class="ow">and</span> \
+        <span class="k">return</span> <span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span> <span class="ow">and</span> \
                <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;rel_size&quot;</span><span class="p">))</span> <span class="ow">and</span> \
                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_size</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">rel_size</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

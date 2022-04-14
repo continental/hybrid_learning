@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bbox_to_segmask &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="fuzzy_exp_models" href="hybrid_learning.experimentation.model_registry.fuzzy_exp_models.html" />
+    <link rel="prev" title="models_common" href="hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.ca_exp_eval.html">ca_exp_eval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.exp_eval_common.html">exp_eval_common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.experimentation.fuzzy_exp.html">fuzzy_exp</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.html">model_registry</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.custom_model_postproc.html">custom_model_postproc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.fuzzy_exp_models.html">fuzzy_exp_models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.experimentation.model_registry.model_registry.html">model_registry</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.html">experimentation</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.model_registry.html">model_registry</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.model_registry.custom_model_postproc.html">custom_model_postproc</a> &raquo;</li>
+          <li><a href="hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.html">models_common</a> &raquo;</li>
+      <li>bbox_to_segmask</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.bbox_to_segmask.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="bbox-to-segmask">
+<h1>bbox_to_segmask<a class="headerlink" href="#bbox-to-segmask" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.bbox_to_segmask">
+<span class="sig-prename descclassname"><span class="pre">hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.</span></span><span class="sig-name descname"><span class="pre">bbox_to_segmask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox_info_batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logical_or</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(640,</span> <span class="pre">640)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/experimentation/model_registry/custom_model_postproc/models_common.html#bbox_to_segmask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.bbox_to_segmask" title="Permalink to this definition"></a></dt>
+<dd><p>Transform EfficientDet output into segmentation mask.
+The <code class="docutils literal notranslate"><span class="pre">bbox_info_batch</span></code> must have shape <code class="docutils literal notranslate"><span class="pre">[batch,</span> <span class="pre">#bboxes</span> <span class="pre">per</span> <span class="pre">image,</span> <span class="pre">6]</span></code>,
+each row representing <code class="docutils literal notranslate"><span class="pre">[x_min,</span> <span class="pre">y_min,</span> <span class="pre">x_max,</span> <span class="pre">y_max,</span> <span class="pre">score,</span> <span class="pre">class]</span></code>.
+The returned mask has shape <code class="docutils literal notranslate"><span class="pre">[batch,</span> <span class="pre">(#bboxes</span> <span class="pre">|</span> <span class="pre">1),</span> <span class="pre">*image_size]</span></code>.
+The per-image-bbox-masks are reduced to per-image-masks using <code class="docutils literal notranslate"><span class="pre">logical_or</span></code>
+if this is set.
+Note that not setting <code class="docutils literal notranslate"><span class="pre">logical_or</span></code> will only succeed in case of uniform #bboxes!
+For details see the forward method and attributes of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">EfficientDetToSetMask</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bbox_info_batch</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – tensor of shape <code class="docutils literal notranslate"><span class="pre">[batch,</span> <span class="pre">#bbox</span> <span class="pre">per</span> <span class="pre">image,</span> <span class="pre">6]</span></code>
+where the last dimension encodes <code class="docutils literal notranslate"><span class="pre">(x_min,</span> <span class="pre">y_min,</span> <span class="pre">x_max,</span> <span class="pre">y_max,</span> <span class="pre">score,</span> <span class="pre">class)</span></code></p></li>
+<li><p><strong>logical_or</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em>) – callable that accepts a list of tensor segmentation masks
+with values in [0, 1] (one 2D mask for each bounding box in an image)
+and returns a single combined segmentation mask;
+e.g. use a variadic fuzzy logical OR object</p></li>
+<li><p><strong>image_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – the size of the original image as <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width)</span></code>
+for which to draw the bounding boxes</p></li>
+<li><p><strong>target_class</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – the ID of the target class (see also <code class="docutils literal notranslate"><span class="pre">bbox_info_batch</span></code>) for selection</p></li>
+<li><p><strong>min_score</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – the minimum score a box must have to be included in the combined mask</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tensor of size <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">1,</span> <span class="pre">height,</span> <span class="pre">width)</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.experimentation.model_registry.custom_model_postproc.models_common.html" class="btn btn-neutral float-left" title="models_common" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.experimentation.model_registry.fuzzy_exp_models.html" class="btn btn-neutral float-right" title="fuzzy_exp_models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+EfficientDetToSegMask
+=====================
+
+.. currentmodule:: hybrid_learning.experimentation.model_registry.custom_model_postproc.efficientdet_extension
+
+.. autoclass:: EfficientDetToSegMask
+    :members:
+
+    .. autoclasstoc::

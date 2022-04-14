@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IsPartOfA &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="LambdaOp" href="hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.html" />
+    <link rel="prev" title="IoUWith" href="hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.html">logic_base</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.arithmetic.html">arithmetic</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.fuzzy_logic.predicates.custom_ops.html">custom_ops</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.quantifiers.html">quantifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.tnorm_connectives.html">tnorm_connectives</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_by_name.html">logic_by_name</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.predicates.html">predicates</a> &raquo;</li>
+          <li><a href="hybrid_learning.fuzzy_logic.predicates.custom_ops.html">custom_ops</a> &raquo;</li>
+      <li>IsPartOfA</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="ispartofa">
+<h1>IsPartOfA<a class="headerlink" href="#ispartofa" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.fuzzy_logic.predicates.custom_ops.</span></span><span class="sig-name descname"><span class="pre">IsPartOfA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logical_and</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_hang_front</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">other_setts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/predicates/custom_ops.html#IsPartOfA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.TorchOperation"><code class="xref py py-class docutils literal notranslate"><span class="pre">TorchOperation</span></code></a></p>
+<p>Unary predicate that calculates for each pixel location whether
+it is part of an object segmentation.
+The predicate accepts as input the segmentation mask information for objects
+(encoding the predicate “pixel <code class="docutils literal notranslate"><span class="pre">p</span></code> is a <code class="docutils literal notranslate"><span class="pre">A</span></code>” = <code class="docutils literal notranslate"><span class="pre">IsA(p)</span></code>).
+It returns a mask that for each pixel holds the truth value, whether
+that pixel is part of an object, i.e. at each pixel position <code class="docutils literal notranslate"><span class="pre">p</span></code> the output is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\exists p_o: \text{IsA}(p_o) \wedge \text{IsPartOf}(p, p_o) \\
+= \max_{p_o} \text{IsA}(p_o) \wedge \text{IsPartOf}(p, p_o)\end{split}\]</div>
+<p>It accepts 1D or 2D object masks of the shape <code class="docutils literal notranslate"><span class="pre">[[batch</span> <span class="pre">x</span> <span class="pre">[channels</span> <span class="pre">x]]</span> <span class="pre">height</span> <span class="pre">x]</span> <span class="pre">width</span></code>,
+in any format that can be parsed to a <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>.</p>
+<p><strong>Fuzzification</strong></p>
+<p>As fuzzification of the exists quantifier, <code class="docutils literal notranslate"><span class="pre">max</span></code> is used.
+The <a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.logical_and" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.logical_and"><code class="xref py py-attr docutils literal notranslate"><span class="pre">logical_and</span></code></a> defines the fuzzification of <code class="docutils literal notranslate"><span class="pre">AND</span></code>.
+The values of the predicate <code class="docutils literal notranslate"><span class="pre">IsA(.)</span></code> are given by the pixel values of the input
+segmentation mask.
+The fuzzy <code class="docutils literal notranslate"><span class="pre">IsPartOf</span></code> relation is chosen to calculate as a Gaussian distance,
+with a threshold of value <a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh"><code class="xref py py-attr docutils literal notranslate"><span class="pre">thresh</span></code></a> and distance
+<code class="docutils literal notranslate"><span class="pre">thresh_radius=int(kernel_size</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">/</span> <span class="pre">2</span></code> for better computational performance:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}d(p, p') = \exp(- \frac{\|p - p'\|_2^2}{2 \sigma^2}) \\
+\text{IsPartOf}(p, p') := \begin{cases}
+d(p, p') \text{if} \|p, p'\|_1 &lt;= \text{thresh\_radius} \\
+0 \text{else}
+\end{cases}\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\sigma\)</span> chosen such that <span class="math notranslate nohighlight">\(d(p, p') = \text{thresh}\)</span> for
+<span class="math notranslate nohighlight">\(\|p - p'\|_2 = \text{thresh\_radius}\)</span>.
+The per-pixel values of the <code class="docutils literal notranslate"><span class="pre">IsPartOf</span></code> predicate are stored in the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_ispartof_values</span></code> mask which is then convoluted with the <code class="docutils literal notranslate"><span class="pre">IsA</span></code> values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An even <a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.kernel_size" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.kernel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">kernel_size</span></code></a> will have the same <code class="xref py py-attr docutils literal notranslate"><span class="pre">_ispartof_values</span></code>
+pixel values as the odd <code class="docutils literal notranslate"><span class="pre">kernel_size-1</span></code>, only with a row and a column added
+(on top/left for <a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.conv_hang_front" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.conv_hang_front"><code class="xref py py-attr docutils literal notranslate"><span class="pre">conv_hang_front</span></code></a> <code class="docutils literal notranslate"><span class="pre">True</span></code>, else on bottom/right).</p>
+</div>
+<p><strong>Choosing the right ``kernel_size``</strong></p>
+<p>The shape of the used Gaussian can be defined by a pair of x-y-values <code class="docutils literal notranslate"><span class="pre">(r,</span> <span class="pre">t)</span></code>.
+The Gaussian then looks like</p>
+<div class="math notranslate nohighlight">
+\[G_{r,t}(x) = \exp\left(- \frac{ x^2 }{ \frac{r^2}{- \ln(t)}}} \right)\]</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">thresh_radius</span></code>, <code class="docutils literal notranslate"><span class="pre">int(kernel_size</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">/</span> <span class="pre">2</span></code> is used, which also serves as
+the cutoff distance. To choose the <code class="docutils literal notranslate"><span class="pre">kernel_size</span></code> such that
+(1) the point <code class="docutils literal notranslate"><span class="pre">(r,</span> <span class="pre">t)</span></code> lies on the Gaussian, and
+(2) the <code class="docutils literal notranslate"><span class="pre">kernel_size</span></code> cuts at threshold <code class="docutils literal notranslate"><span class="pre">thresh</span></code>,
+solve <span class="math notranslate nohighlight">\(G_{r,t}(\frac{\text{k}-1}{2}) = \text{thresh}\)</span> for <span class="math notranslate nohighlight">\(k\)</span> and gets
+<code class="docutils literal notranslate"><span class="pre">kernel_size=int(k)</span></code>.
+E.g. to match the constraints that at 4 pixel shift (<code class="docutils literal notranslate"><span class="pre">r=4</span></code>), <span class="math notranslate nohighlight">\(G(r)\)</span> should still be 0.8,
+and the kernel should only cut off at a threshold of 0.1, the <code class="docutils literal notranslate"><span class="pre">kernel_size</span></code> must be
+<code class="docutils literal notranslate"><span class="pre">2*int(12.4)</span> <span class="pre">+</span> <span class="pre">1=25</span></code>.</p>
+<p><strong>Visualization example</strong></p>
+<p>Visualization of the different logics:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">hybrid_learning.fuzzy_logic</span> <span class="k">as</span> <span class="nn">fl</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span><span class="o">,</span> <span class="nn">torchvision.transforms.functional</span> <span class="k">as</span> <span class="nn">F</span><span class="o">,</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Builder for IsPartOf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">fl</span><span class="o">.</span><span class="n">predicates</span><span class="o">.</span><span class="n">custom_ops</span><span class="o">.</span><span class="n">IsPartOfA</span><span class="o">.</span><span class="n">with_</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">conv_hang_front</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The sample input mask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">t</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The tensors to compare</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">figs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">segmask</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">logic</span> <span class="ow">in</span> <span class="p">(</span><span class="n">fl</span><span class="o">.</span><span class="n">LukasiewiczLogic</span><span class="p">(),</span> <span class="n">fl</span><span class="o">.</span><span class="n">ProductLogic</span><span class="p">(),</span> <span class="n">fl</span><span class="o">.</span><span class="n">GoedelLogic</span><span class="p">()):</span>
+<span class="gp">... </span>   <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;IsPartOfA (</span><span class="si">{</span><span class="n">logic</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Logic&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
+<span class="gp">... </span>   <span class="n">p</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="s2">&quot;pedestrian&quot;</span><span class="p">,</span> <span class="n">logical_and</span><span class="o">=</span><span class="n">logic</span><span class="o">.</span><span class="n">logical_</span><span class="p">(</span><span class="s1">&#39;AND&#39;</span><span class="p">))</span>
+<span class="gp">... </span>   <span class="n">figs</span><span class="p">[</span><span class="n">title</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">({</span><span class="s2">&quot;pedestrian&quot;</span><span class="p">:</span> <span class="n">t</span><span class="p">})[</span><span class="n">p</span><span class="o">.</span><span class="n">out_key</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Plot</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">figs</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">tens</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">figs</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+<span class="gp">... </span>    <span class="n">shown_img</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">tens</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">2</span><span class="p">:])))</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">([</span><span class="mf">.85</span><span class="p">,</span> <span class="mf">.25</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">shown_img</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.SYMB" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.SYMB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></a></p></td>
+<td><p>The string symbol of this class (override for sub-classes).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.ARITY" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.ARITY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ARITY</span></code></a></p></td>
+<td><p>The arity of the operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.kernel_size" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.kernel_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kernel_size</span></code></a></p></td>
+<td><p>The size of the kernel to use.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">thresh</span></code></a></p></td>
+<td><p>The value the Gaussian should have at <code class="docutils literal notranslate"><span class="pre">1/2</span> <span class="pre">kernel_size</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.conv_hang_front" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.conv_hang_front"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conv_hang_front</span></code></a></p></td>
+<td><p>Whether the cutoff modelled by the <code class="docutils literal notranslate"><span class="pre">IsPartOfA</span></code> convolution should hang in the front dimensions in case of unequal padding.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.setting_defaults" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.setting_defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setting_defaults</span></code></a></p></td>
+<td><p>Defaults used for settings.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Merge</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.SYMB" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.SYMB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYMB</span></code></a></p></td>
+<td><p>The string symbol of this class (override for sub-classes).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.ARITY" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.ARITY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ARITY</span></code></a></p></td>
+<td><p>The arity of the operation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IS_COMMUTATIVE</span></code></p></td>
+<td><p>Whether instances are equivalent to ones with permuted <code class="xref py py-attr docutils literal notranslate"><span class="pre">in_keys</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_variadic</span></code></p></td>
+<td><p>Whether the instance is variadic.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.setting_defaults" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.setting_defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setting_defaults</span></code></a></p></td>
+<td><p>Defaults used for settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pretty_op_symb</span></code></p></td>
+<td><p>Name of the operation symbol suitable for filenames etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code></p></td>
+<td><p>The input keys which are child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_children</span></code></p></td>
+<td><p>All children operations in the flattened computational tree, sorted depth first.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">consts</span></code></p></td>
+<td><p>The constant string keys in the input keys.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation_keys</span></code></p></td>
+<td><p>The list of keys used for this parent operation in original order (constants and children output keys).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_in_keys</span></code></p></td>
+<td><p>All string input keys both of self and of all child operations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_out_keys</span></code></p></td>
+<td><p>Output keys of self and all child operations.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_CLASS</span></code></p></td>
+<td><p>The identity class or classes for composition / addition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.torch_operation" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.torch_operation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">torch_operation</span></code></a>(mask)</p></td>
+<td><p>Calculate value of IsPartOfA predicate for given object segmentation mask.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>TorchOperation</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code>(annotation_vals)</p></td>
+<td><p>Calculate the predicate output.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Merge</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_infix_notation</span></code>([sort_key, ...])</p></td>
+<td><p>Return an infix str encoding equal for differently sorted operations.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_str</span></code>(**infix_notation_kwargs)</p></td>
+<td><p>Alias for <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_infix_notation()</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pretty_str</span></code>(**infix_notation_kwargs)</p></td>
+<td><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_str()</span></code> but using pretty operation names suitable for filenames etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_repr</span></code>([settings, defaults, sort_key, ...])</p></td>
+<td><p>Return str representation which can be used to reproduce and compare the instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">treerecurse_replace_keys</span></code>(**replace_map)</p></td>
+<td><p>Return a new formula with all occurences of variables in <code class="docutils literal notranslate"><span class="pre">replace_map</span></code> replaced and else identical settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">treerecurse</span></code>(fun)</p></td>
+<td><p>Apply the given function recursively to this and all children instances.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">variadic_apply_to</span></code>(annotations)</p></td>
+<td><p>Return the result of operation on the values/items of a mapping or sequence of arbitrary length.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">operation</span></code>(annotation_vals)</p></td>
+<td><p>Calculate the predicate output.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_to</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Apply this operation to the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> dict.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(in_key, *[, kernel_size, thresh, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>Merge</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(in_key, *[, kernel_size, thresh, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__str__</span></code>()</p></td>
+<td><p>Return str(self).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code> without sorting.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
+<td><p>Two merge operations are considered equal, if their normalized representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__copy__</span></code>()</p></td>
+<td><p>Return a deep copy of self using settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>DictTransform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Transform</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_repr()</span></code> without sorting.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__eq__</span></code>(other)</p></td>
+<td><p>Two merge operations are considered equal, if their normalized representations coincide.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__copy__</span></code>()</p></td>
+<td><p>Return a deep copy of self using settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p>Return a flat composition of <code class="docutils literal notranslate"><span class="pre">self</span></code> with <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__radd__</span></code>(other)</p></td>
+<td><p>Return a flat composition of <code class="docutils literal notranslate"><span class="pre">other</span></code> and <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(annotations[, keep_keys])</p></td>
+<td><p>Call method modifying a given dictionary.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em>) – </p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>thresh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – </p></li>
+<li><p><strong>logical_and</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em>) – </p></li>
+<li><p><strong>conv_hang_front</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logical_and</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_hang_front</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">other_setts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/predicates/custom_ops.html#IsPartOfA.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Init.</p>
+<p>The parameters <code class="docutils literal notranslate"><span class="pre">kernel_size</span></code> and <code class="docutils literal notranslate"><span class="pre">thresh</span></code> are specifiers
+for the distance function encoding the is-part-of relation.
+The <code class="docutils literal notranslate"><span class="pre">logical_and</span></code> is the logical <code class="docutils literal notranslate"><span class="pre">AND</span></code> callable that accepts a list
+of two tensors with values in [0, 1] and returns their pixel-wise logical <code class="docutils literal notranslate"><span class="pre">AND</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">in_key</span></code> is the key of the fuzzy mask which encodes the per-pixel
+membership degree to the class of interest.
+E.g. if “is part of a pedestrian” should be calculated, <code class="docutils literal notranslate"><span class="pre">&quot;pedestrian&quot;</span></code>
+is a good choice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><a class="reference internal" href="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.html#hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge" title="hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge"><em>Merge</em></a><em>]</em>) – </p></li>
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>thresh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – </p></li>
+<li><p><strong>logical_and</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em><em>, </em><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>conv_hang_front</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.create_ispartof_kernel">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_ispartof_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_hang_front</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/predicates/custom_ops.html#IsPartOfA.create_ispartof_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.create_ispartof_kernel" title="Permalink to this definition"></a></dt>
+<dd><p>Create the kernel tensor defining the <code class="docutils literal notranslate"><span class="pre">IsPartOf</span></code> relation.
+For details see <code class="xref py py-attr docutils literal notranslate"><span class="pre">_ispartof_values</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kernel_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+<li><p><strong>thresh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – </p></li>
+<li><p><strong>thresh_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – </p></li>
+<li><p><strong>conv_hang_front</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.torch_operation">
+<span class="sig-name descname"><span class="pre">torch_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/fuzzy_logic/predicates/custom_ops.html#IsPartOfA.torch_operation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.torch_operation" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate value of IsPartOfA predicate for given object segmentation mask.
+Allowed mask shapes (1D-4D): <code class="docutils literal notranslate"><span class="pre">([[batch,</span> <span class="pre">[1,]]</span> <span class="pre">height,]</span> <span class="pre">width)</span></code>
+The output shape is that of the input mask.
+Invalid shapes raise a <a class="reference external" href="https://docs.python.org/3.6/library/exceptions.html#ValueError" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
+<p>The device of <code class="docutils literal notranslate"><span class="pre">mask</span></code> is used for calculations and will be the device
+of the output tensor.
+As a side effect, the internal storage of the <code class="docutils literal notranslate"><span class="pre">IsPartOf</span></code> values is
+moved to that device, assuming that the device of inputs does not change frequently.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mask</strong> (<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.ARITY">
+<span class="sig-name descname"><span class="pre">ARITY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.ARITY" title="Permalink to this definition"></a></dt>
+<dd><p>The arity of the operation. -1 means unlimited number of arguments possible.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.SYMB">
+<span class="sig-name descname"><span class="pre">SYMB</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'IsPartOfA'</span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.SYMB" title="Permalink to this definition"></a></dt>
+<dd><p>The string symbol of this class (override for sub-classes).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.conv_hang_front">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">conv_hang_front</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><span class="pre">bool</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.conv_hang_front" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the cutoff modelled by the <code class="docutils literal notranslate"><span class="pre">IsPartOfA</span></code> convolution should
+hang in the front dimensions in case of unequal padding.
+Internals: To achieve hanging towards the back, the padding must be chosen to hang front.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.kernel_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><span class="pre">int</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.kernel_size" title="Permalink to this definition"></a></dt>
+<dd><p>The size of the kernel to use.
+The standard deviation of the gaussian is determined using
+this as radius and <a class="reference internal" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh" title="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh"><code class="xref py py-attr docutils literal notranslate"><span class="pre">thresh</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.logical_and">
+<span class="sig-name descname"><span class="pre">logical_and</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.logical_and" title="Permalink to this definition"></a></dt>
+<dd><p>Callable accepting a list of two tensors with values in [0, 1]
+and returning their pixel-wise logical <code class="docutils literal notranslate"><span class="pre">AND</span></code>.
+Mandatory argument.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.setting_defaults">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setting_defaults</span></span><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.setting_defaults" title="Permalink to this definition"></a></dt>
+<dd><p>Defaults used for settings.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.settings" title="Permalink to this definition"></a></dt>
+<dd><p>Settings to reproduce the instance.
+(Mind that in_keys must be expanded! For direct reproduction use copy.)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">thresh</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><span class="pre">float</span></a></em><a class="headerlink" href="#hybrid_learning.fuzzy_logic.predicates.custom_ops.IsPartOfA.thresh" title="Permalink to this definition"></a></dt>
+<dd><p>The value the Gaussian should have at <code class="docutils literal notranslate"><span class="pre">1/2</span> <span class="pre">kernel_size</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.fuzzy_logic.predicates.custom_ops.IoUWith.html" class="btn btn-neutral float-left" title="IoUWith" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.fuzzy_logic.predicates.custom_ops.LambdaOp.html" class="btn btn-neutral float-right" title="LambdaOp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

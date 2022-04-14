@@ -1,0 +1,9 @@
+DictCache
+=========
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: DictCache
+    :members:
+
+    .. autoclasstoc::

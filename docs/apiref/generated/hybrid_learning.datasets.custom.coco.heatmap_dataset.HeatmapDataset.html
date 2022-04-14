@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HeatmapDataset &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="keypoints_dataset" href="hybrid_learning.datasets.custom.coco.keypoints_dataset.html" />
+    <link rel="prev" title="heatmap_dataset" href="hybrid_learning.datasets.custom.coco.heatmap_dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.custom.coco.html">coco</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.html">coco</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.heatmap_dataset.html">heatmap_dataset</a> &raquo;</li>
+      <li>HeatmapDataset</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="heatmapdataset">
+<h1>HeatmapDataset<a class="headerlink" href="#heatmapdataset" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hybrid_learning.datasets.custom.coco.heatmap_dataset.</span></span><span class="sig-name descname"><span class="pre">HeatmapDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body_parts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masks_root_root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy_mask_generation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/heatmap_dataset.html#HeatmapDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConceptDataset</span></code></a></p>
+<p>Data handle for ground truth heatmaps of centroids of visual concepts
+(body parts) generated from COCO keypoints.
+Works the same as the
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset</span></code></a>
+only with different <a class="reference internal" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT" title="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MASKS_ROOT_ROOT</span></code></a> and different
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.html#hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.mask_dataset.ConceptDataset.annotations_to_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">annotations_to_mask()</span></code></a>
+method. See there for details on how the centroid heatmaps look like.</p>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Data Attributes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT" title="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MASKS_ROOT_ROOT</span></code></a></p></td>
+<td><p>Usual parent to all heatmap folders for all body parts; sibling to <code class="docutils literal notranslate"><span class="pre">images</span></code> folder</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>ConceptDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT" title="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MASKS_ROOT_ROOT</span></code></a></p></td>
+<td><p>Usual parent to all heatmap folders for all body parts; sibling to <code class="docutils literal notranslate"><span class="pre">images</span></code> folder</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>COCODataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">COMMERCIAL_LICENSE_IDS</span></code></p></td>
+<td><p>IDs of COCO image licenses that allow for commercial use.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATASET_ROOT_TEMPL</span></code></p></td>
+<td><p>Default root directory template for image files that accepts the <code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANNOTATION_FP_TEMPL</span></code></p></td>
+<td><p>Default template for the annotation file path that accepts the <code class="docutils literal notranslate"><span class="pre">split</span></code> (<code class="docutils literal notranslate"><span class="pre">'train'</span></code> or <code class="docutils literal notranslate"><span class="pre">'val'</span></code>) and the <code class="docutils literal notranslate"><span class="pre">root</span></code> directory.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_IMG_SIZE</span></code></p></td>
+<td><p>Default target size of images to use for the default transforms as <code class="docutils literal notranslate"><span class="pre">(height,</span> <span class="pre">width)</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">license_mapping</span></code></p></td>
+<td><p>The mapping of image IDs to license descriptions and URLs.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></p></td>
+<td><p>Settings to reproduce the instance.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Public Methods:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.ANNOTATION_TRANSFORM" title="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.ANNOTATION_TRANSFORM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANNOTATION_TRANSFORM</span></code></a>(annotations, ...[, ...])</p></td>
+<td><p>Create a heatmap marking the centroids of the linked keypoints from the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> list.</p></td>
+</tr>
+</tbody>
+</table>
+<details><summary>Inherited from    : py: class:<cite>ConceptDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code>(i)</p></td>
+<td><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_orig_mask</span></code>(i)</p></td>
+<td><p>Load and return unmodified mask as image by index in dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_exists</span></code>(i)</p></td>
+<td><p>Check whether a mask for the specified index already exists.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask_filepath</span></code>(i)</p></td>
+<td><p>Provide the path under which the mask for the given image ID should lie.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.ANNOTATION_TRANSFORM" title="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.ANNOTATION_TRANSFORM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ANNOTATION_TRANSFORM</span></code></a>(annotations, ...[, ...])</p></td>
+<td><p>Create a heatmap marking the centroids of the linked keypoints from the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> list.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotations_to_mask</span></code>(orig_img_wh, annotations)</p></td>
+<td><p>Create mask of all configured keypoints from <code class="docutils literal notranslate"><span class="pre">annotations</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_masks</span></code>([force_rebuild, ...])</p></td>
+<td><p>Generate and save the masks for the images in this dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_mask</span></code>(i, mask)</p></td>
+<td><p>Save the given mask according to the given index in the dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>COCODataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">subset</span></code>(*[, license_ids, body_parts, num, ...])</p></td>
+<td><p>Restrict the items by the given selection criteria and an optional custom condition.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code>()</p></td>
+<td><p>Wrapper around <code class="xref py py-meth docutils literal notranslate"><span class="pre">subset()</span></code> that only shuffles the instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_raw_anns</span></code>([description, save_as])</p></td>
+<td><p>Create the content of a new valid annotations file restricted to the current image IDs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_to</span></code>([root_root, description, overwrite, ...])</p></td>
+<td><p>Create a new dataset by copying used images and annotations to new root folder.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_orig_image</span></code>(i)</p></td>
+<td><p>Load unmodified image by index in dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code>(i)</p></td>
+<td><p>Return the image file name for the item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_filepath</span></code>(i)</p></td>
+<td><p>Path to image file at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_attribution</span></code>(i)</p></td>
+<td><p>Get attribution information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">image_meta</span></code>(i)</p></td>
+<td><p>Load the dict with meta information for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">raw_anns</span></code>(i)</p></td>
+<td><p>Return the list of raw annotations for image at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code>(i)</p></td>
+<td><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getitem</span></code>(i)</p></td>
+<td><p>Get image and mask by index <code class="docutils literal notranslate"><span class="pre">i</span></code> in dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">descriptor</span></code>(i)</p></td>
+<td><p>Return the image file name for the item at index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<div class="autoclasstoc docutils container">
+<p class="rubric">Special Methods:</p>
+<details><summary>Inherited from    : py: class:<cite>ConceptDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>(body_parts[, force_rebuild, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>COCODataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>(body_parts[, force_rebuild, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
+<td><p>Length is given by the length of the index mapping.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>BaseDataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>(body_parts[, force_rebuild, ...])</p></td>
+<td><p>Init.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__len__</span></code>()</p></td>
+<td><p>Length is given by the length of the index mapping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__repr__</span></code>()</p></td>
+<td><p>Nice printing function.</p></td>
+</tr>
+</tbody>
+</table>
+</details><details><summary>Inherited from    : py: class:<cite>Dataset</cite></summary><table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>(idx)</p></td>
+<td><p>Get item from <code class="docutils literal notranslate"><span class="pre">idx</span></code> in dataset with transformations applied.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code>(other)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</details></div>
+<hr class="docutils" />
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.ANNOTATION_TRANSFORM">
+<span class="sig-name descname"><span class="pre">ANNOTATION_TRANSFORM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keypoint_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skeleton</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.025</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.ANNOTATION_TRANSFORM" title="Permalink to this definition"></a></dt>
+<dd><p>Callable used to transform a list of annotations into a heatmap mask.
+Create a heatmap of all body parts given by keypoints in the
+<code class="docutils literal notranslate"><span class="pre">annotations</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Currently, all keypoints occurring in the body parts are treated
+separately!
+Centroids of body parts consisting of more than one keypoint are
+not supported yet.</p>
+</div>
+<p>For details see
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotations_to_heatmap()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>annotation_wh</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>annotations</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>]</em>) – </p></li>
+<li><p><strong>keypoint_idxs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Iterable" title="(in Python v3.6)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>skeleton</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Sequence" title="(in Python v3.6)"><em>Sequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>pt_radius</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – </p></li>
+<li><p><strong>link_width</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><em>Image</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.get_default_transforms">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_default_transforms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hybrid_learning/datasets/custom/coco/heatmap_dataset.html#HeatmapDataset.get_default_transforms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.get_default_transforms" title="Permalink to this definition"></a></dt>
+<dd><p>Default transformation that pads and resizes both images and masks,
+and binarizes the masks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>mask_size</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><em>Optional</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><em>Union</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>device</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><em>Callable</em></a>[[<em>Image</em>, <em>Image</em>], <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Tuple" title="(in Python v3.6)"><em>Tuple</em></a>[<a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>, <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v1.11.0)"><em>Tensor</em></a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT">
+<span class="sig-name descname"><span class="pre">MASKS_ROOT_ROOT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'kpt_heatmaps'</span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.MASKS_ROOT_ROOT" title="Permalink to this definition"></a></dt>
+<dd><p>Usual parent to all heatmap folders for all body parts; sibling to
+<code class="docutils literal notranslate"><span class="pre">images</span></code> folder</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.__parameters__">
+<span class="sig-name descname"><span class="pre">__parameters__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#hybrid_learning.datasets.custom.coco.heatmap_dataset.HeatmapDataset.__parameters__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.custom.coco.heatmap_dataset.html" class="btn btn-neutral float-left" title="heatmap_dataset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.custom.coco.keypoints_dataset.html" class="btn btn-neutral float-right" title="keypoints_dataset" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

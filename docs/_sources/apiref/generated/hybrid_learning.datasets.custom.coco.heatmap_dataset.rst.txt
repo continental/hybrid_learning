@@ -1,0 +1,42 @@
+heatmap\_dataset
+================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.custom.coco.heatmap_dataset
+
+    .. currentmodule:: hybrid_learning.datasets.custom.coco.heatmap_dataset
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~HeatmapDataset
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

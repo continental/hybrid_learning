@@ -1,0 +1,9 @@
+LowerThan
+=========
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.predicates.arithmetic
+
+.. autoclass:: LowerThan
+    :members:
+
+    .. autoclasstoc::

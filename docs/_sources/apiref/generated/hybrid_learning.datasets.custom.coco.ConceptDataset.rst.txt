@@ -1,9 +1,0 @@
-ConceptDataset
-==============
-
-.. currentmodule:: hybrid_learning.datasets.custom.coco
-
-.. autoclass:: ConceptDataset
-    :members:
-
-    .. autoclasstoc::

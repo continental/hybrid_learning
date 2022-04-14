@@ -1,0 +1,46 @@
+results
+=======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.concepts.analysis.results
+
+    .. currentmodule:: hybrid_learning.concepts.analysis.results
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~AnalysisResult
+        
+        ~BestEmbeddingResult
+        
+        ~ResultsHandle
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

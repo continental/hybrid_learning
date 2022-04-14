@@ -1,0 +1,9 @@
+NPYCache
+========
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: NPYCache
+    :members:
+
+    .. autoclasstoc::

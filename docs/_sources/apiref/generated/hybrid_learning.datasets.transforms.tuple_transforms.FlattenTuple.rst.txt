@@ -1,0 +1,9 @@
+FlattenTuple
+============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.tuple_transforms
+
+.. autoclass:: FlattenTuple
+    :members:
+
+    .. autoclasstoc::

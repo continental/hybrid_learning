@@ -1,0 +1,6 @@
+highlight\_max\_blue
+====================
+
+.. currentmodule:: hybrid_learning.experimentation.ca_exp_eval
+
+.. autofunction:: highlight_max_blue

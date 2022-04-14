@@ -1,0 +1,6 @@
+general\_add
+============
+
+.. currentmodule:: hybrid_learning.datasets.transforms.common
+
+.. autofunction:: general_add

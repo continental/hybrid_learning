@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.fuzzy_logic.logic_base.parsing &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../fuzzy_logic.html">hybrid_learning.fuzzy_logic</a> &raquo;</li>
+      <li>hybrid_learning.fuzzy_logic.logic_base.parsing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.fuzzy_logic.logic_base.parsing</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Basic functionality for parsing string representations of logical formulas.</span>
+<span class="sd">See :py:class:`FormulaParser` for further information.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">pyparsing</span>
+
+<span class="kn">from</span> <span class="nn">.merge_operation</span> <span class="kn">import</span> <span class="n">Merge</span><span class="p">,</span> <span class="n">_OpBuilder</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.logic</span> <span class="kn">import</span> <span class="n">Logic</span>
+
+
+<div class="viewcode-block" id="FormulaParser"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser">[docs]</a><span class="k">class</span> <span class="nc">FormulaParser</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Base class to parse string formula specifiers in infix notation to merge operations.</span>
+<span class="sd">    Furthermore, it assists in validating logical formulas and</span>
+<span class="sd">    producing nice string representations (see e.g. :py:meth:`to_str`).</span>
+<span class="sd">    This basic parser is an inverse to</span>
+<span class="sd">    :py:meth:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_infix_notation`</span>
+<span class="sd">    of :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge`:</span>
+
+<span class="sd">    &gt;&gt;&gt; from hybrid_learning.fuzzy_logic import FormulaParser, boolean</span>
+<span class="sd">    &gt;&gt;&gt; logic = boolean.Logic()</span>
+<span class="sd">    &gt;&gt;&gt; parser = FormulaParser(logic)</span>
+<span class="sd">    &gt;&gt;&gt; formula_obj = parser(&quot;a || ~(b &amp;&amp; c)&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; formula_obj</span>
+<span class="sd">    OR(&#39;a&#39;, NOT(AND(&#39;b&#39;, &#39;c&#39;)))</span>
+<span class="sd">    &gt;&gt;&gt; parser(formula_obj.to_str()) == formula_obj</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Also, the :py:meth:`to_str` method matches</span>
+<span class="sd">    :py:meth:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.to_str`</span>
+<span class="sd">    of :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge`:</span>
+
+<span class="sd">    &gt;&gt;&gt; f = &quot;c || ~(b &amp;&amp; a)&quot;</span>
+<span class="sd">    &gt;&gt;&gt; parser.to_str(f)</span>
+<span class="sd">    &#39;c || ~(a &amp;&amp; b)&#39;</span>
+<span class="sd">    &gt;&gt;&gt; parser.to_str(f) == parser(f).to_str(precedence=logic, use_whitespace=True)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    **Parsing**</span>
+
+<span class="sd">    Calling a parser (same as calling :py:meth:`parse`) will parse a string to a logical operation.</span>
+<span class="sd">    Parsing assumes infix notation of operators, and prefix for unary operators,</span>
+<span class="sd">    with brackets allowed.</span>
+<span class="sd">    A list of operator builders, e.g.</span>
+<span class="sd">    :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge`</span>
+<span class="sd">    sub-classes, defines the precedence</span>
+<span class="sd">    of the operators (list must be ordered by increasing precedence).</span>
+<span class="sd">    The operator builders each must provide a ``SYMB`` string attribute</span>
+<span class="sd">    that specifies the symbol representing the operator.</span>
+<span class="sd">    The implementation uses :py:func:`pyparsing.infixNotation`.</span>
+
+<span class="sd">    **Functional Interface**</span>
+
+<span class="sd">    The ``functional_*`` class methods provide a functional interface to parsing operations</span>
+<span class="sd">    that will accept the logic (a list of allowed operators by precedence) as argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FormulaParser.__init__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logic</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Logic&#39;</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">]],</span>
+                 <span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">),</span>
+                 <span class="n">allowed_chars</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">alphanums</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Logic&#39;</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">]]</span> <span class="o">=</span> <span class="n">logic</span>
+        <span class="sd">&quot;&quot;&quot;The list of operators that are allowed and used for parsing ordered by increasing precedence.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">brackets</span>
+        <span class="sd">&quot;&quot;&quot;The symbols to interpret as left and right bracket in strings.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_chars</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">allowed_chars</span>
+        <span class="sd">&quot;&quot;&quot;The characters allowed within variable names in formulas.</span>
+<span class="sd">        Brackets and characters occurring in operation keys are excluded automatically.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="FormulaParser.__call__"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Call parse on the specifier.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FormulaParser.parse"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse a specifier to a merge operation.</span>
+<span class="sd">        Will return the original string if it does not contain operation</span>
+<span class="sd">        specifiers.</span>
+<span class="sd">        Specifiers are any of the ``SYMB`` symbols of the classes</span>
+<span class="sd">        listed in the operator builder list ``logic``.</span>
+<span class="sd">        The sorting of the list specifies the operator precedence.</span>
+
+<span class="sd">        :param specifier: the string specifier to parse</span>
+<span class="sd">        :param init_args: any keyword arguments for init of the generated</span>
+<span class="sd">            operations (parent and all children);</span>
+<span class="sd">            ``out_key`` is only applied to the parent operation</span>
+<span class="sd">        :return: the parsing outcome, a string (for a single variable) or a Merge operation</span>
+<span class="sd">        :raises: :py:class:`pyparsing.ParseException` in case parsing fails</span>
+<span class="sd">            (e.g. if a non-allowed char is used for variables)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional_parse</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="p">,</span>
+                                     <span class="n">brackets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">brackets</span><span class="p">,</span>
+                                     <span class="n">allowed_chars</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_chars</span><span class="p">,</span>
+                                     <span class="o">**</span><span class="n">init_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FormulaParser.to_str"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.to_str">[docs]</a>    <span class="k">def</span> <span class="nf">to_str</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">for_filenames</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse the specifier and return an easy-to-read string representation.</span>
+<span class="sd">        If ``for_filenames`` is given, it the output string is suitable for filenames</span>
+<span class="sd">        (no whitespace, pretty symbols).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional_to_str</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="p">,</span> <span class="n">for_filenames</span><span class="o">=</span><span class="n">for_filenames</span><span class="p">,</span>
+                                      <span class="o">**</span><span class="p">{</span><span class="s1">&#39;brackets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">brackets</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="FormulaParser.is_pure"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.is_pure">[docs]</a>    <span class="k">def</span> <span class="nf">is_pure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Merge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether the formula ``op`` purely consists of operators built from the logic.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional_is_pure</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FormulaParser.is_normal_form"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.is_normal_form">[docs]</a>    <span class="k">def</span> <span class="nf">is_normal_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_op</span><span class="p">:</span> <span class="n">Merge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current formula respects the operator precedence.</span>
+<span class="sd">        Uses introspection and assumes that all operators are objects of</span>
+<span class="sd">        operator builders that are classes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional_is_normal_form</span><span class="p">(</span><span class="n">parent_op</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FormulaParser.apply"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Merge</span><span class="p">],</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+              <span class="o">**</span><span class="n">init_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse ``specifier`` and return its result on annotations</span>
+<span class="sd">        if it&#39;s an operation.</span>
+
+<span class="sd">        :param specifier: specifier for :py:meth:`parse`</span>
+<span class="sd">        :param annotations: dictionary to which to apply the parsed operation</span>
+<span class="sd">        :param init_args: further keyword arguments to init the parent</span>
+<span class="sd">            operation while parsing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">functional_apply</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="n">annotations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logic</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_logic_to_symbol_class_map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">logic</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;For a logic return a mapping ``{op_builder.SYMB: op_builder}``.</span>
+
+<span class="sd">        :raises: :py:class:`ValueError` if a non-unique symbol is found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">symbol_classes</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_OpBuilder</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">op_cls</span><span class="o">.</span><span class="n">SYMB</span><span class="p">,</span> <span class="n">op_cls</span><span class="p">)</span> <span class="k">for</span> <span class="n">op_cls</span> <span class="ow">in</span> <span class="n">logic</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">symbol_classes</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">logic</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found duplicate symbols in logic: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logic</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">symbol_classes</span>
+
+<div class="viewcode-block" id="FormulaParser.functional_is_pure"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.functional_is_pure">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">functional_is_pure</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Merge</span><span class="p">,</span> <span class="n">logic</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether the formula ``op`` purely consists of operators built from ``logic``.</span>
+<span class="sd">        See :py:meth:`~FormulaParser.is_pure`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="n">logic</span> <span class="ow">and</span>
+                <span class="nb">all</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">functional_is_pure</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">logic</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">children</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FormulaParser.functional_is_normal_form"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.functional_is_normal_form">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">functional_is_normal_form</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parent_op</span><span class="p">:</span> <span class="n">Merge</span><span class="p">,</span> <span class="n">logic</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Checks whether the current formula respects the logic operator precedence.</span>
+<span class="sd">        See :py:meth:`~FormulaParser.is_normal_form`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">functional_is_normal_form</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">logic</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parent_op</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Any child operator has higher precedence?</span>
+        <span class="n">children_cls</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">((</span><span class="n">op</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">parent_op</span><span class="o">.</span><span class="n">children</span><span class="p">))</span>
+        <span class="n">parent_cls</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">parent_op</span><span class="o">.</span><span class="vm">__class__</span>
+        <span class="k">if</span> <span class="n">parent_cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">logic</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot match operation of type </span><span class="si">{}</span><span class="s2"> to a builder: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Allowed types: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parent_cls</span><span class="p">,</span> <span class="n">parent_op</span><span class="p">,</span> <span class="n">logic</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">logic</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">child_cls</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">logic</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">parent_cls</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">child_cls</span> <span class="ow">in</span> <span class="n">children_cls</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="FormulaParser.functional_to_str"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.functional_to_str">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">functional_to_str</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">logic</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">],</span>
+                          <span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">allowed_chars</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">for_filenames</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse the specifier and return a unique string representation.</span>
+<span class="sd">        See :py:meth:`~FormulaParser.to_str`.&quot;&quot;&quot;</span>
+        <span class="n">preset</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">precedence</span><span class="o">=</span><span class="n">logic</span><span class="p">,</span>
+                      <span class="n">use_whitespace</span><span class="o">=</span><span class="ow">not</span> <span class="n">for_filenames</span><span class="p">,</span>
+                      <span class="n">use_pretty_op_symb</span><span class="o">=</span><span class="n">for_filenames</span><span class="p">,</span>
+                      <span class="n">brackets</span><span class="o">=</span><span class="n">brackets</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">functional_parse</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="n">logic</span><span class="o">=</span><span class="n">logic</span><span class="p">,</span> <span class="n">brackets</span><span class="o">=</span><span class="n">brackets</span><span class="p">,</span> <span class="n">allowed_chars</span><span class="o">=</span><span class="n">allowed_chars</span>
+                                    <span class="p">)</span><span class="o">.</span><span class="n">to_str</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">preset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="FormulaParser.functional_apply"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.functional_apply">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">functional_apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Merge</span><span class="p">],</span> <span class="n">annotations</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                         <span class="n">logic</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">],</span>
+                         <span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">allowed_chars</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">init_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse ``specifier`` and return its result on annotations</span>
+<span class="sd">        if it&#39;s an operation. See :py:meth:`~FormulaParser.apply`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">functional_parse</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="n">logic</span><span class="o">=</span><span class="n">logic</span><span class="p">,</span> <span class="n">brackets</span><span class="o">=</span><span class="n">brackets</span><span class="p">,</span> <span class="n">allowed_chars</span><span class="o">=</span><span class="n">allowed_chars</span><span class="p">,</span>
+                                    <span class="o">**</span><span class="n">init_args</span><span class="p">)(</span><span class="n">annotations</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_pyparsing_op_def</span><span class="p">(</span><span class="n">op_builder</span><span class="p">:</span> <span class="n">_OpBuilder</span><span class="p">,</span> <span class="n">init_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                          <span class="n">op_symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For a ``unary`` or non-unary operation return a pyparsing parse action function.</span>
+<span class="sd">        Defaults for ``op_symb`` and ``unary`` are taken from ``op_builder``</span>
+<span class="sd">        attributes ``SYMB`` and ``ARITY``.&quot;&quot;&quot;</span>
+        <span class="n">op_symb</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">op_builder</span><span class="p">,</span> <span class="s1">&#39;SYMB&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">op_symb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">op_symb</span>
+        <span class="k">assert</span> <span class="n">op_symb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">unary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">op_builder</span><span class="p">,</span> <span class="s1">&#39;ARITY&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">unary</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">unary</span>
+        <span class="n">arity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">unary</span> <span class="k">else</span> <span class="mi">2</span>
+        <span class="n">associativity</span> <span class="o">=</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">opAssoc</span><span class="o">.</span><span class="n">RIGHT</span> <span class="k">if</span> <span class="n">unary</span> <span class="k">else</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">opAssoc</span><span class="o">.</span><span class="n">LEFT</span>
+
+        <span class="k">def</span> <span class="nf">tokens_to_op</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Build operator instance from tokens.&quot;&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">unary</span><span class="p">:</span>
+                    <span class="n">op</span> <span class="o">=</span> <span class="n">op_builder</span><span class="p">(</span><span class="o">*</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">op</span> <span class="o">=</span> <span class="n">op_builder</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="n">op_symb</span><span class="p">],</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;unary &#39;</span> <span class="k">if</span> <span class="n">unary</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">operation builder called incorrectly: </span><span class="si">{</span><span class="n">op_builder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">t</span>
+            <span class="k">return</span> <span class="n">op</span>
+
+        <span class="k">return</span> <span class="n">op_symb</span><span class="p">,</span> <span class="n">arity</span><span class="p">,</span> <span class="n">associativity</span><span class="p">,</span> <span class="n">tokens_to_op</span>
+
+<div class="viewcode-block" id="FormulaParser.functional_parse"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.html#hybrid_learning.fuzzy_logic.logic_base.parsing.FormulaParser.functional_parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">functional_parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">specifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">logic</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">_OpBuilder</span><span class="p">],</span>
+                         <span class="n">brackets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="n">allowed_chars</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">init_args</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Merge&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Parse a specifier to a merge operation given a ``logic``.</span>
+<span class="sd">        See :py:meth:`~FormulaParser.parse`.&quot;&quot;&quot;</span>
+        <span class="n">brackets</span> <span class="o">=</span> <span class="n">brackets</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span>
+        <span class="n">allowed_chars</span> <span class="o">=</span> <span class="n">allowed_chars</span> <span class="ow">or</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">alphanums</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span>
+        <span class="n">common_init_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">init_args</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;out_key&#39;</span><span class="p">}</span>
+        <span class="n">out_key</span> <span class="o">=</span> <span class="n">init_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;out_key&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">symbol_classes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_OpBuilder</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_logic_to_symbol_class_map</span><span class="p">(</span><span class="n">logic</span><span class="p">)</span>
+
+        <span class="c1"># Define parser</span>
+        <span class="n">variable</span><span class="p">:</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">ParserElement</span> <span class="o">=</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">Word</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">allowed_chars</span><span class="p">))</span>
+        <span class="n">op_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">_pyparsing_op_def</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">common_init_args</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">symbol_classes</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="n">logic_expr</span><span class="p">:</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">Forward</span> <span class="o">=</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">infixNotation</span><span class="p">(</span>
+            <span class="n">baseExpr</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
+            <span class="n">opList</span><span class="o">=</span><span class="nb">reversed</span><span class="p">(</span><span class="n">op_list</span><span class="p">),</span>
+            <span class="n">lpar</span><span class="o">=</span><span class="n">pyparsing</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">brackets</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">rpar</span><span class="o">=</span><span class="n">pyparsing</span><span class="o">.</span><span class="n">Suppress</span><span class="p">(</span><span class="n">brackets</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="c1"># Parse</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">logic_expr</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">specifier</span><span class="p">,</span> <span class="n">parseAll</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">pyparsing</span><span class="o">.</span><span class="n">ParseException</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Expression to parse: &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">specifier</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="n">p</span>
+
+        <span class="c1"># Adjust out_key if requested</span>
+        <span class="k">if</span> <span class="n">out_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parsed</span><span class="p">,</span> <span class="n">Merge</span><span class="p">):</span>
+            <span class="n">parsed</span><span class="o">.</span><span class="n">out_key</span> <span class="o">=</span> <span class="n">out_key</span>
+        <span class="k">return</span> <span class="n">parsed</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

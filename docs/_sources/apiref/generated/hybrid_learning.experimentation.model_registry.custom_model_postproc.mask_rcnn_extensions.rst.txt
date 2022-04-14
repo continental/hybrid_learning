@@ -1,0 +1,44 @@
+mask\_rcnn\_extensions
+======================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.experimentation.model_registry.custom_model_postproc.mask_rcnn_extensions
+
+    .. currentmodule:: hybrid_learning.experimentation.model_registry.custom_model_postproc.mask_rcnn_extensions
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~MaskRCNNBoxToSegMask
+        
+        ~MaskRCNNToSegMask
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

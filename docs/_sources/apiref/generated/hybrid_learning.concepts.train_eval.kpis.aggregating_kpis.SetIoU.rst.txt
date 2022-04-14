@@ -1,0 +1,9 @@
+SetIoU
+======
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.aggregating_kpis
+
+.. autoclass:: SetIoU
+    :members:
+
+    .. autoclasstoc::

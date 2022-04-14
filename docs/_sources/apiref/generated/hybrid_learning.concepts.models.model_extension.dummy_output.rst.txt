@@ -1,5 +1,5 @@
-hybrid\_learning.concepts.models.model\_extension.dummy\_output
-===============================================================
+dummy\_output
+=============
 
 .. currentmodule:: hybrid_learning.concepts.models.model_extension
 

@@ -1,0 +1,49 @@
+fuzzy\_exp\_models
+==================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.experimentation.model_registry.fuzzy_exp_models
+
+    .. currentmodule:: hybrid_learning.experimentation.model_registry.fuzzy_exp_models
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~get_efficientdet
+        
+        ~get_efficientdet_config
+        
+        ~get_efficientdet_trafo
+        
+        ~get_maskrcnn_box_trafo
+        
+        ~register_all_model_builders
+        
+
+    
+    

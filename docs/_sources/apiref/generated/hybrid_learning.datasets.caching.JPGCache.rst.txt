@@ -1,0 +1,9 @@
+JPGCache
+========
+
+.. currentmodule:: hybrid_learning.datasets.caching
+
+.. autoclass:: JPGCache
+    :members:
+
+    .. autoclasstoc::

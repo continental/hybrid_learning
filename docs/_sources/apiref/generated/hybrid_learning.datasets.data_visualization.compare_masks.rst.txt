@@ -1,5 +1,5 @@
-hybrid\_learning.datasets.data\_visualization.compare\_masks
-============================================================
+compare\_masks
+==============
 
 .. currentmodule:: hybrid_learning.datasets.data_visualization
 

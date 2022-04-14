@@ -1,0 +1,59 @@
+common
+======
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.datasets.transforms.common
+
+    .. currentmodule:: hybrid_learning.datasets.transforms.common
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Classes
+
+    .. autosummary::
+        :toctree:
+        :nosignatures:
+        
+        ~Compose
+        
+        ~Lambda
+        
+        ~Transform
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    .. rubric:: Functions
+
+    .. autosummary::
+        :toctree:
+        
+        ~general_add
+        
+        ~lazy_format
+        
+        ~settings_to_repr
+        
+
+    
+    

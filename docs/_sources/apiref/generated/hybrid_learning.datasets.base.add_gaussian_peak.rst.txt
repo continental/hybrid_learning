@@ -1,0 +1,6 @@
+add\_gaussian\_peak
+===================
+
+.. currentmodule:: hybrid_learning.datasets.base
+
+.. autofunction:: add_gaussian_peak

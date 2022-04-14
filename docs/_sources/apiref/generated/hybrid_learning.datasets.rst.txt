@@ -19,6 +19,8 @@
         
         ~hybrid_learning.datasets.base
         
+        ~hybrid_learning.datasets.caching
+        
         ~hybrid_learning.datasets.custom
         
         ~hybrid_learning.datasets.data_visualization

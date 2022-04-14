@@ -1,0 +1,50 @@
+tnorm\_connectives
+==================
+
+.. rubric:: Description
+
+.. automodule:: hybrid_learning.fuzzy_logic.tnorm_connectives
+
+    .. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives
+
+    
+    
+    .. rubric:: Sub-modules
+
+    .. autosummary::
+        :toctree:
+        :recursive:
+        
+        ~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean
+        
+        ~hybrid_learning.fuzzy_logic.tnorm_connectives.fuzzy_common
+        
+        ~hybrid_learning.fuzzy_logic.tnorm_connectives.goedel
+        
+        ~hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz
+        
+        ~hybrid_learning.fuzzy_logic.tnorm_connectives.product
+        
+
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    
+
+
+    
+    
+    

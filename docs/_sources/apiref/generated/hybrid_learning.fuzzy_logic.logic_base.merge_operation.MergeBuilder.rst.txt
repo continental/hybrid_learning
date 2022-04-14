@@ -1,0 +1,9 @@
+MergeBuilder
+============
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.logic_base.merge_operation
+
+.. autoclass:: MergeBuilder
+    :members:
+
+    .. autoclasstoc::

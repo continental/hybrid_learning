@@ -1,9 +1,0 @@
-BodyParts
-=========
-
-.. currentmodule:: hybrid_learning.datasets.custom.coco
-
-.. autoclass:: BodyParts
-    :members:
-
-    .. autoclasstoc::

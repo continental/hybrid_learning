@@ -1,0 +1,9 @@
+ProductLogic
+============
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.product
+
+.. autoclass:: ProductLogic
+    :members:
+
+    .. autoclasstoc::

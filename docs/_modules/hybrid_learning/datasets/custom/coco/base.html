@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hybrid_learning.datasets.custom.coco.base &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apiref/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>hybrid_learning.datasets.custom.coco.base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hybrid_learning.datasets.custom.coco.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Base classes for handling MS COCO like datasets.&quot;&quot;&quot;</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> \
+    <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">PIL.Image</span>
+<span class="kn">import</span> <span class="nn">PIL.ImageDraw</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">pycocotools.coco</span> <span class="kn">import</span> <span class="n">COCO</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">.keypoints_processing</span> <span class="kn">import</span> <span class="n">to_keypoint_idxs</span><span class="p">,</span> <span class="n">all_keypts_visible</span>
+<span class="kn">from</span> <span class="nn">...base</span> <span class="kn">import</span> <span class="n">BaseDataset</span><span class="p">,</span> <span class="n">DatasetSplit</span>
+<span class="kn">from</span> <span class="nn">...transforms</span> <span class="kn">import</span> <span class="n">TupleTransforms</span>
+
+
+<div class="viewcode-block" id="COCODataset"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset">[docs]</a><span class="k">class</span> <span class="nc">COCODataset</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">BaseDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Attributes and functions common for keypoint based datasets derived</span>
+<span class="sd">    from MS COCO.</span>
+
+<span class="sd">    The handle encompasses functionality for:</span>
+
+<span class="sd">    :item retrieval:</span>
+<span class="sd">        :py:meth:`hybrid_learning.datasets.base.BaseDataset.__getitem__` must be</span>
+<span class="sd">        implemented in subclasses; available items:</span>
+
+<span class="sd">        - *raw annotations:*</span>
+<span class="sd">          Get all raw COCO annotations for an image via :py:meth:`raw_anns`.</span>
+<span class="sd">        - *image file path:*</span>
+<span class="sd">          via :py:meth:`image_filepath`.</span>
+<span class="sd">        - *image meta info:*</span>
+<span class="sd">          via :py:meth:`image_meta`.</span>
+<span class="sd">        - *image attribution and license info:*</span>
+<span class="sd">          via :py:meth:`image_attribution`.</span>
+
+<span class="sd">    :subsetting:</span>
+<span class="sd">        Use :py:meth:`subset` for subsetting according to given conditions.</span>
+<span class="sd">        To create/store annotations reflecting this subset, use</span>
+<span class="sd">        :py:meth:`to_raw_anns`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Some COCO specific constants</span>
+    <span class="c1"># ----------------------------</span>
+    <span class="n">_KEY_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;file_name&#39;</span>
+    <span class="sd">&quot;&quot;&quot;Key for the ``&quot;file name&quot;`` property in COCO image annotations.&quot;&quot;&quot;</span>
+
+    <span class="n">COMMERCIAL_LICENSE_IDS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;IDs of COCO image licenses that allow for commercial use.&quot;&quot;&quot;</span>
+
+    <span class="n">DATASET_ROOT_TEMPL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;dataset&#39;</span><span class="p">,</span> <span class="s1">&#39;coco&#39;</span><span class="p">,</span> <span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{split}</span><span class="s1">2017&#39;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Default root directory template for image files that accepts the</span>
+<span class="sd">    ``split`` (``&#39;train&#39;`` or ``&#39;val&#39;``).&quot;&quot;&quot;</span>
+
+    <span class="n">ANNOTATION_FP_TEMPL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="si">{root}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;annotations&#39;</span><span class="p">,</span> <span class="s1">&#39;person_keypoints_</span><span class="si">{split}</span><span class="s1">2017.json&#39;</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Default template for the annotation file path that accepts the</span>
+<span class="sd">    ``split`` (``&#39;train&#39;`` or ``&#39;val&#39;``) and the ``root`` directory.&quot;&quot;&quot;</span>
+
+    <span class="n">DEFAULT_IMG_SIZE</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Default target size of images to use for the default transforms</span>
+<span class="sd">    as ``(height, width)``.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="COCODataset.__init__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">annotations_fp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">split</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DatasetSplit</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_IMG_SIZE</span><span class="p">,</span>
+                 <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Init.</span>
+
+<span class="sd">        :param dataset_root: root directory under which to find</span>
+<span class="sd">            images and annotations</span>
+<span class="sd">        :param annotations_fp: path to the annotations file</span>
+<span class="sd">        :param split: the dataset split (as string specifier or directly as</span>
+<span class="sd">            :py:class:`~hybrid_learning.datasets.base.DatasetSplit`);</span>
+<span class="sd">            must be given in case the default ``dataset_root`` or</span>
+<span class="sd">            ``annotations_fp`` are to be used</span>
+<span class="sd">        :param img_size: a convenience argument to set a default transformation</span>
+<span class="sd">            that resizes images to ``img_size``;</span>
+<span class="sd">            format: ``(height, width)`` in pixels;</span>
+<span class="sd">            defaults to</span>
+<span class="sd">            :py:attr:`hybrid_learning.datasets.custom.coco.base.COCODataset.DEFAULT_IMG_SIZE`</span>
+<span class="sd">        :param device: the device to run the default trafos on and move</span>
+<span class="sd">            loaded items to</span>
+<span class="sd">        :param kwargs: further arguments for super class ``__init__()``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                                               <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> \
+                <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_transforms</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="sd">&quot;&quot;&quot;Default transformation for tuples of COCO image and target.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Root directory under which to find the images</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">split</span><span class="p">:</span> <span class="n">DatasetSplit</span> <span class="o">=</span> <span class="n">DatasetSplit</span><span class="p">[</span><span class="n">split</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">dataset_root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">annotations_fp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">split</span> <span class="o">=</span> <span class="n">split</span> <span class="k">if</span> <span class="n">split</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TRAIN</span>
+        <span class="k">if</span> <span class="n">dataset_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DATASET_ROOT_TEMPL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span>
+                         <span class="n">split</span><span class="o">=</span><span class="n">split</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Annotation file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span> <span class="o">=</span> <span class="n">annotations_fp</span> <span class="k">if</span> <span class="n">annotations_fp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_annotations_fp</span>
+        <span class="sd">&quot;&quot;&quot;File path to the COCO annotations json file with image and</span>
+<span class="sd">        keypoint annotations.&quot;&quot;&quot;</span>
+
+        <span class="c1"># region Sanity check: Does annotation file exist?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">)</span> \
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="s2">&quot;Annotation file </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">)</span> \
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span>
+                <span class="s2">&quot;Dataset root folder </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># COCO handle</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dnull</span><span class="p">,</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">redirect_stdout</span><span class="p">(</span><span class="n">dnull</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="p">:</span> <span class="n">COCO</span> <span class="o">=</span> <span class="n">COCO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">)</span>
+            <span class="sd">&quot;&quot;&quot;Internal COCO handle.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Actual image selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_ann_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_person_img_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Mapping of indices in this dataset to COCO image and</span>
+<span class="sd">        annotation IDs.</span>
+<span class="sd">        Each entry in the list is a tuple of the form</span>
+<span class="sd">        ``(image_id, [annotation_id, ...])`` where the annotations belong</span>
+<span class="sd">        to the corresponding image.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="COCODataset.subset"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.subset">[docs]</a>    <span class="k">def</span> <span class="nf">subset</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+            <span class="n">license_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">COMMERCIAL_LICENSE_IDS</span><span class="p">,</span>
+            <span class="n">body_parts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                                       <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;COCODataset&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Restrict the items by the given selection criteria and an optional</span>
+<span class="sd">        custom condition.</span>
+<span class="sd">        Operation changes :py:attr:`img_ann_ids`.</span>
+<span class="sd">        Selection criteria are:</span>
+
+<span class="sd">        - Len: Maximum total number of images (and whether to shuffle before</span>
+<span class="sd">          selecting the first X IDs)</span>
+<span class="sd">        - License: IDs of licenses one of which the image must have</span>
+<span class="sd">        - Contained body parts: body parts (collections of of keypoint names),</span>
+<span class="sd">            one of which must be fully contained in the image;</span>
+<span class="sd">            e.g. ``[[&quot;left_eye&quot;], [&quot;right_eye&quot;]]`` means either ``left_eye`` or</span>
+<span class="sd">            ``right_eye`` must be visible, while ``[[&quot;left_eye&quot;, &quot;right_eye&quot;]]``</span>
+<span class="sd">            means both must be.</span>
+<span class="sd">        - Any custom condition specified via ``condition``.</span>
+
+<span class="sd">        :param license_ids: IDs of accepted licenses;</span>
+<span class="sd">            if set to ``None``, all licenses are accepted</span>
+<span class="sd">        :param body_parts: sequence of body parts any of which must be visible</span>
+<span class="sd">            in the image;</span>
+<span class="sd">            a body part is a sequence of string keypoint names;</span>
+<span class="sd">            if just one body part is given, this may be provided as list of</span>
+<span class="sd">            strings, e.g. ``[&quot;left_eye&quot;, &quot;right_eye&quot;]``</span>
+<span class="sd">        :param num: number of images to produce</span>
+<span class="sd">            (take first ``num`` ones)</span>
+<span class="sd">        :param shuffle: whether to shuffle the IDs</span>
+<span class="sd">            (before applying ``num``)</span>
+<span class="sd">        :param condition: callable that accepts image meta data and annotation</span>
+<span class="sd">            metadata, and returns a bool stating whether to skip the annotation</span>
+<span class="sd">            instance or not</span>
+<span class="sd">        :param show_progress_bar: whether to show the progress of image checking</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># region Default value for filter condition</span>
+        <span class="c1"># Add annotation selection by feature visibility:</span>
+        <span class="n">filters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">body_parts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">body_parts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">body_parts</span><span class="p">]</span>
+            <span class="n">keypoint_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_keypoint_idxs</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">coco</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="p">)</span>
+                             <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">body_parts</span><span class="p">]</span>
+            <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">ann</span><span class="p">:</span> <span class="nb">any</span><span class="p">((</span><span class="n">all_keypts_visible</span><span class="p">(</span><span class="n">ann</span><span class="p">,</span> <span class="n">idxs</span><span class="p">)</span>
+                                               <span class="k">for</span> <span class="n">idxs</span> <span class="ow">in</span> <span class="n">keypoint_idxs</span><span class="p">)))</span>
+        <span class="c1"># Add annotation selection by custom condition:</span>
+        <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+        <span class="n">filter_condition</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> \
+            <span class="p">(</span><span class="k">lambda</span> <span class="n">i_m</span><span class="p">,</span> <span class="n">a_m</span><span class="p">:</span> <span class="nb">all</span><span class="p">((</span><span class="n">filt</span><span class="p">(</span><span class="n">i_m</span><span class="p">,</span> <span class="n">a_m</span><span class="p">)</span> <span class="k">for</span> <span class="n">filt</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">)))</span>
+        <span class="c1"># endregion</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_ann_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">img_id_iterator</span><span class="p">(</span>
+                <span class="n">coco</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="p">,</span>
+                <span class="n">img_ann_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">img_ann_ids</span><span class="p">,</span>
+                <span class="n">license_ids</span><span class="o">=</span><span class="n">license_ids</span><span class="p">,</span>
+                <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
+                <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">,</span>
+                <span class="n">condition</span><span class="o">=</span><span class="n">filter_condition</span><span class="p">,</span>
+                <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">show_progress_bar</span>
+            <span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="COCODataset.shuffle"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;COCODataset&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper around :py:meth:`subset` that only shuffles the instance.</span>
+
+<span class="sd">        :return: self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset</span><span class="p">(</span><span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">license_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="COCODataset.to_raw_anns"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.to_raw_anns">[docs]</a>    <span class="k">def</span> <span class="nf">to_raw_anns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create the content of a new valid annotations file restricted</span>
+<span class="sd">        to the current image IDs.</span>
+<span class="sd">        Optionally also save to ``save_as``.</span>
+<span class="sd">        The content is based on the contents of :py:attr:`annotations_fp`.</span>
+
+<span class="sd">        If the restricted content is stored into a JSON annotations file,</span>
+<span class="sd">        it can be used to init further instances that are already restricted</span>
+<span class="sd">        to the current images.</span>
+<span class="sd">        Useful in combination with :py:meth:`subset`.</span>
+
+<span class="sd">        :param description: change the ``&#39;description&#39;`` under ``&#39;info&#39;`` to</span>
+<span class="sd">            ``description``; no change if set to ``None``</span>
+<span class="sd">        :param save_as: if not ``None``, dump the new annotations to a</span>
+<span class="sd">            file located there (will overwrite)</span>
+<span class="sd">        :return: dict in the format of a COCO annotations file with</span>
+<span class="sd">            images and annotations restricted to those used in this</span>
+<span class="sd">            dataset instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">)</span> <span class="k">as</span> <span class="n">ann_file</span><span class="p">:</span>
+            <span class="n">anns</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ann_file</span><span class="p">)</span>
+
+        <span class="c1"># info</span>
+        <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">anns</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+
+        <span class="c1"># images</span>
+        <span class="n">anns</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_meta</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span>
+        <span class="n">anns</span><span class="p">[</span><span class="s1">&#39;annotations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ann</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+                               <span class="k">for</span> <span class="n">ann</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_anns</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">anns_file</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">anns</span><span class="p">,</span> <span class="n">anns_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">anns</span></div>
+
+<div class="viewcode-block" id="COCODataset.copy_to"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.copy_to">[docs]</a>    <span class="k">def</span> <span class="nf">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">root_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Create a new dataset by copying used images and annotations</span>
+<span class="sd">        to new root folder.</span>
+
+<span class="sd">        The following files and folders will be created:</span>
+
+<span class="sd">        - ``new_root_root/annotations/``: annotations root folder</span>
+<span class="sd">        - ``new_root_root/annotations/&lt;anns_file&gt;``:</span>
+<span class="sd">          An annotations file of the same basename as :py:attr:`annotations_fp`</span>
+<span class="sd">          is created and stored in the annotations folder</span>
+<span class="sd">          (see :py:meth:`to_raw_anns`).</span>
+<span class="sd">        - ``new_root_root/images/&lt;img_root&gt;/``:</span>
+<span class="sd">          An images root is created of the same basename as</span>
+<span class="sd">          :py:attr:`hybrid_learning.datasets.base.BaseDataset.dataset_root`.</span>
+<span class="sd">        - ``new_root_root/images/&lt;img_root&gt;/&lt;img_file&gt;``:</span>
+<span class="sd">          Each image file used in this dataset is copied to the new images root</span>
+<span class="sd">          keeping the file basename.</span>
+
+<span class="sd">        :param root_root: root directory under which to create the</span>
+<span class="sd">            annotations root and new ``dataset_root``</span>
+<span class="sd">        :param description: description used in the annotations info;</span>
+<span class="sd">            see :py:meth:`to_raw_anns`</span>
+<span class="sd">        :param overwrite: do not raise if file or folder exist</span>
+<span class="sd">        :param dataset_root: if new_root_root is not given, it is assumed</span>
+<span class="sd">            to be ``dataset_root/../..``.</span>
+<span class="sd">        :return: a dict with the ``dataset_root`` and ``annotations_fp``</span>
+<span class="sd">            settings to init the new dataset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># folders</span>
+        <span class="k">if</span> <span class="n">root_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">root_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">))</span>
+        <span class="n">anns_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_root</span><span class="p">,</span> <span class="s2">&quot;annotations&quot;</span><span class="p">)</span>
+        <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_root</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">,</span>
+                                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">anns_root</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+
+        <span class="c1"># annotations</span>
+        <span class="n">anns_fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">anns_root</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">anns_fp</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">((</span><span class="s2">&quot;Annotations file </span><span class="si">{}</span><span class="s2"> exits and overwrite &quot;</span>
+                                   <span class="s2">&quot;is disabled!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anns_fp</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_raw_anns</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="n">anns_fp</span><span class="p">)</span>
+
+        <span class="c1"># images</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="n">src_fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">dst_fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src_fp</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_fp</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">((</span><span class="s2">&quot;Image file </span><span class="si">{}</span><span class="s2"> exits and overwrite &quot;</span>
+                                       <span class="s2">&quot;is disabled!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dst_fp</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">src_fp</span><span class="p">,</span> <span class="n">dst_fp</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span>
+                    <span class="n">annotations_fp</span><span class="o">=</span><span class="n">anns_fp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="COCODataset.img_id_iterator"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.img_id_iterator">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">img_id_iterator</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="n">coco</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">COCO</span><span class="p">],</span>
+            <span class="n">img_ann_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">license_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">COMMERCIAL_LICENSE_IDS</span><span class="p">,</span>
+            <span class="n">num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">condition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+                                         <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">show_progress_bar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Generator that iterates over image IDs of the COCO dataset that</span>
+<span class="sd">        fulfill given selection criteria.</span>
+<span class="sd">        For details see :py:meth:`subset`.</span>
+
+<span class="sd">        :param coco: coco handler to get ``img_ann_ids``</span>
+<span class="sd">        :param img_ann_ids: image and annotation IDs to select from;</span>
+<span class="sd">            format should be as for :py:attr:`img_ann_ids`;</span>
+<span class="sd">            defaults to IDs of all images and annotations given by ``coco``</span>
+<span class="sd">        :param license_ids: IDs of accepted licenses;</span>
+<span class="sd">            if set to ``None``, all licenses are accepted</span>
+<span class="sd">        :param num: number of images to produce (take first ``num`` ones)</span>
+<span class="sd">        :param shuffle: whether to shuffle the IDs</span>
+<span class="sd">            (before applying effect of ``num``)</span>
+<span class="sd">        :param condition: callable that accepts image meta data and annotation</span>
+<span class="sd">            metadata, and returns a bool stating whether to skip the annotation</span>
+<span class="sd">            instance or not</span>
+<span class="sd">        :param show_progress_bar: whether to show a progress bar while</span>
+<span class="sd">            iterating over all image IDs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># region Value checks and defaults</span>
+        <span class="k">if</span> <span class="n">license_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">coco</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;license_ids given but coco None&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img_ann_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coco</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both coco and img_ann_ids are None&quot;</span><span class="p">)</span>
+            <span class="n">img_ann_ids</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_person_img_ids</span><span class="p">(</span><span class="n">coco</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">coco</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;condition give but coco None&quot;</span><span class="p">)</span>
+        <span class="c1"># endregion</span>
+
+        <span class="c1"># Shuffle</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="n">img_ann_ids</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">img_ann_ids</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">img_ann_ids</span><span class="p">))</span>
+
+        <span class="n">num_selected_imgs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">img_ann_ids</span> <span class="o">=</span> <span class="n">img_ann_ids</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">show_progress_bar</span> <span class="k">else</span> \
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">img_ann_ids</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;COCO images checked&quot;</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">img_id</span><span class="p">,</span> <span class="n">ann_ids</span> <span class="ow">in</span> <span class="n">img_ann_ids</span><span class="p">:</span>
+            <span class="n">img_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="n">img_id</span><span class="p">]</span>
+
+            <span class="c1"># Image selection by license</span>
+            <span class="c1"># (don&#39;t do via filter to avoid loading of annotations):</span>
+            <span class="k">if</span> <span class="n">license_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                    <span class="n">img_meta</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">license_ids</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Annotation selection by condition:</span>
+            <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ann_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_id</span> <span class="k">for</span> <span class="n">a_id</span> <span class="ow">in</span> <span class="n">ann_ids</span>
+                                      <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="n">img_meta</span><span class="p">,</span> <span class="n">coco</span><span class="o">.</span><span class="n">anns</span><span class="p">[</span><span class="n">a_id</span><span class="p">])]</span>
+
+            <span class="c1"># Image selection by presence of any annotation:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ann_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">yield</span> <span class="n">img_id</span><span class="p">,</span> <span class="n">ann_ids</span>
+
+            <span class="c1"># Breaking condition:</span>
+            <span class="n">num_selected_imgs</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                    <span class="n">num_selected_imgs</span> <span class="o">&gt;=</span> <span class="n">num</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img_ann_ids</span><span class="p">,</span> <span class="n">tqdm</span><span class="p">):</span>
+            <span class="n">img_ann_ids</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_person_img_ids</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">coco</span><span class="p">:</span> <span class="n">COCO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the image and annotation IDs for category ``&#39;person&#39;``.</span>
+
+<span class="sd">        :return: a list of tuples of the form</span>
+<span class="sd">            ``(image_id, [annotation_id, ...])`` where the ``annotation_id``</span>
+<span class="sd">            entries are IDs of annotations within the image given by</span>
+<span class="sd">            ``image_id``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cat_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">getCatIds</span><span class="p">(</span><span class="n">catNms</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;person&#39;</span><span class="p">])</span>
+        <span class="n">img_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">coco</span><span class="o">.</span><span class="n">getImgIds</span><span class="p">(</span><span class="n">catIds</span><span class="o">=</span><span class="n">cat_ids</span><span class="p">)</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> \
+            <span class="p">[(</span><span class="n">img_id</span><span class="p">,</span> <span class="p">[</span><span class="n">ann</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ann</span> <span class="ow">in</span> <span class="n">coco</span><span class="o">.</span><span class="n">imgToAnns</span><span class="p">[</span><span class="n">img_id</span><span class="p">]])</span>
+             <span class="k">for</span> <span class="n">img_id</span> <span class="ow">in</span> <span class="n">img_ids</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ids</span>
+
+<div class="viewcode-block" id="COCODataset.get_default_transforms"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.get_default_transforms">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_default_transforms</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">img_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                               <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TupleTransforms</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create the default transformation for this dataset depending on</span>
+<span class="sd">        ``img_size``.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_default_annotations_fp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Default file path to the annotations derived from</span>
+<span class="sd">        :py:attr:`hybrid_learning.datasets.base.BaseDataset.dataset_root`</span>
+<span class="sd">        and spec.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ANNOTATION_FP_TEMPL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">split</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;val&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span> <span class="ow">in</span> <span class="p">[</span><span class="n">DatasetSplit</span><span class="o">.</span><span class="n">VAL</span><span class="p">,</span> <span class="n">DatasetSplit</span><span class="o">.</span><span class="n">TEST</span><span class="p">]</span>
+                   <span class="k">else</span> <span class="s2">&quot;train&quot;</span><span class="p">),</span>
+            <span class="n">root</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return information to init new dataset.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">annotations_fp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations_fp</span><span class="p">,</span>
+                    <span class="o">**</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+
+<div class="viewcode-block" id="COCODataset.load_orig_image"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.load_orig_image">[docs]</a>    <span class="k">def</span> <span class="nf">load_orig_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load unmodified image by index in dataset.&quot;&quot;&quot;</span>
+        <span class="n">img_fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">img_fp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s1">&#39;RGB&#39;</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img</span></div>
+
+<div class="viewcode-block" id="COCODataset.descriptor"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.descriptor">[docs]</a>    <span class="k">def</span> <span class="nf">descriptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the image file name for the item at index ``i``.</span>
+<span class="sd">        This is unique within the COCO dataset and may serve as ID e.g. for</span>
+<span class="sd">        caching.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_meta</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="n">COCODataset</span><span class="o">.</span><span class="n">_KEY_FILE_NAME</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="COCODataset.image_filepath"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.image_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">image_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Path to image file at index ``i``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="COCODataset.image_attribution"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.image_attribution">[docs]</a>    <span class="k">def</span> <span class="nf">image_attribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="c1"># pylint: disable=line-too-long</span>
+        <span class="sd">&quot;&quot;&quot;Get attribution information for image at index ``i``.</span>
+<span class="sd">        This encompasses:</span>
+
+<span class="sd">        :file_path: the image file path</span>
+<span class="sd">        :source: the static flickr URL (image source)</span>
+<span class="sd">        :flickr_page: link to the image flickr page featuring author information</span>
+<span class="sd">        :license: the license name</span>
+<span class="sd">        :license_url: link to the license</span>
+<span class="sd">        :coco_id: the COCO image ID</span>
+<span class="sd">        :coco_license_id: the COCO license ID</span>
+
+<span class="sd">        The license information is taken from :py:meth:`license_mapping`.</span>
+<span class="sd">        See also</span>
+
+<span class="sd">        - `best practices regarding image attribution information</span>
+<span class="sd">          &lt;https://wiki.creativecommons.org/wiki/best_practices_for_attribution&gt;`_, and</span>
+<span class="sd">        - `information on how to get the flickr page of an image via its</span>
+<span class="sd">          static URL &lt;https://hadinur.net/2013/11/02/how-to-find-the-original-flickr-photo-url-and-user-from-a-static-flickr-image-urlpermalink/&gt;`_</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: enable=line-too-long</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_meta</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;flickr_url&#39;</span><span class="p">]</span>
+        <span class="n">flickr_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">flickr_page</span> <span class="o">=</span> <span class="s1">&#39;http://flickr.com/photo.gne?id=&#39;</span> <span class="o">+</span> <span class="n">flickr_id</span>
+        <span class="n">coco_license_id</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">]</span>
+        <span class="n">license_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">license_mapping</span><span class="p">[</span><span class="n">coco_license_id</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;file_path&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+                <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span>
+                <span class="s1">&#39;flickr_page&#39;</span><span class="p">:</span> <span class="n">flickr_page</span><span class="p">,</span>
+                <span class="s1">&#39;license&#39;</span><span class="p">:</span> <span class="n">license_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;license_url&#39;</span><span class="p">:</span> <span class="n">license_info</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;coco_id&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;coco_license_id&#39;</span><span class="p">:</span> <span class="n">license_info</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="p">}</span></div>
+
+<div class="viewcode-block" id="COCODataset.image_meta"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.image_meta">[docs]</a>    <span class="k">def</span> <span class="nf">image_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Load the dict with meta information for image at index ``i``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">imgs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">img_ann_ids</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="COCODataset.raw_anns"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.raw_anns">[docs]</a>    <span class="k">def</span> <span class="nf">raw_anns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of raw annotations for image at index ``i``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">anns</span><span class="p">[</span><span class="n">ann_id</span><span class="p">]</span> <span class="k">for</span> <span class="n">ann_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_ann_ids</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">license_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;The mapping of image IDs to license descriptions and URLs.</span>
+<span class="sd">        This is extracted from the annotations file loaded by :py:attr:`coco`.</span>
+
+<span class="sd">        :return: dict ``{ID: license_info}``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">license_info</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span> <span class="n">license_info</span>
+                <span class="k">for</span> <span class="n">license_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coco</span><span class="o">.</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;licenses&quot;</span><span class="p">]}</span>
+
+<div class="viewcode-block" id="COCODataset.__len__"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Length is given by the length of the index mapping.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_ann_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="COCODataset.getitem"><a class="viewcode-back" href="../../../../../apiref/generated/hybrid_learning.datasets.custom.coco.base.COCODataset.html#hybrid_learning.datasets.custom.coco.base.COCODataset.getitem">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">getitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Item selection differs depending on the desired annotation data.</span>
+<span class="sd">        Used for</span>
+<span class="sd">        :py:meth:`~hybrid_learning.datasets.base.BaseDataset.__getitem__`.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

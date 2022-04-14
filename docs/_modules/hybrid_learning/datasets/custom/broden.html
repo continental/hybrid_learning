@@ -1,69 +1,33 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>hybrid_learning.datasets.custom.broden &mdash; hybrid_learning  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/autoclasstoc.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> hybrid_learning
-          
-
-          
+            <a href="../../../../index.html" class="icon icon-home"> hybrid_learning
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -71,19 +35,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Content</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../quickstart/index.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../userguide/index.html">User Guide</a></li>
@@ -91,67 +44,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">How to contribute</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">hybrid_learning</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
       <li>hybrid_learning.datasets.custom.broden</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for hybrid_learning.datasets.custom.broden</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Handles for Broden-like datasets.</span>
 <span class="sd">The original Broad and Densely Labeled Dataset (Broden_) was introduced in</span>
@@ -174,7 +90,7 @@
 <span class="sd">    https://doi.org/10.1109/CVPR.2017.354.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1">#  Copyright (c) 2020 Continental Automotive GmbH</span>
+<span class="c1">#  Copyright (c) 2022 Continental Automotive GmbH</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> \
@@ -184,10 +100,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torchvision</span> <span class="k">as</span> <span class="nn">tv</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">trafo</span>
+<span class="kn">from</span> <span class="nn">hybrid_learning</span> <span class="kn">import</span> <span class="n">fuzzy_logic</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">transforms</span> <span class="k">as</span> <span class="n">trafos</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">BaseDataset</span>
 
 
@@ -299,6 +215,7 @@
                  <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BrodenLabel</span><span class="p">],</span>
                  <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">annotations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">annotations_fp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">prune_na</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prune_na_rule</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
                  <span class="n">broden_split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">max_num_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -319,6 +236,8 @@
 <span class="sd">        :param annotations: optional initializer for :py:attr:`annotations`,</span>
 <span class="sd">            which is by default loaded from :py:const:`INDEX_CSV_FILE`;</span>
 <span class="sd">            use to create sub-sets</span>
+<span class="sd">        :param annotations_fp: optional path to the annotations file;</span>
+<span class="sd">            by default, ``dataset_root/index.csv`` is assumed</span>
 <span class="sd">        :param dataset_args: arguments to</span>
 <span class="sd">            :py:class:`~hybrid_learning.datasets.base.BaseDataset`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -327,15 +246,15 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Empty labels!&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_default_transforms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datum_to_tens</span>
-        <span class="sd">&quot;&quot;&quot;The default transformation will return tensors.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">dataset_args</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">BrodenHandle</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span>
-                                           <span class="o">**</span><span class="n">dataset_args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">annotations_fp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">annotations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">annotations_fp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">INDEX_CSV_FILE</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">annotations</span> \
             <span class="k">if</span> <span class="n">annotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_annotations_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_annotations_table</span><span class="p">(</span><span class="n">annotations_fp</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;The actual annotation (meta-)information.</span>
 <span class="sd">        The columns used here are described below.</span>
 
@@ -393,6 +312,13 @@
                             <span class="n">prune_na_rule</span><span class="o">=</span><span class="n">prune_na_rule</span><span class="p">,</span>
                             <span class="n">broden_split</span><span class="o">=</span><span class="n">broden_split</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)</span></div>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_default_after_cache_trafo</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The default transformation after cache should be ``None`` for this</span>
+<span class="sd">        dataset.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="BrodenHandle.standard_prune"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.standard_prune">[docs]</a>    <span class="k">def</span> <span class="nf">standard_prune</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_num_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="n">prune_na</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">prune_na_rule</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
                        <span class="n">broden_split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -409,9 +335,10 @@
 <span class="sd">            - ``&#39;all&#39;``: all categories occurring in the specified labels must</span>
 <span class="sd">              be ``NaN``</span>
 <span class="sd">            - ``&#39;any&#39;``: any must be ``NaN``</span>
-<span class="sd">        :param broden_split: the original dataset had a fix split into</span>
-<span class="sd">            training and validation data; choose the corresponding original</span>
-<span class="sd">            split (see also :py:attr:`annotations`, where the split</span>
+<span class="sd">        :param broden_split: the original dataset had a fixed split into</span>
+<span class="sd">            training (``&#39;train&#39;``) and validation (``&#39;val&#39;``) data;</span>
+<span class="sd">            choose the corresponding original split</span>
+<span class="sd">            (see also  :py:attr:`annotations`, where the split</span>
 <span class="sd">            meta-information is stored in)</span>
 <span class="sd">        :param max_num_samples: the maximum number of samples to select;</span>
 <span class="sd">            if set to ``None``, no restriction is applied</span>
@@ -443,14 +370,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> \
                 <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">broden_split</span><span class="p">]</span>
 
-        <span class="c1"># Restrict to the selected number of samples (and shuffle)</span>
-        <span class="k">if</span> <span class="n">max_num_samples</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_num_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> \
-                <span class="n">max_num_samples</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">):</span>
-            <span class="n">max_num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">max_num_samples</span>
-                                                       <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">max_num_samples</span><span class="p">]</span>
+        <span class="c1"># Reduce number of samples and shuffle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cut_to</span><span class="p">(</span><span class="n">max_num_samples</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)</span>
 
         <span class="c1"># Final sanity check</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -459,25 +380,40 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
+<div class="viewcode-block" id="BrodenHandle.cut_to"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.cut_to">[docs]</a>    <span class="k">def</span> <span class="nf">cut_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_num_samples</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BrodenHandle&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reduce the number of samples to the first ``max_num_samples``,</span>
+<span class="sd">        and optionally shuffle.&quot;&quot;&quot;</span>
+        <span class="c1"># Restrict to the selected number of samples</span>
+        <span class="k">if</span> <span class="n">max_num_samples</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_num_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> \
+                <span class="n">max_num_samples</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">):</span>
+            <span class="n">max_num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">max_num_samples</span>
+                                                       <span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">max_num_samples</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
 <div class="viewcode-block" id="BrodenHandle.load_annotations_table"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.load_annotations_table">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">load_annotations_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                               <span class="n">index_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Load the annotation information from the ``index_file``</span>
-<span class="sd">        under ``dataset_root``.</span>
+    <span class="k">def</span> <span class="nf">load_annotations_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">annotations_fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Load the annotation information from the file at ``annotations_fp``.</span>
 <span class="sd">        For simplicity of parsing, all category and the ``&quot;image&quot;`` column</span>
 <span class="sd">        are parsed to string.</span>
 
-<span class="sd">        :param dataset_root: the root directory under which to find the</span>
-<span class="sd">            index file</span>
-<span class="sd">        :param index_file: the file name / relative path under ``dataset_root``</span>
-<span class="sd">            of the index CSV file to load the annotations from;</span>
-<span class="sd">            defaults to :py:attr:`INDEX_CSV_FILE`</span>
+<span class="sd">        :param annotations_fp: the path to the annotations .csv file</span>
 <span class="sd">        :return: annotations table with correct types of the category columns</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">index_file</span> <span class="o">=</span> <span class="n">index_file</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">INDEX_CSV_FILE</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">index_file</span><span class="p">),</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">annotations_fp</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Annotations file </span><span class="si">{}</span><span class="s2"> does not exist&quot;</span>
+                                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">annotations_fp</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">annotations_fp</span><span class="p">,</span>
                            <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span>
                                   <span class="p">[</span><span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">CLS_CATS</span><span class="p">,</span> <span class="o">*</span><span class="bp">cls</span><span class="o">.</span><span class="n">SEG_CATS</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">]})</span></div>
+
+<div class="viewcode-block" id="BrodenHandle.save_annotations_table"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.save_annotations_table">[docs]</a>    <span class="k">def</span> <span class="nf">save_annotations_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotations_fp</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save the current :py:attr:`annotations` to a CSV file at given</span>
+<span class="sd">        ``annotations_fp``.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">annotations_fp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BrodenHandle.parse_label"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.parse_label">[docs]</a>    <span class="k">def</span> <span class="nf">parse_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label_spec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BrodenLabel</span><span class="p">],</span>
                     <span class="n">label_infos</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
@@ -630,25 +566,25 @@
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">anns</span></div>
 
-<div class="viewcode-block" id="BrodenHandle.datum_to_tens"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.datum_to_tens">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">datum_to_tens</span><span class="p">(</span><span class="n">img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">anns</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
-                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;This transformation will convert an output tuple of image, label dict</span>
-<span class="sd">        to a tensor. For the input format see :py:meth:`getitem`.</span>
-<span class="sd">        Any ``None`` entries in the annotations dictionary will remain ``None``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">img_t</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()(</span><span class="n">img</span><span class="p">)</span>
-        <span class="c1"># pylint: disable=no-member</span>
-        <span class="n">anns_t</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">as_tensor</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
-                      <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anns</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="c1"># pylint: enable=no-member</span>
-        <span class="k">return</span> <span class="n">img_t</span><span class="p">,</span> <span class="n">anns_t</span></div>
+    <span class="n">_default_transforms</span><span class="p">:</span> <span class="n">trafos</span><span class="o">.</span><span class="n">TupleTransforms</span> <span class="o">=</span> \
+        <span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">OnInput</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">())</span> <span class="o">+</span>
+         <span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)))</span>
+    <span class="sd">&quot;&quot;&quot;This transformation will convert an output tuple of image, label dict</span>
+<span class="sd">    to a tensor. For the input format see :py:meth:`getitem`.</span>
+<span class="sd">    Any ``None`` entries in the annotations dictionary will remain ``None``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BrodenHandle.descriptor"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.descriptor">[docs]</a>    <span class="k">def</span> <span class="nf">descriptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the relative image file path for item ``i``.</span>
+<span class="sd">        This is unique within a Broden dataset and can be used as an ID e.g.</span>
+<span class="sd">        for caching.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="BrodenHandle.image_filepath"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.image_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">image_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the path to the image file for row ``i``.</span>
 <span class="sd">        Information is retrieved from :py:attr:`annotations`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">IMAGES_ROOT</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;image&#39;</span><span class="p">])</span></div>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">descriptor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="BrodenHandle.load_ann"><a class="viewcode-back" href="../../../../apiref/generated/hybrid_learning.datasets.custom.broden.BrodenHandle.html#hybrid_learning.datasets.custom.broden.BrodenHandle.load_ann">[docs]</a>    <span class="k">def</span> <span class="nf">load_ann</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">BrodenLabel</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">raw_ann_row</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -872,9 +808,9 @@
         <span class="k">if</span> <span class="n">by_target</span><span class="p">:</span>
             <span class="n">dummy_img</span><span class="p">:</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_filepath</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="n">load_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">dummy_img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_anns</span><span class="p">(</span><span class="n">i</span><span class="p">))[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">(</span><span class="k">lambda</span> <span class="n">idx</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">dummy_img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_anns</span><span class="p">(</span><span class="n">idx</span><span class="p">))[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">load_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">load_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">idx</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
         <span class="n">selector</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">iterator</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
@@ -895,7 +831,7 @@
     <span class="k">def</span> <span class="nf">custom_label</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                      <span class="n">prune_empty</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                      <span class="n">balance_pos_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                      <span class="o">**</span><span class="n">init_args</span><span class="p">):</span>
         <span class="c1"># pylint: disable=line-too-long</span>
         <span class="sd">&quot;&quot;&quot;Return a :py:class:`BrodenHandle` instance with output restricted to</span>
@@ -911,17 +847,20 @@
 <span class="sd">          binary mask for the specified label or the bool classification value.</span>
 
 <span class="sd">        The label may either be a label as would be specified in</span>
-<span class="sd">        :py:class:`__init__ &lt;BrodenHandle&gt;` or a string representation of a</span>
-<span class="sd">        :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` operation.</span>
+<span class="sd">        :py:class:`__init__ &lt;BrodenHandle&gt;` or a formula specification string</span>
+<span class="sd">        representing a formula of Boolean</span>
+<span class="sd">        :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` operations</span>
+<span class="sd">        that can be parsed using a</span>
+<span class="sd">        :py:class:`~hybrid_learning.fuzzy_logic.tnorm_connectives.boolean.BooleanLogic`.</span>
 
 <span class="sd">        :param dataset_root: the ``dataset_root`` parameter for init of the</span>
 <span class="sd">            :py:class:`BrodenHandle`</span>
 <span class="sd">        :param label: the label to restrict to; may either be a valid string</span>
 <span class="sd">            label name, a valid</span>
 <span class="sd">            :py:class:`BrodenLabel`, or a valid string representation of a</span>
-<span class="sd">            :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge` operation</span>
+<span class="sd">            :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge` operation</span>
 <span class="sd">            the</span>
-<span class="sd">            :py:class:`~hybrid_learning.datasets.transforms.dict_transforms.Merge.all_in_keys`</span>
+<span class="sd">            :py:class:`~hybrid_learning.fuzzy_logic.logic_base.merge_operation.Merge.all_in_keys`</span>
 <span class="sd">            of which are all valid string label names;</span>
 <span class="sd">        :param init_args: further init arguments to the :py:class:`BrodenHandle`</span>
 <span class="sd">        :param balance_pos_to: if a value given, balance the resulting</span>
@@ -944,7 +883,7 @@
                               <span class="s2">&quot;but were </span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">init_args</span><span class="p">))</span>
         <span class="c1"># endregion</span>
 
-        <span class="n">merge_op</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Merge op before flatten</span>
+        <span class="n">merge_op</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">fuzzy_logic</span><span class="o">.</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Merge op before flatten</span>
 
         <span class="c1"># region Parse the label (and collect Merge operation if necessary):</span>
         <span class="c1"># collect: labels, merge_op, final_key (=the final key to which to</span>
@@ -952,18 +891,18 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">BrodenLabel</span><span class="p">):</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BrodenLabel</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">]</span>
             <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="p">):</span>
-            <span class="n">merge_op</span><span class="p">:</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fuzzy_logic</span><span class="o">.</span><span class="n">Merge</span><span class="p">):</span>
+            <span class="n">merge_op</span><span class="p">:</span> <span class="n">fuzzy_logic</span><span class="o">.</span><span class="n">Merge</span> <span class="o">=</span> <span class="n">label</span>
             <span class="n">labels</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">all_in_keys</span>
             <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">out_key</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># Can be parsed to merge operation?</span>
-            <span class="n">parsed_label</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="n">parsed_label</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">fuzzy_logic</span><span class="o">.</span><span class="n">Merge</span><span class="p">]</span> <span class="o">=</span> <span class="n">fuzzy_logic</span><span class="o">.</span><span class="n">BooleanLogic</span><span class="p">()</span><span class="o">.</span><span class="n">parser</span><span class="p">()(</span><span class="n">label</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parsed_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">]</span>
                 <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">label</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">merge_op</span><span class="p">:</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Merge</span> <span class="o">=</span> <span class="n">parsed_label</span>
+                <span class="n">merge_op</span><span class="p">:</span> <span class="n">fuzzy_logic</span><span class="o">.</span><span class="n">Merge</span> <span class="o">=</span> <span class="n">parsed_label</span>
                 <span class="n">labels</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">all_in_keys</span>
                 <span class="n">final_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">merge_op</span><span class="o">.</span><span class="n">out_key</span>
         <span class="k">else</span><span class="p">:</span>
@@ -975,23 +914,28 @@
         <span class="c1"># endregion</span>
 
         <span class="c1"># region Collect the transformation</span>
-        <span class="n">trafos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">trafo</span><span class="o">.</span><span class="n">TupleTransforms</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">trafos</span> <span class="o">+=</span> <span class="p">[</span><span class="n">trafo</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">merge_op</span><span class="p">),</span>
-                   <span class="n">trafo</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">RestrictDict</span><span class="p">([</span><span class="n">final_key</span><span class="p">]))]</span> \
-            <span class="k">if</span> <span class="n">merge_op</span> <span class="k">else</span> <span class="p">[]</span>
-        <span class="n">trafos</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">datum_to_tens</span><span class="p">,</span>
-                   <span class="n">trafo</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">FlattenDict</span><span class="p">(</span><span class="n">final_key</span><span class="p">))]</span>
         <span class="n">user_defined_trafo</span> <span class="o">=</span> <span class="n">init_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;transforms&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">trafo_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">trafos</span><span class="o">.</span><span class="n">TupleTransforms</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">merge_op</span><span class="p">:</span>
+            <span class="n">trafo_list</span> <span class="o">+=</span> <span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">merge_op</span><span class="p">)</span> <span class="o">+</span>
+                           <span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">RestrictDict</span><span class="p">([</span><span class="n">final_key</span><span class="p">])))</span>
+        <span class="n">trafo_list</span> <span class="o">+=</span> <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_default_transforms</span> <span class="o">+</span>
+                       <span class="n">trafos</span><span class="o">.</span><span class="n">OnTarget</span><span class="p">(</span><span class="n">trafos</span><span class="o">.</span><span class="n">FlattenDict</span><span class="p">(</span><span class="n">final_key</span><span class="p">)))</span>
+        <span class="n">init_args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;after_cache_transforms&#39;</span><span class="p">,</span>
+                             <span class="n">BaseDataset</span><span class="o">.</span><span class="n">_get_default_after_cache_trafo</span><span class="p">(</span>
+                                 <span class="n">device</span><span class="o">=</span><span class="n">init_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;device&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)))</span>
         <span class="c1"># endregion</span>
 
-        <span class="n">broden_inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span>
-        <span class="c1"># specify separately for IDE type inference:</span>
-        <span class="n">broden_inst</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">trafo</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span><span class="n">trafos</span><span class="p">)</span>
+        <span class="c1"># apply restriction of sample number after pruning</span>
+        <span class="n">max_num_samples</span> <span class="o">=</span> <span class="n">init_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_num_samples&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">broden_inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">dataset_root</span><span class="o">=</span><span class="n">dataset_root</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                          <span class="n">transforms</span><span class="o">=</span><span class="n">trafo_list</span><span class="p">,</span> <span class="o">**</span><span class="n">init_args</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prune_empty</span><span class="p">:</span>
             <span class="n">broden_inst</span><span class="o">.</span><span class="n">prune</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>
                 <span class="n">by_target</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">broden_inst</span><span class="o">.</span><span class="n">cut_to</span><span class="p">(</span><span class="n">max_num_samples</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">balance_pos_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">broden_inst</span><span class="o">.</span><span class="n">balance</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="n">proportion</span><span class="o">=</span><span class="n">balance_pos_to</span><span class="p">,</span>
                                 <span class="n">by_target</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -999,55 +943,36 @@
         <span class="c1"># Append the user-defined transforms</span>
         <span class="c1"># (after pruning, since this requires control over the output format!)</span>
         <span class="k">if</span> <span class="n">user_defined_trafo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">broden_inst</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_defined_trafo</span><span class="p">)</span>
+            <span class="n">broden_inst</span><span class="o">.</span><span class="n">transforms</span> <span class="o">+=</span> <span class="n">user_defined_trafo</span>
 
         <span class="k">return</span> <span class="n">broden_inst</span></div></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2020, Continental Automotive GmbH
-
-    </p>
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

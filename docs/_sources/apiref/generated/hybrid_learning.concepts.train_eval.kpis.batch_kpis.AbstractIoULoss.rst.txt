@@ -1,0 +1,9 @@
+AbstractIoULoss
+===============
+
+.. currentmodule:: hybrid_learning.concepts.train_eval.kpis.batch_kpis
+
+.. autoclass:: AbstractIoULoss
+    :members:
+
+    .. autoclasstoc::

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>keypoints_processing &mdash; hybrid_learning  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/autoclasstoc.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES" href="hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES.html" />
+    <link rel="prev" title="PadAndScaleAnnotatedImg" href="hybrid_learning.datasets.custom.coco.keypoints_dataset.PadAndScaleAnnotatedImg.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> hybrid_learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../userguide/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.concepts.html">concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="hybrid_learning.datasets.html">datasets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.activations_handle.html">activations_handle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.base.html">base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.caching.html">caching</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="hybrid_learning.datasets.custom.html">custom</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.broden.html">broden</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="hybrid_learning.datasets.custom.coco.html">coco</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.fasseg.html">fasseg</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hybrid_learning.datasets.custom.person_size_estimation.html">person_size_estimation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.data_visualization.html">data_visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hybrid_learning.datasets.transforms.html">transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.fuzzy_logic.html">fuzzy_logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hybrid_learning.experimentation.html">experimentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hybrid_learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API Reference</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.html">datasets</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.html">custom</a> &raquo;</li>
+          <li><a href="hybrid_learning.datasets.custom.coco.html">coco</a> &raquo;</li>
+      <li>keypoints_processing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/apiref/generated/hybrid_learning.datasets.custom.coco.keypoints_processing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="keypoints-processing">
+<h1>keypoints_processing<a class="headerlink" href="#keypoints-processing" title="Permalink to this headline"></a></h1>
+<p class="rubric">Description</p>
+<span class="target" id="module-hybrid_learning.datasets.custom.coco.keypoints_processing"></span><p>Util functions to process, transform, and evaluate MS COCO keypoint
+information.</p>
+<p>The main functionality is:</p>
+<ul class="simple">
+<li><p>annotation transformation:
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation.html#hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation" title="hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation"><code class="xref py py-func docutils literal notranslate"><span class="pre">pad_and_scale_annotation()</span></code></a>,
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotations_to_mask()</span></code></a></p></li>
+<li><p>estimation of the size (in pixels) of a person in an image from an annotation:
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotation_to_sizes()</span></code></a>, <a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotation_to_tot_height()</span></code></a></p></li>
+<li><p>some functions that may serve as filtering conditions:
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size.html#hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size" title="hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size"><code class="xref py py-func docutils literal notranslate"><span class="pre">person_has_rel_size()</span></code></a>,
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible.html#hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible" title="hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible"><code class="xref py py-func docutils literal notranslate"><span class="pre">all_keypts_visible()</span></code></a>,
+<a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible.html#hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible" title="hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible"><code class="xref py py-func docutils literal notranslate"><span class="pre">any_keypts_visible()</span></code></a></p></li>
+</ul>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES.html#hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES" title="hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COCO_STD_KEYPOINT_NAMES</span></code></a></p></td>
+<td><p>The standard list of keypoint names for MS COCO.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Functions</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible.html#hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible" title="hybrid_learning.datasets.custom.coco.keypoints_processing.all_keypts_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_keypts_visible</span></code></a>(ann, keypoint_idxs)</p></td>
+<td><p>Whether all given keypoints are marked as visible in the given annotation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotation_to_sizes</span></code></a>(annotation[, ...])</p></td>
+<td><p>Estimate the body size of a person in an image in pixels from skeletal keypoints and linear formulas given by <code class="docutils literal notranslate"><span class="pre">factors</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_tot_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotation_to_tot_height</span></code></a>(annotation[, ...])</p></td>
+<td><p>Wrapper around <a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotation_to_sizes"><code class="xref py py-func docutils literal notranslate"><span class="pre">annotation_to_sizes()</span></code></a> that returns the cleaned maximum total height.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotations_to_heatmap</span></code></a>(annotation_wh, ...[, ...])</p></td>
+<td><p>Create a heatmap marking the centroids of the linked keypoints from the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask.html#hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask" title="hybrid_learning.datasets.custom.coco.keypoints_processing.annotations_to_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotations_to_mask</span></code></a>(*, annotation_wh, ...[, ...])</p></td>
+<td><p>Create a mask of the linked keypoints from the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible.html#hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible" title="hybrid_learning.datasets.custom.coco.keypoints_processing.any_keypts_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">any_keypts_visible</span></code></a>(ann[, keypoint_idxs])</p></td>
+<td><p>Whether any of the given keypoints are marked as visible in the given annotation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation.html#hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation" title="hybrid_learning.datasets.custom.coco.keypoints_processing.pad_and_scale_annotation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pad_and_scale_annotation</span></code></a>(ann, from_size[, ...])</p></td>
+<td><p>Given a MS COCO style annotation, apply first padding and/or then scaling to its coordinates.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size.html#hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size" title="hybrid_learning.datasets.custom.coco.keypoints_processing.person_has_rel_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">person_has_rel_size</span></code></a>(img_meta, ann[, ...])</p></td>
+<td><p>Check whether the relative size of the person described by annotation <code class="docutils literal notranslate"><span class="pre">ann</span></code> wrt image size is in specified range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="hybrid_learning.datasets.custom.coco.keypoints_processing.to_keypoint_idxs.html#hybrid_learning.datasets.custom.coco.keypoints_processing.to_keypoint_idxs" title="hybrid_learning.datasets.custom.coco.keypoints_processing.to_keypoint_idxs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_keypoint_idxs</span></code></a>(keypoint_names[, coco, ...])</p></td>
+<td><p>Return the start indices for the given keypoints within an annotations <code class="docutils literal notranslate"><span class="pre">'keypoint'</span></code> field.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hybrid_learning.datasets.custom.coco.keypoints_dataset.PadAndScaleAnnotatedImg.html" class="btn btn-neutral float-left" title="PadAndScaleAnnotatedImg" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES.html" class="btn btn-neutral float-right" title="hybrid_learning.datasets.custom.coco.keypoints_processing.COCO_STD_KEYPOINT_NAMES" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Continental Automotive GmbH.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

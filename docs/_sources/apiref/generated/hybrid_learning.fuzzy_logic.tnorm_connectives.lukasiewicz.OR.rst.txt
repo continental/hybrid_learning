@@ -1,0 +1,9 @@
+OR
+==
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.tnorm_connectives.lukasiewicz
+
+.. autoclass:: OR
+    :members:
+
+    .. autoclasstoc::

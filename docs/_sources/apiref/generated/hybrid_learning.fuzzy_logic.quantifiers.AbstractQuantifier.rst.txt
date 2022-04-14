@@ -1,0 +1,9 @@
+AbstractQuantifier
+==================
+
+.. currentmodule:: hybrid_learning.fuzzy_logic.quantifiers
+
+.. autoclass:: AbstractQuantifier
+    :members:
+
+    .. autoclasstoc::
